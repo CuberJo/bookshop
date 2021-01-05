@@ -10,8 +10,10 @@ import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-//import org.mycompany.bookshop.util.MailSender;
+import com.epam.bookshop.util.MailSender;
+import com.epam.bookshop.validator.Validator;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 
 public class RegisterCommand implements Command {
@@ -19,14 +21,18 @@ public class RegisterCommand implements Command {
     private static final ResponseContext HOME_PAGE = () -> "/WEB-INF/jsp/home.jsp";
     private static final ResponseContext ACCOUNT_PAGE = () -> "/WEB-INF/jsp/account.jsp";
 
+    private static final String REGISTER_USER_SUBJECT = "<h4>Registration completed<h4>";
+    private static final String REGISTER_RESPONSE = "You have successfully registered!";
+
+
     private static final String NAME = "name";
     private static final String LOGIN = "login";
     private static final String PASSWORD = "password";
     private static final String EMAIL = "email";
     private static final String ROLE = "role";
     private static final String ERROR_MESSAGE = "error_reg_message";
-    private static final String EMPTY_STRING = "";
-    private static final String EMPTY_STRING_REGEX = "^[\\s]+$";
+    private static final String USER_ROLE = "USER";
+
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
@@ -43,7 +49,7 @@ public class RegisterCommand implements Command {
         final HttpSession session = requestContext.getSession();
 
         try {
-            if (!validateInput(name, login, email, password)) {
+            if (!Validator.getInstance().emptyStringValidator(name, login, email, password)) {
                 System.out.println("!validateInput(name, email, password, login)");
                 session.setAttribute(ERROR_MESSAGE, "Fields cannot be empty");
                 return ACCOUNT_PAGE;
@@ -51,7 +57,7 @@ public class RegisterCommand implements Command {
 
             User user = register(name, login, email, password);
 
-//            MailSender.getInstance().send(requestContext);
+            MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
 
             System.out.println("*****************NOTHING*****************************");
             session.setAttribute(LOGIN, login);
@@ -61,36 +67,13 @@ public class RegisterCommand implements Command {
             session.setAttribute(ERROR_MESSAGE, "Invalid input data");
             e.printStackTrace();
             return ACCOUNT_PAGE;
+        } catch (MessagingException e) {
+            session.setAttribute(ERROR_MESSAGE, "Could not reach email\n" + email);
+            e.printStackTrace();
+            return ACCOUNT_PAGE;
         }
-//        } catch (IOException e) {
-//            session.setAttribute(ERROR_MESSAGE, "Email does not exist");
-//            System.err.print("Ошибка при отправлении сообщения" + e);
-//            e.printStackTrace();
-//            return ACCOUNT_PAGE;
-//        }
-//        } catch () {
-//            System.err.print("Некорректный адрес:" + sendToEmail + " " + e);
-//        }
 
         return HOME_PAGE;
-    }
-
-
-    /**
-     * Checks strings for not being empty and correspond to special pattern
-     *
-     * @param strings - Strings to be validated
-     * @return <b>true</b> if, and only if, passed strings not empty and correspond
-     * to special pattern
-     */
-    private boolean validateInput(String ... strings) {
-        for (String string : strings) {
-            if (string.equals(EMPTY_STRING) || string.matches(EMPTY_STRING_REGEX)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
 
@@ -106,11 +89,10 @@ public class RegisterCommand implements Command {
 
         EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
 
-        final String ROLE = "USER";
 //        RoleService roleService = (RoleService) ServiceFactory.getInstance().create(EntityType.ROLE);
 //        roleService.find(RoleCriteria.builder().role(ROLE).build());
 
-        User user = new User(name, login, password, email, new Role(1L, ROLE));
+        User user = new User(name, login, password, email, new Role(1L, USER_ROLE));
 
         return service.create(user);
     }

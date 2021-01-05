@@ -47,6 +47,6 @@ public class FindOrderQueryCreator implements FindEntityQueryCreator {
             condition.append(STATUS_ID_COLUMN + " = '" + ((OrderCriteria) criteria).getStatusId() + "'" + WHITESPACE + AND + WHITESPACE);
         }
 
-        return new Validator().validatedQuery(condition, sql_query);
+        return Validator.getInstance().validatedQuery(condition, sql_query);
     }
 }

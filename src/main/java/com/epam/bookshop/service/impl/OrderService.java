@@ -26,7 +26,7 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public Order create(Order order) throws ValidatorException {
-        new Validator().validate(order);
+        Validator.getInstance().validate(order);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
@@ -58,7 +58,7 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public Collection findAll(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
@@ -96,7 +96,7 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public Optional<Order> find(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
@@ -118,7 +118,7 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public Optional<Order> update(Order order) throws ValidatorException {
-        new Validator().validate(order);
+        Validator.getInstance().validate(order);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
@@ -159,7 +159,7 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public boolean delete(Order order) throws EntityNotFoundException, ValidatorException {
-        new Validator().validate(order);
+        Validator.getInstance().validate(order);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);

@@ -27,7 +27,7 @@ public class UserService implements EntityService<User> {
 
     @Override
     public User create(User user) throws ValidatorException {
-        new Validator().validate(user);
+        Validator.getInstance().validate(user);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
@@ -63,7 +63,7 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Collection<User> findAll(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
@@ -101,7 +101,7 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Optional<User> find(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
@@ -123,7 +123,7 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Optional<User> update(User user) throws ValidatorException {
-        new Validator().validate(user);
+        Validator.getInstance().validate(user);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
@@ -164,7 +164,7 @@ public class UserService implements EntityService<User> {
 
     @Override
     public boolean delete(User user) throws EntityNotFoundException, ValidatorException {
-        new Validator().validate(user);
+        Validator.getInstance().validate(user);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);

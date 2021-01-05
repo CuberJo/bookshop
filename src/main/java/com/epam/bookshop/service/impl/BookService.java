@@ -25,7 +25,7 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Book create(Book book) throws ValidatorException {
-        new Validator().validate(book);
+        Validator.getInstance().validate(book);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
@@ -57,7 +57,7 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Collection findAll(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
@@ -95,7 +95,7 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Optional<Book> find(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
@@ -117,7 +117,7 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Optional<Book> update(Book book) throws ValidatorException {
-        new Validator().validate(book);
+        Validator.getInstance().validate(book);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
@@ -158,7 +158,7 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public boolean delete(Book book) throws EntityNotFoundException, ValidatorException {
-        new Validator().validate(book);
+        Validator.getInstance().validate(book);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);

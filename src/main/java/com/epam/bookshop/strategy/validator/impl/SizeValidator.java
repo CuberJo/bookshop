@@ -10,6 +10,20 @@ import java.lang.reflect.Field;
 
 public class SizeValidator implements Validatable<Size> {
 
+    private static SizeValidator instance;
+
+    private SizeValidator() {
+
+    }
+
+    public static SizeValidator getInstance() {
+        if (instance == null) {
+            instance = new SizeValidator();
+        }
+
+        return instance;
+    }
+
     @Override
     public void validateEntity(Field field, Size annotation, Entity entity) throws ValidatorException {
 

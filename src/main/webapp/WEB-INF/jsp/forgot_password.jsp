@@ -27,7 +27,7 @@
         <div id="sc-password">
             <h1>Reset Password</h1>
             <form class="sc-container" method="post" action="/home?command=reset_password">
-                <input type="text" placeholder="Username or Email" />
+                <input type="text" placeholder="Email" />
                 <input type="submit" value="Get New Password" />
             </form>
         </div>

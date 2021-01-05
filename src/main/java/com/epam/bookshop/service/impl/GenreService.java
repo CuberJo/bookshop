@@ -45,7 +45,7 @@ public class GenreService implements EntityService<Genre> {
 
     @Override
     public Collection<Genre> findAll(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
@@ -68,7 +68,7 @@ public class GenreService implements EntityService<Genre> {
 
     @Override
     public Optional<Genre> find(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);

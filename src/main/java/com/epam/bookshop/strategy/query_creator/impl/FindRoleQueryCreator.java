@@ -39,6 +39,6 @@ public class FindRoleQueryCreator implements FindEntityQueryCreator {
             condition.append(ROLE_COLUMN + " = '" + ((RoleCriteria) criteria).getRole() +  "'" + WHITESPACE + AND + WHITESPACE);
         }
 
-        return new Validator().validatedQuery(condition, sql_query);
+        return Validator.getInstance().validatedQuery(condition, sql_query);
     }
 }

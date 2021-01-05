@@ -28,6 +28,20 @@ public class NamingValidator implements Validatable<Naming> {
 //    private static final String EMAIL_REGEX = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{1,30}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{1,10}[a-zA-Z0-9])?){1,10}$";//*
 
 
+    private static NamingValidator instance;
+
+    private NamingValidator() {
+
+    }
+
+    public static NamingValidator getInstance() {
+        if (instance == null) {
+            instance = new NamingValidator();
+        }
+
+        return instance;
+    }
+
     @Override
     public void validateEntity(Field field, Naming annotation, Entity entity) throws ValidatorException {
 

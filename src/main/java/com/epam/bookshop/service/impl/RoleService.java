@@ -45,7 +45,7 @@ public class RoleService implements EntityService<Role> {
 
     @Override
     public Collection<Role> findAll(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Role> dao = DAOFactory.INSTANCE.create(EntityType.ROLE, conn);
@@ -68,7 +68,7 @@ public class RoleService implements EntityService<Role> {
 
     @Override
     public Optional<Role> find(Criteria criteria) throws ValidatorException {
-        new Validator().validate(criteria);
+        Validator.getInstance().validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Role> dao = DAOFactory.INSTANCE.create(EntityType.ROLE, conn);

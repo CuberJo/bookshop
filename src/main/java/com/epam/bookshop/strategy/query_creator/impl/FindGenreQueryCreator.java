@@ -39,6 +39,6 @@ public class FindGenreQueryCreator implements FindEntityQueryCreator {
             condition.append(GENRE_COLUMN + " = '" + ((GenreCriteria) criteria).getGenre() +  "'" + WHITESPACE + AND + WHITESPACE);
         }
 
-        return new Validator().validatedQuery(condition, sql_query);
+        return Validator.getInstance().validatedQuery(condition, sql_query);
     }
 }

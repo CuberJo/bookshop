@@ -7,30 +7,29 @@ import java.util.Properties;
 
 public class SessionCreator {
 
-    private String smtpHost;
-    private String smtpPort;
-    private String userName;
-    private String userPassword;
-    private Properties sessionProperties;
+    private static final String MAIL_USER_NAME = "mail.user.name";
+    private static final String MAIL_USER_PASSWORD = "mail.user.password";
 
-    public SessionCreator(Properties configProperties) {
-        smtpHost = configProperties.getProperty("mail.smtp.host");
-        smtpPort = configProperties.getProperty("mail.smtp.port");
-        userName = configProperties.getProperty("mail.user.name");
-        userPassword = configProperties.getProperty("mail.user.password");
-// загрузка параметров почтового сервера в свойства почтовой сессии
-        sessionProperties = new Properties();
-        sessionProperties.setProperty("mail.transport.protocol", "smtp");
-        sessionProperties.setProperty("mail.host", smtpHost);
-        sessionProperties.put("mail.smtp.auth", "true");
-        sessionProperties.put("mail.smtp.port", smtpPort);
-        sessionProperties.put("mail.smtp.socketFactory.port", smtpPort);
-        sessionProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        sessionProperties.put("mail.smtp.socketFactory.fallback", "false");
-        sessionProperties.setProperty("mail.smtp.quitwait", "false");
+    private static SessionCreator instance;
+
+    private SessionCreator() {
+
     }
 
-    public Session createSession() {
+    public static SessionCreator getInstance() {
+        if (instance == null) {
+            instance = new SessionCreator();
+        }
+
+        return instance;
+    }
+
+
+    public Session createSession(Properties sessionProperties) {
+
+        String userName = sessionProperties.getProperty(MAIL_USER_NAME);
+        String userPassword = sessionProperties.getProperty(MAIL_USER_PASSWORD);
+
         return Session.getDefaultInstance(sessionProperties,
                 new Authenticator() {
                     @Override
@@ -40,3 +39,6 @@ public class SessionCreator {
                 });
     }
 }
+
+
+

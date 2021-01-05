@@ -10,18 +10,12 @@ import org.testng.annotations.Test;
 
 public class NamingTest {
 
-    Validator validator;
-
-    @BeforeMethod
-    public void setUp() {
-        validator = new Validator();
-    }
 
     @Test
     public void validateUser() {
         User user = new User("agw", "age", "adga", "awgwa@gmail.com", new Role(1L, "awe"));
         try {
-            validator.validate(user);
+            Validator.getInstance().validate(user);
         } catch (ValidatorException e) {
             e.printStackTrace();
         }
@@ -30,7 +24,7 @@ public class NamingTest {
     public void validateBook() {
         Book book = new Book("111-1-11111-111-1", "rag", "ag", 121, "wqg", new Genre(1L, "Adventure"), "awegwa");
         try {
-            validator.validate(book);
+            Validator.getInstance().validate(book);
         } catch (ValidatorException e) {
             e.printStackTrace();
         }

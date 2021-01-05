@@ -59,6 +59,6 @@ public class FindBookQueryCreator implements FindEntityQueryCreator {
             condition.append(GENRE_ID_COLUMN + " = '" + ((BookCriteria) criteria).getGenreId() + "'" + WHITESPACE + AND + WHITESPACE);
         }
 
-        return new Validator().validatedQuery(condition, sql_query);
+        return Validator.getInstance().validatedQuery(condition, sql_query);
     }
 }
