@@ -21,20 +21,29 @@ public class Controller extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        processRequest(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding(UTF8);
-        processRequest(req, resp);
-    }
-
-    protected void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        processRequest(req, resp);
         final String commandParam = req.getParameter(COMMAND_PARAM);
         Command command = CommandFactory.command(commandParam);
         final ResponseContext responseContext = command.execute(new CustomRequestContext(req));
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(responseContext.getPage());
         requestDispatcher.forward(req, resp);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding(UTF8);
+//        processRequest(req, resp);
+        final String commandParam = req.getParameter(COMMAND_PARAM);
+        Command command = CommandFactory.command(commandParam);
+        final ResponseContext responseContext = command.execute(new CustomRequestContext(req));
+        resp.sendRedirect(req.getContextPath() + responseContext.getPage());
+    }
+
+//    protected void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        final String commandParam = req.getParameter(COMMAND_PARAM);
+//        Command command = CommandFactory.command(commandParam);
+//        final ResponseContext responseContext = command.execute(new CustomRequestContext(req));
+//        RequestDispatcher requestDispatcher = req.getRequestDispatcher(responseContext.getPage());
+//        requestDispatcher.forward(req, resp);
+//    }
 }

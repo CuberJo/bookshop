@@ -26,9 +26,16 @@
     <div class="row">
         <div id="sc-password">
             <h1>Reset Password</h1>
-            <form class="sc-container" method="post" action="/home?command=reset_password">
-                <input type="text" placeholder="Email" />
-                <input type="submit" value="Get New Password" />
+            <form id="ResetPassForm" class="sc-container" method="post" action="/home?command=reset_password">
+                <input type="email" placeholder="Email" name="email"/>
+                <pre id="errorResetPassMessage" style="color: #ff523b; text-align: center; margin: 10px"></pre>
+                <c:if test="${not empty error_message}">
+                    <pre style="color: #ff523b; height: 20px; text-align: center">${error_message}</pre>
+                    <c:remove var="error_message" scope="session" />
+                </c:if>
+<%--                <input type="submit" onclick="validateResetPassForm(event)" value="Get New Password" />--%>
+<%--                <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=register">Register</button>--%>
+                <button type="submit" onclick="return validateResetPassForm(event)">Get New Password</button>
             </form>
         </div>
     </div>
@@ -37,6 +44,38 @@
 <!---------- footer --------------->
 
 <jsp:include page="footer.jsp" />
+
+
+<script>
+    function validateResetPassForm(event) {
+        let emailField = document.forms["ResetPassForm"]["email"].value;
+
+        console.log("hi")
+        let error = "";
+
+        let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
+        let malicious_regex = /^[-<>*;='#)+&("]+$/;
+        if (malicious_regex.test(emailField) || !email_regex.test(emailField)) {
+            event.preventDefault();
+            error = "Incorrect email";
+            console.log("Incorrect email")
+        }
+
+        let whitespace_regex = /[\s]+/;
+        if (emailField == "" || whitespace_regex.test(emailField)) {
+            event.preventDefault();
+            error = "Please input your email";
+            console.log("Please input your email")
+        }
+
+        if (error != "") {
+            $("#errorResetPassMessage").text(error);
+            return false;
+        }
+
+        return true;
+    }
+</script>
 
 </body>
 </html>

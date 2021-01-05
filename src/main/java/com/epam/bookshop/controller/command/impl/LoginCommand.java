@@ -17,8 +17,11 @@ import java.util.Optional;
 
 public class LoginCommand implements Command {
 
-    private static final ResponseContext HOME_PAGE = () -> "/WEB-INF/jsp/home.jsp";
-    private static final ResponseContext ACCOUNT_PAGE = () -> "/WEB-INF/jsp/account.jsp";
+//    private static final ResponseContext HOME_PAGE = () -> "/WEB-INF/jsp/home.jsp";
+//    private static final ResponseContext ACCOUNT_PAGE = () -> "/WEB-INF/jsp/account.jsp";
+
+    private static final ResponseContext HOME_PAGE = () -> "/home";
+    private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
 
     private static final String LOGIN = "login";
     private static final String PASSWORD = "password";

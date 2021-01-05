@@ -3,6 +3,7 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Role;
 import com.epam.bookshop.domain.impl.User;
+import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.InvalidStateException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
@@ -18,10 +19,13 @@ import javax.servlet.http.HttpSession;
 
 public class RegisterCommand implements Command {
 
-    private static final ResponseContext HOME_PAGE = () -> "/WEB-INF/jsp/home.jsp";
-    private static final ResponseContext ACCOUNT_PAGE = () -> "/WEB-INF/jsp/account.jsp";
+//    private static final ResponseContext HOME_PAGE = () -> "/WEB-INF/jsp/home.jsp";
+//    private static final ResponseContext ACCOUNT_PAGE = () -> "/WEB-INF/jsp/account.jsp";
 
-    private static final String REGISTER_USER_SUBJECT = "<h4>Registration completed<h4>";
+    private static final ResponseContext HOME_PAGE = () -> "/home";
+    private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
+
+    private static final String REGISTER_USER_SUBJECT = "Registration completed";
     private static final String REGISTER_RESPONSE = "You have successfully registered!";
 
 
@@ -48,6 +52,8 @@ public class RegisterCommand implements Command {
 
         final HttpSession session = requestContext.getSession();
 
+        User user = null;
+
         try {
             if (!Validator.getInstance().emptyStringValidator(name, login, email, password)) {
                 System.out.println("!validateInput(name, email, password, login)");
@@ -55,7 +61,7 @@ public class RegisterCommand implements Command {
                 return ACCOUNT_PAGE;
             }
 
-            User user = register(name, login, email, password);
+            user = register(name, login, email, password);
 
             MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
 
@@ -68,7 +74,14 @@ public class RegisterCommand implements Command {
             e.printStackTrace();
             return ACCOUNT_PAGE;
         } catch (MessagingException e) {
-            session.setAttribute(ERROR_MESSAGE, "Could not reach email\n" + email);
+            session.setAttribute(ERROR_MESSAGE, "Could not reach email\n\n" + email);
+            try {
+                ServiceFactory.getInstance().create(EntityType.USER).delete(user);
+            } catch (EntityNotFoundException entityNotFoundException) {
+                entityNotFoundException.printStackTrace();
+            } catch (ValidatorException validatorException) {
+                validatorException.printStackTrace();
+            }
             e.printStackTrace();
             return ACCOUNT_PAGE;
         }

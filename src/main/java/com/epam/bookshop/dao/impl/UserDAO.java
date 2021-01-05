@@ -160,7 +160,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
                     }
                 }
                 if (IBANs.isEmpty()) {
-                    throw new RuntimeException("No IBANs found");
+//                    throw new RuntimeException("No IBANs found");
                 }
                 user.setIBANs(IBANs);
 

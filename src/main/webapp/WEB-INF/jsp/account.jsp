@@ -40,7 +40,7 @@
                     <form id="LoginForm">
                         <input type="text" name="login" placeholder="Login">
                         <input type="password" name="password" placeholder ="Password">
-                        <br><pre id="errorLogMessage" style="color: #ff523b; height: 10px"></pre><br>
+                        <pre id="errorLogMessage" style="color: #ff523b; height: 10px"></pre>
                         <c:if test="${not empty error_log_message}">
                             <br><pre style="color: #ff523b">${error_log_message}</pre><br>
                             <c:remove var="error_log_message" scope="session" />
@@ -97,7 +97,7 @@
 
         let error = "";
 
-        let malicious_regex = /^[-;='#)+&("]+$/;
+        let malicious_regex = /^[-<>*;='#)+&("]+$/;
         if (malicious_regex.test(passField)) {
             event.preventDefault();
             error = "Incorrect password";
@@ -146,7 +146,7 @@
         let error = "";
 
         let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
-        let malicious_regex = /^[-;='#)+&("]+$/;
+        let malicious_regex = /^[-<>*;='#)+&("]+$/;
         if (malicious_regex.test(passField)) {
             event.preventDefault();
             error = "Incorrect password";
