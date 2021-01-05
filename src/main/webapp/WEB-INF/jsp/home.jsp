@@ -9,12 +9,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bookstore</title>
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
     <link rel="stylesheet" type="text/css" href='<c:url value="/styles/home.css"/>'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
+<c:if test="false">
+<%--<div id="test1" onload="window.location.hash='back'; ">--%>
+<script>
+    $(document).ready(function(){
+        $('.overlay').css({'visibility': 'visible', 'opacity': '1'});
+        $('.popup .close').click(function(){
+            // $('.popup .close').css({'position': 'absolute', 'top': '20px', 'right': '30px', 'transition': 'all 200ms', 'font-size': '30px', 'font-weight': 'bold', 'text-decoration': 'none', 'color': '#333'});
+            $('.overlay').css({'visibility': 'hidden', 'opacity': '0'});
+        })
+    });
+</script>
+<%--    <a href="#popup1">Forgot password</a>--%>
+</c:if>
+<%--        popup                --%>
+<div id="popup1" class="overlay">
+    <div class="popup">
+        <h2>Finish registration</h2>
+        <a class="close" href="#">&times;</a>
+        <div class="content">
+            Would you like to <a href="/home?command=bank_account" style="color: #F37326">link</a> your bank card for further purchases?
+        </div>
+    </div>
+</div>
 
 <!---------- header --------------->
 
