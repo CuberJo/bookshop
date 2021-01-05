@@ -1,0 +1,8 @@
+.idea
+build/
+logs/
+database.properties
+mail.properties
+*.iml
+AppTest.java
+target/
