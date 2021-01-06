@@ -5,13 +5,10 @@ import com.epam.bookshop.criteria.impl.OrderCriteria;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
 import com.epam.bookshop.exception.UnknownEntityException;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
 public class FindOrderQueryCreator implements FindEntityQueryCreator {
-
-    FindOrderQueryCreator() {
-
-    }
 
     private static final String ORDER_ID_COLUMN = "Id";
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
@@ -24,6 +21,17 @@ public class FindOrderQueryCreator implements FindEntityQueryCreator {
             "FROM TEST_LIBRARY.ORDER " +
             "WHERE ";
 
+    private static final String INCOMPATIBLE_TYPE_OF_CRITERIA = "incompatible_type_of_criteria";
+    private String locale = "EN";
+
+    FindOrderQueryCreator() {
+
+    }
+
+    @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 
     @Override
     public String createQuery(Criteria<? extends Entity> criteria) {
@@ -31,7 +39,8 @@ public class FindOrderQueryCreator implements FindEntityQueryCreator {
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof OrderCriteria)) {
-            throw new UnknownEntityException("Incompatible type of criteria");
+            String incompatibleTypeOfCriteria = ErrorMessageManager.EN.getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA);
+            throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }
 
         if (criteria.getEntityId() != null) {
@@ -47,6 +56,8 @@ public class FindOrderQueryCreator implements FindEntityQueryCreator {
             condition.append(STATUS_ID_COLUMN + " = '" + ((OrderCriteria) criteria).getStatusId() + "'" + WHITESPACE + AND + WHITESPACE);
         }
 
-        return Validator.getInstance().validatedQuery(condition, sql_query);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        return validator.validatedQuery(condition, sql_query);
     }
 }

@@ -11,12 +11,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConnectionPool {
 
+    private String locale = "EN";
+
     private static ConnectionPool instance;
 
     private BlockingQueue<Connection> availableConnections;
     private BlockingQueue<Connection> notAvailableConnections;
 
     private static AtomicBoolean isCreated = new AtomicBoolean(false);
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 
     public static ConnectionPool getInstance() {
         if (!isCreated.get()) {

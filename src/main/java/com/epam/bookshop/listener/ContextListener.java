@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebListener;
 import java.sql.SQLException;
 
 @WebListener
-public class FirstListener implements ServletContextListener {
+public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         DatabaseConfigurator.getInstance().configure();

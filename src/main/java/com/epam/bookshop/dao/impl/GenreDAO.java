@@ -25,9 +25,15 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     private static final String ID_COLUMN = "Id";
     private static final String GENRE_COLUMN = "Genre";
 
+    private String locale = "EN";
 
     public GenreDAO(Connection connection) {
         super(connection);
+    }
+
+    @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     @Override
@@ -91,6 +97,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     @Override
     public Collection<Genre> findAll(Criteria criteria) {
         FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE);
+        queryCreator.setLocale(locale);
         String query = queryCreator.createQuery(criteria);
 
         List<Genre> genres = new ArrayList<>();
@@ -115,6 +122,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     @Override
     public Optional<Genre> find(Criteria<? extends Entity> criteria) {
         FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE);
+        queryCreator.setLocale(locale);
         String query = queryCreator.createQuery(criteria);
 
         Genre genre = null;

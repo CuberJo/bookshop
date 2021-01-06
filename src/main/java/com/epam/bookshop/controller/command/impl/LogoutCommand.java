@@ -15,6 +15,7 @@ public class LogoutCommand implements Command {
     public ResponseContext execute(RequestContext requestContext) {
         requestContext.getSession().removeAttribute(LOGIN);
         requestContext.getSession().removeAttribute(ROLE);
+
         return ACCOUNT_PAGE;
     }
 }

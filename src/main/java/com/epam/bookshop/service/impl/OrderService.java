@@ -10,6 +10,7 @@ import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
 import java.sql.Connection;
@@ -20,16 +21,30 @@ import java.util.Optional;
 
 public class OrderService implements EntityService<Order> {
 
+    private static final String ORDER_NOT_FOUND = "order_not_found";
+    private static final String WHITESPACE = " ";
+
+    private String locale = "EN";
+
     OrderService() {
 
     }
 
     @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    @Override
     public Order create(Order order) throws ValidatorException {
-        Validator.getInstance().validate(order);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(order);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        dao.setLocale(locale);
         dao.create(order);
 
         try {
@@ -44,7 +59,9 @@ public class OrderService implements EntityService<Order> {
     @Override
     public Collection findAll() {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        dao.setLocale(locale);
         List<Order> orders = dao.findAll();
 
         try {
@@ -58,7 +75,9 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public Collection findAll(Criteria criteria) throws ValidatorException {
-        Validator.getInstance().validate(criteria);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
@@ -77,8 +96,9 @@ public class OrderService implements EntityService<Order> {
     @Override
     public Optional<Order> findById(long id) {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
-
+        dao.setLocale(locale);
         Optional<Order> optionalOrder = dao.findById(id);
 //        if (optionalOrder.isEmpty()) {
 //            throw new EntityNotFoundException("No order with id = " + id + " found");
@@ -96,11 +116,14 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public Optional<Order> find(Criteria criteria) throws ValidatorException {
-        Validator.getInstance().validate(criteria);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
-
+        dao.setLocale(locale);
         Optional<Order> optionalOrder = dao.find(criteria);
 //        if (optionalOrder.isEmpty()) {
 //            throw new EntityNotFoundException("No order for user with id = " + ((OrderCriteria) criteria).getLibraryUserId() + " found");
@@ -118,11 +141,14 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public Optional<Order> update(Order order) throws ValidatorException {
-        Validator.getInstance().validate(order);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(order);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
-
+        dao.setLocale(locale);
         Optional<Order> optionalOrder = dao.update(order);
 //        if (optionalOrder.isEmpty()) {
 //            throw new EntityNotFoundException("No order with id = " + order.getEntityId() + " found");
@@ -141,11 +167,13 @@ public class OrderService implements EntityService<Order> {
     @Override
     public boolean delete(long id) throws EntityNotFoundException {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Order> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
-
+        dao.setLocale(locale);
         boolean isDeleted = dao.delete(id);
         if (!isDeleted) {
-            throw new EntityNotFoundException("No order with id = " + id + " found");
+            String errorMessage = ErrorMessageManager.EN.getMessage(ORDER_NOT_FOUND);
+            throw new EntityNotFoundException(errorMessage + WHITESPACE + id);
         }
 
         try {
@@ -159,14 +187,18 @@ public class OrderService implements EntityService<Order> {
 
     @Override
     public boolean delete(Order order) throws EntityNotFoundException, ValidatorException {
-        Validator.getInstance().validate(order);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(order);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
-
+        dao.setLocale(locale);
         boolean isDeleted = dao.delete(order.getEntityId());
         if (!isDeleted) {
-            throw new EntityNotFoundException("No order with id = " + order.getEntityId() + " found");
+            String errorMessage = ErrorMessageManager.EN.getMessage(ORDER_NOT_FOUND);
+            throw new EntityNotFoundException(errorMessage + WHITESPACE + order.getEntityId());
         }
 
         try {

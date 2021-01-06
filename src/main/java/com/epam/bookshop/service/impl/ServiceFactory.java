@@ -3,16 +3,25 @@ package com.epam.bookshop.service.impl;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.service.EntityService;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServiceFactory {
+
+    private static final String NO_SUCH_SERVICE_TYPE = "no_such_service_type";
 
     private static ServiceFactory instance;
     private static AtomicBoolean isCreated = new AtomicBoolean(false);
 
     private ServiceFactory() {
 
+    }
+
+    private String locale = "EN";
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     // двойная проверка isCreated, т.к. метод не пустит другой поток, пока
@@ -49,8 +58,12 @@ public class ServiceFactory {
             case GENRE:
                 serviceToReturn = new GenreService();
                 break;
+            case ROLE:
+                serviceToReturn = new RoleService();
+                break;
             default:
-                throw new UnknownEntityException("No such service type");
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_SERVICE_TYPE);
+                throw new UnknownEntityException(errorMessage);
         }
 
         return serviceToReturn;

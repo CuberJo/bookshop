@@ -21,6 +21,7 @@ public class FindBookQueryCreatorTest {
                 .build();
 
         FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
+        queryCreator.setLocale("EN");
         String query = queryCreator.createQuery(criteria);
         System.out.println(query);
     }

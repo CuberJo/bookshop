@@ -2,6 +2,7 @@ package com.epam.bookshop.dao.impl;
 
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.mindrot.jbcrypt.BCrypt;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
@@ -44,11 +45,22 @@ public class UserDAO extends AbstractDAO<Long, User> {
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
     private static final String IBAN_COLUMN = "IBAN";
 
+    private static final String ROLE_NOT_FOUND = "role_not_found";
+    private static final String IBANs_NOT_FOUND = "IBANs_not_found";
+    private static final String NO_USER_UPDATE_OCCURRED = "no_user_update_occurred";
+    private static final String WHITESPACE = " ";
 
     private static final Integer ZERO_ROWS_AFFECTED = 0;
 
+    private String locale = "EN";
+
     UserDAO(Connection connection) {
         super(connection);
+    }
+
+    @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     @Override
@@ -83,6 +95,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
             AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
 //            UserBankAccountDAO userBankAccountDAO = new UserBankAccountDAO(ConnectionPool.getInstance().getAvailableConnection());
 
+            String errorMessage = "";
             while (rs.next()) {
                 User user = new User();
                 user.setEntityId(rs.getLong(ID_COLUMN));
@@ -93,7 +106,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    throw new RuntimeException("Role with id " + rs.getLong(ROLE_ID_COLUMN));
+                    errorMessage = ErrorMessageManager.EN.getMessage(ROLE_NOT_FOUND);
+                    throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
 
@@ -108,7 +122,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
                     }
                 }
                 if (IBANs.isEmpty()) {
-                    //throw new RuntimeException("No IBANs found");
+                    errorMessage = ErrorMessageManager.EN.getMessage(IBANs_NOT_FOUND);
+                    throw new RuntimeException(errorMessage);
                 }
                 user.setIBANs(IBANs);
 
@@ -145,7 +160,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    throw new RuntimeException("Role with id " + rs.getLong(ROLE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.EN.getMessage(ROLE_NOT_FOUND);
+                    throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
 
@@ -184,6 +200,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
     @Override
     public Collection<User> findAll(Criteria criteria) {
         FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.USER);
+        queryCreator.setLocale(locale);
         String query = queryCreator.createQuery(criteria);
 
         List<User> users = new ArrayList<>();
@@ -193,6 +210,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
             AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
 //            UserBankAccountDAO userBankAccountDAO = new UserBankAccountDAO(ConnectionPool.getInstance().getAvailableConnection());
+
+            String errorMessage = "";
 
             while (rs.next()) {
                 User user = new User();
@@ -204,7 +223,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    throw new RuntimeException("Role with id " + rs.getLong(ROLE_ID_COLUMN));
+                    errorMessage = ErrorMessageManager.EN.getMessage(ROLE_NOT_FOUND);
+                    throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
 
@@ -219,7 +239,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
                     }
                 }
                 if (IBANs.isEmpty()) {
-                    throw new RuntimeException("No IBANs found");
+                    errorMessage = ErrorMessageManager.EN.getMessage(IBANs_NOT_FOUND);
+                    throw new RuntimeException(errorMessage);
                 }
                 user.setIBANs(IBANs);
 
@@ -236,6 +257,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
     @Override
     public Optional<User> find(Criteria<? extends Entity> criteria) {
         FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.USER);
+        queryCreator.setLocale(locale);
         String query = queryCreator.createQuery(criteria);
 
         User user = null;
@@ -257,7 +279,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    throw new RuntimeException("Role with id " + rs.getLong(ROLE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.EN.getMessage(ROLE_NOT_FOUND);
+                    throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
 
@@ -331,7 +354,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
             int result = ps.executeUpdate();
 
             if (result == ZERO_ROWS_AFFECTED) {
-                throw new RuntimeException("No user update occurred");
+                String errorMessage = ErrorMessageManager.EN.getMessage(NO_USER_UPDATE_OCCURRED);
+                throw new RuntimeException(errorMessage);
             }
 
         } catch (SQLException throwables) {

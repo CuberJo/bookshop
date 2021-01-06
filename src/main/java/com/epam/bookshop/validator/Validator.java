@@ -6,8 +6,10 @@ import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
+import com.epam.bookshop.strategy.validator.Validatable;
 import com.epam.bookshop.strategy.validator.impl.NamingValidator;
 import com.epam.bookshop.strategy.validator.impl.SizeValidator;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;
@@ -22,19 +24,17 @@ public class Validator {
     private static final String EMPTY_STRING_REGEX = "^[\\s]+$";
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_.+-]{1,40}@[a-zA-Z0-9-]{2,5}.[a-zA-Z0-9-.]{2,5}$";
 
+    private static final String EMAIL_INCORRECT = "email_incorrect";
 
-    private Validator() {
+    private NamingValidator namingValidator = new NamingValidator();
+    private SizeValidator sizeValidator = new SizeValidator();
 
-    }
+    private String locale = "EN";
 
-    private static Validator instance;
-
-    public static Validator getInstance() {
-        if (instance == null) {
-            instance = new Validator();
-        }
-
-        return instance;
+    public void setLocale(String locale) {
+        namingValidator.setLocale(locale);
+        sizeValidator.setLocale(locale);
+        this.locale = locale;
     }
 
     public void validate(Entity entity) throws ValidatorException {
@@ -42,10 +42,10 @@ public class Validator {
         for (Field field : entity.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             if (field.isAnnotationPresent(Size.class)) {
-                SizeValidator.getInstance().validateEntity(field, field.getAnnotation(Size.class), entity);
+                sizeValidator.validateEntity(field, field.getAnnotation(Size.class), entity);
             }
             if (field.isAnnotationPresent(Naming.class)) {
-               NamingValidator.getInstance().validateEntity(field, field.getAnnotation(Naming.class), entity);
+                namingValidator.validateEntity(field, field.getAnnotation(Naming.class), entity);
             }
         }
     }
@@ -55,10 +55,10 @@ public class Validator {
         for (Field field : criteria.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             if (field.isAnnotationPresent(Size.class)) {
-               SizeValidator.getInstance().validateCriteria(field, field.getAnnotation(Size.class), criteria);
+               sizeValidator.validateCriteria(field, field.getAnnotation(Size.class), criteria);
             }
             if (field.isAnnotationPresent(Naming.class)) {
-                NamingValidator.getInstance().validateCriteria(field, field.getAnnotation(Naming.class), criteria);
+                namingValidator.validateCriteria(field, field.getAnnotation(Naming.class), criteria);
             }
         }
     }
@@ -68,7 +68,9 @@ public class Validator {
         Matcher m = p.matcher(email);
 
         if (!m.matches()) {
-            throw new ValidatorException("Email \"" + email + "\" incorrect");
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_INCORRECT);
+            throw new ValidatorException(errorMessage + WHITESPACE + email);
+//            throw new ValidatorException("Email \"" + email + "\" incorrect");
         }
     }
 

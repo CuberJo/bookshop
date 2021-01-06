@@ -10,5 +10,5 @@ import java.lang.reflect.Field;
 public interface Validatable<T extends Annotation>  {
     void validateEntity(Field field, T annotation, Entity entity) throws ValidatorException;
     void validateCriteria(Field field, T annotation, Criteria criteria) throws ValidatorException;
-
+    void setLocale(String locale);
 }

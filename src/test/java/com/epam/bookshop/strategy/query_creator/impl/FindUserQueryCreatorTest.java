@@ -17,6 +17,7 @@ public class FindUserQueryCreatorTest {
                 .email("john@gmail.com")
                 .build();
         FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
+        queryCreator.setLocale("EN");
         String query = queryCreator.createQuery(criteria);
         System.out.println(query);
     }

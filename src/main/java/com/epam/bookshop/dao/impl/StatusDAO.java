@@ -22,9 +22,15 @@ public class StatusDAO extends AbstractDAO<Long, Status> {
     private static final String STATUS_COLUMN = "Status";
     private static final String ID_COLUMN = "Id";
 
+    private String locale = "EN";
 
     public StatusDAO(Connection connection) {
         super(connection);
+    }
+
+    @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     @Override

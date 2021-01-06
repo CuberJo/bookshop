@@ -5,4 +5,5 @@ import com.epam.bookshop.domain.Entity;
 
 public interface FindEntityQueryCreator {
     String createQuery(Criteria<? extends Entity> criteria);
+    void setLocale(String locale);
 }

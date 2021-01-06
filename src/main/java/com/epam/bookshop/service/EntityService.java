@@ -18,4 +18,6 @@ public interface EntityService<T extends Entity> {
     Optional<T> update(T entity) throws EntityNotFoundException, ValidatorException;
     boolean delete(long id) throws EntityNotFoundException;
     boolean delete(T entity) throws EntityNotFoundException, ValidatorException;
+
+    void setLocale(String locale);
 }

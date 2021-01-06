@@ -9,6 +9,7 @@ import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
 import java.sql.Connection;
@@ -19,16 +20,30 @@ import java.util.Optional;
 
 public class BookService implements EntityService<Book> {
 
+    private static final String BOOK_NOT_FOUND = "book_not_found";
+    private static final String WHITESPACE = " ";
+
+    private String locale = "EN";
+
     BookService() {
 
     }
 
     @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    @Override
     public Book create(Book book) throws ValidatorException {
-        Validator.getInstance().validate(book);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(book);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        dao.setLocale(locale);
         dao.create(book);
 
         try {
@@ -43,7 +58,9 @@ public class BookService implements EntityService<Book> {
     @Override
     public Collection findAll() {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        dao.setLocale(locale);
         List<Book> books = dao.findAll();
 
         try {
@@ -57,11 +74,14 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Collection findAll(Criteria criteria) throws ValidatorException {
-        Validator.getInstance().validate(criteria);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-
+        dao.setLocale(locale);
         Collection<Book> books = dao.findAll(criteria);
 
         try {
@@ -76,8 +96,9 @@ public class BookService implements EntityService<Book> {
     @Override
     public Optional<Book> findById(long id) {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-
+        dao.setLocale(locale);
         Optional<Book> optionalBook = dao.findById(id);
 //        if (optionalBook.isEmpty()) {
 //            throw new EntityNotFoundException("No book with id = " + id + " found");
@@ -95,11 +116,14 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Optional<Book> find(Criteria criteria) throws ValidatorException {
-        Validator.getInstance().validate(criteria);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-
+        dao.setLocale(locale);
         Optional<Book> optionalBook = dao.find(criteria);
 //        if (optionalBook.isEmpty()) {
 //            throw new EntityNotFoundException("No book with ISBN = " + ((BookCriteria)criteria).getISBN() + " found");
@@ -117,11 +141,14 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Optional<Book> update(Book book) throws ValidatorException {
-        Validator.getInstance().validate(book);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(book);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-
+        dao.setLocale(locale);
         Optional<Book> optionalBook = dao.update(book);
 //        if (optionalBook.isEmpty()) {
 //            throw new EntityNotFoundException("No book with id = " + book.getEntityId() + " found");
@@ -140,11 +167,13 @@ public class BookService implements EntityService<Book> {
     @Override
     public boolean delete(long id) throws EntityNotFoundException {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-
+        dao.setLocale(locale);
         boolean isDeleted = dao.delete(id);
         if (!isDeleted) {
-            throw new EntityNotFoundException("No book with id = " + id + " found");
+            String errorMessage = ErrorMessageManager.EN.getMessage(BOOK_NOT_FOUND);
+            throw new EntityNotFoundException(errorMessage + WHITESPACE + id);
         }
 
         try {
@@ -158,14 +187,18 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public boolean delete(Book book) throws EntityNotFoundException, ValidatorException {
-        Validator.getInstance().validate(book);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(book);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-
+        dao.setLocale(locale);
         boolean isDeleted = dao.delete(book.getEntityId());
         if (!isDeleted) {
-            throw new EntityNotFoundException("No book with id = " + book.getEntityId() + " found");
+            String errorMessage = ErrorMessageManager.EN.getMessage(BOOK_NOT_FOUND);
+            throw new EntityNotFoundException(errorMessage + WHITESPACE + book.getEntityId());
         }
 
         try {

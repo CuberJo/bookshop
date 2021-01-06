@@ -27,6 +27,8 @@ public abstract class AbstractDAO <K, T extends Entity> {
     public abstract boolean delete(K key);
     public abstract Optional<T> update(T entity);
 
+    public abstract void setLocale(String locale);
+
     protected PreparedStatement getPrepareStatement(String sql) {
         PreparedStatement ps = null;
         try {

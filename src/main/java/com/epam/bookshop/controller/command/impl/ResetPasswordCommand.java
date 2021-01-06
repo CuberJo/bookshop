@@ -12,6 +12,8 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.MailSender;
 import com.epam.bookshop.util.PasswordCreator;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.MessageManager;
 import com.epam.bookshop.validator.Validator;
 
 import javax.mail.MessagingException;
@@ -30,6 +32,11 @@ public class ResetPasswordCommand implements Command {
     private static final String PASSWORD_RESET_SUBJECT = "Password reset";
     private static final String EMAIL = "email";
     private static final String ERROR_MESSAGE = "error_message";
+    private static final String LOCALE_ATTR = "locale";
+    private static final String FIELDS_CANNOT_BE_EMPTY = "fields_cannot_be_empty";
+    private static final String EMAIL_NOT_FOUND_IN_DATABASE = "email_not_found_in_database";
+    private static final String EMAIL_RESPONSE = "email_response";
+    private static final String INVALID_INPUT_DATA = "invalid_input_data";
 
 
     @Override
@@ -40,28 +47,31 @@ public class ResetPasswordCommand implements Command {
         final String email = requestContext.getParameter(EMAIL);
 
         final HttpSession session = requestContext.getSession();
+        String locale = (String) requestContext.getSession().getAttribute(LOCALE_ATTR);
+        String errorMessage = "";
+        Validator validator = new Validator();
 
         try {
-            if (!Validator.getInstance().emptyStringValidator(email)) {
+            if (!validator.emptyStringValidator(email)) {
                 System.out.println("!validateInput(name, email, password, login)");
-                session.setAttribute(ERROR_MESSAGE, "Fields cannot be empty");
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(FIELDS_CANNOT_BE_EMPTY);
+                session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return FORGOT_PASSWORD_PAGE;
             }
 
-            Validator.getInstance().validateEmail(email);
+            validator.validateEmail(email);
 
-            EntityService service = ServiceFactory.getInstance().create(EntityType.USER);
+            EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
 
             Optional<User> optionalUser = service.find(UserCriteria.builder().email(email).build());
             if (optionalUser.isEmpty()) {
-                session.setAttribute(ERROR_MESSAGE, "Email not found");
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_NOT_FOUND_IN_DATABASE);
+                session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return FORGOT_PASSWORD_PAGE;
             }
 
             String newPassword = PasswordCreator.getInstance().generateRandomPassword(len, randNumOrigin, randNumBound);
-            String response = String.format("<h5>Hello!<h5>" +
-                    "You are receiving this email because we received a password reset request for your account." +
-                    "Your new password is <b>%s<b>", newPassword);
+            String response = String.format(MessageManager.valueOf(locale).getMessage(EMAIL_RESPONSE), newPassword);
 
             optionalUser.get().setPassword(newPassword);
             service.update(optionalUser.get());
@@ -69,11 +79,13 @@ public class ResetPasswordCommand implements Command {
             MailSender.getInstance().send(email, PASSWORD_RESET_SUBJECT, response);
 
         } catch (ValidatorException e) {
-            session.setAttribute(ERROR_MESSAGE, "Invalid input data");
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);
+            session.setAttribute(ERROR_MESSAGE, errorMessage);
             e.printStackTrace();
             return FORGOT_PASSWORD_PAGE;
         } catch (MessagingException e) {
-            session.setAttribute(ERROR_MESSAGE, "Email not found in database");
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_NOT_FOUND_IN_DATABASE);
+            session.setAttribute(ERROR_MESSAGE, errorMessage);
             e.printStackTrace();
             return FORGOT_PASSWORD_PAGE;
         } catch (EntityNotFoundException e) {

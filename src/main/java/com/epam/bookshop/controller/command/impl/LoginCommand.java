@@ -1,5 +1,8 @@
 package com.epam.bookshop.controller.command.impl;
 
+import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.RequestContext;
+import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -7,10 +10,8 @@ import com.epam.bookshop.exception.InvalidStateException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.mindrot.jbcrypt.BCrypt;
-import com.epam.bookshop.controller.command.Command;
-import com.epam.bookshop.controller.command.RequestContext;
-import com.epam.bookshop.controller.command.ResponseContext;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
@@ -29,6 +30,11 @@ public class LoginCommand implements Command {
     private static final String ERROR_MESSAGE = "error_log_message";
     private static final String EMPTY_STRING = "";
     private static final String EMPTY_STRING_REGEX = "^[\\s]+$";
+    private static final String FIELDS_CANNOT_BE_EMPTY = "fields_cannot_be_empty";
+    private static final String INCORRECT_LOGIN_OR_PASSWORD = "incorrect_login_or_password";
+    private static final String INVALID_INPUT_DATA = "invalid_input_data";
+    private static final String LOCALE_ATTR = "locale";
+
 
 
     /**
@@ -44,18 +50,23 @@ public class LoginCommand implements Command {
         System.out.println("PASSWORD=" + requestContext.getParameter(PASSWORD));
 
         final HttpSession session = requestContext.getSession();
+        String locale = (String) requestContext.getSession().getAttribute(LOCALE_ATTR);
+        String errorMessage = "";
+
 
         try {
             if (!validateInput(login, password)) {
                 System.out.println("!validateInput(login, password)");
-                session.setAttribute(ERROR_MESSAGE, "Fields cannot be empty");
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(FIELDS_CANNOT_BE_EMPTY);
+                session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
             }
 
-            Optional<User> optionalUser = authenticate(login, password);
+            Optional<User> optionalUser = authenticate(login, password, locale);
             if (optionalUser.isEmpty()) {
                 System.out.println("optionalUser.isEmpty()");
-                session.setAttribute(ERROR_MESSAGE, "Incorrect login or password");
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INCORRECT_LOGIN_OR_PASSWORD);
+                session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
             }
 
@@ -65,7 +76,8 @@ public class LoginCommand implements Command {
             session.setAttribute(ROLE, optionalUser.get().getRole());
 
         } catch (ValidatorException e) {
-            session.setAttribute(ERROR_MESSAGE, "Invalid input data");
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);
+            session.setAttribute(ERROR_MESSAGE, errorMessage);
             e.printStackTrace();
             return ACCOUNT_PAGE;
         }
@@ -100,9 +112,10 @@ public class LoginCommand implements Command {
      * @return user if he/she was found in database
      * @throws InvalidStateException
      */
-    private Optional<User> authenticate(String login, String password) throws ValidatorException {
+    private Optional<User> authenticate(String login, String password, String locale) throws ValidatorException {
 
         EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
+        service.setLocale(locale);
 
         UserCriteria criteria = UserCriteria.builder()
                 .login(login)

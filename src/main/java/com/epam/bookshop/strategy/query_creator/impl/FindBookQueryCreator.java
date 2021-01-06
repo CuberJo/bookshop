@@ -5,13 +5,10 @@ import com.epam.bookshop.criteria.impl.BookCriteria;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
 public class FindBookQueryCreator implements FindEntityQueryCreator {
-
-    FindBookQueryCreator() {
-
-    }
 
     private static final String BOOK_ID_COLUMN = "Id";
     private static final String ISBN_COLUMN = "ISBN";
@@ -27,6 +24,18 @@ public class FindBookQueryCreator implements FindEntityQueryCreator {
             "FROM TEST_LIBRARY.BOOK " +
             "WHERE ";
 
+    private static final String INCOMPATIBLE_TYPE_OF_CRITERIA = "incompatible_type_of_criteria";
+    private String locale = "EN";
+
+    FindBookQueryCreator() {
+
+    }
+
+    @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     @Override
     public String createQuery(Criteria<? extends Entity> criteria) {
 
@@ -34,7 +43,8 @@ public class FindBookQueryCreator implements FindEntityQueryCreator {
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof BookCriteria)) {
-            throw new UnknownEntityException("Incompatible type of criteria");
+            String incompatibleTypeOfCriteria = ErrorMessageManager.EN.getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA);
+            throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }
 
         if (criteria.getEntityId() != null) {
@@ -59,6 +69,8 @@ public class FindBookQueryCreator implements FindEntityQueryCreator {
             condition.append(GENRE_ID_COLUMN + " = '" + ((BookCriteria) criteria).getGenreId() + "'" + WHITESPACE + AND + WHITESPACE);
         }
 
-        return Validator.getInstance().validatedQuery(condition, sql_query);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        return validator.validatedQuery(condition, sql_query);
     }
 }

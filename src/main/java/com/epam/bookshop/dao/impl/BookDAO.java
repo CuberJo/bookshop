@@ -9,6 +9,7 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
 import com.epam.bookshop.strategy.query_creator.impl.FindEntityQueryCreatorFactory;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,10 +39,21 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String PUBLISHER_COLUMN = "Publisher";
     private static final String PREVIEW_COLUMN = "Preview";
 
+    private static final String NO_SUCH_GENRE_FOUND = "no_such_genre_found";
+    private static final String WHITESPACE = " ";
+    private static final String NO_BOOK_UPDATE_OCCURRED = "no_book_update_occurred";
+
     private static final Integer ZERO_ROWS_AFFECTED = 0;
+
+    private String locale = "EN";
 
     BookDAO(Connection connection) {
         super(connection);
+    }
+
+    @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     @Override
@@ -58,7 +70,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             List<Genre> genres = genreDAO.findAll();
             Optional<Genre> optionalGenre = genres.stream().filter(genre -> genre.getGenre().equals(book.getGenre().getGenre())).findAny();
             if (optionalGenre.isEmpty()) {
-                throw new RuntimeException("Genre " + book.getGenre().getGenre() + " not found");
+                String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+                throw new RuntimeException(errorMessage + WHITESPACE + book.getGenre().getGenre());
             }
             ps.setLong(6, optionalGenre.get().getEntityId());
 
@@ -90,7 +103,9 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+//                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
+                    throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 
@@ -129,7 +144,9 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+//                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
+                    throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 
@@ -156,6 +173,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     @Override
     public Collection<Book> findAll(Criteria criteria) {
         FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
+        queryCreator.setLocale(locale);
         String query = queryCreator.createQuery(criteria);
 
         List<Book> books = new ArrayList<>();
@@ -174,7 +192,9 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+//                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
+                    throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 
@@ -194,6 +214,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     @Override
     public Optional<Book> find(Criteria<? extends Entity> criteria) {
         FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
+        queryCreator.setLocale(locale);
         String query = queryCreator.createQuery(criteria);
 
         Book book = null;
@@ -213,7 +234,9 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+//                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
+                    throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 
@@ -273,7 +296,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             int result = ps.executeUpdate();
 
             if (result == ZERO_ROWS_AFFECTED) {
-                throw new RuntimeException("No book update occurred");
+                String errorMessage = ErrorMessageManager.EN.getMessage(NO_BOOK_UPDATE_OCCURRED);
+                throw new RuntimeException(errorMessage);
             }
 
         } catch (SQLException throwables) {

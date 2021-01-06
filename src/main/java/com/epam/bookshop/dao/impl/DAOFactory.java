@@ -3,15 +3,24 @@ package com.epam.bookshop.dao.impl;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.UnknownEntityException;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 import java.sql.Connection;
 
 public class DAOFactory {
 
+    private static final String NO_SUCH_DAO_TYPE = "no_such_DAO_type";
+
     public static final DAOFactory INSTANCE = new DAOFactory();
+
+    private String locale = "EN";
 
     private DAOFactory() {
 
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     public AbstractDAO create(EntityType type, Connection connection) {
@@ -40,7 +49,8 @@ public class DAOFactory {
 //            case USER_BANK_ACCOUNT:
 //                daoToReturn = new UserBankAccountDAO(co)
             default:
-                throw new UnknownEntityException("No such DAO type");
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_DAO_TYPE);
+                throw new UnknownEntityException(errorMessage);
         }
 
         return daoToReturn;

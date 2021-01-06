@@ -10,6 +10,7 @@ import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
 import java.sql.Connection;
@@ -21,13 +22,25 @@ import java.util.Optional;
 
 public class UserService implements EntityService<User> {
 
+    private static final String USER_NOT_FOUND = "user_not_found";
+    private static final String WHITESPACE = " ";
+
+    private String locale = "EN";
+
     UserService() {
 
     }
 
     @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    @Override
     public User create(User user) throws ValidatorException {
-        Validator.getInstance().validate(user);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(user);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
@@ -63,7 +76,9 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Collection<User> findAll(Criteria criteria) throws ValidatorException {
-        Validator.getInstance().validate(criteria);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
@@ -101,7 +116,9 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Optional<User> find(Criteria criteria) throws ValidatorException {
-        Validator.getInstance().validate(criteria);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
@@ -123,7 +140,9 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Optional<User> update(User user) throws ValidatorException {
-        Validator.getInstance().validate(user);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(user);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
@@ -150,7 +169,8 @@ public class UserService implements EntityService<User> {
 
         boolean isDeleted = dao.delete(id);
         if (!isDeleted) {
-            throw new EntityNotFoundException("No user with id = " + id + " found");
+            String userNotFound = ErrorMessageManager.EN.getMessage(USER_NOT_FOUND);
+            throw new EntityNotFoundException(userNotFound + WHITESPACE + id);
         }
 
         try {
@@ -164,14 +184,17 @@ public class UserService implements EntityService<User> {
 
     @Override
     public boolean delete(User user) throws EntityNotFoundException, ValidatorException {
-        Validator.getInstance().validate(user);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(user);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
 
         boolean isDeleted = dao.delete(user.getEntityId());
         if (!isDeleted) {
-            throw new EntityNotFoundException("No user with id = " + user.getEntityId() + " found");
+            String userNotFound = ErrorMessageManager.EN.getMessage(USER_NOT_FOUND);
+            throw new EntityNotFoundException(userNotFound + WHITESPACE + user.getEntityId());
         }
 
         try {

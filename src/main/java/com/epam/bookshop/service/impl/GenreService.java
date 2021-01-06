@@ -23,6 +23,13 @@ public class GenreService implements EntityService<Genre> {
 
     }
 
+    private String locale = "EN";
+
+    @Override
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     @Override
     public Genre create(Genre entity) throws ValidatorException {
         return null;
@@ -31,7 +38,9 @@ public class GenreService implements EntityService<Genre> {
     @Override
     public Collection<Genre> findAll() {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
+        dao.setLocale(locale);
         List<Genre> genres = dao.findAll();
 
         try {
@@ -45,11 +54,14 @@ public class GenreService implements EntityService<Genre> {
 
     @Override
     public Collection<Genre> findAll(Criteria criteria) throws ValidatorException {
-        Validator.getInstance().validate(criteria);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
-
+        dao.setLocale(locale);
         Collection<Genre> genres = dao.findAll(criteria);
 
         try {
@@ -68,11 +80,14 @@ public class GenreService implements EntityService<Genre> {
 
     @Override
     public Optional<Genre> find(Criteria criteria) throws ValidatorException {
-        Validator.getInstance().validate(criteria);
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
-
+        dao.setLocale(locale);
         Optional<Genre> optionalGenre = dao.find(criteria);
 //        if (optionalGenre.isEmpty()) {
 //            throw new EntityNotFoundException("No genre with genreName = " + ((GenreCriteria)criteria).getGenre() + " found");

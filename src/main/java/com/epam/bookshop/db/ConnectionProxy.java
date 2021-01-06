@@ -1,5 +1,7 @@
 package com.epam.bookshop.db;
 
+import com.epam.bookshop.util.manager.ErrorMessageManager;
+
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
@@ -8,10 +10,18 @@ import java.util.concurrent.Executor;
 public class ConnectionProxy implements Connection {
 //    private static final Logger logger = LoggerFactory.getLogger(ConnectionProxy.class);
 
+    private static final String CONNECTION_HAS_NOT_BEEN_INITIALIZED = "connection_initialization_error";
+
+    private String locale = "EN";
+
     private final Connection connection;
 
     ConnectionProxy(Connection connection) {
         this.connection = connection;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     @Override
@@ -66,7 +76,8 @@ public class ConnectionProxy implements Connection {
             System.out.println("Connection " + this + " is returned into pool");
         } else {
 //            logger.error("Connection has not been initialize");
-            throw new RuntimeException("Connection has not been initialized");
+            String errorMessage = ErrorMessageManager.EN.getMessage(CONNECTION_HAS_NOT_BEEN_INITIALIZED);
+            throw new RuntimeException(errorMessage);
         }
     }
 
