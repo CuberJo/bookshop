@@ -42,6 +42,7 @@ public class RegisterCommand implements Command {
     private static final String INVALID_INPUT_DATA = "invalid_input_data";
     private static final String COULD_NOT_REACH_EMAIL_ADDRESS = "could_not_reach_email_address";
     private static final String LOCALE_ATTR = "locale";
+    private static final String NEED_TO_LINK_BANK_ACCOUNT = "need_to_link_bank_account";
     private static final String NEW_LINE = "\n";
 
 
@@ -78,6 +79,7 @@ public class RegisterCommand implements Command {
             System.out.println("*****************NOTHING*****************************");
             session.setAttribute(LOGIN, login);
             session.setAttribute(ROLE, user.getRole());
+            session.setAttribute(NEED_TO_LINK_BANK_ACCOUNT, true);
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);

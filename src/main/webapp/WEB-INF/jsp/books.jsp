@@ -1,5 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
 
 <!DOCTYPE html>
 <html>
@@ -33,56 +44,16 @@
 
     <div class="row row-2">
         <h2>
-            All books
+            <fmt:message key="label.all_books" bundle="${lang}" />
         </h2>
         <select>
-            <option>Default Shorting</option>
-            <option>Short by price</option>
-            <option>Short by popularity</option>
-            <option>Short by rating</option>
-            <option>Short by sale</option>
+            <option><fmt:message key="label.default_shorting" bundle="${lang}"/></option>
+            <option><fmt:message key="label.short_by_price" bundle="${lang}"/></option>
+            <option><fmt:message key="label.short_by_popularity" bundle="${lang}"/></option>
+            <option><fmt:message key="label.short_by_rating" bundle="${lang}"/></option>
+            <option><fmt:message key="label.short_by_sale" bundle="${lang}"/></option>
         </select>
     </div>
-
-    <style>
-        .mrow .row .col-4.hide{
-            display: none;
-        }
-        .mrow .row .col-4.show{
-            display: block;
-            animation: show .5s ease;
-        }
-
-        /********************************/
-        .mrow .pagination{
-            width: 100%;
-            /*float: left;*/
-            padding:15px;
-            text-align: center;
-        }
-        /********************************/
-        .mrow .pagination div{
-            display: inline-block;
-            margin:0 10px;
-        }
-        .mrow .pagination .page{
-            color:gray;
-        }
-        .mrow .pagination .prev,.mrow .pagination .next{
-            color:#000;
-            border:1px solid #000;
-            font-size:15px;
-            padding:7px 15px;
-            cursor: pointer;
-        }
-
-        .mrow .pagination .prev.disabled,
-        .mrow .pagination .next.disabled{
-            border-color: gray;
-            color:gray;
-            pointer-events: none;
-        }
-    </style>
 
     <div class="mrow">
         <div class="row">
@@ -95,9 +66,9 @@
             </c:forEach>
         </div>
         <div class="pagination">
-            <div class="prev">Prev</div>
-            <div class="page">Page <span class="page-num"></span></div>
-            <div class="next">Next</div>
+            <div class="prev"><fmt:message key="label.prev" bundle="${lang}" /></div>
+            <div class="page"><fmt:message key="label.page" bundle="${lang}"/> <span class="page-num"></span></div>
+            <div class="next"><fmt:message key="label.next" bundle="${lang}" /></div>
         </div>
     </div>
 

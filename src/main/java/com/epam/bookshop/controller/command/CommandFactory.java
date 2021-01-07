@@ -18,7 +18,7 @@ public class CommandFactory {
     private static final String RESET_PASSWORD = "reset_password";
     private static final String CONTACT_US = "contact_us";
     private static final String CHANGE_LOCALE = "change_locale";
-
+    private static final String BANK_ACCOUNT = "bank_account";
 
 
     public static Command command(String command) {

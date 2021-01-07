@@ -1,11 +1,17 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
 
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
 <fmt:setBundle basename="jsp_text" var="lang" />
-<c:out value="${locale}" />
-<%--<fmt:setLocale value="${locale}" />--%>
-<fmt:setLocale value="en" />
+<%--<fmt:setLocale value="en" scope="session" />--%>
 
 <div class="container">
     <div class="navbar">
@@ -17,7 +23,7 @@
                 <li>
                     <form action="">
                         <input type="search" style="outline: none">
-                        <%--                        <i class="fa fa-search"></i>--%>
+<%--                        <i class="fa fa-search"></i>--%>
                     </form>
                 </li>
                 <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>
@@ -32,7 +38,7 @@
                         <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
                     </c:when>
                 </c:choose>
-                <li><a href="/home?command=change_locale&locale=RU">RU</a> | <a href="/home?command=change_locale&locale=EN">EN</a></li>
+                <li style="font-weight: bold"><a href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a href="/home?command=change_locale&locale=RN&from=${param.command}">EN</a></li>
                 </ul>
         </nav>
         <c:if test="${not empty sessionScope.role}">

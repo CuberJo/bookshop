@@ -2,9 +2,18 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
 
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
+
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,9 +27,17 @@
 
 <body>
 <script>
-    <c:out value="ji"/>
+    // var Title = $('html').html("&nbsp;").text();
+    $('body').each(function(){
+        $(this).html($(this).html().replace(/&nbsp;/gi,''));
+    });
 </script>
-<c:if test="false">
+<%--<c:set var="v" scope="application" />--%>
+<%--<c:out value="${v}"/>--%>
+
+<!---------- link bank account --------------->
+
+<c:if test="${need_to_link_bank_account}">
 <%--<div id="test1" onload="window.location.hash='back'; ">--%>
 <script>
     $(document).ready(function(){
@@ -33,13 +50,17 @@
 </script>
 <%--    <a href="#popup1">Forgot password</a>--%>
 </c:if>
-<%--        popup                --%>
+
+<!---------- popup --------------->
+
 <div id="popup1" class="overlay">
     <div class="popup">
-        <h2>Finish registration</h2>
+        <h2><fmt:message key="label.finish_registration" bundle="${lang}"/></h2>
         <a class="close" href="#">&times;</a>
         <div class="content">
-            Would you like to <a href="/home?command=bank_account" style="color: #F37326">link</a> your bank card for further purchases?
+            <fmt:message key="label.link_card" bundle="${lang}"/>
+            <br/>
+            <a href="/home?command=bank_account" style="color: #F37326"><fmt:message key="label.link" bundle="${lang}"/></a>
         </div>
     </div>
 </div>
@@ -54,18 +75,19 @@
             </div>
             <nav>
                 <ul id="Menuitems">
-                    <li><a href="/home">Home</a></li>
+                    <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>
                     <li><a href="/home?command=books">Store</a></li>
-                    <li><a href="/home?command=contact_us">Contact us</a></li>
-                    <li><a href="/home?command=search">Search</a></li>
+                    <li><a href="/home?command=contact_us"><fmt:message key="label.contact_us" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=search"><fmt:message key="label.search_book" bundle="${lang}"/></a></li>
                     <c:choose>
                         <c:when test="${not empty sessionScope.role}">
-                            <li><a href="/home?command=logout">Log out</a></li>
+                            <li><a href="/home?command=logout"><fmt:message key="label.log_out" bundle="${lang}"/></a></li>
                         </c:when>
                         <c:when test="${empty sessionScope.role}">
-                            <li><a href="/home?command=account">Log in</a></li>
+                            <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
                         </c:when>
                     </c:choose>
+                    <li style="font-weight: bold"><a href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a href="/home?command=change_locale&locale=RN&from=${param.command}">EN</a></li>
                 </ul>
             </nav>
             <c:if test="${not empty sessionScope.role}">
@@ -75,9 +97,9 @@
         </div>
         <div class="row">
             <div class="col-2">
-                <h1>Your cozy bookstore</h1>
-                <p>Fancy read something? Do not know what to read? Here you will find an interesting book up to you!</p>
-                <a href="/home?command=books" class="btn">Explore now &#8594</a>
+                <h1><fmt:message key="label.your_cozy_book_store" bundle="${lang}"/></h1>
+                <p><fmt:message key="label.fancy_read_smth" bundle="${lang}"/></p>
+                <a href="/home?command=books" class="btn"><fmt:message key="label.explore_now" bundle="${lang}"/> &#8594</a>
             </div>
             <div class="col-2">
                 <img src="/images/bookshelf2.png">
@@ -93,51 +115,51 @@
         <div class="row">
             <div class="col-4"><a href="/home?command=books&genre=ROMANCE">
                 <img src="images/genres/romance.png">
-                <h3>ROMANCE</h3>
+                <h3><fmt:message key="label.ROMANCE" bundle="${lang}"/></h3>
             </a></div>
             <div class="col-4"><a href="/home?command=books&genre=ACTION%20%26%20ADVENTURE">
                 <img src="images/genres/action_and_adventure.png">
-                <h3>ACTION & ADVENTURE</h3>
+                <h3><fmt:message key="label.ACTION_AND_ADVENTURE" bundle="${lang}"/></h3>
             </a></div>
             <div class="col-4"><a href="/home?command=books&genre=MYSTERY%20%26%20THRILLER">
                 <img src="images/genres/mystery_and_thriller.png">
-                <h3>MYSTERY & THRILLER</h3>
+                <h3><fmt:message key="label.MYSTERY_AND_THRILLER" bundle="${lang}"/></h3>
             </a></div>
             <div class="col-4"><a href="/home?command=books&genre=BIOGRAPHIES%20%26%20HISTORY">
                 <img src="images/genres/biographies_and_history.png">
-                <h3>BIOGRAPHIES & HISTORY</h3>
+                <h3><fmt:message key="label.BIOGRAPHIES_AND_HISTORY" bundle="${lang}"/></h3>
             </a></div>
         </div>
         <div class="row">
             <div class="col-4"><a href="/home?command=books&genre=CHILDREN">
                 <img src="images/genres/children.png">
-                <h3>CHILDREN</h3>
+                <h3><fmt:message key="label.CHILDREN" bundle="${lang}"/></h3>
             </a></div>
             <div class="col-4"><a href="/home?command=books&genre=FANTASY">
                 <img src="images/genres/fantasy.png">
-                <h3>FANTASY</h3>
+                <h3><fmt:message key="label.FANTASY" bundle="${lang}"/></h3>
             </a></div>
             <div class="col-4"><a href="/home?command=books&genre=HISTORICAL%20FICTION">
                 <img src="images/genres/historical_fiction.png">
-                <h3>HISTORICAL FICTION</h3>
+                <h3><fmt:message key="label.HISTORICAL_FICTION" bundle="${lang}"/></h3>
             </a></div>
             <div class="col-4"><a href="/home?command=books&genre=HORROR">
                 <img src="images/genres/horror.png">
-                <h3>HORROR</h3>
+                <h3><fmt:message key="label.HORROR" bundle="${lang}"/></h3>
             </a></div>
         </div>
         <div class="row">
             <div class="col-3"><a href="/home?command=books&genre=LITERARY%20FICTION">
                 <img src="images/genres/literary_fiction.png">
-                <h3>LITERARY FICTION</h3>
+                <h3><fmt:message key="label.LITERARY_FICTION" bundle="${lang}"/></h3>
             </a></div>
             <div class="col-3"><a href="/home?command=books&genre=NON%2DFICTION">
                 <img src="images/genres/non_fiction.png">
-                <h3>NON-FICTION</h3>
+                <h3><fmt:message key="label.NON-FICTION" bundle="${lang}"/></h3>
             </a></div>
             <div class="col-3"><a href="/home?command=books&genre=SCIENCE%20FICTION">
                 <img src="images/genres/science_fiction.png">
-                <h3>SCIENCE FICTION</h3>
+                <h3><fmt:message key="label.SCIENCE-FICTION" bundle="${lang}"/></h3>
             </a></div>
         </div>
     </div>
@@ -146,7 +168,7 @@
 <!---------- bestsellers --------------->
 
 <div class="small-container s">
-    <h2 class="title">Bestsellers</h2>
+    <h2 class="title"><fmt:message key="label.bestsellers" bundle="${lang}"/></h2>
     <div class="row bestsellers">
         <div class="col-4">
             <img src="images/books/The Three Musketeers Paperback.jpg">
@@ -307,10 +329,10 @@
                 <img src="images/books/To Kill a Mockingbird.jpg" class="offer-img">
             </div>
             <div class="col-2">
-                <p>Exclusive Available on Bookstore</p>
+                <p><fmt:message key="label.exclusive" bundle="${lang}"/></p>
                 <h1>To Kill a Mockingbird</h1>
-                <small>Read this amazing book. You will never regret. bla bla bla</small>
-                <a href="" class="btn">Buy Now &#8594;</a>
+                <small><fmt:message key="label.read_this_book" bundle="${lang}"/></small>
+                <a href="" class="btn"><fmt:message key="label.buy_now" bundle="${lang}"/> &#8594;</a>
             </div>
         </div>
     </div>
@@ -319,7 +341,7 @@
 <!---------- latest books --------------->
 
 <div class="small-container">
-    <h2 class="title">Latest Products</h2>
+    <h2 class="title"><fmt:message key="label.latest_products" bundle="${lang}"/></h2>
     <div class="row">
         <div class="col-4">
             <img src="images/books/The Three Musketeers Paperback.jpg">

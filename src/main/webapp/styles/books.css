@@ -32,3 +32,45 @@ select:focus {
 .col-md-2.pt-3 {
     flex-basis: 10%;
 }
+
+/**************************************/
+/*          Pagination                */
+/**************************************/
+
+.mrow .row .col-4.hide{
+    display: none;
+}
+.mrow .row .col-4.show{
+    display: block;
+    animation: show .5s ease;
+}
+
+/********************************/
+.mrow .pagination{
+    width: 100%;
+    /*float: left;*/
+    padding:15px;
+    text-align: center;
+}
+/********************************/
+.mrow .pagination div{
+    display: inline-block;
+    margin:0 10px;
+}
+.mrow .pagination .page{
+    color:gray;
+}
+.mrow .pagination .prev,.mrow .pagination .next{
+    color:#000;
+    border:1px solid #000;
+    font-size:15px;
+    padding:7px 15px;
+    cursor: pointer;
+}
+
+.mrow .pagination .prev.disabled,
+.mrow .pagination .next.disabled{
+    border-color: gray;
+    color:gray;
+    pointer-events: none;
+}

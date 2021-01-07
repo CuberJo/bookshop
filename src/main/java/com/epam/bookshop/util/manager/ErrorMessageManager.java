@@ -7,7 +7,7 @@ public enum ErrorMessageManager {
 //    EN(ResourceBundle.getBundle(("resources.error_message"), new Locale("en", "US"))),
 //    RU(ResourceBundle.getBundle(("resources.error_message"), new Locale("ru", "RU")));
 
-    EN(ResourceBundle.getBundle(("error_message"), new Locale("en", "US"))),
+    US(ResourceBundle.getBundle(("error_message"), new Locale("en", "US"))),
     RU(ResourceBundle.getBundle(("error_message"), new Locale("ru", "RU")));
 
     private ResourceBundle bundle;
