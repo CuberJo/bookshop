@@ -4,12 +4,12 @@ import com.epam.bookshop.context.annotation.Naming;
 import com.epam.bookshop.context.annotation.Size;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
-import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.strategy.validator.Validatable;
 import com.epam.bookshop.strategy.validator.impl.NamingValidator;
 import com.epam.bookshop.strategy.validator.impl.SizeValidator;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;
@@ -25,6 +25,7 @@ public class Validator {
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_.+-]{1,40}@[a-zA-Z0-9-]{2,5}.[a-zA-Z0-9-.]{2,5}$";
 
     private static final String EMAIL_INCORRECT = "email_incorrect";
+    private static final String INVALID_INPUT_DATA = "invalid_input_data";
 
     private NamingValidator namingValidator = new NamingValidator();
     private SizeValidator sizeValidator = new SizeValidator();
@@ -62,6 +63,14 @@ public class Validator {
             }
         }
     }
+
+
+
+    public String sanitizeString(String s) {
+        return Jsoup.clean(s, Whitelist.none());
+    }
+
+
 
     public void validateEmail(String email) throws ValidatorException {
         Pattern p = Pattern.compile(EMAIL_REGEX);

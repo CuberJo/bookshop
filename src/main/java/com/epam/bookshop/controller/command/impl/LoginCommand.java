@@ -11,6 +11,7 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.validator.Validator;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.servlet.http.HttpSession;
@@ -55,7 +56,7 @@ public class LoginCommand implements Command {
 
 
         try {
-            if (!validateInput(login, password)) {
+            if (!new Validator().emptyStringValidator(login, password)) {
                 System.out.println("!validateInput(login, password)");
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ERROR_MESSAGE, errorMessage);
@@ -85,23 +86,6 @@ public class LoginCommand implements Command {
         return HOME_PAGE;
     }
 
-
-    /**
-     * Checks strings for not being empty and correspond to special pattern
-     *
-     * @param strings - Strings to be validated
-     * @return <b>true</b> if, and only if, passed strings not empty and correspond
-     * to special pattern
-     */
-    private boolean validateInput(String ... strings) {
-        for (String string : strings) {
-            if (string.equals(EMPTY_STRING) || string.matches(EMPTY_STRING_REGEX)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
 
     /**

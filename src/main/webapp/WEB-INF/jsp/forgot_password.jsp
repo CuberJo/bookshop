@@ -1,6 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
 
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
 <!DOCTYPE html>
 <html>
 
@@ -25,7 +35,7 @@
 <div class="small-container">
     <div class="row">
         <div id="sc-password">
-            <h1>Reset Password</h1>
+            <h1><fmt:message key="label.reset_pass" bundle="${lang}"/></h1>
             <form id="ResetPassForm" class="sc-container" method="post" action="/home?command=reset_password">
                 <input type="email" placeholder="Email" name="email"/>
                 <pre id="errorResetPassMessage" style="color: #ff523b; text-align: center; margin: 10px"></pre>
@@ -35,7 +45,7 @@
                 </c:if>
 <%--                <input type="submit" onclick="validateResetPassForm(event)" value="Get New Password" />--%>
 <%--                <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=register">Register</button>--%>
-                <button type="submit" onclick="return validateResetPassForm(event)">Get New Password</button>
+                <button type="submit" onclick="return validateResetPassForm(event)"><fmt:message key="label,get_new_pass" bundle="${lang}"/></button>
             </form>
         </div>
     </div>

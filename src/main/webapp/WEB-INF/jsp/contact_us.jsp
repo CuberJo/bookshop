@@ -1,6 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
 
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
+<fmt:setBundle basename="error_message" var="err" />
 <!DOCTYPE html>
 <html>
 
@@ -25,18 +36,31 @@
 <div class="small-container">
     <div class="row">
         <div class="mcontainer">
-            <form action="action_page.php">
+            <form id="Contact" action="action_page.php">
 
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="Your name..">
+                <label for="name"><fmt:message key="label.name" bundle="${lang}"/></label>
+                <c:set var="your_name">
+                    <fmt:message key="label.your_name" bundle="${lang}"/>
+                </c:set>
+                <input type="text" id="name" name="name" placeholder="${your_name}">
 
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Your email..">
+                <c:set var="your_email">
+                    <fmt:message key="label.your_email" bundle="${lang}"/>
+                </c:set>
+                <input type="email" id="email" name="email" placeholder="${your_email}">
 
-                <label for="subject">Subject</label>
-                <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea>
+                <label for="subject"><fmt:message key="label.subject" bundle="${lang}"/></label>
+                <c:set var="write_smth">
+                    <fmt:message key="label.write_smth" bundle="${lang}"/>
+                </c:set>
+                <textarea id="subject" name="subject" placeholder="${write_smth}" style="height:200px"></textarea>
 
-                <input type="submit" value="Submit">
+<%--                <c:set var="submit">--%>
+<%--                    <fmt:message key="label.submit" bundle="${lang}"/>--%>
+<%--                </c:set>--%>
+<%--                <input type="submit" value="${submit}">--%>
+                <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=contact_us"><fmt:message key="label.submit" bundle="${lang}"/></button>
 
             </form>
         </div>
@@ -46,6 +70,55 @@
 <!---------- footer --------------->
 
 <jsp:include page="footer.jsp" />
+
+<!---------- script for form validation --------------->
+
+<script>
+    function validateContactForm(event) {
+        let nameField = document.forms["Contact"]["name"].value;
+        let emailField = document.forms["Contact"]["email"].value;
+        let subjField = document.forms["Contact"]["subject"].value;
+
+        let error = "";
+
+        let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
+        let malicious_regex = /^[-<>*;='#)+&("]+$/;
+        if (malicious_regex.test(subjField)) {
+            event.preventDefault();
+            error = "<fmt:message key="invalid_input_data" bundle="${err}"/>";
+        }
+        if (malicious_regex.test(emailField) || !email_regex.test(emailField)) {
+            event.preventDefault();
+            error = "<fmt:message key="incorrect_email" bundle="${err}"/>";
+        }
+        if (malicious_regex.test(nameField)) {
+            event.preventDefault();
+            error = "<fmt:message key="invalid_input_data" bundle="${err}"/>";
+        }
+
+        let whitespace_regex = /[\s]+/;
+        if (subjField == "" || whitespace_regex.test(subjField)) {
+            event.preventDefault();
+            console.log(passField);
+            error = "<fmt:message key="input_pass" bundle="${err}"/>";
+        }
+        if (emailField == "" || whitespace_regex.test(emailField)) {
+            event.preventDefault();
+            error = "<fmt:message key="input_email" bundle="${err}"/>";
+        }
+        if (nameField == "" || whitespace_regex.test(nameField)) {
+            event.preventDefault();
+            error = "<fmt:message key="input_login" bundle="${err}"/>";
+        }
+
+        if (error != "") {
+            $("#errorRegMessage").text(error);
+            return false;
+        }
+
+        return true;
+    }
+</script>
 
 </body>
 </html>

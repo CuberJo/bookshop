@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CustomRequestContext implements RequestContext {
@@ -21,6 +22,10 @@ public class CustomRequestContext implements RequestContext {
         return httpServletRequest.getParameterMap().values().stream()
                 .flatMap(Arrays::stream)
                 .collect(Collectors.toList());
+    }
+
+    public Map<String, String[]> getParameterMap() {
+        return httpServletRequest.getParameterMap();
     }
 
     @Override

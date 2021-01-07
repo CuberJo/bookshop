@@ -2,10 +2,13 @@ package com.epam.bookshop.controller.command;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 public interface RequestContext {
 
     List<String> getParamList();
+
+    Map<String, String[]> getParameterMap();
 
     String getParameter(String name);
 

@@ -1,5 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
+<fmt:setBundle basename="error_message" var="err" />
 
 <!DOCTYPE html>
 <html>
@@ -32,33 +44,49 @@
             <div class="col-2">
                 <div class="form-container">
                     <div class="form-btn">
-                        <span onclick="login()">Login</span>
-                        <span onclick="register()">Register</span>
+                        <span onclick="login()"><fmt:message key="label.sign_in_label" bundle="${lang}"/></span>
+                        <span onclick="register()"><fmt:message key="label.sign_up_label" bundle="${lang}"/></span>
                         <hr id="Indicator">
                     </div>
 
-                    <form id="LoginForm">
-                        <input type="text" name="login" placeholder="Login">
-                        <input type="password" name="password" placeholder ="Password">
+                    <form id="LoginForm" method="post" action="/home?command=login">
+                        <c:set var="login">
+                            <fmt:message key="label.login" bundle="${lang}"/>
+                        </c:set>
+                        <input type="text" name="login" placeholder="${login}">
+                        <c:set var="pass">
+                            <fmt:message key="label.password" bundle="${lang}"/>
+                        </c:set>
+                        <input type="password" name="password" placeholder="${pass}">
                         <pre id="errorLogMessage" style="color: #ff523b; height: 10px"></pre>
                         <c:if test="${not empty error_log_message}">
                             <br><pre style="color: #ff523b">${error_log_message}</pre><br>
                             <c:remove var="error_log_message" scope="session" />
                         </c:if>
-                        <button type="submit" onclick="return validateLoginForm(event)" class="btn" formmethod="post" formaction="/home?command=login">Login</button>
-                        <a href="/home?command=forgot_password">Forgot password</a>
+                        <button type="submit" onclick="return validateLoginForm(event)" class="btn"><fmt:message key="label.sign_in_btn" bundle="${lang}"/></button>
+                        <a href="/home?command=forgot_password"><fmt:message key="label.forgot_password" bundle="${lang}"/></a>
                     </form>
-                    <form id="RegForm">
-                        <input type="text" name="name" placeholder="Name">
-                        <input type="text" name="login" placeholder="Login">
+                    <form id="RegForm" method="post" action="/home?command=register">
+                        <c:set var="name">
+                            <fmt:message key="label.name" bundle="${lang}"/>
+                        </c:set>
+                        <input type="text" name="name" placeholder="${name}">
+                        <c:set var="login">
+                            <fmt:message key="label.login" bundle="${lang}"/>
+                        </c:set>
+                        <input type="text" name="login" placeholder="${login}">
                         <input type="email" name="email" placeholder="Email">
-                        <input type="password" name="password" placeholder="Password">
+                        <c:set var="pass">
+                            <fmt:message key="label.password" bundle="${lang}"/>
+                        </c:set>
+                        <input type="password" name="password" placeholder="${pass}">
                         <pre id="errorRegMessage" style="color: #ff523b"></pre>
                         <c:if test="${not empty error_reg_message}">
                             <pre style="color: #ff523b; height: 20px">${error_reg_message}</pre>
                             <c:remove var="error_reg_message" scope="session" />
                         </c:if>
-                        <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=register">Register</button>
+                        <button type="submit" onclick="return validateRegisterForm(event)" class="btn"><fmt:message key="label.sign_up_btn" bundle="${lang}"/></button>
+<%--                        <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=register"><fmt:message key="label.sign_up_btn" bundle="${lang}"/></button>--%>
                     </form>
                 </div>
             </div>
@@ -100,20 +128,20 @@
         let malicious_regex = /^[-<>*;='#)+&("]+$/;
         if (malicious_regex.test(passField)) {
             event.preventDefault();
-            error = "Incorrect password";
+            error = "<fmt:message key="incorrect_pass" bundle="${err}"/>";
         }  if (malicious_regex.test(loginField)) {
             event.preventDefault();
-            error = "Incorrect login";
+            error = "<fmt:message key="incorrect_login" bundle="${err}"/>";
         }
 
         let whitespace_regex = /[\s]+/;
         if (passField == "" || whitespace_regex.test(passField)) {
             event.preventDefault();
-            error = "Please input your password";
+            error = "<fmt:message key="input_pass" bundle="${err}"/>";
         }
         if (loginField == "" || whitespace_regex.test(loginField)) {
             event.preventDefault();
-            error = "Please input your login";
+            error = "<fmt:message key="input_login" bundle="${err}"/>";
         }
 
         // if ((loginField.indexOf('"') > -1 && passField.indexOf('"') > -1) ||
@@ -149,46 +177,37 @@
         let malicious_regex = /^[-<>*;='#)+&("]+$/;
         if (malicious_regex.test(passField)) {
             event.preventDefault();
-            error = "Incorrect password";
-            console.log("Incorrect pass")
+            error = "<fmt:message key="incorrect_pass" bundle="${err}"/>";
         }
         if (malicious_regex.test(emailField) || !email_regex.test(emailField)) {
             event.preventDefault();
-            error = "Incorrect email";
-            console.log("Incorrect email")
+            error = "<fmt:message key="incorrect_email" bundle="${err}"/>";
         }
         if (malicious_regex.test(loginField)) {
             event.preventDefault();
-            error = "Incorrect login";
-            console.log("Incorrect login")
+            error = "<fmt:message key="incorrect_login" bundle="${err}"/>";
         }
         if (malicious_regex.test(nameField)) {
             event.preventDefault();
-            error = "Incorrect name";
-            console.log("Incorrect name")
+            error = "<fmt:message key="incorrect_name" bundle="${err}"/>";
         }
 
         let whitespace_regex = /[\s]+/;
         if (passField == "" || whitespace_regex.test(passField)) {
             event.preventDefault();
-            console.log(passField);
-            error = "Please input your password";
-            console.log("Please input your password")
+            error = "<fmt:message key="input_pass" bundle="${err}"/>";
         }
         if (emailField == "" || whitespace_regex.test(emailField)) {
             event.preventDefault();
-            error = "Please input your email";
-            console.log("Please input your email")
+            error = "<fmt:message key="input_email" bundle="${err}"/>";
         }
         if (loginField == "" || whitespace_regex.test(loginField)) {
             event.preventDefault();
-            error = "Please input your login";
-            console.log("Please input your login")
+            error = "<fmt:message key="input_login" bundle="${err}"/>";
         }
         if (nameField == "" || whitespace_regex.test(nameField)) {
             event.preventDefault();
-            error = "Please input your name";
-            console.log("Please input your name")
+            error = "<fmt:message key="input_name" bundle="${err}"/>";
         }
 
 
