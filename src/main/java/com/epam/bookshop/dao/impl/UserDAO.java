@@ -106,7 +106,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    errorMessage = ErrorMessageManager.EN.getMessage(ROLE_NOT_FOUND);
+                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_NOT_FOUND) + WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
@@ -122,7 +122,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
                     }
                 }
                 if (IBANs.isEmpty()) {
-                    errorMessage = ErrorMessageManager.EN.getMessage(IBANs_NOT_FOUND);
+                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
                     throw new RuntimeException(errorMessage);
                 }
                 user.setIBANs(IBANs);
@@ -160,7 +160,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(ROLE_NOT_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_NOT_FOUND) + WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
@@ -223,7 +223,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    errorMessage = ErrorMessageManager.EN.getMessage(ROLE_NOT_FOUND);
+                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_NOT_FOUND) + WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
@@ -239,7 +239,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
                     }
                 }
                 if (IBANs.isEmpty()) {
-                    errorMessage = ErrorMessageManager.EN.getMessage(IBANs_NOT_FOUND);
+                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
                     throw new RuntimeException(errorMessage);
                 }
                 user.setIBANs(IBANs);
@@ -279,7 +279,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(ROLE_NOT_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_NOT_FOUND) + WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
@@ -354,7 +354,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
             int result = ps.executeUpdate();
 
             if (result == ZERO_ROWS_AFFECTED) {
-                String errorMessage = ErrorMessageManager.EN.getMessage(NO_USER_UPDATE_OCCURRED);
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_USER_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
             }
 

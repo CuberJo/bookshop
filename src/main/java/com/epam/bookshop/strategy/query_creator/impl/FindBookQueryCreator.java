@@ -19,6 +19,7 @@ public class FindBookQueryCreator implements FindEntityQueryCreator {
     private static final String GENRE_ID_COLUMN = "Genre_Id";
     private static final String AND = "AND";
     private static final String WHITESPACE = " ";
+    private static final String NEW_LINE = "\n";
 
     private static String sql_query = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview " +
             "FROM TEST_LIBRARY.BOOK " +
@@ -43,7 +44,7 @@ public class FindBookQueryCreator implements FindEntityQueryCreator {
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof BookCriteria)) {
-            String incompatibleTypeOfCriteria = ErrorMessageManager.EN.getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA);
+            String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA) + NEW_LINE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }
 

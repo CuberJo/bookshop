@@ -1,5 +1,6 @@
 package com.epam.bookshop.controller.command.impl;
 
+import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Role;
 import com.epam.bookshop.domain.impl.User;
@@ -84,12 +85,13 @@ public class RegisterCommand implements Command {
             e.printStackTrace();
             return ACCOUNT_PAGE;
         } catch (MessagingException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(COULD_NOT_REACH_EMAIL_ADDRESS + NEW_LINE + email);
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(COULD_NOT_REACH_EMAIL_ADDRESS) + NEW_LINE + email;
             session.setAttribute(ERROR_MESSAGE, errorMessage);
             try {
                 EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
                 service.setLocale(locale);
-                service.delete(user);
+                long userId = service.find(UserCriteria.builder().login(user.getLogin()).build()).get().getEntityId();
+                service.delete(userId);
             } catch (EntityNotFoundException e1) {
                 e1.printStackTrace();
             } catch (ValidatorException e2) {

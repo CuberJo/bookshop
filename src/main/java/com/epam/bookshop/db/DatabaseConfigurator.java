@@ -1,11 +1,10 @@
 package com.epam.bookshop.db;
 
+import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class DatabaseConfigurator {
-
-//    private boolean isConfigured;
 
     private String url;
     private String dbName;
@@ -14,37 +13,33 @@ public class DatabaseConfigurator {
     private String pass;
     private int poolSize;
 
-    private final String DATABASE_PROPERTIES_FILEPATH = "database";
-    private final String DB_URL = "db.url";
-    private final String DB_NAME = "db.name";
-    private final String DB_USER = "db.user";
-    private final String DB_PASS = "db.password";
-    private final String DB_POOL_SIZE = "db.poolSize";
-    private final String DB_SERVER_TIMEZONE = "db.serverTimezone";
+    private static final String DATABASE_PROPERTIES_FILEPATH = "database";
+    private static final String DB_URL = "db.url";
+    private static final String DB_NAME = "db.name";
+    private static final String DB_USER = "db.user";
+    private static final String DB_PASS = "db.password";
+    private static final String DB_POOL_SIZE = "db.poolSize";
+    private static final String DB_SERVER_TIMEZONE = "db.serverTimezone";
+    private static final String SERVER_TIMEZONE_PARAM = "?serverTimezone=";
+
 
     public static DatabaseConfigurator instance;
 
-    private static AtomicBoolean isCreated = new AtomicBoolean(false);
+    private static ReentrantLock lock = new ReentrantLock();
 
     public static DatabaseConfigurator getInstance() {
-        if (!isCreated.get()) {
-            synchronized (DatabaseConfigurator.class){
-                if (instance == null) {
-                    if (!isCreated.get()) {
-                        instance = new DatabaseConfigurator();
-                        isCreated.set(true);
-                    }
-                }
+        lock.lock();
+        try {
+            if (Objects.isNull(instance)) {
+                instance = new DatabaseConfigurator();
             }
+        } finally {
+            lock.unlock();
         }
+
         return instance;
     }
 
-    private DatabaseConfigurator() {
-//        if(!isConfigured) {
-//            configure();
-//        }
-    }
 
     public void configure() {
         ResourceBundle resourceBundle = ResourceBundle.getBundle(DATABASE_PROPERTIES_FILEPATH);
@@ -54,8 +49,6 @@ public class DatabaseConfigurator {
         user = resourceBundle.getString(DB_USER);
         pass = resourceBundle.getString(DB_PASS);
         poolSize = Integer.parseInt(resourceBundle.getString(DB_POOL_SIZE));
-
-//        isConfigured = true;
     }
 
     public String getUrl() {
@@ -83,7 +76,6 @@ public class DatabaseConfigurator {
     }
 
     public String getDatabaseURL() {
-        final String SERVER_TIMEZONE_PARAM = "?serverTimezone=";
         return url + dbName + SERVER_TIMEZONE_PARAM + serverTimezone;
     }
 }

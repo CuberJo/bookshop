@@ -65,7 +65,7 @@ public class ConnectionProxy implements Connection {
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
         if (connection != null) {
             try {
                 ConnectionPool.getInstance().getNotAvailableConnections().take();//remove(this);
@@ -76,7 +76,7 @@ public class ConnectionProxy implements Connection {
             System.out.println("Connection " + this + " is returned into pool");
         } else {
 //            logger.error("Connection has not been initialize");
-            String errorMessage = ErrorMessageManager.EN.getMessage(CONNECTION_HAS_NOT_BEEN_INITIALIZED);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(CONNECTION_HAS_NOT_BEEN_INITIALIZED);
             throw new RuntimeException(errorMessage);
         }
     }

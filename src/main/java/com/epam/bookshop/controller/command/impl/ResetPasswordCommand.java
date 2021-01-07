@@ -37,7 +37,7 @@ public class ResetPasswordCommand implements Command {
     private static final String EMAIL_NOT_FOUND_IN_DATABASE = "email_not_found_in_database";
     private static final String EMAIL_RESPONSE = "email_response";
     private static final String INVALID_INPUT_DATA = "invalid_input_data";
-
+    private static final String NEW_LINE = "\n";
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
@@ -65,7 +65,7 @@ public class ResetPasswordCommand implements Command {
 
             Optional<User> optionalUser = service.find(UserCriteria.builder().email(email).build());
             if (optionalUser.isEmpty()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_NOT_FOUND_IN_DATABASE);
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_NOT_FOUND_IN_DATABASE) + NEW_LINE + email;
                 session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return FORGOT_PASSWORD_PAGE;
             }
@@ -84,7 +84,7 @@ public class ResetPasswordCommand implements Command {
             e.printStackTrace();
             return FORGOT_PASSWORD_PAGE;
         } catch (MessagingException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_NOT_FOUND_IN_DATABASE);
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_NOT_FOUND_IN_DATABASE) + NEW_LINE + email;
             session.setAttribute(ERROR_MESSAGE, errorMessage);
             e.printStackTrace();
             return FORGOT_PASSWORD_PAGE;

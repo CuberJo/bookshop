@@ -7,39 +7,39 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
 
     private String locale = "EN";
 
     private static ConnectionPool instance;
-
-    private BlockingQueue<Connection> availableConnections;
-    private BlockingQueue<Connection> notAvailableConnections;
-
-    private static AtomicBoolean isCreated = new AtomicBoolean(false);
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    public static ConnectionPool getInstance() {
-        if (!isCreated.get()) {
-            synchronized (ConnectionPool.class){
-                if (instance == null) {
-                    if (!isCreated.get()) {
-                        instance = new ConnectionPool();
-                        isCreated.set(true);
-                    }
-                }
-            }
-        }
-        return instance;
-    }
+    private static ReentrantLock lock = new ReentrantLock();
+    private ReentrantLock lock2 = new ReentrantLock();
 
     private ConnectionPool() {
 
+    }
+
+    public static ConnectionPool getInstance() {
+        lock.lock();
+        try {
+            if (instance == null) {
+                instance = new ConnectionPool();
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        return instance;
+    }
+
+    // чтобы избежать дкиких соединений
+    private BlockingQueue<ConnectionProxy> availableConnections;
+    private BlockingQueue<ConnectionProxy> notAvailableConnections;
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     public void init() {
@@ -53,8 +53,10 @@ public class ConnectionPool {
         }
     }
 
-    private Connection getConnection() {
-        Connection conn;
+
+
+    private ConnectionProxy getConnection() {
+        ConnectionProxy conn;
 
         try {
             Driver driver = new Driver();
@@ -71,62 +73,55 @@ public class ConnectionPool {
         return conn;
     }
 
-    public synchronized Connection getAvailableConnection() {
-//        int millisecondInSleep = 0;
-//        final int LIMIT_MILLISECONDS = 1000;
-//
-//        while (availableConnections.isEmpty() && millisecondInSleep < LIMIT_MILLISECONDS) {
-//            if (millisecondInSleep >= LIMIT_MILLISECONDS) {
-//                final Naming errorMessage = "Time limit of " + LIMIT_MILLISECONDS + " milliseconds reached";
-//                logger.error(errorMessage);
-//                throw new RuntimeException(errorMessage);
-//            }
-//            try {
-//                TimeUnit.MILLISECONDS.sleep(100);
-//                ++millisecondInSleep;
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
 
-        Connection connectionToReturn = null;
+
+    public Connection getAvailableConnection() {
+        lock2.lock();
+
+        ConnectionProxy connectionToReturn = null;
+
         try {
-            connectionToReturn = availableConnections.take();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            try {
+                connectionToReturn = availableConnections.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            notAvailableConnections.add(connectionToReturn);
+        } finally {
+            lock2.unlock();
         }
-        notAvailableConnections.add(connectionToReturn);
+
 
         return connectionToReturn;
     }
 
-    public void shutdown() throws SQLException {
+
+
+    public void shutdown() {
 
         availableConnections.forEach(connection -> {
             try {
-                ((ConnectionProxy) connection).realClose();
+                connection.realClose();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         });
         notAvailableConnections.forEach(connection -> {
             try {
-                ((ConnectionProxy) connection).realClose();
+                connection.realClose();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         });
     }
 
-    /**
-     * Needs to be package private access
-     * @return
-     */
-    BlockingQueue<Connection> getAvailableConnections() {
+
+
+    BlockingQueue<ConnectionProxy> getAvailableConnections() {
         return availableConnections;
     }
 
-    BlockingQueue<Connection> getNotAvailableConnections() {
+    BlockingQueue<ConnectionProxy> getNotAvailableConnections() {
         return notAvailableConnections;
     }
 }

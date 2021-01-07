@@ -89,7 +89,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
 
                 Optional<User> optionalUser = userDAO.findById(rs.getLong(LIBRARY_USER_ID_COLUMN));
                 if (optionalUser.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(USER_NOT_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND) + WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
                 }
                 order.setUser(optionalUser.get());
@@ -98,7 +98,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
 
                 Optional<Status> optionalStatus = statusDAO.findById(rs.getLong(STATUS_ID_COLUMN));
                 if (optionalStatus.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(STATUS_NOT_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_NOT_FOUND)  + WHITESPACE + rs.getLong(STATUS_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(STATUS_ID_COLUMN));
                 }
                 order.setStatus(optionalStatus.get());
@@ -136,7 +136,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
 
                 Optional<User> optionalUser = userDAO.findById(rs.getLong(LIBRARY_USER_ID_COLUMN));
                 if (optionalUser.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(USER_NOT_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND) + WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
                 }
                 order.setUser(optionalUser.get());
@@ -145,7 +145,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
 
                 Optional<Status> optionalStatus = statusDAO.findById(rs.getLong(STATUS_ID_COLUMN));
                 if (optionalStatus.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(STATUS_ID_COLUMN);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_ID_COLUMN)  + WHITESPACE + rs.getLong(STATUS_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(STATUS_ID_COLUMN));
                 }
                 order.setStatus(optionalStatus.get());
@@ -191,7 +191,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
 
                 Optional<User> optionalUser = userDAO.findById(rs.getLong(LIBRARY_USER_ID_COLUMN));
                 if (optionalUser.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(USER_NOT_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND)  + WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
                 }
                 order.setUser(optionalUser.get());
@@ -200,7 +200,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
 
                 Optional<Status> optionalStatus = statusDAO.findById(rs.getLong(STATUS_ID_COLUMN));
                 if (optionalStatus.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(STATUS_NOT_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_NOT_FOUND) + WHITESPACE + rs.getLong(STATUS_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(STATUS_ID_COLUMN));
                 }
                 order.setStatus(optionalStatus.get());
@@ -248,7 +248,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
 
                 Optional<Status> optionalStatus = statusDAO.findById(rs.getLong(STATUS_ID_COLUMN));
                 if (optionalStatus.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(STATUS_NOT_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_NOT_FOUND) + WHITESPACE + rs.getLong(STATUS_ID_COLUMN);
                     throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(STATUS_ID_COLUMN));
                 }
                 order.setStatus(optionalStatus.get());
@@ -305,7 +305,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
             int result = ps.executeUpdate();
 
             if (result == ZERO_ROWS_AFFECTED) {
-                String errorMessage = ErrorMessageManager.EN.getMessage(NO_ORDER_UPDATE_OCCURRED);
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_ORDER_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
             }
 

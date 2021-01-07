@@ -1,14 +1,14 @@
 package com.epam.bookshop.strategy.query_creator.impl;
 
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.exception.EntityNotFoundException;
-import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
 import com.epam.bookshop.exception.UnknownEntityException;
+import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 public class FindEntityQueryCreatorFactory {
 
     private static final String NO_SUCH_SERVICE_TYPE = "no_such_query_creator_type";
+    private static final String WHITESPACE = " ";
     private String locale = "EN";
 
     public static final FindEntityQueryCreatorFactory INSTANCE = new FindEntityQueryCreatorFactory();
@@ -42,7 +42,7 @@ public class FindEntityQueryCreatorFactory {
                 creatorToReturn = new FindRoleQueryCreator();
                 break;
             default:
-                String noSuchQueryType = ErrorMessageManager.EN.getMessage(NO_SUCH_SERVICE_TYPE);
+                String noSuchQueryType = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_SERVICE_TYPE) + WHITESPACE + type;
                 throw new UnknownEntityException(noSuchQueryType);
         }
 

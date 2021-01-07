@@ -172,7 +172,7 @@ public class OrderService implements EntityService<Order> {
         dao.setLocale(locale);
         boolean isDeleted = dao.delete(id);
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.EN.getMessage(ORDER_NOT_FOUND);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ORDER_NOT_FOUND) + WHITESPACE + id;
             throw new EntityNotFoundException(errorMessage + WHITESPACE + id);
         }
 
@@ -197,7 +197,7 @@ public class OrderService implements EntityService<Order> {
         dao.setLocale(locale);
         boolean isDeleted = dao.delete(order.getEntityId());
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.EN.getMessage(ORDER_NOT_FOUND);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ORDER_NOT_FOUND) + WHITESPACE + order.getEntityId();
             throw new EntityNotFoundException(errorMessage + WHITESPACE + order.getEntityId());
         }
 

@@ -10,10 +10,10 @@ import java.sql.Connection;
 public class DAOFactory {
 
     private static final String NO_SUCH_DAO_TYPE = "no_such_DAO_type";
+    private static final String WHITESPACE = " ";
+    private String locale = "EN";
 
     public static final DAOFactory INSTANCE = new DAOFactory();
-
-    private String locale = "EN";
 
     private DAOFactory() {
 
@@ -49,7 +49,7 @@ public class DAOFactory {
 //            case USER_BANK_ACCOUNT:
 //                daoToReturn = new UserBankAccountDAO(co)
             default:
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_DAO_TYPE);
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_DAO_TYPE) + WHITESPACE + type;
                 throw new UnknownEntityException(errorMessage);
         }
 

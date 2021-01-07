@@ -22,7 +22,8 @@ public class NamingValidator implements Validatable<Naming> {
     private static final String GENRE_REGEX = "^[-a-zA-Z&\\s]{1,50}$";
     private static final String ROLE_REGEX = "^[a-zA-Z]{1,20}$";
     private static final String STATUS_REGEX = "^[a-zA-Z_]{1,20}$";
-    private static final String NAME_REGEX = "^[\\.a-zA-Z]{1,20}$";
+//    private static final String NAME_REGEX = "^[\\.a-zA-Z]{1,20}$";
+    private static final String NAME_REGEX = "^[\\.a-zA-Zа-яёА-ЯЁ]{1,20}$";
     private static final String LOGIN_REGEX = "^[\\d_A-Za-z\\.-]{1,20}$";
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_.+-]{1,40}@[a-zA-Z0-9-]{2,5}.[a-zA-Z0-9-.]{2,5}$";
 //    private static final String EMAIL_REGEX = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{1,30}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{1,10}[a-zA-Z0-9])?){1,10}$";//*
@@ -60,8 +61,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((Book) entity).getISBN());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ISBN_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((Book) entity).getISBN());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ISBN_INCORRECT) + WHITESPACE + ((Book) entity).getISBN();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("ISBN \"" + ((Book) entity).getISBN() + "\" incorrect");
             }
         }
@@ -70,8 +71,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((Book) entity).getTitle());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(TITLE_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((Book) entity).getTitle());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(TITLE_INCORRECT) + WHITESPACE + ((Book) entity).getTitle();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Title \"" + ((Book) entity).getTitle() + "\" incorrect");
             }
         }
@@ -80,8 +81,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((Book) entity).getAuthor());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(AUTHOR_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((Book) entity).getAuthor());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(AUTHOR_INCORRECT) + WHITESPACE + ((Book) entity).getAuthor();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Author \"" + ((Book) entity).getAuthor() + "\" incorrect");
             }
         }
@@ -90,8 +91,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((Book) entity).getPublisher());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(PUBLISHER_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((Book) entity).getPublisher());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(PUBLISHER_INCORRECT) + WHITESPACE + ((Book) entity).getPublisher();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Publisher \"" + ((Book) entity).getPublisher() + "\" incorrect");
             }
         }
@@ -100,8 +101,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((User) entity).getLogin());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(LOGIN_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((User) entity).getLogin());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(LOGIN_INCORRECT) + WHITESPACE + ((User) entity).getLogin();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Login \"" + ((User) entity).getLogin() + "\" incorrect");
             }
         }
@@ -110,8 +111,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((User) entity).getEmail());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((User) entity).getEmail());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_INCORRECT) + WHITESPACE + ((User) entity).getEmail();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Email \"" + ((User) entity).getEmail() + "\" incorrect");
             }
         }
@@ -120,8 +121,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((User) entity).getName());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NAME_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((User) entity).getName());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NAME_INCORRECT) + WHITESPACE + ((User) entity).getName();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Name \"" + ((User) entity).getName() + "\" incorrect");
             }
         }
@@ -130,8 +131,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((Genre) entity).getGenre());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(GENRE_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((Genre) entity).getGenre());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(GENRE_INCORRECT) + WHITESPACE + ((Genre) entity).getGenre();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Genre \"" + ((Genre) entity).getGenre() + "\" incorrect");
             }
         }
@@ -140,8 +141,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((Role) entity).getRole());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((Role) entity).getRole());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_INCORRECT) + WHITESPACE + ((Role) entity).getRole();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Role \"" + ((Role) entity).getRole() + "\" incorrect");
             }
         }
@@ -150,8 +151,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((Status) entity).getStatus());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((Status) entity).getStatus());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_INCORRECT) + WHITESPACE + ((Status) entity).getStatus();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Status \"" + ((Status) entity).getStatus() + "\" incorrect");
             }
         }
@@ -170,8 +171,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((BookCriteria) criteria).getISBN());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ISBN_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((BookCriteria) criteria).getISBN());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ISBN_INCORRECT) + WHITESPACE + ((BookCriteria) criteria).getISBN();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("ISBN \"" + ((BookCriteria) criteria).getISBN() + "\" incorrect");
             }
         }
@@ -180,8 +181,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((BookCriteria) criteria).getTitle());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(TITLE_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((BookCriteria) criteria).getTitle());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(TITLE_INCORRECT) + WHITESPACE + ((BookCriteria) criteria).getTitle();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Title \"" + ((BookCriteria) criteria).getTitle() + "\" incorrect");
             }
         }
@@ -190,8 +191,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((BookCriteria) criteria).getAuthor());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(AUTHOR_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((BookCriteria) criteria).getAuthor());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(AUTHOR_INCORRECT) + WHITESPACE + ((BookCriteria) criteria).getAuthor();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Author \"" + ((BookCriteria) criteria).getAuthor() + "\" incorrect");
             }
         }
@@ -200,8 +201,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((BookCriteria) criteria).getPublisher());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(PUBLISHER_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((BookCriteria) criteria).getPublisher());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(PUBLISHER_INCORRECT) + WHITESPACE + ((BookCriteria) criteria).getPublisher();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Publisher \"" + ((BookCriteria) criteria).getPublisher() + "\" incorrect");
             }
         }
@@ -210,8 +211,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((UserCriteria) criteria).getLogin());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(LOGIN_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((UserCriteria) criteria).getLogin());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(LOGIN_INCORRECT) + WHITESPACE + ((UserCriteria) criteria).getLogin();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Login \"" + ((UserCriteria) criteria).getLogin() + "\" incorrect");
             }
         }
@@ -220,8 +221,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((UserCriteria) criteria).getEmail());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((UserCriteria) criteria).getEmail());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_INCORRECT) + WHITESPACE + ((UserCriteria) criteria).getEmail();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Email \"" + ((UserCriteria) criteria).getEmail() + "\" incorrect");
             }
         }
@@ -230,8 +231,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((UserCriteria) criteria).getName());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NAME_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((UserCriteria) criteria).getName());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NAME_INCORRECT) + WHITESPACE + ((UserCriteria) criteria).getName();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Name \"" + ((UserCriteria) criteria).getName() + "\" incorrect");
             }
         }
@@ -240,8 +241,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((GenreCriteria) criteria).getGenre());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(GENRE_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((GenreCriteria) criteria).getGenre());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(GENRE_INCORRECT) + WHITESPACE + ((GenreCriteria) criteria).getGenre();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Genre \"" + ((GenreCriteria) criteria).getGenre() + "\" incorrect");
             }
         }
@@ -250,8 +251,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((RoleCriteria) criteria).getRole());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((RoleCriteria) criteria).getRole());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_INCORRECT) + WHITESPACE + ((RoleCriteria) criteria).getRole();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Role \"" + ((RoleCriteria) criteria).getRole() + "\" incorrect");
             }
         }
@@ -260,8 +261,8 @@ public class NamingValidator implements Validatable<Naming> {
             m = p.matcher(((StatusCriteria) criteria).getStatus());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_INCORRECT);
-                throw new ValidatorException(errorMessage + WHITESPACE + ((StatusCriteria) criteria).getStatus());
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_INCORRECT) + WHITESPACE + ((StatusCriteria) criteria).getStatus();
+                throw new ValidatorException(errorMessage);
 //                throw new ValidatorException("Status \"" + ((StatusCriteria) criteria).getStatus() + "\" incorrect");
             }
         }

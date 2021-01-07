@@ -37,7 +37,7 @@ public class FindRoleQueryCreator implements FindEntityQueryCreator {
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof RoleCriteria)) {
-            String incompatibleTypeOfCriteria = ErrorMessageManager.EN.getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA);
+            String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA) + WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }
 

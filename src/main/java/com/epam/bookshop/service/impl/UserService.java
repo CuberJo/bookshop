@@ -169,8 +169,8 @@ public class UserService implements EntityService<User> {
 
         boolean isDeleted = dao.delete(id);
         if (!isDeleted) {
-            String userNotFound = ErrorMessageManager.EN.getMessage(USER_NOT_FOUND);
-            throw new EntityNotFoundException(userNotFound + WHITESPACE + id);
+            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND) + WHITESPACE + id;
+            throw new EntityNotFoundException(userNotFound);
         }
 
         try {
@@ -193,8 +193,8 @@ public class UserService implements EntityService<User> {
 
         boolean isDeleted = dao.delete(user.getEntityId());
         if (!isDeleted) {
-            String userNotFound = ErrorMessageManager.EN.getMessage(USER_NOT_FOUND);
-            throw new EntityNotFoundException(userNotFound + WHITESPACE + user.getEntityId());
+            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND) + WHITESPACE + user.getEntityId();
+            throw new EntityNotFoundException(userNotFound);
         }
 
         try {

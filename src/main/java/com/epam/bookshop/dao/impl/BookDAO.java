@@ -41,6 +41,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
     private static final String NO_SUCH_GENRE_FOUND = "no_such_genre_found";
     private static final String WHITESPACE = " ";
+    private static final String NEW_LINE = "\n";
     private static final String NO_BOOK_UPDATE_OCCURRED = "no_book_update_occurred";
 
     private static final Integer ZERO_ROWS_AFFECTED = 0;
@@ -70,7 +71,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             List<Genre> genres = genreDAO.findAll();
             Optional<Genre> optionalGenre = genres.stream().filter(genre -> genre.getGenre().equals(book.getGenre().getGenre())).findAny();
             if (optionalGenre.isEmpty()) {
-                String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + NEW_LINE + book.getGenre();
                 throw new RuntimeException(errorMessage + WHITESPACE + book.getGenre().getGenre());
             }
             ps.setLong(6, optionalGenre.get().getEntityId());
@@ -103,7 +104,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
 //                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
                     throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
@@ -144,7 +145,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
 //                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
                     throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
@@ -192,7 +193,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
 //                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
                     throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
@@ -234,7 +235,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.EN.getMessage(NO_SUCH_GENRE_FOUND);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
 //                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
                     throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
@@ -296,7 +297,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             int result = ps.executeUpdate();
 
             if (result == ZERO_ROWS_AFFECTED) {
-                String errorMessage = ErrorMessageManager.EN.getMessage(NO_BOOK_UPDATE_OCCURRED);
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_BOOK_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
             }
 

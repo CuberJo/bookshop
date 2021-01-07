@@ -172,7 +172,7 @@ public class BookService implements EntityService<Book> {
         dao.setLocale(locale);
         boolean isDeleted = dao.delete(id);
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.EN.getMessage(BOOK_NOT_FOUND);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(BOOK_NOT_FOUND) + WHITESPACE + id;
             throw new EntityNotFoundException(errorMessage + WHITESPACE + id);
         }
 
@@ -197,7 +197,7 @@ public class BookService implements EntityService<Book> {
         dao.setLocale(locale);
         boolean isDeleted = dao.delete(book.getEntityId());
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.EN.getMessage(BOOK_NOT_FOUND);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(BOOK_NOT_FOUND) + WHITESPACE + book.getEntityId();
             throw new EntityNotFoundException(errorMessage + WHITESPACE + book.getEntityId());
         }
 

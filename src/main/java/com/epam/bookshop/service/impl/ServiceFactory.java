@@ -5,41 +5,43 @@ import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Objects;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ServiceFactory {
 
     private static final String NO_SUCH_SERVICE_TYPE = "no_such_service_type";
+    private String locale = "EN";
 
     private static ServiceFactory instance;
-    private static AtomicBoolean isCreated = new AtomicBoolean(false);
+
+    private static final ReentrantLock LOCK = new ReentrantLock();
 
     private ServiceFactory() {
 
     }
 
-    private String locale = "EN";
+    public static ServiceFactory getInstance() {
+        LOCK.lock();
+
+        try {
+            if (Objects.isNull(instance)) {
+                instance = new ServiceFactory();
+            }
+        } finally {
+            LOCK.unlock();
+        }
+
+        return instance;
+    }
+
+
 
     public void setLocale(String locale) {
         this.locale = locale;
     }
 
-    // двойная проверка isCreated, т.к. метод не пустит другой поток, пока
-    // объект не будет поностью создан, т.к. объект может ЧАСТИЧНО создаться,
-    // но не полностью
-    public static ServiceFactory getInstance() {
-        if (!isCreated.get()) {
-            synchronized (ServiceFactory.class){
-                if (instance == null) {
-                    if (!isCreated.get()) {
-                        instance = new ServiceFactory();
-                        isCreated.set(true);
-                    }
-                }
-            }
-        }
-        return instance;
-    }
+
 
     public EntityService create(EntityType type) {
 

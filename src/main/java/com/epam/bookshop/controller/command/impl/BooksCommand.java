@@ -78,8 +78,8 @@ public class BooksCommand implements Command {
 
                 if (optionalGenre.isEmpty()) {
 //                    throw new EntityNotFoundException("No genre with genreName = " + genreName + " found");
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND);
-                    throw new EntityNotFoundException(errorMessage + WHITESPACE + genreName);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + genreName;
+                    throw new EntityNotFoundException(errorMessage);
                 }
 
                 Genre genre = optionalGenre.get();

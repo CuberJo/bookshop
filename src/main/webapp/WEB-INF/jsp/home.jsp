@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
 
 <!DOCTYPE html>
 <html>
@@ -16,6 +17,9 @@
 </head>
 
 <body>
+<script>
+    <c:out value="ji"/>
+</script>
 <c:if test="false">
 <%--<div id="test1" onload="window.location.hash='back'; ">--%>
 <script>
