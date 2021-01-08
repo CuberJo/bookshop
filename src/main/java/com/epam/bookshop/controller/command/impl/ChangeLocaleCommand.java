@@ -4,12 +4,12 @@ import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 
-import java.util.Locale;
 import java.util.Objects;
 
 public class ChangeLocaleCommand implements Command {
 
     private static final String LOCALE = "locale";
+    private static final String HOME_PAGE = "/home";
     private static final String FROM = "from";
     private static final String RU = "RU";
     private static final String US = "US";
@@ -17,12 +17,7 @@ public class ChangeLocaleCommand implements Command {
     @Override
     public ResponseContext execute(RequestContext requestContext) {
 
-        String fromPage = requestContext.getParameter(FROM);
-
-        String unresolvedPage = "/home?command=%s";
-        String resolvedPage = String.format(unresolvedPage, fromPage);
-        ResponseContext respPage = () -> resolvedPage;
-
+        ResponseContext respPage = resolvePage(requestContext);
 
         String localeParam = requestContext.getParameter(LOCALE);
         if (Objects.isNull(localeParam) || localeParam.isEmpty()) {
@@ -42,6 +37,23 @@ public class ChangeLocaleCommand implements Command {
 //                requestContext.getSession().setAttribute(LOCALE, new Locale("en", "US"));
         }
 
-        return respPage;
+        return resolvePage(requestContext);
+    }
+
+
+
+    private ResponseContext resolvePage(RequestContext requestContext) {
+
+        String fromPage = requestContext.getParameter(FROM);
+
+        String page = "/home?command=%s";
+        if (Objects.nonNull(fromPage) || fromPage.isEmpty()) {
+            page = String.format(page, fromPage);
+        } else {
+            page = HOME_PAGE;
+        }
+
+        String pageToReturn = page;
+        return  () -> pageToReturn;
     }
 }

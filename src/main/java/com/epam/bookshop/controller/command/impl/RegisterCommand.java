@@ -18,6 +18,7 @@ import com.epam.bookshop.validator.Validator;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 public class RegisterCommand implements Command {
 
@@ -26,6 +27,8 @@ public class RegisterCommand implements Command {
 
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
+    private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
+
 
     private static final String REGISTER_USER_SUBJECT = "Registration completed";
     private static final String REGISTER_RESPONSE = "You have successfully registered!";
@@ -42,6 +45,7 @@ public class RegisterCommand implements Command {
     private static final String INVALID_INPUT_DATA = "invalid_input_data";
     private static final String COULD_NOT_REACH_EMAIL_ADDRESS = "could_not_reach_email_address";
     private static final String LOCALE_ATTR = "locale";
+    private static final String BACK_TO_CART_ATTR = "back_to_cart";
     private static final String NEED_TO_LINK_BANK_ACCOUNT = "need_to_link_bank_account";
     private static final String NEW_LINE = "\n";
 
@@ -78,7 +82,7 @@ public class RegisterCommand implements Command {
 
             System.out.println("*****************NOTHING*****************************");
             session.setAttribute(LOGIN, login);
-            session.setAttribute(ROLE, user.getRole());
+            session.setAttribute(ROLE, user.getRole().getRole());
             session.setAttribute(NEED_TO_LINK_BANK_ACCOUNT, true);
 
         } catch (ValidatorException e) {
@@ -101,6 +105,11 @@ public class RegisterCommand implements Command {
             }
             e.printStackTrace();
             return ACCOUNT_PAGE;
+        }
+
+        if (Objects.nonNull(requestContext.getSession().getAttribute(BACK_TO_CART_ATTR))) {
+            requestContext.getSession().removeAttribute(BACK_TO_CART_ATTR);
+            return CART_PAGE;
         }
 
         return HOME_PAGE;

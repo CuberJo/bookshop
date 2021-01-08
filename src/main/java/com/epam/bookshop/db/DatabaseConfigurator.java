@@ -23,7 +23,7 @@ public class DatabaseConfigurator {
     private static final String SERVER_TIMEZONE_PARAM = "?serverTimezone=";
 
 
-    public static DatabaseConfigurator instance;
+    private static DatabaseConfigurator instance;
 
     private static ReentrantLock lock = new ReentrantLock();
 

@@ -89,9 +89,6 @@ public class GenreService implements EntityService<Genre> {
         AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
         dao.setLocale(locale);
         Optional<Genre> optionalGenre = dao.find(criteria);
-//        if (optionalGenre.isEmpty()) {
-//            throw new EntityNotFoundException("No genre with genreName = " + ((GenreCriteria)criteria).getGenre() + " found");
-//        }
 
         try {
             conn.close();
@@ -99,7 +96,6 @@ public class GenreService implements EntityService<Genre> {
             throwables.printStackTrace();
         }
 
-//        return optionalGenre.get();
         return optionalGenre;
     }
 

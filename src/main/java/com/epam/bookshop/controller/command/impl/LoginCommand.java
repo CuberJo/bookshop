@@ -15,6 +15,7 @@ import com.epam.bookshop.validator.Validator;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 import java.util.Optional;
 
 public class LoginCommand implements Command {
@@ -24,17 +25,17 @@ public class LoginCommand implements Command {
 
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
+    private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
 
     private static final String LOGIN = "login";
     private static final String PASSWORD = "password";
     private static final String ROLE = "role";
     private static final String ERROR_MESSAGE = "error_log_message";
-    private static final String EMPTY_STRING = "";
-    private static final String EMPTY_STRING_REGEX = "^[\\s]+$";
     private static final String FIELDS_CANNOT_BE_EMPTY = "fields_cannot_be_empty";
     private static final String INCORRECT_LOGIN_OR_PASSWORD = "incorrect_login_or_password";
     private static final String INVALID_INPUT_DATA = "invalid_input_data";
     private static final String LOCALE_ATTR = "locale";
+    private static final String BACK_TO_CART_ATTR = "back_to_cart";
 
 
 
@@ -74,13 +75,18 @@ public class LoginCommand implements Command {
 
             System.out.println("*****************NOTHING*****************************");
             session.setAttribute(LOGIN, login);
-            session.setAttribute(ROLE, optionalUser.get().getRole());
+            session.setAttribute(ROLE, optionalUser.get().getRole().getRole());
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);
             session.setAttribute(ERROR_MESSAGE, errorMessage);
             e.printStackTrace();
             return ACCOUNT_PAGE;
+        }
+
+        if (Objects.nonNull(requestContext.getSession().getAttribute(BACK_TO_CART_ATTR))) {
+            requestContext.getSession().removeAttribute(BACK_TO_CART_ATTR);
+            return CART_PAGE;
         }
 
         return HOME_PAGE;

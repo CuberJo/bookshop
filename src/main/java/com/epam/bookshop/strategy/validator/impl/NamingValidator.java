@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class NamingValidator implements Validatable<Naming> {
 
-    private static final String ISBN_REGEX = "^\\d{3}-\\d-\\d{5}-\\d{3}-\\d$";
+    private static final String ISBN_REGEX = "^[\\d]+-[\\d]+-[\\d]+-[\\d]+-[\\d]+$";
     private static final String TITLE_REGEX = "^[-\\(\\)\\!a-zA-Z\\d\\s\\.]{1,50}$";
     private static final String AUTHOR_REGEX = "^[-a-zA-Z\\s\\.]{1,50}$";
     private static final String PUBLISHER_REGEX = "^[-&a-zA-Z\\s]{1,50}$";

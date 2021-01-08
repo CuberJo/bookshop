@@ -1,5 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+<%@ taglib prefix = "ex" uri = "/WEB-INF/tlds/custom.tld"%>
+
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
 
 <!DOCTYPE html>
 <html>
@@ -28,70 +40,46 @@
 <div class="small-container cart-page">
     <table>
         <tr>
-            <th>Product</th>
-            <th>Quantity</th>
+            <th><fmt:message key="label.book" bundle="${lang}"/></th>
             <th>Subtotal</th>
         </tr>
-        <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="images/books/To Kill a Mockingbird.jpg">
-                    <div>
-                        <p>To Kill a Mockingbird</p>
-                        <small>Price: $50.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
-        </tr>
-        <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="images/books/To Kill a Mockingbird.jpg">
-                    <div>
-                        <p>To Kill a Mockingbird</p>
-                        <small>Price: $50.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
-        </tr>
-        <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="images/books/To Kill a Mockingbird.jpg">
-                    <div>
-                        <p>To Kill a Mockingbird</p>
-                        <small>Price: $50.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
-        </tr>
+
+        <c:forEach var="book" items="${cart}">
+            <tr>
+                <td><c:if test="${not empty book.base64Image}">
+                         <div class="cart-info" style="flex-basis: 20%">
+                            <img src="data:image/jpg;base64,${book.base64Image}">
+                            <div>
+                                <p>${book.title}</p>
+                                <small><fmt:message key="label.price" bundle="${lang}"/>: $${book.price}</small>
+                                <br>
+                                <c:set var="book_to_cart" scope="request" value="${book}"/>
+                                <a href="/home?command=remove_from_cart"><fmt:message key="label.rmv" bundle="${lang}"/></a>
+                            </div>
+                        </div>
+                </c:if></td>
+                <td>${book.price}</td>
+            </tr>
+        </c:forEach>
     </table>
 
     <div class="total-price">
         <table>
             <tr>
-                <td>Subtotal</td>
-                <td>$200.00</td>
+                <td><fmt:message key="label.subtotal" bundle="${lang}"/></td>
+                <td>$<ex:totalPriceCounter cart="${cart}"/></td>
             </tr>
             <tr>
-                <td>Tax</td>
-                <td>$35.00</td>
+                <td><fmt:message key="label.discount" bundle="${lang}"/></td>
+                <c:set var="discount" value="35.00"/>
+                <c:forEach var="book" items="${cart}">
+
+                </c:forEach>
+                <td>$${discount}</td>
             </tr>
             <tr>
-                <td>Total</td>
-                <td>$230.00</td>
+                <td><fmt:message key="label.total" bundle="${lang}"/></td>
+                <td>$<ex:countDiscount discount="${discount}" cart="${cart}"/></td>
             </tr>
         </table>
     </div>
@@ -100,6 +88,7 @@
 <!---------- footer --------------->
 
 <jsp:include page="footer.jsp" />
+git
 
 </body>
 </html>

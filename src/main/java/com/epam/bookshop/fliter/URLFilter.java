@@ -12,11 +12,8 @@ import java.io.IOException;
 public class URLFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-//        super.doFilter(req, res, chain);
-
-        System.out.println("Before filter");
         chain.doFilter(req, res);
-        System.out.println("After filter");
+//        req.getRequestDispatcher(getFullURL(req))
     }
 
 //    public static String getFullURL(HttpServletRequest request) {

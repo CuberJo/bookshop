@@ -11,10 +11,10 @@ public class Book extends Entity implements Serializable {
 
     @Size(size = 17)
     @Naming(ISBN = true)
-    private java.lang.String ISBN;
+    private String ISBN;
 
     @Naming(title = true)
-    private java.lang.String title;
+    private String title;
 
     @Naming(author = true)
     private String author;
@@ -25,13 +25,15 @@ public class Book extends Entity implements Serializable {
     private java.lang.String publisher;
 
     private Genre genre;
-    private java.lang.String preview;
+    private String  preview;
+
+    private String base64Image;
 
     public Book() {
 
     }
 
-    public Book(java.lang.String ISBN, java.lang.String title, java.lang.String author, double price, java.lang.String publisher, Genre genre, java.lang.String preview) {
+    public Book(String ISBN, String title, String author, double price, String publisher, Genre genre, String preview) {
         this.ISBN = ISBN;
         this.title = title;
         this.author = author;
@@ -106,6 +108,14 @@ public class Book extends Entity implements Serializable {
 
     public void setPreview(java.lang.String preview) {
         this.preview = preview;
+    }
+
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
     }
 
     @Override

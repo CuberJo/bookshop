@@ -43,4 +43,14 @@ public class CustomRequestContext implements RequestContext {
     public HttpSession getSession() {
         return httpServletRequest.getSession();
     }
+
+    @Override
+    public Object getAttribute(String s) {
+        return httpServletRequest.getAttribute(s);
+    }
+
+    @Override
+    public String getContextPath() {
+        return httpServletRequest.getContextPath();
+    }
 }

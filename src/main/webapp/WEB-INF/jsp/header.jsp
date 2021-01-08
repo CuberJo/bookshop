@@ -29,7 +29,7 @@
                 <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>
                 <li><a href="/home?command=books"><fmt:message key="label.store" bundle="${lang}"/></a></li>
                 <li><a href="/home?command=contact_us"><fmt:message key="label.contact_us" bundle="${lang}"/></a></li>
-                <li><a href="/home?command=search"><fmt:message key="label.search_book" bundle="${lang}"/></a></li>
+                <li><a href="/home?command=search&from=${param.command}"><fmt:message key="label.search_book" bundle="${lang}"/></a></li>
                 <c:choose>
                     <c:when test="${not empty sessionScope.role}">
                         <li><a href="/home?command=logout"><fmt:message key="label.log_out" bundle="${lang}"/></a></li>

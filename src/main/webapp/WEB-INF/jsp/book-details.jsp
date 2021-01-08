@@ -1,5 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
 
 <!DOCTYPE html>
 <html>
@@ -20,47 +31,57 @@
 
 <!---------- header --------------->
 
-<jsp:include page="header.jsp" />
+<div class="container">
+    <div class="navbar">
+        <div class="logo">
+            <img src="images/bookstore2.png" width="125px">
+        </div>
+        <nav>
+            <ul id="Menuitems">
+                <li>
+                    <form action="">
+                        <input type="search" style="outline: none">
+                    </form>
+                </li>
+                <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>
+                <li><a href="/home?command=books"><fmt:message key="label.store" bundle="${lang}"/></a></li>
+                <li><a href="/home?command=contact_us"><fmt:message key="label.contact_us" bundle="${lang}"/></a></li>
+                <li><a href="/home?command=search&from=${param.command}"><fmt:message key="label.search_book" bundle="${lang}"/></a></li>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.role}">
+                        <li><a href="/home?command=logout"><fmt:message key="label.log_out" bundle="${lang}"/></a></li>
+                    </c:when>
+                    <c:when test="${empty sessionScope.role}">
+                        <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
+                    </c:when>
+                </c:choose>
+                <li style="font-weight: bold"><a href="/home?command=change_locale&locale=RU&from=${param.command}&isbn=${book.ISBN}">RU</a> | <a href="/home?command=change_locale&locale=RN&from=${param.command}&isbn=${book.ISBN}">EN</a></li>
+            </ul>
+        </nav>
+        <c:if test="${not empty sessionScope.role}">
+            <a href="home?command=cart"><img src="images/cart.png" width="30px" height="30px"></a>
+        </c:if>
+        <img src="images/menu-icon.png" class="menu-icon" onclick="menutoggle()">
+    </div>
+</div>
 
 <!---------- single book details --------------->
 
 <div class="small-container single-product">
     <div class="row">
         <div class="col-2">
-            <img src="images/books/Brazen and the Beast.jpg" width="100%" id="book-img">
-            <div class="small-img-row">
-                <div class="small-img-col">
-                    <img src="images/books/Brazen and the Beast.jpg" width="100%" class="small-img">
-                </div>
-                <div class="small-img-col">
-                    <img src="images/books/The Three Musketeers Paperback.jpg" width="100%" class="small-img">
-                </div>
-                <div class="small-img-col">
-                    <img src="images/books/Circe.jpg" width="100%" class="small-img">
-                </div>
-                <div class="small-img-col">
-                    <img src="images/books/Brazen and the Beast.jpg" width="100%" class="small-img">
-                </div>
-            </div>
+            <img src="data:image/jpg;base64,${book.base64Image}" width="100%" id="book-img">
         </div>
         <div class="col-2">
-            <p>Home / Love stories</p>
-            <h1>Brazen and the Beast</h1>
-            <h4>$50.00</h4>
-            <select>
-                <option>Select size</option>
-                <option>XXL</option>
-                <option>XL</option>
-                <option>Large</option>
-                <option>Medium</option>
-                <option>Small</option>
-            </select>
-            <input type="number" value="1">
-            <a href="" class="btn">Add to cart</a>
-
-            <h3>Book details <i class="fa fa-indent"></i></h3>
+            <p><fmt:message key="label.genre" bundle="${lang}"/> / <a href="/home?command=books?genre=${book.genre.genre}"><fmt:message key="label.${book.genre.genre}" bundle="${lang}"/></a></p>
+            <h1>${book.title}</h1>
+            <h4>$${book.price}</h4>
+            <c:set var="book_to_cart" scope="session" value="${book}"/>
+            <form action="/home?command=add_to_cart" method="post">
+                <button style="cursor: pointer; outline: none; border: none" type="submit" class="btn"><fmt:message key="label.add_to_cart" bundle="${lang}"/></button>
+            </form>
             <br>
-            <p>This book was written by...</p>
+            <p><fmt:message key="label.author" bundle="${lang}"/> - ${book.author}</p>
         </div>
     </div>
 </div>
@@ -69,8 +90,8 @@
 
 <div class="small-container">
     <div class="row row-2">
-        <h2>Related books</h2>
-        <p>View More</p>
+        <h2><fmt:message key="label.related_books" bundle="${lang}"/></h2>
+        <p><a href="/home?command=books"><fmt:message key="label.view_more" bundle="${lang}"/></a></p>
     </div>
 </div>
 
@@ -153,7 +174,6 @@
     });
 
 </script>
-
 
 </body>
 </html>

@@ -33,7 +33,7 @@
 
 
 <body>
-
+<%--<img src="data:image/jpg;base64,${img}" width="240" height="300"/>--%>
 <!---------- header --------------->
 
 <jsp:include page="header.jsp" />
@@ -58,11 +58,14 @@
     <div class="mrow">
         <div class="row">
             <c:forEach var="book" items="${requestScope.books}">
-                 <div class="col-4" style="flex-basis: 20%">
-                <img src="../../images/library.jpg">
-                <h4>${book.title}</h4>
-                <p>${book.price}</p>
-                </div>
+                <c:if test="${not empty book.base64Image}">
+                     <div class="col-4" style="flex-basis: 20%"><a href="/home?command=book-details&isbn=${book.ISBN}">
+    <%--                <img src="../../images/library.jpg">--%>
+                        <img src="data:image/jpg;base64,${book.base64Image}">
+                        <h4>${book.title}</h4>
+                        <p>${book.price}$</p>
+                    </a></div>
+                </c:if>
             </c:forEach>
         </div>
         <div class="pagination">

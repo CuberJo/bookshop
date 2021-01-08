@@ -1,6 +1,7 @@
 package com.epam.bookshop.service.impl;
 
 import com.epam.bookshop.dao.AbstractDAO;
+import com.epam.bookshop.dao.impl.BookDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
@@ -12,7 +13,9 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
+import java.io.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.Optional;
 public class BookService implements EntityService<Book> {
 
     private static final String BOOK_NOT_FOUND = "book_not_found";
+    private static final String IMAGE_NOT_FOUND = "image_not_found";
     private static final String WHITESPACE = " ";
 
     private String locale = "EN";
@@ -100,9 +104,6 @@ public class BookService implements EntityService<Book> {
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
         dao.setLocale(locale);
         Optional<Book> optionalBook = dao.findById(id);
-//        if (optionalBook.isEmpty()) {
-//            throw new EntityNotFoundException("No book with id = " + id + " found");
-//        }
 
         try {
             conn.close();
@@ -110,7 +111,6 @@ public class BookService implements EntityService<Book> {
             throwables.printStackTrace();
         }
 
-//        return optionalBook.get();
         return optionalBook;
     }
 
@@ -125,9 +125,6 @@ public class BookService implements EntityService<Book> {
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
         dao.setLocale(locale);
         Optional<Book> optionalBook = dao.find(criteria);
-//        if (optionalBook.isEmpty()) {
-//            throw new EntityNotFoundException("No book with ISBN = " + ((BookCriteria)criteria).getISBN() + " found");
-//        }
 
         try {
             conn.close();
@@ -135,7 +132,6 @@ public class BookService implements EntityService<Book> {
             throwables.printStackTrace();
         }
 
-//        return optionalBook.get();
         return optionalBook;
     }
 
@@ -150,9 +146,6 @@ public class BookService implements EntityService<Book> {
         AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
         dao.setLocale(locale);
         Optional<Book> optionalBook = dao.update(book);
-//        if (optionalBook.isEmpty()) {
-//            throw new EntityNotFoundException("No book with id = " + book.getEntityId() + " found");
-//        }
 
         try {
             conn.close();
@@ -160,7 +153,6 @@ public class BookService implements EntityService<Book> {
             throwables.printStackTrace();
         }
 
-//        return optionalBook.get();
         return optionalBook;
     }
 
@@ -208,5 +200,69 @@ public class BookService implements EntityService<Book> {
         }
 
         return isDeleted;
+    }
+
+    public void create(String ISBN, String filePath) {
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        dao.setLocale(locale);
+        dao.createImage(ISBN, filePath);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public Collection<Book> findImagesForBooks(Collection<Book> books) throws EntityNotFoundException {
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        DAOFactory.INSTANCE.setLocale(locale);
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        dao.setLocale(locale);
+
+        for (Book book: books) {
+            Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
+            if (optionalImage.isEmpty()) {
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IMAGE_NOT_FOUND) + WHITESPACE + book.getISBN();
+                throw new EntityNotFoundException(errorMessage);
+            }
+
+            book.setBase64Image(optionalImage.get());
+        }
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return books;
+    }
+
+    public Optional<String> findImageForBook(Book book) throws EntityNotFoundException {
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+
+        DAOFactory.INSTANCE.setLocale(locale);
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        dao.setLocale(locale);
+
+        Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
+        if (optionalImage.isEmpty()) {
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IMAGE_NOT_FOUND) + WHITESPACE + book.getISBN();
+            throw new EntityNotFoundException(errorMessage);
+        }
+
+        book.setBase64Image(optionalImage.get());
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return optionalImage;
     }
 }

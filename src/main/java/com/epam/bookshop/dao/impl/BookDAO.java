@@ -11,10 +11,8 @@ import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
 import com.epam.bookshop.strategy.query_creator.impl.FindEntityQueryCreatorFactory;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.*;
+import java.sql.*;
 import java.util.*;
 
 public class BookDAO extends AbstractDAO<Long, Book> {
@@ -30,6 +28,10 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             "FROM TEST_LIBRARY.BOOK " +
             "WHERE Id = ?";
 
+    private static final String SQL_SELECT_IMG_BY_ISBN = "SELECT Image from TEST_LIBRARY.BOOK_IMAGE WHERE ISBN = ?;";
+    private static final String SQL_INSERT_IMG = "INSERT INTO TEST_LIBRARY.BOOK_IMAGE (ISBN, Image) VALUES (?, ?)";
+
+
     private static final String ID_COLUMN = "Id";
     private static final String ISBN_COLUMN = "ISBN";
     private static final String TITLE_COLUMN = "Title";
@@ -38,6 +40,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String GENRE_ID_COLUMN = "Genre_Id";;
     private static final String PUBLISHER_COLUMN = "Publisher";
     private static final String PREVIEW_COLUMN = "Preview";
+    private static final String IMAGE_COLUMN = "Image";
 
     private static final String NO_SUCH_GENRE_FOUND = "no_such_genre_found";
     private static final String WHITESPACE = " ";
@@ -306,5 +309,75 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         }
 
         return optionalBookToUpdate;
+    }
+
+
+    public void createImage(String ISBN, String filePath) {
+
+        try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_IMG);
+            InputStream is = new FileInputStream(new File(filePath))) {
+
+            ps.setString(1, ISBN);
+            ps.setBinaryStream(2, is);
+//            ps.setBlob(2, is);
+
+            ps.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Optional<String> findImageByISBN(String ISBN) {
+        InputStream is = null;
+        ResultSet rs = null;
+
+        String base64Image = "";
+
+        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_IMG_BY_ISBN)) {
+
+            ps.setString(1, ISBN);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Blob blob = rs.getBlob(IMAGE_COLUMN);
+
+                InputStream inputStream = blob.getBinaryStream();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[4096];
+                int bytesRead = -1;
+
+                while (true) {
+                    try {
+                        if (!((bytesRead = inputStream.read(buffer)) != -1)) break;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+
+                byte[] imageBytes = outputStream.toByteArray();
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            } catch (SQLException | IOException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+
+        return Optional.ofNullable(base64Image);
     }
 }

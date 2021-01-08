@@ -36,7 +36,7 @@
 <div class="small-container">
     <div class="row">
         <div class="mcontainer">
-            <form id="Contact" action="action_page.php">
+            <form id="Contact" method="post" action="/home?command=send_contact_form">
 
                 <label for="name"><fmt:message key="label.name" bundle="${lang}"/></label>
                 <c:set var="your_name">
@@ -56,11 +56,12 @@
                 </c:set>
                 <textarea id="subject" name="subject" placeholder="${write_smth}" style="height:200px"></textarea>
 
-<%--                <c:set var="submit">--%>
-<%--                    <fmt:message key="label.submit" bundle="${lang}"/>--%>
-<%--                </c:set>--%>
-<%--                <input type="submit" value="${submit}">--%>
-                <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=contact_us"><fmt:message key="label.submit" bundle="${lang}"/></button>
+                <pre id="errorContactUsMessage" style="color: #ff523b; margin: 20px;"></pre>
+                <c:if test="${not empty error_contact_us_message}">
+                    <pre style="color: #ff523b; height: 20px">${error_contact_us_message}</pre>
+                    <c:remove var="error_reg_message" scope="session" />
+                </c:if>
+                <button type="submit" onclick="return validateContactForm(event)" class="btn"><fmt:message key="label.submit" bundle="${lang}"/></button>
 
             </form>
         </div>
@@ -99,8 +100,7 @@
         let whitespace_regex = /[\s]+/;
         if (subjField == "" || whitespace_regex.test(subjField)) {
             event.preventDefault();
-            console.log(passField);
-            error = "<fmt:message key="input_pass" bundle="${err}"/>";
+            error = "<fmt:message key="input_subj" bundle="${err}"/>";
         }
         if (emailField == "" || whitespace_regex.test(emailField)) {
             event.preventDefault();
@@ -108,11 +108,11 @@
         }
         if (nameField == "" || whitespace_regex.test(nameField)) {
             event.preventDefault();
-            error = "<fmt:message key="input_login" bundle="${err}"/>";
+            error = "<fmt:message key="input_name" bundle="${err}"/>";
         }
 
         if (error != "") {
-            $("#errorRegMessage").text(error);
+            $("#errorContactUsMessage").text(error);
             return false;
         }
 

@@ -5,6 +5,8 @@ import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.impl.BookCriteria;
 import com.epam.bookshop.criteria.impl.GenreCriteria;
+import com.epam.bookshop.dao.impl.BookDAO;
+import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
@@ -15,6 +17,7 @@ import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
@@ -77,7 +80,6 @@ public class BooksCommand implements Command {
                 Optional<Genre> optionalGenre = genreService.find(GenreCriteria.builder().genre(genreName).build());
 
                 if (optionalGenre.isEmpty()) {
-//                    throw new EntityNotFoundException("No genre with genreName = " + genreName + " found");
                     String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + genreName;
                     throw new EntityNotFoundException(errorMessage);
                 }
@@ -91,6 +93,12 @@ public class BooksCommand implements Command {
             }
         } else {
             books = bookService.findAll();
+        }
+
+        try {
+            bookService.findImagesForBooks(books);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
         }
 
         return books;

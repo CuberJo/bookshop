@@ -15,4 +15,8 @@ public interface RequestContext {
     void setAttribute(String attr, Object o);
 
     HttpSession getSession();
+
+    Object getAttribute(String s);
+
+    String getContextPath();
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+    <tlib-version>1.0</tlib-version>
+    <short-name>myshortname</short-name>
+    <uri>http://mycompany.com</uri>
+
+    <tag>
+        <name>totalPriceCounter</name>
+        <tag-class>com.epam.bookshop.tag.PriceCounterTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>cart</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.ArrayList</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>countDiscount</name>
+        <tag-class>com.epam.bookshop.tag.CountDiscountTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>cart</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.ArrayList</type>
+        </attribute>
+        <attribute>
+            <name>discount</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>double</type>
+        </attribute>
+    </tag>
+</taglib>
