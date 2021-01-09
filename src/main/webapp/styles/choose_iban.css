@@ -1,0 +1,134 @@
+/*$color--white = #FFFFFF*/
+/*$color--black = #000000*/
+/*$color--light-grey = #E6E6E6*/
+/*$color--grey = #CCCCCC*/
+/*$color--dark-grey = #7B7B7B*/
+/*$color--primary = #2AA1C0*/
+/*$color--secondary = #0E647D*/
+
+
+html, body {
+    height: 100%
+}
+body {
+    background: #E6E6E6;
+    font-family: 'Source Sans Pro', sans-serif
+}
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+h1 {
+    font-family: 'Alegreya Sans', sans-serif;
+    font-weight: 300;
+    margin-top: 0;
+}
+/* Box to contain form controls*/
+.control-group {
+    display: inline-block;
+    vertical-align: top;
+    background: #FFF;
+    text-align: left;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 200px;
+    height: 210px;
+    margin: 10px
+}
+
+/*Basic control styles*/
+.control {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+ /*Hide default browser input*/
+.control input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+ /*Custom control*/
+.control__indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background: #fff;
+    border: 1px solid #ccc;
+}
+.control--checkbox {
+    border-radius: 3px
+}
+.control--radio {
+    border-radius: 50% /* Makes radio buttons circlular*/
+}
+ /*Hover and focus*/
+.control:hover input:not([disabled]),
+.control input:focus {
+    border-color: #666
+}
+
+/*Checked*/
+.control input:checked {
+    background: #fff
+}
+
+ /*Hover when checked*/
+/*
+.control:hover input:not([disabled]):checked ~ &,
+.control input:checked:focus ~ &
+  border-color: #666
+  */
+
+ /*Hide default browser input*/
+.control input:disabled {
+    background: #ccc;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/*  &:after*/
+/*content ''*/
+/*position absolute*/
+/*display none // Hide check*/
+
+/*                .control input:checked ~ &*/
+/*                display block // Show check*/
+
+/*// Checkbox tick*/
+/*   .control--checkbox &*/
+/*left 5px*/
+/*      top 0px*/
+/*           width 5px*/
+/*                  height 12px*/
+/*                           border solid #34bb92*/
+/*                           border-width 0 2px 2px 0*/
+/*transform rotate(45deg)*/
+
+/*// Disabled tick colour*/
+/*   .control--checkbox input:disabled ~ &*/
+/*   border-color $color--dark-grey*/
+
+/*// Radio button inner circle*/
+/*   .control--radio &*/
+/*left 5px*/
+/*      top 5px*/
+/*           height 6px*/
+/*                   width 6px*/
+/*                          border-radius 50%*/
+/*background #34bb92*/
+
+/*// Disabled circle colour*/
+/*   .control--radio input:disabled ~ &*/
+/*   background $color--dark-grey*/
+

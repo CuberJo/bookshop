@@ -19,4 +19,6 @@ public interface RequestContext {
     Object getAttribute(String s);
 
     String getContextPath();
+
+    void removeAttribute(String s);
 }

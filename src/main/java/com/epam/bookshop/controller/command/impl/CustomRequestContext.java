@@ -53,4 +53,9 @@ public class CustomRequestContext implements RequestContext {
     public String getContextPath() {
         return httpServletRequest.getContextPath();
     }
+
+    @Override
+    public void removeAttribute(String s) {
+        httpServletRequest.removeAttribute(s);
+    }
 }

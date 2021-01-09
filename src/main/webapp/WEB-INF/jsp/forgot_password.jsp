@@ -20,6 +20,7 @@
     <title>Forgot password - Bookstore</title>
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="../../styles/forgot_password.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/account.css">
     <link rel="stylesheet" type="text/css" href="/styles/home.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -36,7 +37,7 @@
     <div class="row">
         <div id="sc-password">
             <h1><fmt:message key="label.reset_pass" bundle="${lang}"/></h1>
-            <form id="ResetPassForm" class="sc-container" method="post" action="/home?command=reset_password">
+            <form id="ResetPassForm"  class="sc-container" method="post" action="/home?command=reset_password">
                 <input type="email" placeholder="Email" name="email"/>
                 <pre id="errorResetPassMessage" style="color: #ff523b; text-align: center; margin: 10px"></pre>
                 <c:if test="${not empty error_message}">

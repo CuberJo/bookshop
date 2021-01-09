@@ -18,10 +18,11 @@ public class CommandFactory {
     private static final String RESET_PASSWORD = "reset_password";
     private static final String CONTACT_US = "contact_us";
     private static final String CHANGE_LOCALE = "change_locale";
-    private static final String BANK_ACCOUNT = "bank_account";
+    private static final String BANK_ACCOUNT = "add_bank_account";
     private static final String SEND_CONTACT_FORM = "send_contact_form";
     private static final String ADD_TO_CART = "add_to_cart";
     private static final String REMOVE_FROM_CART = "remove_from_cart";
+    private static final String PURCHASE = "purchase";
 
 
     public static Command command(String command) {
@@ -60,6 +61,8 @@ public class CommandFactory {
                 return new AddToCartCommand();
             case REMOVE_FROM_CART:
                 return new RemoveFromCartCommand();
+            case PURCHASE:
+                return new PurchaseCommand();
             default:
                 return new HomeCommand();
         }

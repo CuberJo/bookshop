@@ -12,6 +12,10 @@
     </c:when>
 </c:choose>
 <fmt:setBundle basename="jsp_text" var="lang" />
+<fmt:setBundle basename="message" var="mes" />
+
+
+
 
 <!DOCTYPE html>
 <html>
@@ -38,57 +42,82 @@
 <!---------- cart item details --------------->
 
 <div class="small-container cart-page">
-    <table>
-        <tr>
-            <th><fmt:message key="label.book" bundle="${lang}"/></th>
-            <th>Subtotal</th>
-        </tr>
-
-        <c:forEach var="book" items="${cart}">
+    <c:choose>
+    <c:when test="${not empty cart}">
+        <table style="margin: 40px auto">
             <tr>
-                <td><c:if test="${not empty book.base64Image}">
-                         <div class="cart-info" style="flex-basis: 20%">
-                            <img src="data:image/jpg;base64,${book.base64Image}">
-                            <div>
-                                <p>${book.title}</p>
-                                <small><fmt:message key="label.price" bundle="${lang}"/>: $${book.price}</small>
-                                <br>
-                                <c:set var="book_to_cart" scope="request" value="${book}"/>
-                                <a href="/home?command=remove_from_cart"><fmt:message key="label.rmv" bundle="${lang}"/></a>
+                <th><fmt:message key="label.book" bundle="${lang}"/></th>
+                <th><fmt:message key="label.price" bundle="${lang}"/></th>
+            </tr>
+            <c:forEach var="book" items="${cart}">
+                <tr>
+                    <td><c:if test="${not empty book.base64Image}">
+                             <div class="cart-info" style="flex-basis: 20%">
+                                <img src="data:image/jpg;base64,${book.base64Image}">
+                                <div>
+                                    <p>${book.title}</p>
+                                    <small><fmt:message key="label.price" bundle="${lang}"/>: $${book.price}</small>
+                                    <br>
+                                    <c:set var="boot_to_remove" scope="session" value="${book}"/>
+                                    <form method="post" action="/home?command=remove_from_cart">
+                                        <button type="submit" style="cursor: pointer; color: #ff523b; font-size: 12px; background: none; border: none"><fmt:message key="label.rmv" bundle="${lang}"/></button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                </c:if></td>
-                <td>${book.price}</td>
-            </tr>
-        </c:forEach>
-    </table>
-
-    <div class="total-price">
-        <table>
-            <tr>
-                <td><fmt:message key="label.subtotal" bundle="${lang}"/></td>
-                <td>$<ex:totalPriceCounter cart="${cart}"/></td>
-            </tr>
-            <tr>
-                <td><fmt:message key="label.discount" bundle="${lang}"/></td>
-                <c:set var="discount" value="35.00"/>
-                <c:forEach var="book" items="${cart}">
-
-                </c:forEach>
-                <td>$${discount}</td>
-            </tr>
-            <tr>
-                <td><fmt:message key="label.total" bundle="${lang}"/></td>
-                <td>$<ex:countDiscount discount="${discount}" cart="${cart}"/></td>
-            </tr>
+                    </c:if></td>
+                    <td>$${book.price}</td>
+                </tr>
+            </c:forEach>
         </table>
-    </div>
+
+        <div class="total-price">
+            <table>
+                <tr>
+                    <td><fmt:message key="label.subtotal" bundle="${lang}"/></td>
+                    <td>$<ex:totalPriceCounter cart="${cart}"/></td>
+                </tr>
+                <tr>
+                    <td><fmt:message key="label.discount" bundle="${lang}"/></td>
+                    <c:set var="discount" value="5.00"/>
+                    <c:forEach var="book" items="${cart}">
+
+                    </c:forEach>
+                    <td>$${discount}</td>
+                </tr>
+                <tr>
+                    <td><fmt:message key="label.total" bundle="${lang}"/></td>
+                    <td>$<ex:countDiscount discount="${discount}" cart="${cart}"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><a href="/home?command=purchase" class="btn"><fmt:message key="label.purchase" bundle="${lang}"/></a></td>
+<%--                    <td><form method="post" action="/home?command=purchase">--%>
+<%--                        <button type="submit" style="cursor: pointer; color: #ff523b; font-size: 12px; background: none; border: none"><fmt:message key="label.purchase" bundle="${lang}"/></button>--%>
+<%--                    </form></td>--%>
+<%--                    <td><button type="submit" style="cursor: pointer; border: none; outline: none" class="btn"><fmt:message key="label.purchase" bundle="${lang}"/></button></td>--%>
+                </tr>
+            </table>
+        </div>
+    </c:when>
+    <c:otherwise>
+        <div class="row" style="margin: 100px auto">
+            <div class="mcontainer" align="center">
+                <br>
+                <h1><fmt:message key="empty_cart" bundle="${mes}"/></h1>
+                <br>
+                <p><fmt:message key="seem_you_havent_chosen_book" bundle="${mes}"/></p>
+                <div style="height: 30px"></div>
+                <a href="/home?command=books" class="btn"><fmt:message key="go_to_store" bundle="${mes}"/></a>
+                <div style="height: 50px"></div>
+            </div>
+        </div>
+    </c:otherwise>
+    </c:choose>
 </div>
 
 <!---------- footer --------------->
 
 <jsp:include page="footer.jsp" />
-git
 
 </body>
 </html>
