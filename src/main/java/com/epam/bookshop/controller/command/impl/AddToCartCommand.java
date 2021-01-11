@@ -59,7 +59,8 @@ public class AddToCartCommand implements Command {
             page = String.format(page, CART);
         } else {
             page = String.format(page, ACCOUNT);
-            session.setAttribute(backToCart, "back_to_cart");
+            // to return back after registration or singing in
+            session.setAttribute(backToCart, backToCart);
         }
         
         String pageToReturn = page;

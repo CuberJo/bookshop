@@ -9,6 +9,7 @@ import com.epam.bookshop.util.manager.ErrorMessageManager;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 
 public class RemoveFromCartCommand implements Command {
 
@@ -19,9 +20,10 @@ public class RemoveFromCartCommand implements Command {
     private static final String LOGIN_ATTR = "login";
     private static final String LOCALE = "locale";
     private static final String CART = "cart";
+    private static final String ISBN = "isbn";
 
     private static final String EMPTY_CART = "emmpty_cart";
-    private static final String BOOK_TO_REMOVE = "boot_to_remove";
+    private static final String BOOK_TO_REMOVE = "book_to_remove";
     private static final String BOOK_NOT_FOUND_IN_CART = "book_not_found_in_cart";
 
     @Override
@@ -42,7 +44,15 @@ public class RemoveFromCartCommand implements Command {
             throw new RuntimeException(error);
         }
 
-        Book bookToRemove = (Book) session.getAttribute(BOOK_TO_REMOVE);
+        String isbnToRemove = requestContext.getParameter(ISBN);
+        System.out.println(isbnToRemove);
+        Book bookToRemove = cart.stream().
+                filter(book -> book.getISBN().equals(isbnToRemove))
+                .findFirst().get();
+//        Book bookToRemove = (Book) session.getAttribute(BOOK_TO_REMOVE);
+//        Book bookToRemove = requestContext.getParameter(BOOK_TO_REMOVE);
+
+        System.out.println(bookToRemove);
 
         boolean bookPresent = false;
         for (Book book : cart) {
@@ -53,7 +63,7 @@ public class RemoveFromCartCommand implements Command {
             }
         }
 
-        requestContext.getSession().removeAttribute(BOOK_TO_REMOVE);
+        session.removeAttribute(BOOK_TO_REMOVE);
 
         if (!bookPresent) {
             error = ErrorMessageManager.valueOf(locale).getMessage(BOOK_NOT_FOUND_IN_CART);

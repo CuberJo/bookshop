@@ -24,7 +24,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cart - Bookstore</title>
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="../../styles/cart.css">
     <link rel="stylesheet" type="text/css" href="../../styles/home.css">
     <link rel="stylesheet" type="text/css" href="../../styles/books.css">
@@ -35,6 +35,8 @@
 
 <body>
 
+<noscript>Need Javascript</noscript>
+
 <!---------- header --------------->
 
 <jsp:include page="header.jsp" />
@@ -44,7 +46,7 @@
 <div class="small-container cart-page">
     <c:choose>
     <c:when test="${not empty cart}">
-        <table style="margin: 40px auto">
+        <table  style="margin: 40px auto">
             <tr>
                 <th><fmt:message key="label.book" bundle="${lang}"/></th>
                 <th><fmt:message key="label.price" bundle="${lang}"/></th>
@@ -58,10 +60,13 @@
                                     <p>${book.title}</p>
                                     <small><fmt:message key="label.price" bundle="${lang}"/>: $${book.price}</small>
                                     <br>
-                                    <c:set var="boot_to_remove" scope="session" value="${book}"/>
-                                    <form method="post" action="/home?command=remove_from_cart">
-                                        <button type="submit" style="cursor: pointer; color: #ff523b; font-size: 12px; background: none; border: none"><fmt:message key="label.rmv" bundle="${lang}"/></button>
-                                    </form>
+<%--                                    <c:set var="book_to_remove" scope="session" value="${book}"/>--%>
+<%--                                    <form method="post" action="/home?command=remove_from_cart">--%>
+                                        <button id="${book.ISBN}" <%--id="remove"--%> type="submit" style="cursor: pointer; color: #ff523b; font-size: 12px; background: none; border: none">
+<%--                                            ${book.ISBN}--%>
+                                            <fmt:message key="label.rmv" bundle="${lang}"/>
+                                        </button>
+<%--                                    </form>--%>
                                 </div>
                             </div>
                     </c:if></td>
@@ -118,6 +123,26 @@
 <!---------- footer --------------->
 
 <jsp:include page="footer.jsp" />
+
+
+<script id="s">
+    $(document).ready(function () {
+        <c:forEach var="book" items="${cart}">
+        $('#${book.ISBN}').bind('click', function () {
+            console.log("${book.ISBN}")
+            $.ajax({
+               url: 'http://localhost:8080/home?command=remove_from_cart',
+               type: 'POST',
+                data: ({isbn: '${book.ISBN}'}),
+                success: function () {
+                   $('.small-container').load(' .small-container');
+                    $('#s').load('#s');
+                }
+            });
+        })
+        </c:forEach>
+    })
+</script>
 
 </body>
 </html>

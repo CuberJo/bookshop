@@ -34,8 +34,10 @@ public class CountDiscountTag extends SimpleTagSupport {
     private double countTotalPrice(ArrayList<Book> cart) {
         double total = 0;
 
-        for (int i = 0; i < cart.size(); i++) {
-            total += cart.get(i).getPrice();
+        if (Objects.nonNull(cart) && cart.stream().anyMatch(Objects::nonNull)) {
+            for (int i = 0; i < cart.size(); i++) {
+                total += cart.get(i).getPrice();
+            }
         }
 
         return total;

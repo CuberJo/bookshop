@@ -19,7 +19,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Books - Bookstore</title>
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
     <link rel="stylesheet" type="text/css" href="../../styles/book-details.css">
     <link rel="stylesheet" type="text/css" href="../../styles/home.css">
     <link rel="stylesheet" type="text/css" href="../../styles/books.css">
@@ -65,6 +66,27 @@
     </div>
 </div>
 
+<!---------- popup --------------->
+
+<div id="popup1" class="overlay">
+    <div class="popup">
+        <h2><fmt:message key="label.book_added" bundle="${lang}"/></h2>
+        <a class="close" href="#">&times;</a>
+        <div class="content">
+            <fmt:message key="label.check_book_in_cart" bundle="${lang}"/>
+            <br/>
+            <c:choose>
+                <c:when test="${empty sessionScope.role}">
+                    <a href="/home?command=account" style="color: #F37326"><fmt:message key="label.check_out" bundle="${lang}"/></a>
+                </c:when>
+                <c:otherwise>
+                    <a href="/home?command=cart" style="color: #F37326"><fmt:message key="label.check_out" bundle="${lang}"/></a>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+</div>
+
 <!---------- single book details --------------->
 
 <div class="small-container single-product">
@@ -77,9 +99,9 @@
             <h1>${book.title}</h1>
             <h4>$${book.price}</h4>
             <c:set var="book_to_cart" scope="session" value="${book}"/>
-            <form action="/home?command=add_to_cart" method="post">
-                <button style="cursor: pointer; outline: none; border: none" type="submit" class="btn"><fmt:message key="label.add_to_cart" bundle="${lang}"/></button>
-            </form>
+<%--            <form action="/home?command=add_to_cart" method="post">--%>
+                <button id="add" style="cursor: pointer; outline: none; border: none" type="submit" class="btn"><fmt:message key="label.add_to_cart" bundle="${lang}"/></button>
+<%--            </form>--%>
             <br>
             <p><fmt:message key="label.author" bundle="${lang}"/> - ${book.author}</p>
         </div>
@@ -173,6 +195,26 @@
         book_img.attr('src', $(small_img[3]).attr('src'));
     });
 
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#add').bind('click', function () {
+            $.ajax({
+                url: 'http://localhost:8080/home?command=add_to_cart',
+                type: 'POST',
+                <c:if test= "${empty sessionScope.role}">
+                    data: ({back_to_cart: "back_to_cart"}),
+                </c:if>
+                success: function() {
+                    $('.overlay').css({'visibility': 'visible', 'opacity': '1'});
+                    $('.popup .close').click(function(){
+                        $('.overlay').css({'visibility': 'hidden', 'opacity': '0'});
+                    })
+                }
+            });
+        })
+    })
 </script>
 
 </body>
