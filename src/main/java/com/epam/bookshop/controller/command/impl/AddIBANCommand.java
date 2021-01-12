@@ -3,6 +3,7 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
+import com.epam.bookshop.criteria.impl.GenreCriteria;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -43,6 +44,7 @@ public class AddIBANCommand implements Command {
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext ADD_IBAN_PAGE = () -> "/WEB-INF/jsp/add_iban.jsp";
     private static final ResponseContext CHOOSE_IBAN_PAGE_FORWARD = () -> "/WEB-INF/jsp/choose_iban.jsp";
+    private static final ResponseContext PERSONAL_PAGE_PAGE = () -> "/home?command=personal_page";
     private static final ResponseContext CHOOSE_IBAN_PAGE_SEND_REDIRECT = () -> "/home?command=choose_iban";
     private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
 
@@ -65,7 +67,10 @@ public class AddIBANCommand implements Command {
             return HOME_PAGE;
         }
 
-        if (Objects.nonNull(session.getAttribute(GET_ADD_IBAN_PAGE_ATTR))) {
+        if (Objects.nonNull(session.getAttribute(GET_ADD_IBAN_PAGE_ATTR)) || Objects.nonNull(requestContext.getParameter(GET_ADD_IBAN_PAGE_ATTR))) {
+            if (Objects.nonNull(requestContext.getParameter(CREATE_ADDITIONAL_IBAN))) {
+                session.setAttribute(CREATE_ADDITIONAL_IBAN, CREATE_ADDITIONAL_IBAN);
+            }
             session.removeAttribute(GET_ADD_IBAN_PAGE_ATTR);
             return ADD_IBAN_PAGE;
         }
@@ -86,10 +91,15 @@ public class AddIBANCommand implements Command {
                 return CHOOSE_IBAN_PAGE_FORWARD;
             }
 
-            if ((IBANs.stream().findAny().isEmpty() || Objects.nonNull(requestContext.getAttribute(CREATE_ADDITIONAL_IBAN))) ||
-                    (IBANs.stream().findAny().isEmpty() && Objects.nonNull(requestContext.getAttribute(CREATE_ADDITIONAL_IBAN)))) {
+            if ((IBANs.stream().findAny().isEmpty()
+                    || Objects.nonNull(requestContext.getAttribute(CREATE_ADDITIONAL_IBAN)))
+                    || Objects.nonNull(session.getAttribute(CREATE_ADDITIONAL_IBAN))) {
                 String iban = createIBAN(requestContext, login);
                 IBANs.add(iban);
+
+                if (Objects.nonNull(session.getAttribute(CREATE_ADDITIONAL_IBAN))) {
+                    session.removeAttribute(CREATE_ADDITIONAL_IBAN);
+                }
             }
 
         } catch (ValidatorException e) {
@@ -101,7 +111,7 @@ public class AddIBANCommand implements Command {
             return CART_PAGE;
         }
 
-        return CHOOSE_IBAN_PAGE_SEND_REDIRECT;
+        return PERSONAL_PAGE_PAGE;
     }
 
 

@@ -1,5 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/fmt" prefix = "fmt" %>
+
+
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
+<fmt:setBundle basename="message" var="mes" />
+
 
 <!DOCTYPE html>
 <html>
@@ -33,13 +47,13 @@
     <div class="row">
         <div class="mcontainer" align="center">
             <br>
-            <h1>You have purchased a book successfully!</h1>
+            <h1><fmt:message key="success_purchase" bundle="${mes}"/></h1>
             <br>
-            <h2>Cheeck out your account page to see your books</h2>
+            <h2><fmt:message key="checkout_account" bundle="${mes}"/></h2>
             <br>
-<%--            <p>The Page you are looking for doesn't exist or an other error occurred.</p>--%>
+<%--            <p></p>--%>
             <div style="height: 30px"></div>
-            <a href="/home?command=home" class="btn">Back home</a>
+            <a href="/home?command=personal_page" class="btn"><fmt:message key="label.account" bundle="${lang}"/></a>
             <div style="height: 100px"></div>
         </div>
     </div>

@@ -54,6 +54,7 @@
                 </div>
             </c:forEach>
             <div><button type="submit" class="btn"><fmt:message key="label.submit" bundle="${lang}"/></button></div>
+            <a href="/home?command=add_iban&getAddIBANPage=getAddIBANPage&additional_iban=additional_iban"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>
         </form>
     </div>
 </div>

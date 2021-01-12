@@ -26,6 +26,7 @@ public class CommandFactory {
     private static final String CHOOSE_IBAN = "choose_iban";
     private static final String LOAD_IBANs = "load_ibans";
     private static final String FINISHED_PURCHASE = "finished_purchase";
+    private static final String PERSONAL_PAGE = "personal_page";
 
 
     public static Command command(String command) {
@@ -72,6 +73,9 @@ public class CommandFactory {
                 return new AddIBANCommand();
             case FINISHED_PURCHASE:
                 return new FinishedPurchaseCommand();
+            case PERSONAL_PAGE:
+                return new PersonalPageCommand();
+
 //            case LOAD_IBANs:
 //                return new LoadIBANsController();
             default:

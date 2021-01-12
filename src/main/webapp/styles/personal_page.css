@@ -1,0 +1,22 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-right: 15%;
+    margin-bottom: 25%;
+}
+td {
+    padding: 10px 5px;
+}
+td a {
+    color: #ff523b;
+    font-size: 12px;
+}
+.btn-link {
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+}

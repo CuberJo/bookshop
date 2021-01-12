@@ -68,6 +68,9 @@ p {
     margin: 30px 0;
     border-radius: 30px;
     transition: background .5s;
+    cursor: pointer;
+    border: none;
+    outline: none;
 }
 .btn:hover {
     background: #563434;

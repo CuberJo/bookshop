@@ -99,9 +99,10 @@
                             <a href="/home?command=choose_iban" class="btn"><fmt:message key="label.choose_iban" bundle="${lang}"/></a>
                         </c:when>
                         <c:when test="${not empty chosen_iban}">
-                            <div>
-                                ${chosen_iban}
-                            </div>
+<%--                            <div>--%>
+<%--                                <fmt:message key="label.chosen_iban" bundle="${lang}"/> ${chosen_iban}--%>
+<%--                            </div>--%>
+                            <b><fmt:message key="label.chosen_iban" bundle="${lang}"/> ${chosen_iban}</b>
                             <form method="post" action="/home?command=purchase">
                                 <button class="btn"><fmt:message key="label.purchase" bundle="${lang}"/></button>
                             </form>
@@ -120,7 +121,7 @@
     </c:when>
     <c:otherwise>
         <div class="row" style="margin: 100px auto">
-            <div class="mcontainer" align="center">
+            <div class="mcontainer" style="box-shadow: none; border: none" align="center">
                 <br>
                 <h1><fmt:message key="empty_cart" bundle="${mes}"/></h1>
                 <br>
