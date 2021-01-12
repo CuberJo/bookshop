@@ -38,8 +38,9 @@ public class UserDAO extends AbstractDAO<Long, User> {
     private static final String EMAIL_COLUMN = "Email";
     private static final String ROLE_ID_COLUMN = "Role_Id";
 
-    private static final String SQL_INSERT_USER_BANK_ACCOUNT = "INSERT INTO TEST_LIBRARY.USER_BANK_ACCOUNT (Library_User_Id, IBAN VALUES (?, ?);";
-    private static final String SQL_SELECT_ALL_USER_IBANS = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT;";
+    private static final String SQL_INSERT_USER_BANK_ACCOUNT = "INSERT INTO TEST_LIBRARY.USER_BANK_ACCOUNT (Library_User_Id, IBAN) VALUES (?, ?);";
+    private static final String SQL_SELECT_ALL_USERs_IBANS = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT;";
+    private static final String SQL_SELECT_ALL_USER_IBANS_BY_ID = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE Library_User_Id = ?;";
     private static final String SQL_SELECT_IBAN_BY_LIBRARY_USER_ID = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE Library_User_Id = ?;";
 
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
@@ -111,20 +112,21 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 }
                 user.setRole(optionalRole.get());
 
-                Map<String, Long> userIBANS = findAllUserBankAccounts();
-                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
-                List<String> IBANs = new ArrayList<>();
-                while (it.hasNext()) {
-                    // if User id equals user id from map, then ..
-                    Map.Entry<String, Long> next = it.next();
-                    if (next.getValue().equals(ID_COLUMN)) {
-                        IBANs.add(next.getKey());
-                    }
-                }
-                if (IBANs.isEmpty()) {
-                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
-                    throw new RuntimeException(errorMessage);
-                }
+                List<String> IBANs = findUserBankAccounts(user.getEntityId());
+//                Map<String, Long> userIBANS = findAllUserBankAccounts();
+//                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
+//                List<String> IBANs = new ArrayList<>();
+//                while (it.hasNext()) {
+//                    // if User id equals user id from map, then ..
+//                    Map.Entry<String, Long> next = it.next();
+//                    if (next.getValue().equals(ID_COLUMN)) {
+//                        IBANs.add(next.getKey());
+//                    }
+//                }
+//                if (IBANs.isEmpty()) {
+//                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
+//                    throw new RuntimeException(errorMessage);
+//                }
                 user.setIBANs(IBANs);
 
                 users.add(user);
@@ -165,19 +167,20 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 }
                 user.setRole(optionalRole.get());
 
-                Map<String, Long> userIBANS = findAllUserBankAccounts();
-                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
-                List<String> IBANs = new ArrayList<>();
-                while (it.hasNext()) {
-                    // if User id equals user id from map, then ..
-                    Map.Entry<String, Long> next = it.next();
-                    if (next.getValue().equals(ID_COLUMN)) {
-                        IBANs.add(next.getKey());
-                    }
-                }
-                if (IBANs.isEmpty()) {
-//                    throw new RuntimeException("No IBANs found");
-                }
+                List<String> IBANs = findUserBankAccounts(user.getEntityId());
+//                Map<String, Long> userIBANS = findAllUserBankAccounts();
+//                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
+//                List<String> IBANs = new ArrayList<>();
+//                while (it.hasNext()) {
+//                    // if User id equals user id from map, then ..
+//                    Map.Entry<String, Long> next = it.next();
+//                    if (next.getValue().equals(ID_COLUMN)) {
+//                        IBANs.add(next.getKey());
+//                    }
+//                }
+//                if (IBANs.isEmpty()) {
+////                    throw new RuntimeException("No IBANs found");
+//                }
                 user.setIBANs(IBANs);
 
 
@@ -228,20 +231,21 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 }
                 user.setRole(optionalRole.get());
 
-                Map<String, Long> userIBANS = findAllUserBankAccounts();
-                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
-                List<String> IBANs = new ArrayList<>();
-                while (it.hasNext()) {
-                    // if User id equals user id from map, then ..
-                    Map.Entry<String, Long> next = it.next();
-                    if (next.getValue().equals(ID_COLUMN)) {
-                        IBANs.add(next.getKey());
-                    }
-                }
-                if (IBANs.isEmpty()) {
-                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
-                    throw new RuntimeException(errorMessage);
-                }
+                List<String> IBANs = findUserBankAccounts(user.getEntityId());
+//                Map<String, Long> userIBANS = findAllUserBankAccounts();
+//                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
+//                List<String> IBANs = new ArrayList<>();
+//                while (it.hasNext()) {
+//                    // if User id equals user id from map, then ..
+//                    Map.Entry<String, Long> next = it.next();
+//                    if (next.getValue().equals(ID_COLUMN)) {
+//                        IBANs.add(next.getKey());
+//                    }
+//                }
+//                if (IBANs.isEmpty()) {
+//                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
+//                    throw new RuntimeException(errorMessage);
+//                }
                 user.setIBANs(IBANs);
 
                 users.add(user);
@@ -284,20 +288,21 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 }
                 user.setRole(optionalRole.get());
 
-                Map<String, Long> userIBANS = findAllUserBankAccounts();
-                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
-                List<String> IBANs = new ArrayList<>();
-                while (it.hasNext()) {
-                    // if User id equals user id from map, then ..
-                    Map.Entry<String, Long> next = it.next();
-                    if (next.getValue().equals(ID_COLUMN)) {
-                        IBANs.add(next.getKey());
-                    }
-                }
-                if (IBANs.isEmpty()) {
-//                    throw new RuntimeException("No IBANs found");
-
-                }
+                List<String> IBANs = findUserBankAccounts(user.getEntityId());
+//                Map<String, Long> userIBANS = findAllUserBankAccounts();
+//                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
+//                List<String> IBANs = new ArrayList<>();
+//                while (it.hasNext()) {
+//                    // if User id equals user id from map, then ..
+//                    Map.Entry<String, Long> next = it.next();
+//                    if (next.getValue().equals(ID_COLUMN)) {
+//                        IBANs.add(next.getKey());
+//                    }
+//                }
+//                if (IBANs.isEmpty()) {
+////                    throw new RuntimeException("No IBANs found");
+//
+//                }
                 user.setIBANs(IBANs);
 
             }
@@ -379,10 +384,10 @@ public class UserDAO extends AbstractDAO<Long, User> {
         return Map.of(IBAN, libraryUserId);
     }
 
-    public Map<String, Long> findAllUserBankAccounts() {
+    public Map<String, Long> findUsersBankAccounts() {
         Map<String, Long> userIBANs = new HashMap<>();
 
-        try(PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_USER_IBANS);
+        try(PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_USERs_IBANS);
             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
@@ -392,6 +397,34 @@ public class UserDAO extends AbstractDAO<Long, User> {
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+
+        return userIBANs;
+    }
+
+    public List<String> findUserBankAccounts(long id) {
+        List<String> userIBANs = new ArrayList<>();
+        ResultSet rs = null;
+
+        try(PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_USER_IBANS_BY_ID)) {
+
+            ps.setLong(1, id);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String IBAN = rs.getString(IBAN_COLUMN);
+                userIBANs.add(IBAN);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         }
 
         return userIBANs;

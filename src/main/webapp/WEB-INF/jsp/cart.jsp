@@ -29,13 +29,12 @@
     <link rel="stylesheet" type="text/css" href="../../styles/home.css">
     <link rel="stylesheet" type="text/css" href="../../styles/books.css">
     <link rel="stylesheet" type="text/css" href="../../styles/book-details.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/choose_iban.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
-
-<noscript>Need Javascript</noscript>
 
 <!---------- header --------------->
 
@@ -62,7 +61,7 @@
                                     <br>
 <%--                                    <c:set var="book_to_remove" scope="session" value="${book}"/>--%>
 <%--                                    <form method="post" action="/home?command=remove_from_cart">--%>
-                                        <button id="${book.ISBN}" <%--id="remove"--%> type="submit" style="cursor: pointer; color: #ff523b; font-size: 12px; background: none; border: none">
+                                        <button id="${book.ISBN}" type="submit" style="cursor: pointer; color: #ff523b; font-size: 12px; background: none; border: none">
 <%--                                            ${book.ISBN}--%>
                                             <fmt:message key="label.rmv" bundle="${lang}"/>
                                         </button>
@@ -95,11 +94,26 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td><a href="/home?command=purchase" class="btn"><fmt:message key="label.purchase" bundle="${lang}"/></a></td>
-<%--                    <td><form method="post" action="/home?command=purchase">--%>
-<%--                        <button type="submit" style="cursor: pointer; color: #ff523b; font-size: 12px; background: none; border: none"><fmt:message key="label.purchase" bundle="${lang}"/></button>--%>
-<%--                    </form></td>--%>
-<%--                    <td><button type="submit" style="cursor: pointer; border: none; outline: none" class="btn"><fmt:message key="label.purchase" bundle="${lang}"/></button></td>--%>
+                    <td><c:choose>
+                        <c:when test="${not empty ibans and empty chosen_iban}">
+                            <a href="/home?command=choose_iban" class="btn"><fmt:message key="label.choose_iban" bundle="${lang}"/></a>
+                        </c:when>
+                        <c:when test="${not empty chosen_iban}">
+                            <div>
+                                ${chosen_iban}
+                            </div>
+                            <form method="post" action="/home?command=purchase">
+                                <button class="btn"><fmt:message key="label.purchase" bundle="${lang}"/></button>
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="back_to_cart" scope="session"/>
+                            <c:set var="getAddIBANPage" scope="session"/>
+                            <c:set var="fromCartPage" scope="session"/>
+<%--                            <td><a href="/home?command=add_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a></td>--%>
+                            <a href="/home?comand=add_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>
+                        </c:otherwise>
+                    </c:choose></td>
                 </tr>
             </table>
         </div>
@@ -129,7 +143,6 @@
     $(document).ready(function () {
         <c:forEach var="book" items="${cart}">
         $('#${book.ISBN}').bind('click', function () {
-            console.log("${book.ISBN}")
             $.ajax({
                url: 'http://localhost:8080/home?command=remove_from_cart',
                type: 'POST',
@@ -141,6 +154,20 @@
             });
         })
         </c:forEach>
+    })
+</script>
+
+<script>
+    $(document).ready(function getIBANs() {
+        $.ajax({
+            url: 'http://localhost:8080/load_ibans',
+            type: 'GET',
+            success: function () {
+                console.log('success');
+                $('.total-price').load(' .total-price');
+                // $('#s').load('#s');
+            }
+        });
     })
 </script>
 

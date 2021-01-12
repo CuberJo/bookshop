@@ -13,10 +13,12 @@
 <fmt:setBundle basename="jsp_text" var="lang" />
 <%--<fmt:setLocale value="en" scope="session" />--%>
 
+<noscript>Need Javascript</noscript>
+
 <div class="container">
     <div class="navbar">
         <div class="logo">
-            <img src="images/bookstore2.png" width="125px">
+            <img src="../../images/bookstore2.png" width="125px">
         </div>
         <nav>
             <ul id="Menuitems">
@@ -38,12 +40,12 @@
                         <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
                     </c:when>
                 </c:choose>
-                <li style="font-weight: bold"><a href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a href="/home?command=change_locale&locale=RN&from=${param.command}">EN</a></li>
+                <li style="font-weight: bold"><a id="ru" href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a id="en" href="/home?command=change_locale&locale=RN&from=${param.command}">EN</a></li>
                 </ul>
         </nav>
         <c:if test="${not empty sessionScope.role}">
-            <a href="home?command=cart"><img src="images/cart.png" width="30px" height="30px"></a>
+            <a href="home?command=cart"><img src="../../images/cart.png" width="30px" height="30px"></a>
         </c:if>
-        <img src="images/menu-icon.png" class="menu-icon" onclick="menutoggle()">
+        <img src="../../images/menu-icon.png" class="menu-icon" onclick="menutoggle()">
     </div>
 </div>

@@ -220,10 +220,24 @@ public class UserService implements EntityService<User> {
         return Map.of(IBAN, library_User_Id);
     }
 
-    public Map<String, Long> findAllUserBankAccount() {
+    public Map<String, Long> findUsersBankAccounts() {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         UserDAO dao = (UserDAO) DAOFactory.INSTANCE.create(EntityType.USER, conn);
-        Map<String, Long> userIBANs = dao.findAllUserBankAccounts();
+        Map<String, Long> userIBANs = dao.findUsersBankAccounts();
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return userIBANs;
+    }
+
+    public List<String> findUserBankAccounts(long id) {
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        UserDAO dao = (UserDAO) DAOFactory.INSTANCE.create(EntityType.USER, conn);
+        List<String> userIBANs = dao.findUserBankAccounts(id);
 
         try {
             conn.close();

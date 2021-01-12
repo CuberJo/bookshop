@@ -1,5 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+
+
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
+<fmt:setBundle basename="message" var="mes" />
+
 
 <!DOCTYPE html>
 <html>
@@ -9,7 +23,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Add bank Account - Bookstore</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/home.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/add_bank_account.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/add_iban.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,400,700" rel="stylesheet">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -36,7 +50,7 @@
             <div class="mrow">
                 <div class="col-75">
                     <div class="container">
-                        <form action="/home?command=add_bank_account">
+                        <form action="/home?command=add_iban" method="post">
 
                             <div class="mrow">
                                 <div class="col-50">
@@ -74,7 +88,8 @@
                                     <label for="cname">Name on Card</label>
                                     <input type="text" id="cname" name="cardname" placeholder="John More Doe">
                                     <label for="ccnum">Credit card number</label>
-                                    <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444">
+<%--                                    <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444">--%>
+                                    <input type="text" id="ccnum" name="iban" placeholder="1111-2222-3333-4444">
                                     <label for="expmonth">Exp Month</label>
                                     <input type="text" id="expmonth" name="expmonth" placeholder="September">
 

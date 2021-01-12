@@ -18,11 +18,14 @@ public class CommandFactory {
     private static final String RESET_PASSWORD = "reset_password";
     private static final String CONTACT_US = "contact_us";
     private static final String CHANGE_LOCALE = "change_locale";
-    private static final String BANK_ACCOUNT = "add_bank_account";
+    private static final String ADD_IBAN = "add_iban";
     private static final String SEND_CONTACT_FORM = "send_contact_form";
     private static final String ADD_TO_CART = "add_to_cart";
     private static final String REMOVE_FROM_CART = "remove_from_cart";
     private static final String PURCHASE = "purchase";
+    private static final String CHOOSE_IBAN = "choose_iban";
+    private static final String LOAD_IBANs = "load_ibans";
+    private static final String FINISHED_PURCHASE = "finished_purchase";
 
 
     public static Command command(String command) {
@@ -63,6 +66,14 @@ public class CommandFactory {
                 return new RemoveFromCartCommand();
             case PURCHASE:
                 return new PurchaseCommand();
+            case CHOOSE_IBAN:
+                return new ChooseIBAN();
+            case ADD_IBAN:
+                return new AddIBANCommand();
+            case FINISHED_PURCHASE:
+                return new FinishedPurchaseCommand();
+//            case LOAD_IBANs:
+//                return new LoadIBANsController();
             default:
                 return new HomeCommand();
         }

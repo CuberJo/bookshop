@@ -22,14 +22,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Choose IBAN - Bookstore</title>
+    <title>Personal page - Bookstore</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/home.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/choose_iban.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,400,700" rel="stylesheet">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:700" rel="stylesheet">
 
 </head>
 
@@ -42,19 +41,12 @@
 
 <div class="small-container">
     <div class="row">
-        <form class="mcontainer"  method="post" action="/home?command=cart">
-            <h1><fmt:message key="label.choose_iban" bundle="${lang}"/></h1>
-            <br>
-            <c:set var="i" value="1" scope="page"/>
-            <c:forEach var="iban" items="${ibans}">
-                <div class="form_radio_btn">
-                    <input id="radio-${i}" type="radio" name="chosen_iban" value="${iban}" checked>
-                    <label for="radio-${i}">${iban}</label>
-                    <c:set var="i" value="${i+1}"/>
-                </div>
+        <div>${login}</div>
+        <div>
+            <c:forEach var="book" items="${library}">
+                <a href="">${book.title} - ${book.author}<a>
             </c:forEach>
-            <div><button type="submit" class="btn"><fmt:message key="label.submit" bundle="${lang}"/></button></div>
-        </form>
+        </div>
     </div>
 </div>
 

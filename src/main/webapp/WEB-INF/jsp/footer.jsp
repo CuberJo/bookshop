@@ -16,7 +16,7 @@
     <div class="container">
         <div class="row">
             <div class="footer-col-1">
-                <img src="images/bookstore2.png">
+                <img src="../../images/bookstore2.png">
             </div>
             <div class="footer-col-3">
                 <h3><fmt:message key="label.useful_links" bundle="${lang}"/></h3>

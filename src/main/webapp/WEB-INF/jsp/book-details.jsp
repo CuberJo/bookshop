@@ -203,9 +203,9 @@
             $.ajax({
                 url: 'http://localhost:8080/home?command=add_to_cart',
                 type: 'POST',
-                <c:if test= "${empty sessionScope.role}">
-                    data: ({back_to_cart: "back_to_cart"}),
-                </c:if>
+<%--                <c:if test= "${empty sessionScope.role}">--%>
+<%--                    data: ({back_to_cart: "back_to_cart"}),--%>
+<%--                </c:if>--%>
                 success: function() {
                     $('.overlay').css({'visibility': 'visible', 'opacity': '1'});
                     $('.popup .close').click(function(){
