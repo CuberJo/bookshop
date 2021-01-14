@@ -1,15 +1,17 @@
 package com.epam.bookshop.service.impl;
 
+import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Role;
-import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.validator.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class RoleService implements EntityService<Role> {
+
+    private static final Logger logger = LoggerFactory.getLogger(RoleService.class);
 
     private String locale = "EN";
 
@@ -38,36 +42,32 @@ public class RoleService implements EntityService<Role> {
     @Override
     public Collection<Role> findAll() {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Role> dao = DAOFactory.INSTANCE.create(EntityType.ROLE, conn);
-        dao.setLocale(locale);
         List<Role> roles = dao.findAll();
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return roles;
     }
 
     @Override
-    public Collection<Role> findAll(Criteria criteria) throws ValidatorException {
+    public Collection<Role> findAll(Criteria<Role> criteria) throws ValidatorException {
         Validator validator = new Validator();
         validator.setLocale(locale);
         validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Role> dao = DAOFactory.INSTANCE.create(EntityType.ROLE, conn);
-        dao.setLocale(locale);
         Collection<Role> roles = dao.findAll(criteria);
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return roles;
@@ -79,27 +79,21 @@ public class RoleService implements EntityService<Role> {
     }
 
     @Override
-    public Optional<Role> find(Criteria criteria) throws ValidatorException {
+    public Optional<Role> find(Criteria<Role> criteria) throws ValidatorException {
         Validator validator = new Validator();
         validator.setLocale(locale);
         validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        DAOFactory.INSTANCE.setLocale(locale);
         AbstractDAO<Long, Role> dao = DAOFactory.INSTANCE.create(EntityType.ROLE, conn);
-        dao.setLocale(locale);
         Optional<Role> optionalRole = dao.find(criteria);
-//        if (optionalGenre.isEmpty()) {
-//            throw new EntityNotFoundException("No genre with genreName = " + ((GenreCriteria)criteria).getGenre() + " found");
-//        }
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
-//        return optionalGenre.get();
         return optionalRole;
     }
 

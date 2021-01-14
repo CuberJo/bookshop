@@ -6,6 +6,8 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
+import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +26,9 @@ public class UnbindIBANController extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(Command.class);
 
-    private static final String LOCALE_ATTR = "locale";
     private static final String IBAN_TO_DELETE = "iban_to_delete";
-    private static final String IBANs_ATR = "ibans";
-
-    private static final String EMPTY_STRING = "";
 
     private static final ResponseContext PERSONAL_PAGE_PAGE = () -> "/home?command=personal_page";
-
-    private static final String IBANs_NOT_FOUND = "IBANs_not_found";
 
 
     @Override
@@ -40,11 +36,11 @@ public class UnbindIBANController extends HttpServlet {
 
         final HttpSession session = request.getSession();
 
-        String locale = (String) session.getAttribute(LOCALE_ATTR);
+        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
-        List<String> ibans = (List<String>) session.getAttribute(IBANs_ATR);
+        List<String> ibans = (List<String>) session.getAttribute(UtilStrings.IBANs);
         if (Objects.isNull(ibans)) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBANs_NOT_FOUND);
             throw new RuntimeException(error);
         }
 
@@ -62,7 +58,7 @@ public class UnbindIBANController extends HttpServlet {
         try {
             service.deleteUserBankAccount(iban);
         } catch (EntityNotFoundException e) {
-            logger.error(EMPTY_STRING, e);
+            logger.error(UtilStrings.EMPTY_STRING, e);
         }
     }
 }

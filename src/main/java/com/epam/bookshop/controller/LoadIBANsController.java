@@ -7,6 +7,8 @@ import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
+import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,26 +28,16 @@ public class LoadIBANsController extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(LoadIBANsController.class);
 
-    private static final String LOGIN_ATTR = "login";
-    private static final String ROLE_ATTR = "role";
-
-    private static final String IBANs_ATR = "ibans";
-    private static final String LOCALE_ATTR = "locale";
-
-    private static final String EMPTY_STRING = "";
-
     private static final ResponseContext DEFAULT_PAGE = () -> "/home";
-    private static final String USER_NOT_FOUND = "user_not_found";
-    private static final String INVALID_INPUT_DATA = "invalid_input_data";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         final HttpSession session = req.getSession();
 
-        String locale = (String) session.getAttribute(LOCALE_ATTR);
+        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
-        String role = (String) session.getAttribute(ROLE_ATTR);
-        String login = (String) session.getAttribute(LOGIN_ATTR);
+        String role = (String) session.getAttribute(UtilStrings.ROLE);
+        String login = (String) session.getAttribute(UtilStrings.LOGIN);
 
         if (Objects.isNull(role) || Objects.isNull(login)) {
             return;
@@ -57,10 +49,10 @@ public class LoadIBANsController extends HttpServlet {
 
             List<String> IBANs = findIBANs(login, locale);
 
-            if (Objects.isNull(session.getAttribute(IBANs_ATR))) {
-                session.setAttribute(IBANs_ATR, IBANs);
+            if (Objects.isNull(session.getAttribute(UtilStrings.IBANs))) {
+                session.setAttribute(UtilStrings.IBANs, IBANs);
             }
-            List<String> sessionIBANs = (List<String>) session.getAttribute(IBANs_ATR);
+            List<String> sessionIBANs = (List<String>) session.getAttribute(UtilStrings.IBANs);
 //            for (String iban : IBANs) {
 //                sessionIBANs.add(iban);
 //            }
@@ -71,8 +63,8 @@ public class LoadIBANsController extends HttpServlet {
             }
 
         } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);
-            logger.error(EMPTY_STRING, e);
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
+            logger.error(UtilStrings.EMPTY_STRING, e);
             throw new RuntimeException(errorMessage, e);
         }
     }
@@ -85,7 +77,7 @@ public class LoadIBANsController extends HttpServlet {
 
         Optional<User> optionalUser = service.find(UserCriteria.builder().login(login).build());
         if (optionalUser.isEmpty()) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND);
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
             throw new RuntimeException(error);
         }
 

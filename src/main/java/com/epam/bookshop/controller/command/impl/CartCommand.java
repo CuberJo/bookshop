@@ -9,8 +9,6 @@ import java.util.Objects;
 
 public class CartCommand implements Command {
 
-    private static final String ROLE = "role";
-    private static final String LOGIN = "login";
 
     private static final String CHOSEN_IBAN_PARAM = "chosen_iban";
 
@@ -27,13 +25,6 @@ public class CartCommand implements Command {
         final HttpSession session = requestContext.getSession();
 
         ResponseContext cartPage = CART_PAGE_FORWARD;
-
-//        String login = (String) session.getAttribute(LOGIN);
-//        String role = (String) session.getAttribute(ROLE);
-//
-//        if (Objects.isNull(login) || Objects.isNull(role)) {
-//            return HOME_PAGE;
-//        }
 
         String chosenIBAN = requestContext.getParameter(CHOSEN_IBAN_PARAM);
         if (Objects.nonNull(chosenIBAN)) {

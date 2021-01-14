@@ -5,11 +5,13 @@ import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
+import com.epam.bookshop.util.ErrorMessageConstants;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +27,6 @@ public class AddIBANCommand implements Command {
 
     private static final Logger logger = LoggerFactory.getLogger(Command.class);
 
-    private static final String LOGIN_ATTR = "login";
-    private static final String LOCALE_ATTR = "locale";
-    private static final String IBAN = "iban";
-    private static final String IBANs_ATTR = "ibans";
     private static final String GET_ADD_IBAN_PAGE_ATTR = "getAddIBANPage";
 
     private static final String BACK_TO_CART = "back_to_cart";
@@ -42,18 +40,14 @@ public class AddIBANCommand implements Command {
     private static final ResponseContext CHOOSE_IBAN_PAGE_SEND_REDIRECT = () -> "/home?command=choose_iban";
     private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
 
-    private static final String USER_NOT_FOUND = "user_not_found";
-    private static final String INVALID_INPUT_DATA = "invalid_input_data";
-
-
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
 
         final HttpSession session = requestContext.getSession();
 
-        String locale = (String) session.getAttribute(LOCALE_ATTR);
-        String login = (String) session.getAttribute(LOGIN_ATTR);
+        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String login = (String) session.getAttribute(UtilStrings.LOGIN);
 
         if (needToProcessGetRequest(requestContext)) {
             return ADD_IBAN_PAGE;
@@ -62,8 +56,8 @@ public class AddIBANCommand implements Command {
         List<String> IBANs = null;
         try {
             IBANs = findIBANs(login, locale);
-            if (Objects.isNull(session.getAttribute(IBANs_ATTR))) {
-                session.setAttribute(IBANs_ATTR, IBANs);
+            if (Objects.isNull(session.getAttribute(UtilStrings.IBANs))) {
+                session.setAttribute(UtilStrings.IBANs, IBANs);
             }
 
             if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(FROM_CART_PAGE))) {
@@ -92,7 +86,7 @@ public class AddIBANCommand implements Command {
 
         if (Objects.nonNull(session.getAttribute(BACK_TO_CHOOSE_IBAN))) {
             session.removeAttribute(BACK_TO_CHOOSE_IBAN);
-            session.setAttribute(IBANs_ATTR, IBANs);
+            session.setAttribute(UtilStrings.IBANs, IBANs);
             return CHOOSE_IBAN_PAGE_SEND_REDIRECT;
         }
 
@@ -121,8 +115,9 @@ public class AddIBANCommand implements Command {
 
     private String createIBAN(RequestContext requestContext, String login) {
 
+        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
+
         UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
-        String locale = (String) requestContext.getSession().getAttribute(LOCALE_ATTR);
         service.setLocale(locale);
 
         String errorMessage = "";
@@ -133,16 +128,16 @@ public class AddIBANCommand implements Command {
             Optional<User> optionalUser = service.find(UserCriteria.builder().login(login).build());
 
             if (optionalUser.isEmpty()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND) + WHITESPACE + login;
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + WHITESPACE + login;
                 throw new EntityNotFoundException(errorMessage);
             }
 
-            iban = requestContext.getParameter(IBAN);
+            iban = requestContext.getParameter(UtilStrings.IBAN);
 
             service.createUserBankAccount(iban, optionalUser.get().getEntityId());
 
         } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
             throw new RuntimeException(errorMessage, e);
         } catch (EntityNotFoundException e) {
             logger.error("", e);
@@ -161,7 +156,7 @@ public class AddIBANCommand implements Command {
 
         Optional<User> optionalUser = service.find(UserCriteria.builder().login(login).build());
         if (optionalUser.isEmpty()) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND);
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
             throw new RuntimeException(error);
         }
 

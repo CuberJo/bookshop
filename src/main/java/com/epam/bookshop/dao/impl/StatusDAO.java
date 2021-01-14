@@ -1,9 +1,11 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.criteria.Criteria;
+import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,27 +18,28 @@ import java.util.Optional;
 
 public class StatusDAO extends AbstractDAO<Long, Status> {
 
+    private static final Logger logger = LoggerFactory.getLogger(StatusDAO.class);
+
     private static final String SQL_SELECT_ALL_STATUSES = "SELECT Id, Status FROM TEST_LIBRARY.ORDER_STATUS;";
     private static final String SQL_SELECT_STATUS_BY_ID = "SELECT Id, Status FROM TEST_LIBRARY.ORDER_STATUS WHERE Id = ?;";
 
     private static final String STATUS_COLUMN = "Status";
     private static final String ID_COLUMN = "Id";
 
-    private String locale = "EN";
+    private final String locale = "EN";
 
     public StatusDAO(Connection connection) {
         super(connection);
     }
 
-    @Override
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
+
 
     @Override
     public Status create(Status entity) {
         return null;
     }
+
+
 
     @Override
     public List<Status> findAll() {
@@ -54,11 +57,12 @@ public class StatusDAO extends AbstractDAO<Long, Status> {
                 statuses.add(status);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return statuses;
     }
+
 
 
     @Override
@@ -78,39 +82,49 @@ public class StatusDAO extends AbstractDAO<Long, Status> {
             }
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                logger.error(throwables.getMessage(), throwables);
             }
         }
 
         return Optional.ofNullable(status);
     }
 
+
+
     @Override
-    public Collection<Status> findAll(Criteria criteria) {
+    public Collection<Status> findAll(Criteria<Status> criteria) {
         return null;
     }
 
+
+
     @Override
-    public Optional<Status> find(Criteria<? extends Entity> criteria) {
+    public Optional<Status> find(Criteria<Status> criteria) {
         return Optional.empty();
     }
+
+
 
     @Override
     public boolean delete(Status entity) {
         return false;
     }
 
+
+
     @Override
     public boolean delete(Long key) {
         return false;
     }
+
+
 
     @Override
     public Optional<Status> update(Status entity) {

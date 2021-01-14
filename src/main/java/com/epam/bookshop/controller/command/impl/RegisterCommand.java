@@ -12,7 +12,9 @@ import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
+import com.epam.bookshop.util.ErrorMessageConstants;
 import com.epam.bookshop.util.MailSender;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
@@ -29,49 +31,31 @@ public class RegisterCommand implements Command {
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
     private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
 
-
     private static final String REGISTER_USER_SUBJECT = "Registration completed";
     private static final String REGISTER_RESPONSE = "You have successfully registered!";
 
-
-    private static final String NAME = "name";
-    private static final String LOGIN = "login";
-    private static final String PASSWORD = "password";
-    private static final String EMAIL = "email";
-    private static final String ROLE = "role";
     private static final String ERROR_MESSAGE = "error_reg_message";
     private static final String USER_ROLE = "USER";
-    private static final String FIELDS_CANNOT_BE_EMPTY = "fields_cannot_be_empty";
-    private static final String INVALID_INPUT_DATA = "invalid_input_data";
-    private static final String COULD_NOT_REACH_EMAIL_ADDRESS = "could_not_reach_email_address";
-    private static final String LOCALE_ATTR = "locale";
     private static final String BACK_TO_CART_ATTR = "back_to_cart";
     private static final String NEED_TO_LINK_BANK_ACCOUNT = "need_to_link_bank_account";
-    private static final String NEW_LINE = "\n";
 
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-        final String name = requestContext.getParameter(NAME);
-        final String login = requestContext.getParameter(LOGIN);
-        final String email = requestContext.getParameter(EMAIL);
-        final String password = requestContext.getParameter(PASSWORD);
-
-        System.out.println("NAME=" + requestContext.getParameter(NAME));
-        System.out.println("LOGIN=" + requestContext.getParameter(LOGIN));
-        System.out.println("PASSWORD=" + requestContext.getParameter(PASSWORD));
-        System.out.println("EMAIL=" + requestContext.getParameter(EMAIL));
+        final String name = requestContext.getParameter(UtilStrings.NAME);
+        final String login = requestContext.getParameter(UtilStrings.LOGIN);
+        final String email = requestContext.getParameter(UtilStrings.EMAIL);
+        final String password = requestContext.getParameter(UtilStrings.PASSWORD);
 
         final HttpSession session = requestContext.getSession();
-        String locale = (String) requestContext.getSession().getAttribute(LOCALE_ATTR);
+        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
         String errorMessage = "";
 
         User user = null;
 
         try {
             if (!new Validator().emptyStringValidator(name, login, email, password)) {
-                System.out.println("!validateInput(name, email, password, login)");
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(FIELDS_CANNOT_BE_EMPTY);
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
             }
@@ -80,20 +64,20 @@ public class RegisterCommand implements Command {
 
             MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
 
-            System.out.println("*****************NOTHING*****************************");
-            session.setAttribute(LOGIN, login);
-            session.setAttribute(ROLE, user.getRole().getRole());
+            session.setAttribute(UtilStrings.LOGIN, login);
+            session.setAttribute(UtilStrings.ROLE, user.getRole().getRole());
             session.setAttribute(NEED_TO_LINK_BANK_ACCOUNT, true);
 
         } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
             session.setAttribute(ERROR_MESSAGE, errorMessage);
             e.printStackTrace();
             return ACCOUNT_PAGE;
         } catch (MessagingException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(COULD_NOT_REACH_EMAIL_ADDRESS) + NEW_LINE + email;
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.COULD_NOT_REACH_EMAIL_ADDRESS) + UtilStrings.NEW_LINE + email;
             session.setAttribute(ERROR_MESSAGE, errorMessage);
             try {
+
                 EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
                 service.setLocale(locale);
                 long userId = service.find(UserCriteria.builder().login(user.getLogin()).build()).get().getEntityId();

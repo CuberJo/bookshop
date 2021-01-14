@@ -20,7 +20,6 @@ import java.util.Optional;
 
 public class ContactUsCommand implements Command {
 
-
     private static final ResponseContext HOME_PAGE = () -> "/WEB-INF/jsp/contact_us.jsp";
 
     @Override

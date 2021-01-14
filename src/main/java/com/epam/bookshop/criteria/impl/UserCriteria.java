@@ -3,6 +3,7 @@ package com.epam.bookshop.criteria.impl;
 import com.epam.bookshop.context.annotation.Naming;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.criteria.Criteria;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserCriteria extends Criteria<User> {
 
@@ -77,7 +78,7 @@ public class UserCriteria extends Criteria<User> {
         }
 
         public Builder password(String password) {
-            this.password = password;
+            this.password =  BCrypt.hashpw(password, BCrypt.gensalt());
             return this;
         }
 

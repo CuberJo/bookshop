@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public abstract class AbstractDAO <K, T extends Entity> {
 
-    private Connection connection;
+    private final Connection connection;
 
     public AbstractDAO(Connection connection) {
         this.connection = connection;
@@ -21,13 +21,13 @@ public abstract class AbstractDAO <K, T extends Entity> {
     public abstract T create(T entity);
     public abstract List<T> findAll();
     public abstract Optional<T> findById(K id);
-    public abstract Collection<T> findAll(Criteria criteria);
-    public abstract Optional<T> find(Criteria<? extends Entity> criteria);
+    public abstract Collection<T> findAll(Criteria<T> criteria);
+    public abstract Optional<T> find(Criteria<T> criteria);
     public abstract boolean delete(T entity);
     public abstract boolean delete(K key);
+//    public abstract Optional<T> update(T entity, Criteria<T> criteria);
     public abstract Optional<T> update(T entity);
 
-    public abstract void setLocale(String locale);
 
     protected PreparedStatement getPrepareStatement(String sql) {
         PreparedStatement ps = null;

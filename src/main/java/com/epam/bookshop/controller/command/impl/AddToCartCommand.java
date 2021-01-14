@@ -4,6 +4,7 @@ import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.domain.impl.Book;
+import com.epam.bookshop.util.UtilStrings;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -11,10 +12,6 @@ import java.util.Objects;
 
 public class AddToCartCommand implements Command {
 
-    private static final String ROLE = "role";
-    private static final String LOGIN = "login";
-
-    private static final String CART = "cart";
     private static final String ACCOUNT = "account";
 
     private static final String BOOK_TO_CART = "book_to_cart";
@@ -24,10 +21,10 @@ public class AddToCartCommand implements Command {
 
         final HttpSession session = requestContext.getSession();
 
-        ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute(CART);
+        ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute(UtilStrings.CART);
         if (Objects.isNull(cart)) {
             cart = new ArrayList<>();
-            session.setAttribute(CART, cart);
+            session.setAttribute(UtilStrings.CART, cart);
         }
 
         Book bookToCart = (Book) session.getAttribute(BOOK_TO_CART);
@@ -52,11 +49,11 @@ public class AddToCartCommand implements Command {
         String backToCart = "back_to_cart";
         String page = "/home?command=%s";
         
-        String login = (String) session.getAttribute(LOGIN);
-        String role = (String) session.getAttribute(ROLE);
+        String login = (String) session.getAttribute(UtilStrings.LOGIN);
+        String role = (String) session.getAttribute(UtilStrings.ROLE);
         
         if (Objects.nonNull(login) && Objects.nonNull(role)) {
-            page = String.format(page, CART);
+            page = String.format(page, UtilStrings.CART);
         } else {
             page = String.format(page, ACCOUNT);
             // to return back after registration or singing in

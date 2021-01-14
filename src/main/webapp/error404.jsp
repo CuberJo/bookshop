@@ -5,6 +5,19 @@
 <%--Message from exception: ${pageContext.exception.message}--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+
+<c:choose>
+    <c:when test="${locale eq 'US'}">
+        <fmt:setLocale value="en_US" />
+    </c:when>
+    <c:when test="${locale eq 'RU'}">
+        <fmt:setLocale value="ru_RU" />
+    </c:when>
+</c:choose>
+<fmt:setBundle basename="jsp_text" var="lang" />
+<fmt:setBundle basename="error_message" var="err" />
+
 
 <!DOCTYPE html>
 <html>
@@ -13,8 +26,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Books - Bookstore</title>
-    <%--    <link rel="stylesheet" type="text/css" href="<c:url value="styles/home.css"/>">--%>
-    <%--    <link rel="stylesheet" type="text/css" href="<c:url value="styles/error404.css"/>">--%>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/home.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/error404.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,400,700" rel="stylesheet">
@@ -43,11 +54,11 @@
             <br>
             <h1>404</h1>
             <br>
-            <h2>Page Not Found</h2>
+            <h2><fmt:message key="page_not_found" bundle="${err}"/></h2>
             <br>
-            <p>The Page you are looking for doesn't exist or an other error occurred.</p>
+            <p><fmt:message key="page_not_found_explanation" bundle="${err}"/></p>
             <div style="height: 30px"></div>
-            <a href="/home?command=home" class="btn">Back home</a>
+            <a href="/home?command=home" class="btn"><fmt:message key="back_home" bundle="${err}"/></a>
             <div style="height: 50px"></div>
         </div>
     </div>

@@ -2,8 +2,9 @@ package com.epam.bookshop.dao.impl;
 
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
-import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,27 +17,28 @@ import java.util.Optional;
 
 public class RoleDAO extends AbstractDAO<Long, Role> {
 
+    private static final Logger logger = LoggerFactory.getLogger(RoleDAO.class);
+
     private static final String SQL_SELECT_ALL_ROLES = "SELECT Id, Role FROM TEST_LIBRARY.USER_ROLE;";
     private static final String SQL_SELECT_ROLE_BY_ID = "SELECT Id, Role FROM TEST_LIBRARY.USER_ROLE WHERE Id = ?;";
 
     private static final String ID_COLUMN = "Id";
     private static final String ROLE_COLUMN = "Role";
 
-    private String locale = "EN";
+    private final String locale = "EN";
 
     public RoleDAO(Connection connection) {
         super(connection);
     }
 
-    @Override
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
+
 
     @Override
     public Role create(Role entity) {
         return null;
     }
+
+
 
     @Override
     public List<Role> findAll() {
@@ -54,11 +56,13 @@ public class RoleDAO extends AbstractDAO<Long, Role> {
                 roles.add(role);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return roles;
     }
+
+
 
     @Override
     public Optional<Role> findById(Long id) {
@@ -77,39 +81,49 @@ public class RoleDAO extends AbstractDAO<Long, Role> {
             }
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                logger.error(throwables.getMessage(), throwables);
             }
         }
 
         return Optional.ofNullable(role);
     }
 
+
+
     @Override
-    public Collection<Role> findAll(Criteria criteria) {
+    public Collection<Role> findAll(Criteria<Role> criteria) {
         return null;
     }
 
+
+
     @Override
-    public Optional<Role> find(Criteria<? extends Entity> criteria) {
+    public Optional<Role> find(Criteria<Role> criteria) {
         return Optional.empty();
     }
+
+
 
     @Override
     public boolean delete(Role entity) {
         return false;
     }
 
+
+
     @Override
     public boolean delete(Long key) {
         return false;
     }
+
+
 
     @Override
     public Optional<Role> update(Role entity) {

@@ -1,21 +1,29 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.criteria.Criteria;
+import com.epam.bookshop.criteria.impl.GenreCriteria;
 import com.epam.bookshop.dao.AbstractDAO;
-import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
-import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
-import com.epam.bookshop.strategy.query_creator.impl.FindEntityQueryCreatorFactory;
+import com.epam.bookshop.strategy.query_creator.impl.EntityQueryCreatorFactory;
+import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.*;
 import java.util.*;
 
 public class BookDAO extends AbstractDAO<Long, Book> {
+
+    private static final Logger logger = LoggerFactory.getLogger(BookDAO.class);
+
+    private static final String SQL_SELECT_ALL_BOOKS_WHERE =  "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK WHERE ";
+    private static final String SQL_UPDATE_BOOK_WHERE =  "UPDATE TEST_LIBRARY.BOOK SET %s WHERE Id = ?";
 
     private static final String SQL_INSERT_BOOK = "INSERT INTO TEST_LIBRARY.BOOK (ISBN, Title, Author, Price, Publisher, Genre_Id, Preview) VALUES (?, ?, ?, ?, ?, ?, ?);";
     private static final String SQL_DELETE_BOOK_BY_ID = "DELETE FROM TEST_LIBRARY.BOOK WHERE Id = ?;";
@@ -31,7 +39,6 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String SQL_SELECT_IMG_BY_ISBN = "SELECT Image from TEST_LIBRARY.BOOK_IMAGE WHERE ISBN = ?;";
     private static final String SQL_INSERT_IMG = "INSERT INTO TEST_LIBRARY.BOOK_IMAGE (ISBN, Image) VALUES (?, ?)";
 
-
     private static final String ID_COLUMN = "Id";
     private static final String ISBN_COLUMN = "ISBN";
     private static final String TITLE_COLUMN = "Title";
@@ -42,23 +49,13 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String PREVIEW_COLUMN = "Preview";
     private static final String IMAGE_COLUMN = "Image";
 
-    private static final String NO_SUCH_GENRE_FOUND = "no_such_genre_found";
-    private static final String WHITESPACE = " ";
-    private static final String NEW_LINE = "\n";
-    private static final String NO_BOOK_UPDATE_OCCURRED = "no_book_update_occurred";
-
-    private static final Integer ZERO_ROWS_AFFECTED = 0;
-
-    private String locale = "EN";
+    private final String locale = "EN";
 
     BookDAO(Connection connection) {
         super(connection);
     }
 
-    @Override
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
+
 
     @Override
     public Book create(Book book) {
@@ -71,11 +68,10 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             ps.setString(5, book.getPublisher());
 
             AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, ConnectionPool.getInstance().getAvailableConnection());
-            List<Genre> genres = genreDAO.findAll();
-            Optional<Genre> optionalGenre = genres.stream().filter(genre -> genre.getGenre().equals(book.getGenre().getGenre())).findAny();
+            Optional<Genre> optionalGenre = genreDAO.find(GenreCriteria.builder().genre(book.getGenre().getGenre()).build());
             if (optionalGenre.isEmpty()) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + NEW_LINE + book.getGenre();
-                throw new RuntimeException(errorMessage + WHITESPACE + book.getGenre().getGenre());
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.NEW_LINE + book.getGenre();
+                throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + book.getGenre().getGenre());
             }
             ps.setLong(6, optionalGenre.get().getEntityId());
 
@@ -83,11 +79,13 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
             ps.executeUpdate();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return book;
     }
+
+
 
     @Override
     public List<Book> findAll() {
@@ -96,7 +94,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_BOOKS);
              ResultSet rs = ps.executeQuery()) {
 
-            AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, ConnectionPool.getInstance().getAvailableConnection());
+            AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE,
+                    ConnectionPool.getInstance().getAvailableConnection());
 
             while (rs.next()) {
                 Book book = new Book();
@@ -107,9 +106,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
-//                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
-                    throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 
@@ -117,15 +115,16 @@ public class BookDAO extends AbstractDAO<Long, Book> {
                 book.setPublisher(rs.getString(PUBLISHER_COLUMN));
                 book.setPreview(rs.getString(PREVIEW_COLUMN));
 
-
                 books.add(book);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return books;
     }
+
+
 
     @Override
     public Optional<Book> findById(Long id) {
@@ -148,9 +147,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
-//                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
-                    throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 
@@ -158,27 +156,27 @@ public class BookDAO extends AbstractDAO<Long, Book> {
                 book.setPublisher(rs.getString(PUBLISHER_COLUMN));
                 book.setPreview(rs.getString(PREVIEW_COLUMN));
             }
-
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                logger.error(throwables.getMessage(), throwables);
             }
         }
 
         return Optional.ofNullable(book);
     }
 
+
+
     @Override
-    public Collection<Book> findAll(Criteria criteria) {
-        FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
-        queryCreator.setLocale(locale);
-        String query = queryCreator.createQuery(criteria);
+    public Collection<Book> findAll(Criteria<Book> criteria) {
+        String query = SQL_SELECT_ALL_BOOKS_WHERE
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria);
 
         List<Book> books = new ArrayList<>();
 
@@ -196,9 +194,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
-//                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
-                    throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 
@@ -209,17 +206,18 @@ public class BookDAO extends AbstractDAO<Long, Book> {
                 books.add(book);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return books;
     }
 
+
+
     @Override
-    public Optional<Book> find(Criteria<? extends Entity> criteria) {
-        FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
-        queryCreator.setLocale(locale);
-        String query = queryCreator.createQuery(criteria);
+    public Optional<Book> find(Criteria<Book> criteria) {
+        String query = SQL_SELECT_ALL_BOOKS_WHERE +
+                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria);
 
         Book book = null;
 
@@ -238,9 +236,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_GENRE_FOUND) + WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
-//                    throw new RuntimeException("Genre with id " + rs.getLong(GENRE_ID_COLUMN));
-                    throw new RuntimeException(errorMessage + ID_COLUMN + WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 
@@ -250,16 +247,20 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return Optional.ofNullable(book);
     }
 
+
+
     @Override
     public boolean delete(Book entity) {
         return delete(entity.getEntityId());
     }
+
+
 
     @Override
     public boolean delete(Long id) {
@@ -268,19 +269,24 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             ps.setLong(1, id);
             int result = ps.executeUpdate();
 
-            if (result == ZERO_ROWS_AFFECTED) {
+            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
                 return false;
             }
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return true;
     }
 
+
+
     @Override
     public Optional<Book> update(Book book) {
+//
+//        String query = String.format(SQL_UPDATE_BOOK_WHERE,
+//                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria));
 
         Optional<Book> optionalBookToUpdate = findById(book.getEntityId());
         if (optionalBookToUpdate.isEmpty()) {
@@ -299,17 +305,18 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
             int result = ps.executeUpdate();
 
-            if (result == ZERO_ROWS_AFFECTED) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_BOOK_UPDATE_OCCURRED);
+            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_BOOK_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
             }
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return optionalBookToUpdate;
     }
+
 
 
     public void createImage(String ISBN, String filePath) {
@@ -318,21 +325,19 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             InputStream is = new FileInputStream(new File(filePath))) {
 
             ps.setString(1, ISBN);
-            ps.setBinaryStream(2, is);
-//            ps.setBlob(2, is);
+            ps.setBinaryStream(2, is); //   or ps.setBlob(2, is);
 
             ps.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (SQLException | FileNotFoundException throwables) {
+            logger.error(throwables.getMessage(), throwables);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
+
+
     public Optional<String> findImageByISBN(String ISBN) {
-        InputStream is = null;
         ResultSet rs = null;
 
         String base64Image = "";
@@ -345,39 +350,52 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             while (rs.next()) {
                 Blob blob = rs.getBlob(IMAGE_COLUMN);
 
-                InputStream inputStream = blob.getBinaryStream();
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                byte[] buffer = new byte[4096];
-                int bytesRead = -1;
-
-                while (true) {
-                    try {
-                        if (!((bytesRead = inputStream.read(buffer)) != -1)) break;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-
-                byte[] imageBytes = outputStream.toByteArray();
+                byte[] imageBytes = convertImageToBytes(blob);
                 base64Image = Base64.getEncoder().encodeToString(imageBytes);
             }
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
                 }
-                if (is != null) {
-                    is.close();
-                }
-            } catch (SQLException | IOException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException throwables) {
+                logger.error(throwables.getMessage(), throwables);
             }
         }
 
         return Optional.ofNullable(base64Image);
+    }
+
+
+
+    private byte[] convertImageToBytes(Blob blob) {
+
+        byte[] imageBytes = null;
+        try(InputStream inputStream = blob.getBinaryStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            byte[] buffer = new byte[4096];
+            int bytesRead = -1;
+
+            while (true) {
+                try {
+                    if (!((bytesRead = inputStream.read(buffer)) != -1)) break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            imageBytes = outputStream.toByteArray();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return imageBytes;
     }
 }

@@ -3,12 +3,12 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
+import com.epam.bookshop.util.UtilStrings;
 
 import java.util.Objects;
 
 public class ChangeLocaleCommand implements Command {
 
-    private static final String LOCALE = "locale";
     private static final String HOME_PAGE = "/home";
     private static final String FROM = "from";
     private static final String RU = "RU";
@@ -19,21 +19,21 @@ public class ChangeLocaleCommand implements Command {
 
         ResponseContext respPage = resolvePage(requestContext);
 
-        String localeParam = requestContext.getParameter(LOCALE);
+        String localeParam = requestContext.getParameter(UtilStrings.LOCALE);
         if (Objects.isNull(localeParam) || localeParam.isEmpty()) {
             return respPage;
         }
         switch (localeParam) {
             case RU:
-                requestContext.getSession().setAttribute(LOCALE, RU);
+                requestContext.getSession().setAttribute(UtilStrings.LOCALE, RU);
 //                requestContext.getSession().setAttribute(LOCALE, new Locale("ru", "RU"));
                 break;
             case US:
-                requestContext.getSession().setAttribute(LOCALE, US);
+                requestContext.getSession().setAttribute(UtilStrings.LOCALE, US);
 //                requestContext.getSession().setAttribute(LOCALE, new Locale("en", "US"));
                 break;
             default:
-                requestContext.getSession().setAttribute(LOCALE, US);
+                requestContext.getSession().setAttribute(UtilStrings.LOCALE, US);
 //                requestContext.getSession().setAttribute(LOCALE, new Locale("en", "US"));
         }
 

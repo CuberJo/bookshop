@@ -10,6 +10,8 @@ import com.epam.bookshop.exception.InvalidStateException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
+import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 import org.mindrot.jbcrypt.BCrypt;
@@ -27,14 +29,7 @@ public class LoginCommand implements Command {
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
     private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
 
-    private static final String LOGIN = "login";
-    private static final String PASSWORD = "password";
-    private static final String ROLE = "role";
     private static final String ERROR_MESSAGE = "error_log_message";
-    private static final String FIELDS_CANNOT_BE_EMPTY = "fields_cannot_be_empty";
-    private static final String INCORRECT_LOGIN_OR_PASSWORD = "incorrect_login_or_password";
-    private static final String INVALID_INPUT_DATA = "invalid_input_data";
-    private static final String LOCALE_ATTR = "locale";
     private static final String BACK_TO_CART_ATTR = "back_to_cart";
 
 
@@ -45,21 +40,21 @@ public class LoginCommand implements Command {
      */
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-        final String login = requestContext.getParameter(LOGIN);
-        final String password = requestContext.getParameter(PASSWORD);
+        final String login = requestContext.getParameter(UtilStrings.LOGIN);
+        final String password = requestContext.getParameter(UtilStrings.PASSWORD);
 
-        System.out.println("LOGIN=" + requestContext.getParameter(LOGIN));
-        System.out.println("PASSWORD=" + requestContext.getParameter(PASSWORD));
+        System.out.println("LOGIN=" + requestContext.getParameter(UtilStrings.LOGIN));
+        System.out.println("PASSWORD=" + requestContext.getParameter(UtilStrings.PASSWORD));
 
         final HttpSession session = requestContext.getSession();
-        String locale = (String) requestContext.getSession().getAttribute(LOCALE_ATTR);
+        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
         String errorMessage = "";
 
 
         try {
             if (!new Validator().emptyStringValidator(login, password)) {
                 System.out.println("!validateInput(login, password)");
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(FIELDS_CANNOT_BE_EMPTY);
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
             }
@@ -67,19 +62,19 @@ public class LoginCommand implements Command {
             Optional<User> optionalUser = authenticate(login, password, locale);
             if (optionalUser.isEmpty()) {
                 System.out.println("optionalUser.isEmpty()");
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INCORRECT_LOGIN_OR_PASSWORD);
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCORRECT_LOGIN_OR_PASSWORD);
                 session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
             }
 
 
             System.out.println("*****************NOTHING*****************************");
-            session.setAttribute(LOGIN, login);
-            session.setAttribute(ROLE, optionalUser.get().getRole().getRole());
+            session.setAttribute(UtilStrings.LOGIN, login);
+            session.setAttribute(UtilStrings.ROLE, optionalUser.get().getRole().getRole());
 
         } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);
-            session.setAttribute(ERROR_MESSAGE, errorMessage);
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
+            session.setAttribute(ERROR_MESSAGE, e.getMessage());
             e.printStackTrace();
             return ACCOUNT_PAGE;
         }

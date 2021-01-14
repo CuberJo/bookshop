@@ -3,11 +3,10 @@ package com.epam.bookshop.strategy.query_creator.impl;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.BookCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
-import com.epam.bookshop.strategy.query_creator.impl.FindEntityQueryCreatorFactory;
+import com.epam.bookshop.strategy.query_creator.EntityQueryCreator;
 import org.testng.annotations.Test;
 
-public class FindBookQueryCreatorTest {
+public class BookQueryCreatorTest {
 
     @Test
     public void testCreateQuery() {
@@ -20,8 +19,7 @@ public class FindBookQueryCreatorTest {
                 .genreId(1L)
                 .build();
 
-        FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
-        queryCreator.setLocale("EN");
+        EntityQueryCreator queryCreator = EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
         String query = queryCreator.createQuery(criteria);
         System.out.println(query);
     }

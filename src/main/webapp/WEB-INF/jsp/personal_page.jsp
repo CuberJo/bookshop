@@ -164,8 +164,8 @@
                     </div>
                     <div class="form-group">
                         <div class="col-xs-6">
-                            <label for="password2"><h4><fmt:message key="label.verify_password" bundle="${lang}"/></h4></label>
-                            <input type="password" class="form-control" name="password2" id="password2" placeholder="<fmt:message key="label.password" bundle="${lang}"/>">
+                            <label for="verifyPassword"><h4><fmt:message key="label.verify_password" bundle="${lang}"/></h4></label>
+                            <input type="password" class="form-control" name="verifyPassword" id="verifyPassword" placeholder="<fmt:message key="label.password" bundle="${lang}"/>">
                         </div>
                     </div>
                     <div class="form-group">

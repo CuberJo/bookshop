@@ -1,7 +1,8 @@
 package com.epam.bookshop.dao.impl;
 
 import com.epam.bookshop.db.ConnectionPool;
-import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.mindrot.jbcrypt.BCrypt;
 import com.epam.bookshop.criteria.Criteria;
@@ -9,8 +10,9 @@ import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Role;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.strategy.query_creator.FindEntityQueryCreator;
-import com.epam.bookshop.strategy.query_creator.impl.FindEntityQueryCreatorFactory;
+import com.epam.bookshop.strategy.query_creator.impl.EntityQueryCreatorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +21,11 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class UserDAO extends AbstractDAO<Long, User> {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
+
+    private static final String SQL_SELECT_ALL_USERS_WHERE =  "SELECT Id, Name, Login, Password, Email, Role_Id FROM TEST_LIBRARY.LIBRARY_USER WHERE ";
+    private static final String SQL_UPDATE_USER_WHERE =  "UPDATE TEST_LIBRARY.LIBRARY_USER SET %s WHERE Id = ?";
 
     private static final String SQL_INSERT_USER = "INSERT INTO TEST_LIBRARY.LIBRARY_USER (Name, Login, Password, Email, Role_Id) VALUES(?, ?, ?, ?, ?);";
     private static final String SQL_DELETE_USER_BY_ID = "DELETE FROM TEST_LIBRARY.LIBRARY_USER WHERE Id = ?;";
@@ -43,27 +50,16 @@ public class UserDAO extends AbstractDAO<Long, User> {
     private static final String SQL_SELECT_ALL_USER_IBANS_BY_LIBRARY_USER_ID = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE Library_User_Id = ?;";
     private static final String SQL_DELETE_USER_IBAN_BY_IBAN = "DELETE FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE IBAN = ?;";
 
-
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
     private static final String IBAN_COLUMN = "IBAN";
 
-    private static final String ROLE_NOT_FOUND = "role_not_found";
-    private static final String IBANs_NOT_FOUND = "IBANs_not_found";
-    private static final String NO_USER_UPDATE_OCCURRED = "no_user_update_occurred";
-    private static final String WHITESPACE = " ";
-
-    private static final Integer ZERO_ROWS_AFFECTED = 0;
-
-    private String locale = "EN";
+    private final String locale = "EN";
 
     UserDAO(Connection connection) {
         super(connection);
     }
 
-    @Override
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
+
 
     @Override
     public User create(User user) {
@@ -81,11 +77,13 @@ public class UserDAO extends AbstractDAO<Long, User> {
             ps.executeUpdate();
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return user;
     }
+
+
 
     @Override
     public List<User> findAll() {
@@ -95,9 +93,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
              ResultSet rs = ps.executeQuery()) {
 
             AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
-//            UserBankAccountDAO userBankAccountDAO = new UserBankAccountDAO(ConnectionPool.getInstance().getAvailableConnection());
 
-            String errorMessage = "";
             while (rs.next()) {
                 User user = new User();
                 user.setEntityId(rs.getLong(ID_COLUMN));
@@ -108,36 +104,24 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_NOT_FOUND) + WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
 
                 List<String> IBANs = findUserBankAccounts(user.getEntityId());
-//                Map<String, Long> userIBANS = findAllUserBankAccounts();
-//                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
-//                List<String> IBANs = new ArrayList<>();
-//                while (it.hasNext()) {
-//                    // if User id equals user id from map, then ..
-//                    Map.Entry<String, Long> next = it.next();
-//                    if (next.getValue().equals(ID_COLUMN)) {
-//                        IBANs.add(next.getKey());
-//                    }
-//                }
-//                if (IBANs.isEmpty()) {
-//                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
-//                    throw new RuntimeException(errorMessage);
-//                }
                 user.setIBANs(IBANs);
 
                 users.add(user);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return users;
     }
+
+
 
     @Override
     public Optional<User> findById(Long id) {
@@ -150,7 +134,6 @@ public class UserDAO extends AbstractDAO<Long, User> {
             rs = ps.executeQuery();
 
             AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
-//            UserBankAccountDAO userBankAccountDAO = new UserBankAccountDAO(ConnectionPool.getInstance().getAvailableConnection());
 
             while (rs.next()) {
                 user = new User();
@@ -163,49 +146,36 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_NOT_FOUND) + WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
 
                 List<String> IBANs = findUserBankAccounts(user.getEntityId());
-//                Map<String, Long> userIBANS = findAllUserBankAccounts();
-//                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
-//                List<String> IBANs = new ArrayList<>();
-//                while (it.hasNext()) {
-//                    // if User id equals user id from map, then ..
-//                    Map.Entry<String, Long> next = it.next();
-//                    if (next.getValue().equals(ID_COLUMN)) {
-//                        IBANs.add(next.getKey());
-//                    }
-//                }
-//                if (IBANs.isEmpty()) {
-////                    throw new RuntimeException("No IBANs found");
-//                }
                 user.setIBANs(IBANs);
-
 
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                logger.error(throwables.getMessage(), throwables);
             }
         }
 
         return Optional.ofNullable(user);
     }
 
+
+
     @Override
-    public Collection<User> findAll(Criteria criteria) {
-        FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.USER);
-        queryCreator.setLocale(locale);
-        String query = queryCreator.createQuery(criteria);
+    public Collection<User> findAll(Criteria<User> criteria) {
+        String query = SQL_SELECT_ALL_USERS_WHERE
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria);
 
         List<User> users = new ArrayList<>();
 
@@ -213,9 +183,6 @@ public class UserDAO extends AbstractDAO<Long, User> {
              ResultSet rs = ps.executeQuery()) {
 
             AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
-//            UserBankAccountDAO userBankAccountDAO = new UserBankAccountDAO(ConnectionPool.getInstance().getAvailableConnection());
-
-            String errorMessage = "";
 
             while (rs.next()) {
                 User user = new User();
@@ -227,43 +194,29 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_NOT_FOUND) + WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
 
                 List<String> IBANs = findUserBankAccounts(user.getEntityId());
-//                Map<String, Long> userIBANS = findAllUserBankAccounts();
-//                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
-//                List<String> IBANs = new ArrayList<>();
-//                while (it.hasNext()) {
-//                    // if User id equals user id from map, then ..
-//                    Map.Entry<String, Long> next = it.next();
-//                    if (next.getValue().equals(ID_COLUMN)) {
-//                        IBANs.add(next.getKey());
-//                    }
-//                }
-//                if (IBANs.isEmpty()) {
-//                    errorMessage = ErrorMessageManager.valueOf(locale).getMessage(IBANs_NOT_FOUND);
-//                    throw new RuntimeException(errorMessage);
-//                }
                 user.setIBANs(IBANs);
 
                 users.add(user);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return users;
     }
 
 
+
     @Override
-    public Optional<User> find(Criteria<? extends Entity> criteria) {
-        FindEntityQueryCreator queryCreator = FindEntityQueryCreatorFactory.INSTANCE.create(EntityType.USER);
-        queryCreator.setLocale(locale);
-        String query = queryCreator.createQuery(criteria);
+    public Optional<User> find(Criteria<User> criteria) {
+        String query = SQL_SELECT_ALL_USERS_WHERE
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria);
 
         User user = null;
 
@@ -271,7 +224,6 @@ public class UserDAO extends AbstractDAO<Long, User> {
              ResultSet rs = ps.executeQuery()) {
 
             AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
-//            UserBankAccountDAO userBankAccountDAO = new UserBankAccountDAO(ConnectionPool.getInstance().getAvailableConnection());
 
             while (rs.next()) {
                 user = new User();
@@ -284,41 +236,30 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
                 Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
                 if (optionalRole.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ROLE_NOT_FOUND) + WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
                 }
                 user.setRole(optionalRole.get());
 
                 List<String> IBANs = findUserBankAccounts(user.getEntityId());
-//                Map<String, Long> userIBANS = findAllUserBankAccounts();
-//                Iterator<Map.Entry<String, Long>> it = userIBANS.entrySet().iterator();
-//                List<String> IBANs = new ArrayList<>();
-//                while (it.hasNext()) {
-//                    // if User id equals user id from map, then ..
-//                    Map.Entry<String, Long> next = it.next();
-//                    if (next.getValue().equals(ID_COLUMN)) {
-//                        IBANs.add(next.getKey());
-//                    }
-//                }
-//                if (IBANs.isEmpty()) {
-////                    throw new RuntimeException("No IBANs found");
-//
-//                }
                 user.setIBANs(IBANs);
 
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return Optional.ofNullable(user);
     }
 
 
+
     @Override
     public boolean delete(User user) {
         return delete(user.getEntityId());
     }
+
+
 
     @Override
     public boolean delete(Long id) {
@@ -327,19 +268,24 @@ public class UserDAO extends AbstractDAO<Long, User> {
             ps.setLong(1, id);
             int result = ps.executeUpdate();
 
-            if (result == ZERO_ROWS_AFFECTED) {
+            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
                 return false;
             }
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return true;
     }
 
+
+
     @Override
     public Optional<User> update(User user) {
+
+//        String query = String.format(SQL_UPDATE_USER_WHERE,
+//                EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria));
 
         Optional<User> optionalUserToUpdate = findById(user.getEntityId());
         if (optionalUserToUpdate.isEmpty()) {
@@ -359,8 +305,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
             int result = ps.executeUpdate();
 
-            if (result == ZERO_ROWS_AFFECTED) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_USER_UPDATE_OCCURRED);
+            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_USER_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
             }
 
@@ -371,7 +317,10 @@ public class UserDAO extends AbstractDAO<Long, User> {
         return optionalUserToUpdate;
     }
 
-    public Map<String, Long> createUserBankAccount(String IBAN, Long libraryUserId) {
+
+
+    public void createUserBankAccount(String IBAN, Long libraryUserId) {
+
         try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_USER_BANK_ACCOUNT)) {
 
             ps.setLong(1, libraryUserId);
@@ -379,11 +328,11 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
             ps.executeUpdate();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
-
-        return Map.of(IBAN, libraryUserId);
     }
+
+
 
     public Map<String, Long> findUsersBankAccounts() {
         Map<String, Long> userIBANs = new HashMap<>();
@@ -397,13 +346,16 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 userIBANs.put(IBAN, libraryUserId);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return userIBANs;
     }
 
+
+
     public List<String> findUserBankAccounts(long id) {
+
         List<String> userIBANs = new ArrayList<>();
         ResultSet rs = null;
 
@@ -417,19 +369,21 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 userIBANs.add(IBAN);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                logger.error(throwables.getMessage(), throwables);
             }
         }
 
         return userIBANs;
     }
+
+
 
     public boolean deleteUserBankAccount(String iban) {
 
@@ -437,12 +391,12 @@ public class UserDAO extends AbstractDAO<Long, User> {
             ps.setString(1, iban);
             int result = ps.executeUpdate();
 
-            if (result == ZERO_ROWS_AFFECTED) {
+            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
                 return false;
             }
 
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return true;

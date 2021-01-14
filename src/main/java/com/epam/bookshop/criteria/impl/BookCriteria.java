@@ -5,7 +5,6 @@ import com.epam.bookshop.context.annotation.Size;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.criteria.Criteria;
 
-//@Email
 public class BookCriteria extends Criteria<Book> {
 
     @Size(size = 17)

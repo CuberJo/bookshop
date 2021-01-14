@@ -1,5 +1,7 @@
 package com.epam.bookshop.fliter;
 
+import com.epam.bookshop.util.UtilStrings;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebFilter;
@@ -19,6 +21,7 @@ public class AuthFilter extends HttpFilter {
 
     private static final String HOME_PAGE = "/home";
 
+    private static final String ACCOUNT_SETTINGS_COMMAND = "account_settings";
     private static final String ADD_IBAN_COMMAND = "add_iban";
     private static final String ADD_TO_CART_COMMAND = "add_to_cart";
     private static final String CART_COMMAND = "cart";
@@ -29,12 +32,11 @@ public class AuthFilter extends HttpFilter {
     private static final String PURCHASE_COMMAND = "purchase";
     private static final String REMOVE_FROM_CART_COMMAND = "remove_from_cart";
 
-    private static final String ROLE = "role";
-    private static final String LOGIN = "login";
-    private static final String COMMAND = "command";
-    private static final String CART = "cart";
+    private static final String LOAD_IBANs_CONTROLLER = "load_ibans";
+    private static final String UNBIND_IBAN_CONTROLLER = "unbind_iban";
 
     private static final List<String> COMMANDS_NEED_AUTHORIZATION = Arrays.asList(
+            ACCOUNT_SETTINGS_COMMAND,
             ADD_IBAN_COMMAND,
             ADD_TO_CART_COMMAND,
             CART_COMMAND,
@@ -46,21 +48,35 @@ public class AuthFilter extends HttpFilter {
             REMOVE_FROM_CART_COMMAND
     );
 
+    private static final List<String> CONTROLLERS_NEED_AUTHORIZATION = Arrays.asList(
+            LOAD_IBANs_CONTROLLER,
+            UNBIND_IBAN_CONTROLLER
+    );
+
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
 
         final HttpSession session = req.getSession();
 
-        String login = (String) session.getAttribute(LOGIN);
-        String role = (String) session.getAttribute(ROLE);
+        String login = (String) session.getAttribute(UtilStrings.LOGIN);
+        String role = (String) session.getAttribute(UtilStrings.ROLE);
 
         if (Objects.isNull(login) || Objects.isNull(role)) {
 
             long equalCommands = COMMANDS_NEED_AUTHORIZATION.stream().
-                    filter(s -> s.equals(req.getParameter(COMMAND)))
+                    filter(s -> s.equals(req.getParameter(UtilStrings.COMMAND)))
                     .count();
 
             if (equalCommands > 0) {
+                res.sendRedirect(req.getContextPath() + HOME_PAGE);
+                return;
+            }
+
+            long equalControllers = CONTROLLERS_NEED_AUTHORIZATION.stream().
+                    filter(s -> s.equals(req.getServletPath()))
+                    .count();
+
+            if (equalControllers > 0) {
                 res.sendRedirect(req.getContextPath() + HOME_PAGE);
                 return;
             }

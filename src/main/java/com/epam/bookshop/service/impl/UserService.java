@@ -1,17 +1,21 @@
 package com.epam.bookshop.service.impl;
 
+import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
 import com.epam.bookshop.dao.impl.UserDAO;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
+import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,11 +26,7 @@ import java.util.Optional;
 
 public class UserService implements EntityService<User> {
 
-    private static final String USER_NOT_FOUND = "user_not_found";
-
-    private static final String IBAN_NOT_FOUND = "iban_not_found";
-
-    private static final String WHITESPACE = " ";
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private String locale = "EN";
 
@@ -49,14 +49,10 @@ public class UserService implements EntityService<User> {
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
         dao.create(user);
 
-
-//        UserBankAccountDAO userBankAccountDAO = new UserBankAccountDAO(ConnectionPool.getInstance().getAvailableConnection());
-//        userBankAccountDAO.create(user.getIBANs().get(0), user.getEntityId());
-
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return user;
@@ -71,14 +67,14 @@ public class UserService implements EntityService<User> {
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return users;
     }
 
     @Override
-    public Collection<User> findAll(Criteria criteria) throws ValidatorException {
+    public Collection<User> findAll(Criteria<User> criteria) throws ValidatorException {
         Validator validator = new Validator();
         validator.setLocale(locale);
         validator.validate(criteria);
@@ -91,7 +87,7 @@ public class UserService implements EntityService<User> {
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return users;
@@ -103,22 +99,18 @@ public class UserService implements EntityService<User> {
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
 
         Optional<User> optionalUser = dao.findById(id);
-//        if (optionalUser.isEmpty()) {
-//            throw new EntityNotFoundException("No user with id = " + id + " found");
-//        }
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
-//        return optionalUser;
         return optionalUser;
     }
 
     @Override
-    public Optional<User> find(Criteria criteria) throws ValidatorException {
+    public Optional<User> find(Criteria<User> criteria) throws ValidatorException {
         Validator validator = new Validator();
         validator.setLocale(locale);
         validator.validate(criteria);
@@ -127,17 +119,13 @@ public class UserService implements EntityService<User> {
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
 
         Optional<User> optionalUser = dao.find(criteria);
-//        if (optionalUser.isEmpty()) {
-//            throw new EntityNotFoundException("No user with email = " + ((UserCriteria)criteria).getEmail() + " found");
-//        }
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
-//        return optionalUser.get();
         return optionalUser;
     }
 
@@ -151,17 +139,13 @@ public class UserService implements EntityService<User> {
         AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
 
         Optional<User> optionalUser = dao.update(user);
-//        if (optionalUser.isEmpty()) {
-//            throw new EntityNotFoundException("No user with id = " + user.getEntityId() + " found");
-//        }
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
-//        return optionalUser.get();
         return optionalUser;
     }
 
@@ -172,14 +156,14 @@ public class UserService implements EntityService<User> {
 
         boolean isDeleted = dao.delete(id);
         if (!isDeleted) {
-            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND) + WHITESPACE + id;
+            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + UtilStrings.WHITESPACE + id;
             throw new EntityNotFoundException(userNotFound);
         }
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return isDeleted;
@@ -196,14 +180,14 @@ public class UserService implements EntityService<User> {
 
         boolean isDeleted = dao.delete(user.getEntityId());
         if (!isDeleted) {
-            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(USER_NOT_FOUND) + WHITESPACE + user.getEntityId();
+            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + UtilStrings.WHITESPACE + user.getEntityId();
             throw new EntityNotFoundException(userNotFound);
         }
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return isDeleted;
@@ -217,7 +201,7 @@ public class UserService implements EntityService<User> {
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return Map.of(IBAN, library_User_Id);
@@ -231,7 +215,7 @@ public class UserService implements EntityService<User> {
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return userIBANs;
@@ -245,7 +229,7 @@ public class UserService implements EntityService<User> {
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return userIBANs;
@@ -257,14 +241,14 @@ public class UserService implements EntityService<User> {
 
         boolean isDeleted = dao.deleteUserBankAccount(iban);
         if (!isDeleted) {
-            String IBANNotFound = ErrorMessageManager.valueOf(locale).getMessage(IBAN_NOT_FOUND) + WHITESPACE + iban;
+            String IBANNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_NOT_FOUND) + UtilStrings.WHITESPACE + iban;
             throw new EntityNotFoundException(IBANNotFound);
         }
 
         try {
             conn.close();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage(), throwables);
         }
 
         return isDeleted;

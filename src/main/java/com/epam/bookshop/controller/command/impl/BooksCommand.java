@@ -15,6 +15,7 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 import java.io.InputStream;
@@ -26,12 +27,10 @@ import java.util.Optional;
 
 public class BooksCommand implements Command {
 
-    private static final ResponseContext BOOKS_PAGE = () -> "/WEB-INF/jsp/books.jsp";
-    private static final String GENRE_NAME = "genre";
-    private static final String UTF8 = "UTF-8";
-    private static final String BOOKS_ATTR = "books";
     private static final String BOOKS_LEN_ATTR = "booksLength";
-    private static final String LOCALE_ATTR = "locale";
+
+    private static final ResponseContext BOOKS_PAGE = () -> "/WEB-INF/jsp/books.jsp";
+
     private static final String NO_SUCH_GENRE_FOUND = "no_such_genre_found";
     private static final String WHITESPACE = " ";
 
@@ -39,11 +38,11 @@ public class BooksCommand implements Command {
     @Override
     public ResponseContext execute(RequestContext requestContext) {
 
-        String genreName = getDecodedGenre(requestContext.getParameter(GENRE_NAME));
+        String genreName = getDecodedGenre(requestContext.getParameter(UtilStrings.GENRE));
 
         Collection<Book> books = getBooksByGenre(genreName, requestContext);
 
-        requestContext.setAttribute(BOOKS_ATTR, books);
+        requestContext.setAttribute(UtilStrings.BOOKS, books);
         requestContext.setAttribute(BOOKS_LEN_ATTR, books.size());
 
         return BOOKS_PAGE;
@@ -54,7 +53,7 @@ public class BooksCommand implements Command {
     private String getDecodedGenre(String encodedGenre) {
         if(Objects.nonNull(encodedGenre)) {
             try {
-                return URLDecoder.decode(encodedGenre, UTF8);
+                return URLDecoder.decode(encodedGenre, UtilStrings.UTF8);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -67,8 +66,9 @@ public class BooksCommand implements Command {
 
     private Collection<Book> getBooksByGenre(String genreName, RequestContext requestContext) {
 
+        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
+
         BookService bookService = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        String locale = (String) requestContext.getSession().getAttribute(LOCALE_ATTR);
         bookService.setLocale(locale);
 
         Collection<Book> books = null;

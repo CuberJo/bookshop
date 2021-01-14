@@ -14,8 +14,8 @@ public class ConnectionPool {
     private String locale = "EN";
 
     private static ConnectionPool instance;
-    private static ReentrantLock lock = new ReentrantLock();
-    private ReentrantLock lock2 = new ReentrantLock();
+    private static final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock2 = new ReentrantLock();
 
     private ConnectionPool() {
 
@@ -66,7 +66,6 @@ public class ConnectionPool {
                     DatabaseConfigurator.getInstance().getUser(),
                     DatabaseConfigurator.getInstance().getPass()));
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
 

@@ -3,6 +3,7 @@ package com.epam.bookshop.service.impl;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.service.EntityService;
+import com.epam.bookshop.util.ErrorMessageConstants;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 import java.util.Objects;
@@ -10,7 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ServiceFactory {
 
-    private static final String NO_SUCH_SERVICE_TYPE = "no_such_service_type";
     private String locale = "EN";
 
     private static ServiceFactory instance;
@@ -36,13 +36,6 @@ public class ServiceFactory {
     }
 
 
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-
-
     public EntityService create(EntityType type) {
 
         EntityService serviceToReturn;
@@ -64,7 +57,7 @@ public class ServiceFactory {
                 serviceToReturn = new RoleService();
                 break;
             default:
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(NO_SUCH_SERVICE_TYPE);
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_SERVICE_TYPE);
                 throw new UnknownEntityException(errorMessage);
         }
 

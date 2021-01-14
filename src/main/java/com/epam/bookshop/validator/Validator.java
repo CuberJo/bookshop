@@ -4,9 +4,11 @@ import com.epam.bookshop.context.annotation.Naming;
 import com.epam.bookshop.context.annotation.Size;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.domain.impl.Regex;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.strategy.validator.impl.NamingValidator;
 import com.epam.bookshop.strategy.validator.impl.SizeValidator;
+import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -17,26 +19,17 @@ import java.util.regex.Pattern;
 
 public class Validator {
 
-    private static final String SEMICOLON = ";";
-    private static final String AND = "AND";
-    private static final String WHITESPACE = " ";
-    private static final String EMPTY_STRING = "";
-    private static final String EMPTY_STRING_REGEX = "^[\\s]+$";
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_.+-]{1,40}@[a-zA-Z0-9-]{2,5}.[a-zA-Z0-9-.]{2,5}$";
-
-    private static final String EMAIL_INCORRECT = "email_incorrect";
-    private static final String INVALID_INPUT_DATA = "invalid_input_data";
+    private String locale = "EN";
 
     private NamingValidator namingValidator = new NamingValidator();
     private SizeValidator sizeValidator = new SizeValidator();
-
-    private String locale = "EN";
 
     public void setLocale(String locale) {
         namingValidator.setLocale(locale);
         sizeValidator.setLocale(locale);
         this.locale = locale;
     }
+
 
     public void validate(Entity entity) throws ValidatorException {
 
@@ -64,22 +57,17 @@ public class Validator {
         }
     }
 
-
-
     public String sanitizeString(String s) {
         return Jsoup.clean(s, Whitelist.none());
     }
 
-
-
-    public void validateEmail(String email) throws ValidatorException {
-        Pattern p = Pattern.compile(EMAIL_REGEX);
-        Matcher m = p.matcher(email);
+    public void validateString(String stringToValidate, String regex, String error) throws ValidatorException {
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(stringToValidate);
 
         if (!m.matches()) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(EMAIL_INCORRECT);
-            throw new ValidatorException(errorMessage + WHITESPACE + email);
-//            throw new ValidatorException("Email \"" + email + "\" incorrect");
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(error);
+            throw new ValidatorException(errorMessage + UtilStrings.WHITESPACE + stringToValidate);
         }
     }
 
@@ -87,14 +75,13 @@ public class Validator {
      * Removes extra "AND"and whitespaces
      *
      * @param condition "WHERE" condition which is to be added to sql query
-     * @param sql_query SQL query which is to be populated with condition
-     * @return
+     * @return string without ANDs and whitespaces
      */
-    public String validatedQuery(StringBuffer condition, String sql_query) {
-        checkForSeq(condition, AND);
-        checkForSeq(condition, WHITESPACE);
+    public String validatedQuery(StringBuffer condition) {
+        checkForSeq(condition, UtilStrings.AND);
+        checkForSeq(condition, UtilStrings.WHITESPACE);
 
-        return sql_query + condition + SEMICOLON;
+        return condition + UtilStrings.SEMICOLON;
     }
 
 
@@ -127,37 +114,13 @@ public class Validator {
      */
     public boolean emptyStringValidator(String ... strings) {
         for (String string : strings) {
-            if (string.equals(EMPTY_STRING) || string.matches(EMPTY_STRING_REGEX)) {
+            if (string.equals(UtilStrings.EMPTY_STRING) || string.matches(Regex.EMPTY_STRING_REGEX)) {
                 return false;
             }
         }
 
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //    private boolean checkForAND(StringBuffer s) {
