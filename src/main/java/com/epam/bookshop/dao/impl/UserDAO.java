@@ -40,8 +40,9 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
     private static final String SQL_INSERT_USER_BANK_ACCOUNT = "INSERT INTO TEST_LIBRARY.USER_BANK_ACCOUNT (Library_User_Id, IBAN) VALUES (?, ?);";
     private static final String SQL_SELECT_ALL_USERs_IBANS = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT;";
-    private static final String SQL_SELECT_ALL_USER_IBANS_BY_ID = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE Library_User_Id = ?;";
-    private static final String SQL_SELECT_IBAN_BY_LIBRARY_USER_ID = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE Library_User_Id = ?;";
+    private static final String SQL_SELECT_ALL_USER_IBANS_BY_LIBRARY_USER_ID = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE Library_User_Id = ?;";
+    private static final String SQL_DELETE_USER_IBAN_BY_IBAN = "DELETE FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE IBAN = ?;";
+
 
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
     private static final String IBAN_COLUMN = "IBAN";
@@ -406,7 +407,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
         List<String> userIBANs = new ArrayList<>();
         ResultSet rs = null;
 
-        try(PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_USER_IBANS_BY_ID)) {
+        try(PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_USER_IBANS_BY_LIBRARY_USER_ID)) {
 
             ps.setLong(1, id);
             rs = ps.executeQuery();
@@ -428,5 +429,22 @@ public class UserDAO extends AbstractDAO<Long, User> {
         }
 
         return userIBANs;
+    }
+
+    public boolean deleteUserBankAccount(String iban) {
+
+        try (PreparedStatement ps = getPrepareStatement(SQL_DELETE_USER_IBAN_BY_IBAN)) {
+            ps.setString(1, iban);
+            int result = ps.executeUpdate();
+
+            if (result == ZERO_ROWS_AFFECTED) {
+                return false;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return true;
     }
 }

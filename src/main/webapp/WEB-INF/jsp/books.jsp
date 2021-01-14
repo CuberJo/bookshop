@@ -11,6 +11,9 @@
     </c:when>
 </c:choose>
 <fmt:setBundle basename="jsp_text" var="lang" />
+<fmt:setBundle basename="error_message" var="mes" />
+<fmt:setBundle basename="message" var="m" />
+
 
 <!DOCTYPE html>
 <html>
@@ -21,6 +24,7 @@
     <title>Books - Bookstore</title>
     <link rel="stylesheet" type="text/css" href="../../styles/books.css">
     <link rel="stylesheet" type="text/css" href="../../styles/home.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/choose_iban.css">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -67,6 +71,15 @@
                     </a></div>
                 </c:if>
             </c:forEach>
+            <c:if test="${empty books}">
+                    <div class="mcontainer" style="box-shadow: none; border: none" align="center">
+                        <h1><fmt:message key="not_found" bundle="${mes}"/></h1>
+                        <br>
+                        <p><fmt:message key="no_books_with_genre" bundle="${mes}"/></p>
+                        <br>
+                        <a href="/home?command=home" class="btn"><fmt:message key="choose_another_genre" bundle="${m}"/></a>
+                    </div>
+            </c:if>
         </div>
         <div class="pagination">
             <div class="prev"><fmt:message key="label.prev" bundle="${lang}" /></div>
@@ -74,7 +87,6 @@
             <div class="next"><fmt:message key="label.next" bundle="${lang}" /></div>
         </div>
     </div>
-
 </div>
 
 <!---------- footer --------------->
@@ -89,7 +101,7 @@
     const prev=document.querySelector(".prev");
     const next=document.querySelector(".next");
     const page=document.querySelector(".page-num");
-    const maxItem=12;
+    const maxItem=8;
     let index=1;
 
     <%--const bookLength = ${requestScope.booksLength};--%>

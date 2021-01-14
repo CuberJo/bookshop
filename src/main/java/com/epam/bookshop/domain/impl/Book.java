@@ -119,7 +119,7 @@ public class Book extends Entity implements Serializable {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return "Book{" +
                 "Id='" + entityId + '\'' +
                 ", ISBN='" + ISBN + '\'' +

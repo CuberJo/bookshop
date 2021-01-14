@@ -31,16 +31,16 @@
                 <h3><fmt:message key="label.genres" bundle="${lang}"/></h3>
                 <ul>
                     <li><a href="/home?command=books&genre=ROMANCE"><fmt:message key="label.romance" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=ACTION%20%26%20ADVENTURE"><fmt:message key="label.action_and_adventure" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=MYSTERY%20%26%20THRILLER"><fmt:message key="label.mystery_and_thriller" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=BIOGRAPHIES%20%26%20HISTORY"><fmt:message key="label.biographies_and_history" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=ACTION_AND_ADVENTURE"><fmt:message key="label.action_and_adventure" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=MYSTERY_AND_THRILLER"><fmt:message key="label.mystery_and_thriller" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=BIOGRAPHIES_AND_HISTORY"><fmt:message key="label.biographies_and_history" bundle="${lang}"/></a></li>
                     <li><a href="/home?command=books&genre=CHILDREN"><fmt:message key="label.children" bundle="${lang}"/></a></li>
                     <li><a href="/home?command=books&genre=FANTASY"><fmt:message key="label.fantasy" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=HISTORICAL%20FICTION"><fmt:message key="label.historical_fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=HISTORICAL_FICTION"><fmt:message key="label.historical_fiction" bundle="${lang}"/></a></li>
                     <li><a href="/home?command=books&genre=HORROR"><fmt:message key="label.horror" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=LITERARY%20FICTION"><fmt:message key="label.literary_fiction" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=NON%2DFICTION"><fmt:message key="label.non-fiction" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=SCIENCE%20FICTION"><fmt:message key="label.science-fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=LITERARY_FICTION"><fmt:message key="label.literary_fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=NON-FICTION"><fmt:message key="label.non-fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=SCIENCE-FICTION"><fmt:message key="label.science-fiction" bundle="${lang}"/></a></li>
                 </ul>
             </div>
             <div class="footer-col-4">

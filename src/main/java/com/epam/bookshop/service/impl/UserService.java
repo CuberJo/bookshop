@@ -23,6 +23,9 @@ import java.util.Optional;
 public class UserService implements EntityService<User> {
 
     private static final String USER_NOT_FOUND = "user_not_found";
+
+    private static final String IBAN_NOT_FOUND = "iban_not_found";
+
     private static final String WHITESPACE = " ";
 
     private String locale = "EN";
@@ -246,5 +249,24 @@ public class UserService implements EntityService<User> {
         }
 
         return userIBANs;
+    }
+
+    public boolean deleteUserBankAccount(String iban) throws EntityNotFoundException {
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        UserDAO dao = (UserDAO) DAOFactory.INSTANCE.create(EntityType.USER, conn);
+
+        boolean isDeleted = dao.deleteUserBankAccount(iban);
+        if (!isDeleted) {
+            String IBANNotFound = ErrorMessageManager.valueOf(locale).getMessage(IBAN_NOT_FOUND) + WHITESPACE + iban;
+            throw new EntityNotFoundException(IBANNotFound);
+        }
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return isDeleted;
     }
 }

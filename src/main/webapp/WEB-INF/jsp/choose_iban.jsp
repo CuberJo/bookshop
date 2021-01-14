@@ -53,7 +53,9 @@
                     <c:set var="i" value="${i+1}"/>
                 </div>
             </c:forEach>
-            <div><button type="submit" class="btn"><fmt:message key="label.submit" bundle="${lang}"/></button></div>
+            <c:set var="back_to_choose_iban" scope="session"/>
+            <input type="hidden" value="additional_iban">
+            <div><button type="submit" class="btn"><fmt:message key="label.purchase" bundle="${lang}"/></button></div>
             <a href="/home?command=add_iban&getAddIBANPage=getAddIBANPage&additional_iban=additional_iban"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>
         </form>
     </div>

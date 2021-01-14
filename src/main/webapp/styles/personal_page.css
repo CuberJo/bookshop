@@ -1,22 +1,106 @@
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-right: 15%;
-    margin-bottom: 25%;
-}
-td {
-    padding: 10px 5px;
-}
-td a {
-    color: #ff523b;
-    font-size: 12px;
-}
-.btn-link {
-    border: none;
+/*table {*/
+/*    width: 100%;*/
+/*    border-collapse: collapse;*/
+/*    margin-right: 15%;*/
+/*    margin-bottom: 25%;*/
+/*}*/
+/*td {*/
+/*    padding: 10px 5px;*/
+/*}*/
+/*td a {*/
+/*    color: #ff523b;*/
+/*    font-size: 12px;*/
+/*}*/
+/*.btn-link {*/
+/*    border: none;*/
+/*    outline: none;*/
+/*    background: none;*/
+/*    cursor: pointer;*/
+/*    padding: 0;*/
+/*    font-family: inherit;*/
+/*    font-size: inherit;*/
+/*}*/
+
+.navbar input[type=search] {
+    /*border-color: #4F4F4F;*/
+    all: revert;
     outline: none;
-    background: none;
+    height: 19px;
+    width: 173px;
+}
+.navbar a:hover {
+    text-decoration: none;
+    color: #555;
+}
+.footer a:hover {
+    text-decoration: none;
+    color: #555;
+}
+footer-col-3 a {
+    color: #8A8A8A8A;
+}
+.check-list {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.check-list li {
+    position: relative;
+    list-style-type: none;
+    padding-left: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.check-list li:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: -2px;
+    width: 5px;
+    height: 11px;
+    border-width: 0 2px 2px 0;
+    border-style: solid;
+    border-color: #00a8a8;
+    transform-origin: bottom left;
+    transform: rotate(45deg);
+}
+/* Set a style for all buttons */
+.mmbutton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
     cursor: pointer;
-    padding: 0;
-    font-family: inherit;
-    font-size: inherit;
+    width: 100%;
+    opacity: 0.9;
+}
+
+.mmbutton:hover {
+    opacity:1;
+}
+
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .unbindbtn {
+    float: left;
+    width: 50%;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+    background-color: #ccc;
+    color: black;
+}
+
+/* Add a color to the delete button */
+.unbindbtn {
+    background-color: #f44336;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+    .cancelbtn, .unbindbtn {
+        width: 100%;
+    }
 }

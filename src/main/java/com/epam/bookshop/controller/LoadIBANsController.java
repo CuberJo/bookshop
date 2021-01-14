@@ -32,6 +32,8 @@ public class LoadIBANsController extends HttpServlet {
     private static final String IBANs_ATR = "ibans";
     private static final String LOCALE_ATTR = "locale";
 
+    private static final String EMPTY_STRING = "";
+
     private static final ResponseContext DEFAULT_PAGE = () -> "/home";
     private static final String USER_NOT_FOUND = "user_not_found";
     private static final String INVALID_INPUT_DATA = "invalid_input_data";
@@ -70,6 +72,7 @@ public class LoadIBANsController extends HttpServlet {
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(INVALID_INPUT_DATA);
+            logger.error(EMPTY_STRING, e);
             throw new RuntimeException(errorMessage, e);
         }
     }

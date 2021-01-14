@@ -15,27 +15,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bookstore</title>
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
-    <link rel="stylesheet" type="text/css" href='<c:url value="/styles/home.css"/>'>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bookstore</title>
+        <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
+        <link rel="stylesheet" type="text/css" href='<c:url value="/styles/home.css"/>'>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
 
 <body>
-<script>
-    // var Title = $('html').html("&nbsp;").text();
-    $('body').each(function(){
-        $(this).html($(this).html().replace(/&nbsp;/gi,''));
-    });
-</script>
-<%--<c:set var="v" scope="application" />--%>
+    <script>
+        // var Title = $('html').html("&nbsp;").text();
+        $('body').each(function(){
+            $(this).html($(this).html().replace(/&nbsp;/gi,''));
+        });
+    </script>
+    <%--<c:set var="v" scope="application" />--%>
 <%--<c:out value="${v}"/>--%>
 
-<!---------- link bank account --------------->
+<!---------- bind bank account --------------->
 
 <c:if test="${need_to_link_bank_account}">
 <%--<div id="test1" onload="window.location.hash='back'; ">--%>
@@ -59,9 +59,9 @@
         <h2><fmt:message key="label.finish_registration" bundle="${lang}"/></h2>
         <a class="close" href="#">&times;</a>
         <div class="content">
-            <fmt:message key="label.link_card" bundle="${lang}"/>
+            <fmt:message key="label.bind_card" bundle="${lang}"/>
             <br/>
-            <a href="/home?command=bank_account" style="color: #F37326"><fmt:message key="label.link" bundle="${lang}"/></a>
+            <a href="/home?command=bank_account" style="color: #F37326"><fmt:message key="label.bind" bundle="${lang}"/></a>
         </div>
     </div>
 </div>
@@ -118,15 +118,15 @@
                 <img src="images/genres/romance.png">
                 <h3><fmt:message key="label.ROMANCE" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=ACTION%20%26%20ADVENTURE">
+            <div class="col-4"><a href="/home?command=books&genre=ACTION_AND_ADVENTURE">
                 <img src="images/genres/action_and_adventure.png">
                 <h3><fmt:message key="label.ACTION_AND_ADVENTURE" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=MYSTERY%20%26%20THRILLER">
+            <div class="col-4"><a href="/home?command=books&genre=MYSTERY_AND_THRILLER">
                 <img src="images/genres/mystery_and_thriller.png">
                 <h3><fmt:message key="label.MYSTERY_AND_THRILLER" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=BIOGRAPHIES%20%26%20HISTORY">
+            <div class="col-4"><a href="/home?command=books&genre=BIOGRAPHIES_AND_HISTORY">
                 <img src="images/genres/biographies_and_history.png">
                 <h3><fmt:message key="label.BIOGRAPHIES_AND_HISTORY" bundle="${lang}"/></h3>
             </a></div>
@@ -140,7 +140,7 @@
                 <img src="images/genres/fantasy.png">
                 <h3><fmt:message key="label.FANTASY" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=HISTORICAL%20FICTION">
+            <div class="col-4"><a href="/home?command=books&genre=HISTORICAL_FICTION">
                 <img src="images/genres/historical_fiction.png">
                 <h3><fmt:message key="label.HISTORICAL_FICTION" bundle="${lang}"/></h3>
             </a></div>
@@ -150,15 +150,15 @@
             </a></div>
         </div>
         <div class="row">
-            <div class="col-3"><a href="/home?command=books&genre=LITERARY%20FICTION">
+            <div class="col-3"><a href="/home?command=books&genre=LITERARY_FICTION">
                 <img src="images/genres/literary_fiction.png">
                 <h3><fmt:message key="label.LITERARY_FICTION" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-3"><a href="/home?command=books&genre=NON%2DFICTION">
+            <div class="col-3"><a href="/home?command=books&genre=NON-FICTION">
                 <img src="images/genres/non_fiction.png">
                 <h3><fmt:message key="label.NON-FICTION" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-3"><a href="/home?command=books&genre=SCIENCE%20FICTION">
+            <div class="col-3"><a href="/home?command=books&genre=SCIENCE-FICTION">
                 <img src="images/genres/science_fiction.png">
                 <h3><fmt:message key="label.SCIENCE-FICTION" bundle="${lang}"/></h3>
             </a></div>

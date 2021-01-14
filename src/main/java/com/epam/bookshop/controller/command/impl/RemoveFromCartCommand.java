@@ -31,9 +31,9 @@ public class RemoveFromCartCommand implements Command {
 
         final HttpSession session = requestContext.getSession();
 
-        if (Objects.isNull(session.getAttribute(ROLE_ATTR)) || Objects.isNull(session.getAttribute(LOGIN_ATTR))) {
-            return HOME_PAGE;
-        }
+//        if (Objects.isNull(session.getAttribute(ROLE_ATTR)) || Objects.isNull(session.getAttribute(LOGIN_ATTR))) {
+//            return HOME_PAGE;
+//        }
 
         String locale = (String) session.getAttribute(LOCALE);
         String error = "";
@@ -45,14 +45,11 @@ public class RemoveFromCartCommand implements Command {
         }
 
         String isbnToRemove = requestContext.getParameter(ISBN);
-        System.out.println(isbnToRemove);
         Book bookToRemove = cart.stream().
                 filter(book -> book.getISBN().equals(isbnToRemove))
                 .findFirst().get();
 //        Book bookToRemove = (Book) session.getAttribute(BOOK_TO_REMOVE);
 //        Book bookToRemove = requestContext.getParameter(BOOK_TO_REMOVE);
-
-        System.out.println(bookToRemove);
 
         boolean bookPresent = false;
         for (Book book : cart) {

@@ -120,7 +120,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <div class="row" style="margin: 100px auto">
+        <div class="row" style="margin: 30px auto">
             <div class="mcontainer" style="box-shadow: none; border: none" align="center">
                 <br>
                 <h1><fmt:message key="empty_cart" bundle="${mes}"/></h1>

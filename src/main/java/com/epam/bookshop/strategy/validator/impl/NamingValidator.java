@@ -19,7 +19,7 @@ public class NamingValidator implements Validatable<Naming> {
     private static final String TITLE_REGEX = "^[-\\(\\)\\!a-zA-Z\\d\\s\\.]{1,50}$";
     private static final String AUTHOR_REGEX = "^[-a-zA-Z\\s\\.]{1,50}$";
     private static final String PUBLISHER_REGEX = "^[-&a-zA-Z\\s]{1,50}$";
-    private static final String GENRE_REGEX = "^[-a-zA-Z&\\s]{1,50}$";
+    private static final String GENRE_REGEX = "^[-a-zA-Z&_\\s]{1,50}$";
     private static final String ROLE_REGEX = "^[a-zA-Z]{1,20}$";
     private static final String STATUS_REGEX = "^[a-zA-Z_]{1,20}$";
 //    private static final String NAME_REGEX = "^[\\.a-zA-Z]{1,20}$";
