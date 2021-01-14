@@ -28,6 +28,17 @@
     height: 19px;
     width: 173px;
 }
+#rowToReload {
+    text-align: left;
+}
+#popup3 input[type=password] {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
 .navbar a:hover {
     text-decoration: none;
     color: #555;

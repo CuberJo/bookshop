@@ -21,7 +21,6 @@ public class AuthFilter extends HttpFilter {
 
     private static final String HOME_PAGE = "/home";
 
-    private static final String ACCOUNT_SETTINGS_COMMAND = "account_settings";
     private static final String ADD_IBAN_COMMAND = "add_iban";
     private static final String ADD_TO_CART_COMMAND = "add_to_cart";
     private static final String CART_COMMAND = "cart";
@@ -32,11 +31,11 @@ public class AuthFilter extends HttpFilter {
     private static final String PURCHASE_COMMAND = "purchase";
     private static final String REMOVE_FROM_CART_COMMAND = "remove_from_cart";
 
+    private static final String ACCOUNT_SETTINGS_CONTROLLER = "account_settings";
     private static final String LOAD_IBANs_CONTROLLER = "load_ibans";
     private static final String UNBIND_IBAN_CONTROLLER = "unbind_iban";
 
     private static final List<String> COMMANDS_NEED_AUTHORIZATION = Arrays.asList(
-            ACCOUNT_SETTINGS_COMMAND,
             ADD_IBAN_COMMAND,
             ADD_TO_CART_COMMAND,
             CART_COMMAND,
@@ -49,6 +48,7 @@ public class AuthFilter extends HttpFilter {
     );
 
     private static final List<String> CONTROLLERS_NEED_AUTHORIZATION = Arrays.asList(
+            ACCOUNT_SETTINGS_CONTROLLER,
             LOAD_IBANs_CONTROLLER,
             UNBIND_IBAN_CONTROLLER
     );

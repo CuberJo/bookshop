@@ -26,6 +26,7 @@ public class ErrorMessageConstants {
     public static final String FIELDS_CANNOT_BE_EMPTY = "fields_cannot_be_empty";
     public static final String COULD_NOT_REACH_EMAIL_ADDRESS = "could_not_reach_email_address";
     public static final String EMPTY_CART = "emmpty_cart";
+    public static final String PASSWORDS_NOT_EQUAL = "passes_not_eq";
     public static final String INCOMPATIBLE_TYPE_OF_CRITERIA = "incompatible_type_of_criteria";
 
     public static final String ISBN_INCORRECT = "ISBN_incorrect";

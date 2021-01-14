@@ -71,12 +71,21 @@
     </div>
 </div>
 
-<%--******************//*////////////////////**/*/*/*/--%>
-<%--<div class="alert alert-info alert-dismissable">--%>
-<%--    <a class="panel-close close" data-dismiss="alert">×</a>--%>
-<%--    <i class="fa fa-coffee"></i>--%>
-<%--    This is an <strong>.alert</strong>. Use this to show important messages to the user.--%>
-<%--</div>--%>
+<div id="popup3" class="overlay">
+    <div class="popup">
+        <h2><fmt:message key="label.save_changes" bundle="${lang}"/></h2>
+        <a class="close" href="#" <%--onclick="cls()"--%>>&times;</a>
+        <form class="content" method="post" action="#">
+            <fmt:message key="label.enter_pass_to_save" bundle="${lang}"/>
+            <br/>
+            <br/>
+            <br/>
+            <input type="password" placeholder="<fmt:message key="label.password" bundle="${lang}"/>" name="checkPassword">
+            <button type="submit" onclick="cls2()" class="mmbutton cancelbtn"><fmt:message key="label.cancel" bundle="${lang}"/></button>
+            <button type="submit" onclick="sbmt2()" class="mmbutton unbindbtn"><fmt:message key="label.save" bundle="${lang}"/></button>
+        </form>
+    </div>
+</div>
 
 
 <%--                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>--%>
@@ -86,7 +95,7 @@
 
 
 <div class="small-container">
-    <div class="row">
+    <div id="rowToReload" class="row">
         <div class="col-sm-10"><h1>${login}</h1></div>
     </div>
 
@@ -143,7 +152,15 @@
             <div class="tab-pane" id="settings">
                 <h2></h2>
                 <hr>
-                <form class="form" action="/home?command=account_settings" method="post" id="registrationForm">
+                <div id="rowToReload2" class="alert alert-info alert-dismissable">
+                    <a class="panel-close close" data-dismiss="alert">×</a>
+                    <i class="fa fa-coffee"></i>
+                    This is an <strong>${error_acc_settings}</strong>. Use this to show important messages to the user.
+                    <c:if test="${not empty error_acc_settings}">
+                        <c:remove var="error_acc_settings" scope="session" />
+                    </c:if>
+                </div>
+<%--                <form class="form" action="/home?command=account_settings" method="post" id="registrationForm">--%>
                     <div class="form-group">
                         <div class="col-xs-6">
                             <label for="login"><h4><fmt:message key="label.login" bundle="${lang}"/></h4></label>
@@ -171,11 +188,11 @@
                     <div class="form-group">
                         <div class="col-xs-12">
                             <br>
-                            <button class="btn" type="submit"><fmt:message key="label.update" bundle="${lang}"/></button>
+                            <button class="btn" type="submit" onclick="save()"><fmt:message key="label.update" bundle="${lang}"/></button>
                             <button class="btn" type="reset"><fmt:message key="label.reset" bundle="${lang}"/></button>
                         </div>
                     </div>
-                </form>
+<%--                </form>--%>
             </div>
 
             <div class="tab-pane" id="logout">
@@ -277,12 +294,12 @@
     function setIBAN(isbn) {
         i = isbn;
         // document.getElementById('id01').style.display='block';
-        $('.overlay').css({'visibility': 'visible', 'opacity': '1'});
+        $('#popup2.overlay').css({'visibility': 'visible', 'opacity': '1'});
     }
 
     function sbmt() {
         event.preventDefault()
-        $('.overlay').css({'visibility': 'hidden', 'opacity': '0'});
+        $('#popup2.overlay').css({'visibility': 'hidden', 'opacity': '0'});
 
         console.log(i);
 
@@ -302,7 +319,38 @@
     function cls() {
         i = undefined;
         event.preventDefault();
-        $('.overlay').css({'visibility': 'hidden', 'opacity': '0'});
+        $('#popup2.overlay').css({'visibility': 'hidden', 'opacity': '0'});
+    }
+</script>
+
+<script>
+    function save(isbn) {
+        $('#popup3.overlay').css({'visibility': 'visible', 'opacity': '1'});
+    }
+
+    function sbmt2() {
+        event.preventDefault()
+        $('#popup3.overlay').css({'visibility': 'hidden', 'opacity': '0'});
+
+        var inputLogin = $("#login").val();
+        var inputEmail = $("#email").val();
+        var inputPass = $("#password").val();
+        var inputVerifyPass = $("#verifyPassword").val();
+
+        $.ajax({
+            url: 'http://localhost:8080/account_settings',
+            type: 'POST',
+            data: ({login: inputLogin, email: inputEmail, password: inputPass, verifyPassword: inputVerifyPass}),
+            success: function () {
+                $('#rowToReload').load(' #rowToReload');
+                $('#rowToReload2').load(' #rowToReload2');
+            }
+        });
+    }
+
+    function cls2() {
+        event.preventDefault();
+        $('#popup3.overlay').css({'visibility': 'hidden', 'opacity': '0'});
     }
 </script>
 

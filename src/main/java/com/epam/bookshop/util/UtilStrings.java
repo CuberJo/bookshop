@@ -15,6 +15,7 @@ public class UtilStrings {
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String VERIFY_PASSWORD = "verifyPassword";
+    public static final String CHECK_PASSWORD = "checkPassword";
     public static final String IBAN = "iban";
     public static final String IBANs = "ibans";
     public static final String CART = "cart";

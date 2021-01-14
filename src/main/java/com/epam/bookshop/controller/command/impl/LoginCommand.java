@@ -43,9 +43,6 @@ public class LoginCommand implements Command {
         final String login = requestContext.getParameter(UtilStrings.LOGIN);
         final String password = requestContext.getParameter(UtilStrings.PASSWORD);
 
-        System.out.println("LOGIN=" + requestContext.getParameter(UtilStrings.LOGIN));
-        System.out.println("PASSWORD=" + requestContext.getParameter(UtilStrings.PASSWORD));
-
         final HttpSession session = requestContext.getSession();
         String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
         String errorMessage = "";
@@ -53,7 +50,6 @@ public class LoginCommand implements Command {
 
         try {
             if (!new Validator().emptyStringValidator(login, password)) {
-                System.out.println("!validateInput(login, password)");
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
@@ -61,14 +57,12 @@ public class LoginCommand implements Command {
 
             Optional<User> optionalUser = authenticate(login, password, locale);
             if (optionalUser.isEmpty()) {
-                System.out.println("optionalUser.isEmpty()");
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCORRECT_LOGIN_OR_PASSWORD);
                 session.setAttribute(ERROR_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
             }
 
 
-            System.out.println("*****************NOTHING*****************************");
             session.setAttribute(UtilStrings.LOGIN, login);
             session.setAttribute(UtilStrings.ROLE, optionalUser.get().getRole().getRole());
 

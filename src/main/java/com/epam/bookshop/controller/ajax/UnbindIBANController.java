@@ -1,4 +1,4 @@
-package com.epam.bookshop.controller;
+package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.ResponseContext;

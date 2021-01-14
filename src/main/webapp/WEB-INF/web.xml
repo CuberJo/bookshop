@@ -7,9 +7,11 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
   <display-name>Archetype Created Web Application</display-name>
-  <!--    <session-config>-->
-  <!--        <session-timeout>60</session-timeout>-->
-  <!--    </session-config>-->
+
+  <session-config>
+      <session-timeout>60</session-timeout>
+  </session-config>
+
   <context-param>
     <param-name>mail</param-name>
     <!--        <param-value>/WEB-INF/classes/config/mail.properties</param-value>-->
@@ -20,8 +22,14 @@
     <error-code>404</error-code>
     <location>/error404.jsp</location>
   </error-page>
-    <error-page>
-      <exception-type>com.epam.bookshop.exception.EntityNotFoundException</exception-type>
-      <location>/error404.jsp</location>
+
+  <error-page>
+    <exception-type>com.epam.bookshop.exception.EntityNotFoundException</exception-type>
+    <location>/error404.jsp</location>
     </error-page>
+
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/error500.jsp</location>
+  </error-page>
 </web-app>
