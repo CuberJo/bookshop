@@ -49,7 +49,8 @@
     });
 </script>
 <%--    <a href="#popup1">Forgot password</a>--%>
-    <c:set var="need_to_link_bank_account" value="false"/>
+    <c:set var="getAddIBANPage" scope="session"/>
+    <c:set var="need_to_link_bank_account" scope="session" value="false"/>
 </c:if>
 
 <!---------- popup --------------->
@@ -61,7 +62,7 @@
         <div class="content">
             <fmt:message key="label.bind_card" bundle="${lang}"/>
             <br/>
-            <a href="/home?command=bank_account" style="color: #F37326"><fmt:message key="label.bind" bundle="${lang}"/></a>
+            <a href="/home?command=add_iban" style="color: #F37326"><fmt:message key="label.bind" bundle="${lang}"/></a>
         </div>
     </div>
 </div>

@@ -27,7 +27,7 @@ public class GenreService implements EntityService<Genre> {
 
     }
 
-    private String locale = "EN";
+    private String locale = "US";
 
     @Override
     public void setLocale(String locale) {

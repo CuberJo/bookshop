@@ -28,7 +28,7 @@ public class UserService implements EntityService<User> {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    private String locale = "EN";
+    private String locale = "US";
 
     UserService() {
 

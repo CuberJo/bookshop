@@ -112,7 +112,7 @@
                             <c:set var="getAddIBANPage" scope="session"/>
                             <c:set var="fromCartPage" scope="session"/>
 <%--                            <td><a href="/home?command=add_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a></td>--%>
-                            <a href="/home?comand=add_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>
+                            <a href="/home?command=add_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>
                         </c:otherwise>
                     </c:choose></td>
                 </tr>

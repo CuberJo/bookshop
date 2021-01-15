@@ -17,6 +17,8 @@ import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -26,6 +28,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class BooksCommand implements Command {
+
+    final static Logger logger = LoggerFactory.getLogger(BooksCommand.class);
 
     private static final String BOOKS_LEN_ATTR = "booksLength";
 
@@ -38,6 +42,7 @@ public class BooksCommand implements Command {
     @Override
     public ResponseContext execute(RequestContext requestContext) {
 
+        logger.info("hi");
         String genreName = getDecodedGenre(requestContext.getParameter(UtilStrings.GENRE));
 
         Collection<Book> books = getBooksByGenre(genreName, requestContext);

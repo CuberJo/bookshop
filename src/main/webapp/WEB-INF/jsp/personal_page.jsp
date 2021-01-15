@@ -80,7 +80,7 @@
             <br/>
             <br/>
             <br/>
-            <input type="password" placeholder="<fmt:message key="label.password" bundle="${lang}"/>" name="checkPassword">
+            <input type="password" placeholder="<fmt:message key="label.password" bundle="${lang}"/>" name="checkPassword" id="checkPassword">
             <button type="submit" onclick="cls2()" class="mmbutton cancelbtn"><fmt:message key="label.cancel" bundle="${lang}"/></button>
             <button type="submit" onclick="sbmt2()" class="mmbutton unbindbtn"><fmt:message key="label.save" bundle="${lang}"/></button>
         </form>
@@ -95,8 +95,8 @@
 
 
 <div class="small-container">
-    <div id="rowToReload" class="row">
-        <div class="col-sm-10"><h1>${login}</h1></div>
+    <div class="row">
+        <div id="rowToReload" class="col-sm-10"><h1>${login}</h1></div>
     </div>
 
     <div class="row">
@@ -152,14 +152,18 @@
             <div class="tab-pane" id="settings">
                 <h2></h2>
                 <hr>
-                <div id="rowToReload2" class="alert alert-info alert-dismissable">
-                    <a class="panel-close close" data-dismiss="alert">×</a>
-                    <i class="fa fa-coffee"></i>
-                    This is an <strong>${error_acc_settings}</strong>. Use this to show important messages to the user.
-                    <c:if test="${not empty error_acc_settings}">
-                        <c:remove var="error_acc_settings" scope="session" />
-                    </c:if>
+<%--                <div id="errorAccMessage" style="color: #ff523b; height: 30px"></div>--%>
+                <div id="merr" style="display: none">
+                    <div style="background: #EACCCC; padding: 10px 15px">
+                        <div id="errorAccMessage"<%-- style="color: #ff523b; height: 30px"--%>></div>
+                    </div>
                 </div>
+                <div id="rowToReload2"><c:if test="${not empty error_acc_settings}">
+                    <div style="background: #EACCCC; padding: 10px 15px">
+                        ${error_acc_settings}
+                        <c:remove var="error_acc_settings" scope="session" />
+                    </div>
+                </c:if></div>
 <%--                <form class="form" action="/home?command=account_settings" method="post" id="registrationForm">--%>
                     <div class="form-group">
                         <div class="col-xs-6">
@@ -189,7 +193,7 @@
                         <div class="col-xs-12">
                             <br>
                             <button class="btn" type="submit" onclick="save()"><fmt:message key="label.update" bundle="${lang}"/></button>
-                            <button class="btn" type="reset"><fmt:message key="label.reset" bundle="${lang}"/></button>
+                            <button class="btn" onclick="rst()" type="reset"><fmt:message key="label.reset" bundle="${lang}"/></button>
                         </div>
                     </div>
 <%--                </form>--%>
@@ -330,20 +334,37 @@
 
     function sbmt2() {
         event.preventDefault()
+
+        if (validateInput(event) == false) {
+            return;
+        }
+
         $('#popup3.overlay').css({'visibility': 'hidden', 'opacity': '0'});
 
         var inputLogin = $("#login").val();
         var inputEmail = $("#email").val();
         var inputPass = $("#password").val();
         var inputVerifyPass = $("#verifyPassword").val();
+        var inputCheckPass = $("#checkPassword").val();
+
+        $("#login").val('');
+        $("#email").val('');
+        $("#password").val('');
+        $("#verifyPassword").val('');
+        $("#checkPassword").val('');
 
         $.ajax({
             url: 'http://localhost:8080/account_settings',
             type: 'POST',
-            data: ({login: inputLogin, email: inputEmail, password: inputPass, verifyPassword: inputVerifyPass}),
+            data: ({login: inputLogin,
+                email: inputEmail,
+                password: inputPass,
+                verifyPassword: inputVerifyPass,
+                checkPassword: inputCheckPass}),
             success: function () {
                 $('#rowToReload').load(' #rowToReload');
                 $('#rowToReload2').load(' #rowToReload2');
+                // $('.small-container').load(' .small-container');
             }
         });
     }
@@ -351,6 +372,87 @@
     function cls2() {
         event.preventDefault();
         $('#popup3.overlay').css({'visibility': 'hidden', 'opacity': '0'});
+    }
+</script>
+
+<script>
+    function rst() {
+        $("#login").val('');
+        $("#email").val('');
+        $("#password").val('');
+        $("#verifyPassword").val('');
+        $("#checkPassword").val('');
+    }
+</script>
+
+<script>
+    function validateInput(event) {
+        let loginField = $("#login").val();
+        let emailField = $("#email").val();
+        let passField = $("#password").val();
+        let verifyPassField = $("#verifyPassword").val();
+        let checkPassField = $("#checkPassword").val();
+
+        let error = "";
+
+        let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
+        let malicious_regex = /^[-<>*;='#)+&("]+$/;
+        if (malicious_regex.test(checkPassField)) {
+            event.preventDefault();
+            error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
+        }
+        if (malicious_regex.test(verifyPassField)) {
+            event.preventDefault();
+            error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
+        }
+        if (malicious_regex.test(passField)) {
+            event.preventDefault();
+            error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
+        }
+        if (malicious_regex.test(emailField) || !email_regex.test(emailField)) {
+            event.preventDefault();
+            error = "<fmt:message key="incorrect_email" bundle="${mes}"/>";
+        }
+        if (malicious_regex.test(loginField)) {
+            event.preventDefault();
+            error = "<fmt:message key="incorrect_login" bundle="${mes}"/>";
+        }
+
+        let whitespace_regex = /[\s]+/;
+        if (checkPassField == "" || whitespace_regex.test(checkPassField)) {
+            event.preventDefault();
+            error = "<fmt:message key="input_pass" bundle="${mes}"/>";
+        }
+        if (verifyPassField == "" || whitespace_regex.test(verifyPassField)) {
+            event.preventDefault();
+            error = "<fmt:message key="input_pass" bundle="${mes}"/>";
+        }
+        if (passField == "" || whitespace_regex.test(passField)) {
+            event.preventDefault();
+            error = "<fmt:message key="input_pass" bundle="${mes}"/>";
+        }
+        if (emailField == "" || whitespace_regex.test(emailField)) {
+            event.preventDefault();
+            error = "<fmt:message key="input_email" bundle="${mes}"/>";
+        }
+        if (loginField == "" || whitespace_regex.test(loginField)) {
+            event.preventDefault();
+            error = "<fmt:message key="input_login" bundle="${mes}"/>";
+        }
+
+        if (passField != verifyPassField) {
+            event.preventDefault();
+            error = "<fmt:message key="passes_not_equal" bundle="${mes}"/>";
+        }
+
+        if (error != "") {
+            $('#merr').css("display", "block");
+            $("#errorAccMessage").text(error);
+            return false;
+        }
+
+        // window.location = "/home?command=register"
+        return true;
     }
 </script>
 

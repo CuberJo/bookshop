@@ -11,7 +11,7 @@ import java.sql.Connection;
 
 public class DAOFactory {
 
-    private String locale = "EN";
+    private String locale = "US";
 
     public static final DAOFactory INSTANCE = new DAOFactory();
 

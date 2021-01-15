@@ -22,7 +22,7 @@ public class BookQueryCreator implements EntityQueryCreator<Book> {
     private static final String PUBLISHER_COLUMN = "Publisher";
     private static final String GENRE_ID_COLUMN = "Genre_Id";
 
-    private static final String locale = "EN";
+    private static final String locale = "US";
 
     private static final ReentrantLock lock = new ReentrantLock();
 

@@ -25,7 +25,7 @@ public class RoleDAO extends AbstractDAO<Long, Role> {
     private static final String ID_COLUMN = "Id";
     private static final String ROLE_COLUMN = "Role";
 
-    private final String locale = "EN";
+    private final String locale = "US";
 
     public RoleDAO(Connection connection) {
         super(connection);

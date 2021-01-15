@@ -26,7 +26,7 @@ public class StatusDAO extends AbstractDAO<Long, Status> {
     private static final String STATUS_COLUMN = "Status";
     private static final String ID_COLUMN = "Id";
 
-    private final String locale = "EN";
+    private final String locale = "US";
 
     public StatusDAO(Connection connection) {
         super(connection);

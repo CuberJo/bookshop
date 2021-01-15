@@ -23,7 +23,7 @@ public class RoleService implements EntityService<Role> {
 
     private static final Logger logger = LoggerFactory.getLogger(RoleService.class);
 
-    private String locale = "EN";
+    private String locale = "US";
 
     RoleService() {
 

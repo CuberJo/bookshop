@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+    <property name="LOG_DIR" value="logs"/>
+
+<!--    <Appender name="Console" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--        <encoder>-->
+<!--            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </Appender>-->
+
+<!--    <Appender name="InfoFile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>${LOG_DIR}/info_log.log</file>-->
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>INFO</level>-->
+<!--            <onMatch>ACCEPT</onMatch>-->
+<!--            <onMismatch>DENY</onMismatch>-->
+<!--        </filter>-->
+<!--        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+<!--            <maxFileSize>1MB</maxFileSize>-->
+<!--        </triggeringPolicy>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>info-logs.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            <maxHistory>10</maxHistory>-->
+<!--            <totalSizeCap>50MB</totalSizeCap>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder>-->
+<!--            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </Appender>-->
+
+<!--    <Appender name="ErrorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>${LOG_DIR}/error-logs.log</file>-->
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>ERROR</level>-->
+<!--            <onMatch>ACCEPT</onMatch>-->
+<!--            <onMismatch>DENY</onMismatch>-->
+<!--        </filter>-->
+<!--        <triggeringPolicy  class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+<!--            <maxFileSize>1MB</maxFileSize>-->
+<!--        </triggeringPolicy >-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>error-logs.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            <maxHistory>10</maxHistory>-->
+<!--            <totalSizeCap>50MB</totalSizeCap>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder>-->
+<!--            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </Appender>-->
+
+    <Appender name="File2" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/testingLog.log</file>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </Appender>
+
+    <Root level="INFO">
+<!--        <appender-ref ref="InfoFile"/>-->
+<!--        <appender-ref ref="ErrorFile" />-->
+        <appender-ref ref="File2" />
+
+    </Root>
+
+</Configuration>

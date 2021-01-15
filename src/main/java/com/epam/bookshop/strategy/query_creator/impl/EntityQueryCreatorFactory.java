@@ -9,7 +9,7 @@ import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 public class EntityQueryCreatorFactory {
 
-    private String locale = "EN";
+    private String locale = "US";
 
     public static final EntityQueryCreatorFactory INSTANCE = new EntityQueryCreatorFactory();
 

@@ -22,13 +22,6 @@ public class PurchaseCommand implements Command {
 
         final HttpSession session = requestContext.getSession();
 
-        String login = (String) session.getAttribute(UtilStrings.LOGIN);
-        Object role = session.getAttribute(UtilStrings.ROLE);
-
-        if (Objects.isNull(role) || Objects.isNull(login)) {
-            return HOME_PAGE;
-        }
-
         purchase(session);
         clearCart(session);
 

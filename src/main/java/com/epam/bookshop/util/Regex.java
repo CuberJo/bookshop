@@ -1,4 +1,4 @@
-package com.epam.bookshop.domain.impl;
+package com.epam.bookshop.util;
 
 public class Regex {
 
@@ -15,5 +15,6 @@ public class Regex {
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9_.+-]{1,40}@[a-zA-Z0-9-]{2,5}.[a-zA-Z0-9-.]{2,5}$";
 //    public static final String EMAIL_REGEX = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{1,30}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{1,10}[a-zA-Z0-9])?){1,10}$";//*
     public static final String EMPTY_STRING_REGEX = "^[\\s]+$";
+    public static final String IBAN_REGEX = "^[\\d]{16}$";
 
 }

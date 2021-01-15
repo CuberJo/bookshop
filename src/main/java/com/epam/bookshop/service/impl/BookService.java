@@ -27,7 +27,7 @@ public class BookService implements EntityService<Book> {
 
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
-    private String locale = "EN";
+    private String locale = "US";
 
     BookService() {
 

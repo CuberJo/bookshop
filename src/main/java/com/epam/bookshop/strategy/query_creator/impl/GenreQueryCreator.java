@@ -17,7 +17,7 @@ public class GenreQueryCreator implements EntityQueryCreator<Genre> {
     private static final String GENRE_ID_COLUMN = "Id";
     private static final String GENRE_COLUMN = "Genre";
 
-    private static final String locale = "EN";
+    private static final String locale = "US";
     private static final String INCOMPATIBLE_TYPE_OF_CRITERIA = "incompatible_type_of_criteria";
 
     private static final ReentrantLock lock = new ReentrantLock();

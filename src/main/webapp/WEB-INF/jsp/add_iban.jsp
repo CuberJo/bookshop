@@ -12,7 +12,7 @@
     </c:when>
 </c:choose>
 <fmt:setBundle basename="jsp_text" var="lang" />
-<fmt:setBundle basename="message" var="mes" />
+<fmt:setBundle basename="error_message" var="mes" />
 
 
 <!DOCTYPE html>
@@ -54,6 +54,17 @@
 
                             <div class="mrow">
                                 <div class="col-50">
+                                    <div id="errAddIBAN" style="display: none">
+                                        <div style="background: #EACCCC; padding: 10px 15px">
+                                            <div id="errorAddIBANMessage"<%-- style="color: #ff523b; height: 30px"--%>></div>
+                                        </div>
+                                    </div>
+                                    <c:if test="${not empty error_add_iban_message}">
+                                        <div style="background: #EACCCC; padding: 10px 15px">
+                                            <br><pre style="color: #ff523b">${error_add_iban_message}</pre><br>
+                                            <c:remove var="error_add_iban_message" scope="session" />
+                                        </div>
+                                    </c:if>
                                     <h3>Billing Address</h3>
                                     <label for="fname"><i class="fa fa-user"></i> Full Name</label>
                                     <input type="text" id="fname" name="firstname" placeholder="John M. Doe" readonly>
@@ -91,7 +102,7 @@
                                         <label for="card">Credit card number</label>
 <%--                                        <form>--%>
                                             <div name="card-container">
-                                                <input type="text" id="card" maxlength="16" />
+                                                <input type="text" id="card" name="iban" maxlength="16" />
 <%--                                                <label class="card-label" for="">Credit Card</label>--%>
                                                 <div id="logo"></div>
                                             </div>
@@ -117,7 +128,7 @@
                             <%--                            <label>--%>
                             <%--                                <input type="checkbox" checked="checked" name="sameadr" readonly> Shipping address same as billing--%>
                             <%--                            </label>--%>
-                            <input type="submit" value="<fmt:message key="label.bind" bundle="${lang}"/> "<%--"Continue to checkout"--%> class="mbtn">
+                            <button type="submit" <%--onclick="return validateIBAN(event)" --%>class="btn"><fmt:message key="label.bind" bundle="${lang}"/><%--"Continue to checkout"--%></button>
                         </form>
                     </div>
                 </div>
@@ -150,6 +161,34 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.2.0/vanilla-masker.min.js"></script>
 <script src="../../js/app.bundle.js"></script>
+
+<%--<script>--%>
+<%--    function validateIBAN(event) {--%>
+<%--        let error = "";--%>
+
+<%--        iban = $('#card').val();--%>
+<%--        --%>
+<%--        let card_regex = /^[\d]{16}$/;--%>
+<%--        if (!card_regex.test(iban)) {--%>
+<%--            event.preventDefault();--%>
+<%--            error = "<fmt:message key="iban_incorrect" bundle="${mes}"/>";--%>
+<%--        }--%>
+
+<%--        let whitespace_regex = /[\s]+/;--%>
+<%--        if (iban === "" || whitespace_regex.test(iban)) {--%>
+<%--            event.preventDefault();--%>
+<%--            error = "<fmt:message key="input_iban" bundle="${mes}"/>";--%>
+<%--        }--%>
+
+<%--        if (error !== "") {--%>
+<%--            $("#errorAddIBANMessage").text(error);--%>
+<%--            $('#errAddIBAN').css('display', 'block');--%>
+<%--            return false;--%>
+<%--        }--%>
+
+<%--        return true;--%>
+<%--    }--%>
+<%--</script>--%>
 
 </body>
 </html>

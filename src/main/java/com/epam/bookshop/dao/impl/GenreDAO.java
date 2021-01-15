@@ -31,7 +31,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     private static final String ID_COLUMN = "Id";
     private static final String GENRE_COLUMN = "Genre";
 
-    private final String locale = "EN";
+    private final String locale = "US";
 
     public GenreDAO(Connection connection) {
         super(connection);

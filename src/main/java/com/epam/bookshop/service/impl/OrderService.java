@@ -27,7 +27,7 @@ public class OrderService implements EntityService<Order> {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
-    private String locale = "EN";
+    private String locale = "US";
 
     OrderService() {
 

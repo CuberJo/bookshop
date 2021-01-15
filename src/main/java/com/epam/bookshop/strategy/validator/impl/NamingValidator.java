@@ -8,6 +8,7 @@ import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.strategy.validator.Validatable;
 import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.util.Regex;
 import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class NamingValidator implements Validatable<Naming> {
 
-    private String locale = "EN";
+    private String locale = "US";
 
     @Override
     public void setLocale(String locale) {

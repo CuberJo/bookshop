@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ServiceFactory {
 
-    private String locale = "EN";
+    private String locale = "US";
 
     private static ServiceFactory instance;
 

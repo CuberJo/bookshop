@@ -53,7 +53,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
     private static final String IBAN_COLUMN = "IBAN";
 
-    private final String locale = "EN";
+    private final String locale = "US";
 
     UserDAO(Connection connection) {
         super(connection);
@@ -295,10 +295,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
         try(PreparedStatement ps = getPrepareStatement(SQL_UPDATE_USER_BY_ID)) {
             ps.setString(1, user.getName());
             ps.setString(2, user.getLogin());
-
-            String hashpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-            ps.setString(3, hashpw);
-
+            ps.setString(3, user.getPassword());
             ps.setString(4, user.getEmail());
             ps.setLong(5, user.getRole().getEntityId());
             ps.setLong(6, user.getEntityId());

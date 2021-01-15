@@ -17,7 +17,7 @@ public class RoleQueryCreator implements EntityQueryCreator<Role> {
     private static final String ROLE_ID_COLUMN = "Id";
     private static final String ROLE_COLUMN = "Role";
 
-    private static final String locale = "EN";
+    private static final String locale = "US";
 
     private static final ReentrantLock lock = new ReentrantLock();
 

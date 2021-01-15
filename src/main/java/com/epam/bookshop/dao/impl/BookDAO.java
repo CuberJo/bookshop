@@ -49,7 +49,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String PREVIEW_COLUMN = "Preview";
     private static final String IMAGE_COLUMN = "Image";
 
-    private final String locale = "EN";
+    private final String locale = "US";
 
     BookDAO(Connection connection) {
         super(connection);

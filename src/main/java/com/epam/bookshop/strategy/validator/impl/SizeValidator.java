@@ -17,7 +17,7 @@ public class SizeValidator implements Validatable<Size> {
 
     private static final String VALIDATION_FAILED = "validation_fail";
 
-    private String locale = "EN";
+    private String locale = "US";
 
     @Override
     public void setLocale(String locale) {

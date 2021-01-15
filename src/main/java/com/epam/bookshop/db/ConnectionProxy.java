@@ -12,7 +12,7 @@ public class ConnectionProxy implements Connection {
 
     private static final String CONNECTION_HAS_NOT_BEEN_INITIALIZED = "connection_initialization_error";
 
-    private String locale = "EN";
+    private String locale = "US";
 
     private final Connection connection;
 

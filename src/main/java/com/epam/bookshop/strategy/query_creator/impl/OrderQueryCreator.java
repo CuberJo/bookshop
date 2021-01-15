@@ -19,7 +19,7 @@ public class OrderQueryCreator implements EntityQueryCreator<Order> {
     private static final String ORDER_TIME_COLUMN = "Order_Time";
     private static final String STATUS_ID_COLUMN = "Status_Id";
 
-    private static final String locale = "EN";
+    private static final String locale = "US";
 
     private static final ReentrantLock lock = new ReentrantLock();
 

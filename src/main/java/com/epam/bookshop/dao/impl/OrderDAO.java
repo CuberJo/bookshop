@@ -46,7 +46,7 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
 
     private static final String BOOK_ID_COLUMN = "Book_Id";
 
-    private final String locale = "EN";
+    private final String locale = "US";
 
     public OrderDAO(Connection connection) {
         super(connection);

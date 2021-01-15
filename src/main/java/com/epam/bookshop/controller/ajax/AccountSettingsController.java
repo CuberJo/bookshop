@@ -1,8 +1,5 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.Command;
-import com.epam.bookshop.controller.command.RequestContext;
-import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.util.ErrorMessageConstants;
@@ -23,7 +20,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -53,20 +49,21 @@ public class AccountSettingsController extends HttpServlet {
             return;
         }
 
-        if (!password.equals(verifyPassword)) {
+        if ((!password.isEmpty() && !verifyPassword.isEmpty()) && !password.equals(verifyPassword)) {
             session.setAttribute(ERROR_ACC_SETTINGS,
                     ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PASSWORDS_NOT_EQUAL));
             return;
         }
 
         User userToUpdate = findUser(request, service, locale);
-        if (!userToUpdate.getPassword().equals(BCrypt.hashpw(checkPass, BCrypt.gensalt()))) {
+        if (!BCrypt.checkpw(checkPass, userToUpdate.getPassword())) {
+//        if (!userToUpdate.getPassword().equals(BCrypt.hashpw(checkPass, BCrypt.gensalt()))) {
             session.setAttribute(ERROR_ACC_SETTINGS,
                     ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PASSWORDS_NOT_EQUAL));
             return;
         }
 
-        updateUserData(login, email, password, userToUpdate, service, request, locale);
+        update(login, email, password, userToUpdate, service, request, locale);
     }
 
 
@@ -74,11 +71,28 @@ public class AccountSettingsController extends HttpServlet {
     private boolean validateEmptyInput(String login, String email, String password, String verifyPassword,
                                        String checkPassword, HttpServletRequest request, String locale) {
 
-        if (!new Validator().emptyStringValidator(login, email, password, verifyPassword, checkPassword)) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
+        Validator validator = new Validator();
+        String errorMessage = "";
+
+        if (!validator.emptyStringValidator(checkPassword)) {
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_CHECK_PASS);
             request.getSession().setAttribute(ERROR_ACC_SETTINGS, errorMessage);
             return false;
         }
+
+        if (!validator.emptyStringValidator(login) &&
+                !validator.emptyStringValidator(email) &&
+                !validator.emptyStringValidator(password) &&
+                !validator.emptyStringValidator(verifyPassword)) {
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
+            request.getSession().setAttribute(ERROR_ACC_SETTINGS, errorMessage);
+            return false;
+        }
+//        if (!new Validator().emptyStringValidator(login, email, password, verifyPassword, checkPassword)) {
+//            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
+//            request.getSession().setAttribute(ERROR_ACC_SETTINGS, errorMessage);
+//            return false;
+//        }
 
         return true;
     }
@@ -106,17 +120,19 @@ public class AccountSettingsController extends HttpServlet {
 
 
 
-    private void updateUserData(String login, String email, String password, User userToUpdate,
-                                UserService service, HttpServletRequest request, String locale) {
+    private void update(String login, String email, String password, User userToUpdate,
+                        UserService service, HttpServletRequest request, String locale) {
 
-        if (Objects.nonNull(locale)) {
+        if (Objects.nonNull(login) && !login.isEmpty()) {
             userToUpdate.setLogin(login);
+            request.getSession().setAttribute(UtilStrings.LOGIN, login);
         }
-        if (Objects.nonNull(email)) {
+        if (Objects.nonNull(email) && !email.isEmpty()) {
             userToUpdate.setEmail(email);
         }
-        if (Objects.nonNull(password)) {
-            userToUpdate.setPassword(password);
+        if (Objects.nonNull(password) && !password.isEmpty()) {
+            String hashpw = BCrypt.hashpw(password, BCrypt.gensalt());
+            userToUpdate.setPassword(hashpw);
         }
 
         try {

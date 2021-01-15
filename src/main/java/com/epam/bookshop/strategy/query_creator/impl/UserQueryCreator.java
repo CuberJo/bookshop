@@ -21,7 +21,7 @@ public class UserQueryCreator implements EntityQueryCreator<User> {
     private static final String EMAIL_COLUMN = "Email";
     private static final String ROLE_ID_COLUMN = "Role_Id";
 
-    private static final String locale = "EN";
+    private static final String locale = "US";
 
     private static final ReentrantLock lock = new ReentrantLock();
 

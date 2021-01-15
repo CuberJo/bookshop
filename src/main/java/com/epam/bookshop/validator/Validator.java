@@ -4,7 +4,7 @@ import com.epam.bookshop.context.annotation.Naming;
 import com.epam.bookshop.context.annotation.Size;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
-import com.epam.bookshop.domain.impl.Regex;
+import com.epam.bookshop.util.Regex;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.strategy.validator.impl.NamingValidator;
 import com.epam.bookshop.strategy.validator.impl.SizeValidator;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class Validator {
 
-    private String locale = "EN";
+    private String locale = "US";
 
     private NamingValidator namingValidator = new NamingValidator();
     private SizeValidator sizeValidator = new SizeValidator();
