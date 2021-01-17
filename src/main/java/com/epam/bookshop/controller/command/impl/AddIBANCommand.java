@@ -27,7 +27,7 @@ import static java.awt.font.GlyphMetrics.WHITESPACE;
 
 public class AddIBANCommand implements Command {
 
-    private static final Logger logger = LoggerFactory.getLogger(Command.class);
+    private static final Logger logger = LoggerFactory.getLogger(AddIBANCommand.class);
 
     private static final String ERROR_MESSAGE = "error_add_iban_message";
 
