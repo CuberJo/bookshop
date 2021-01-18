@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @WebServlet("/add_to_cart")
@@ -41,6 +42,10 @@ public class AddToCartController extends HttpServlet {
             }
         }
 
+        if (bookExistsInLibrary(bookToCart, session)) {
+            return;
+        }
+
         cart.add(bookToCart);
 
         session.removeAttribute(BOOK_TO_CART);
@@ -49,6 +54,28 @@ public class AddToCartController extends HttpServlet {
 //        return resolvePage(session);
     }
 
+
+    /**
+     * Checks whether we have already bought the book
+     * @param bookToCart
+     * @param session
+     * @return
+     */
+    private boolean bookExistsInLibrary(Book bookToCart, HttpSession session) {
+        List<Book> library = (List<Book>) session.getAttribute(UtilStrings.LIBRARY);
+
+        if (Objects.isNull(library)) {
+            return false;
+        }
+
+        for (Book book : library) {
+            if (bookToCart.equals(book)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
     private ResponseContext resolvePage(HttpSession session) {

@@ -111,34 +111,13 @@
             <li><a data-toggle="tab" href="#deleteAcc"><fmt:message key="label.delete_acc" bundle="${lang}"/></a></li>
         </ul>
 
-        <style>
-            /*#t { display: block; position: relative; }*/
-
-            /*.mask {*/
-            /*    display: none;*/
-            /*}*/
-            /*.mask { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5);  opacity: 0; }*/
-
-            /*#t:hover:after {*/
-            /*    display: st;*/
-            /*}*/
-            /*#t:hover {*/
-            /*    background-color: #91b7de;*/
-            /*    background: rgba(0,0,0,0.5)*/
-            /*}*/
-
-            #bookHover img:hover {
-                background: url("../../images/library.jpg") no-repeat;
-            }
-        </style>
-
         <div class="tab-content">
             <div class="tab-pane active" id="library">
                 <hr>
                 <div class="row">
                 <c:forEach var="book" items="${library}">
                     <c:if test="${not empty book.base64Image}">
-                         <div id="bookHover" class="col-4" style="flex-basis: 20%"><a href="/home?command=book-details&isbn=${book.ISBN}">
+                         <div id="bookHover-${book.ISBN}" class="col-4" style="flex-basis: 20%"><a href="/home?command=book-details&isbn=${book.ISBN}">
                             <%--                <img src="../../images/library.jpg">--%>
                             <img src="data:image/jpg;base64,${book.base64Image}">
                             <h4>${book.title}</h4>
@@ -490,31 +469,88 @@
     }
 </script>
 
-<script>
+<%--<script>--%>
+<%--    var bookTitle = "";--%>
+<%--    var bookPrice = "";--%>
+<%--    $(document).ready(function () {--%>
+<%--        // $('#bookHover')--%>
+<%--        // .mouseenter(function () {--%>
+<%--        //     console.log('ji')--%>
+<%--        //     $('.mask').css({'display': 'block'});--%>
+<%--        //     $(this).css({'display': 'none'})--%>
+<%--        // })--%>
+<%--        // .mouseleave(function () {--%>
+<%--        //     console.log('oooooooooooooo')--%>
+<%--        //     $('.mask').css({'display': 'none'});--%>
+<%--        //     $(this).css({'display': 'block'})--%>
+<%--        // })--%>
+<%--        $("#bookHover").hover(function(){--%>
+<%--            $(this).css("background-color", "yellow");--%>
+<%--            bookTitle = $('#bookHover h4').text();--%>
+<%--            $('#bookHover h4').text('read');--%>
+<%--            bookPrice = $('#bookHover p').text();--%>
+<%--            $('#bookHover p').css({'display': 'none'});--%>
+<%--            // $(this).css({'display': 'none'})--%>
+<%--        }, function(){--%>
+<%--            // $('.mask').css({'display': 'none'});--%>
+<%--            // $(this).css({'display': 'block'});--%>
+<%--            $('#bookHover h4').text(bookTitle);--%>
+<%--            $('#bookHover p').text('$' + bookPrice);--%>
+<%--            $(this).css("background-color", "pink");--%>
+<%--        });--%>
+<%--        // $('#bookHover').bind({--%>
+<%--        //     mouseenter: function () {--%>
+<%--        //         $('.mask').css({'display': 'block'});--%>
+<%--        //         $('#bookHover').css({'display': 'none'})--%>
+<%--        //     },--%>
+<%--        //     mouseleave: function () {--%>
+<%--        //         $('.mask').css({'display': 'none'});--%>
+<%--        //         $('#bookHover').css({'display': 'block'})--%>
+<%--        //     }--%>
+<%--        // })--%>
+<%--        // $('#bookHover').hover(function () {--%>
+<%--        //     $('.mask').css({'display': 'block'});--%>
+<%--        //     $('#bookHover').css({'display': 'none'})--%>
+<%--        // });--%>
+<%--    })--%>
+<%--</script>--%>
+
+
+
+<script id="s">
+    var bookTitle = "";
+    var bookPrice = "";
+
     $(document).ready(function () {
-        $('#bookHover')
-        .mouseenter(function () {
-            $('.mask').css({'display': 'block'});
-            $(this).css({'display': 'none'})
-        })
-        .mouseenter(function () {
-            $('.mask').css({'display': 'block'});
-            $(this).css({'display': 'none'})
-        })
-        $('#bookHover').bind({
-            mouseenter: function () {
-                $('.mask').css({'display': 'block'});
-                $('#bookHover').css({'display': 'none'})
-            },
-            mouseleave: function () {
-                $('.mask').css({'display': 'none'});
-                $('#bookHover').css({'display': 'block'})
-            }
-        })
-        // $('#bookHover').hover(function () {
-        //     $('.mask').css({'display': 'block'});
-        //     $('#bookHover').css({'display': 'none'})
-        // });
+        <c:forEach var="book" items="${library}">
+        $("#bookHover-${book.ISBN}").hover(function(){
+            // $(this).css("background-color", "yellow");
+            bookTitle = $('#bookHover-${book.ISBN} h4').text();
+            console.log(bookTitle);
+            $('#bookHover-${book.ISBN} h4').text('<fmt:message key="label.read" bundle="${lang}"/>');
+            bookPrice = $('#bookHover-${book.ISBN} p').text();
+            console.log(bookPrice);
+            $('#bookHover-${book.ISBN} p').css({'display': 'none'});
+            // $(this).css({'display': 'none'})
+        }, function(){
+            // $('.mask').css({'display': 'none'});
+            // $(this).css({'display': 'block'});
+            $('#bookHover-${book.ISBN} h4').text(bookTitle);
+            $('#bookHover-${book.ISBN} p').text(bookPrice);
+            $('#bookHover-${book.ISBN} p').css({'display': 'block'});
+            // $(this).css("background-color", "pink");
+        });
+
+
+
+
+
+        // function () {
+        //             $('.small-container').load(' .small-container');
+        //             $('#s').load('#s');
+        //         }
+
+        </c:forEach>
     })
 </script>
 
