@@ -102,7 +102,7 @@
                                         <label for="card">Credit card number</label>
 <%--                                        <form>--%>
                                             <div name="card-container">
-                                                <input type="text" id="card" name="iban" maxlength="16" />
+                                                <input type="text" id="card" name="iban" maxlength="19" placeholder="1111 1111 1111 1111">
 <%--                                                <label class="card-label" for="">Credit Card</label>--%>
                                                 <div id="logo"></div>
                                             </div>
@@ -128,7 +128,7 @@
                             <%--                            <label>--%>
                             <%--                                <input type="checkbox" checked="checked" name="sameadr" readonly> Shipping address same as billing--%>
                             <%--                            </label>--%>
-                            <button type="submit" <%--onclick="return validateIBAN(event)" --%>class="btn"><fmt:message key="label.bind" bundle="${lang}"/><%--"Continue to checkout"--%></button>
+                            <button type="submit" onclick="return validateIBAN(event)" class="btn"><fmt:message key="label.bind" bundle="${lang}"/><%--"Continue to checkout"--%></button>
                         </form>
                     </div>
                 </div>
@@ -162,33 +162,36 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.2.0/vanilla-masker.min.js"></script>
 <script src="../../js/app.bundle.js"></script>
 
-<%--<script>--%>
-<%--    function validateIBAN(event) {--%>
-<%--        let error = "";--%>
+<script>
+    function validateIBAN(event) {
+        let error = "";
 
-<%--        iban = $('#card').val();--%>
-<%--        --%>
-<%--        let card_regex = /^[\d]{16}$/;--%>
-<%--        if (!card_regex.test(iban)) {--%>
-<%--            event.preventDefault();--%>
-<%--            error = "<fmt:message key="iban_incorrect" bundle="${mes}"/>";--%>
-<%--        }--%>
+        iban = $('#card').val();
 
-<%--        let whitespace_regex = /[\s]+/;--%>
-<%--        if (iban === "" || whitespace_regex.test(iban)) {--%>
-<%--            event.preventDefault();--%>
-<%--            error = "<fmt:message key="input_iban" bundle="${mes}"/>";--%>
-<%--        }--%>
+        let card_regex = /^[\d]{4}\s[\d]{4}\s[\d]{4}\s[\d]{4}$/;
 
-<%--        if (error !== "") {--%>
-<%--            $("#errorAddIBANMessage").text(error);--%>
-<%--            $('#errAddIBAN').css('display', 'block');--%>
-<%--            return false;--%>
-<%--        }--%>
+        if (!card_regex.test(iban)) {
+            event.preventDefault();
+            console.log('ji')
+            error = "<fmt:message key="iban_incorrect" bundle="${mes}"/>";
+        }
 
-<%--        return true;--%>
-<%--    }--%>
-<%--</script>--%>
+        let whitespace_regex = /^[\s]{2,}$/;
+        if (iban === "" || whitespace_regex.test(iban)) {
+            event.preventDefault();
+            console.log('ttttttt')
+            error = "<fmt:message key="input_iban" bundle="${mes}"/>";
+        }
+
+        if (error !== "") {
+            $("#errorAddIBANMessage").text(error);
+            $('#errAddIBAN').css('display', 'block');
+            return false;
+        }
+
+        return true;
+    }
+</script>
 
 </body>
 </html>

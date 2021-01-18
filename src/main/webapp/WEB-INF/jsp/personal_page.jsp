@@ -24,7 +24,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Personal page - Bookstore</title>
-<%--    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/home.css">--%>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/books.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/personal_page.css">
     <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
@@ -109,6 +108,7 @@
             <li><a data-toggle="tab" href="#settings"><fmt:message key="label.settings" bundle="${lang}"/></a></li>
             <li><a data-toggle="tab" href="#logout"><fmt:message key="label.log_out" bundle="${lang}"/></a></li>
             <li><a data-toggle="tab" href="#BankAccs"><fmt:message key="label.bank_accounts" bundle="${lang}"/></a></li>
+            <li><a data-toggle="tab" href="#deleteAcc"><fmt:message key="label.delete_acc" bundle="${lang}"/></a></li>
         </ul>
 
         <div class="tab-content">
@@ -201,14 +201,14 @@
 
             <div class="tab-pane" id="logout">
                 <hr>
-                <div class="mcontainer" style="box-shadow: none; border: none" align="center">
+                <form class="mcontainer" style="box-shadow: none; border: none" align="center" method="post" action="/home?command=logout">
                     <h2><fmt:message key="label.log_out" bundle="${lang}"/></h2>
                     <br>
                     <p><fmt:message key="really_logout" bundle="${m}"/></p>
                     <br>
-                    <a href="/home?command=logout" class="btn"><fmt:message key="label.log_out" bundle="${lang}"/></a>
+                    <button class="btn"><fmt:message key="label.log_out" bundle="${lang}"/></button>
                     <div style="height: 80px"></div>
-                </div>
+                </form>
 <%--                <form class="form" action="##" method="post" id="registrationForm">--%>
 <%--                    <div class="form-group">--%>
 <%--                        <div class="col-xs-6">--%>
@@ -260,6 +260,18 @@
                     <a href="/home?command=add_iban&getAddIBANPage=getAddIBANPage&additional_iban=additional_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>                    <div style="height: 50px"></div>
                     <div style="height: 50px"></div>
                 </div>
+            </div>
+
+            <div class="tab-pane" id="deleteAcc">
+                <hr>
+                <form class="mcontainer" style="box-shadow: none; border: none" align="center" method="post" action="/home?command=delete_account">
+                    <h2><fmt:message key="label.delete_acc" bundle="${lang}"/></h2>
+                    <br>
+                    <p><fmt:message key="label.really_like_to_delete_acc" bundle="${lang}"/></p>
+                    <br>
+                    <button class="btn"><fmt:message key="label.delete" bundle="${lang}"/></button>
+                    <div style="height: 80px"></div>
+                </form>
             </div>
         </div>
     </div>

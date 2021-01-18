@@ -193,10 +193,6 @@ public class AddIBANCommand implements Command {
 
         List<String> IBANs = service.findUserBankAccounts(optionalUser.get().getEntityId());
 
-//        return optionalUser.get().getIBANs().stream()
-//                .filter(Objects::nonNull)
-//                .filter(s -> !s.equals(EMPTY_STRING))
-//                .collect(Collectors.toList());
         return IBANs;
     }
 }

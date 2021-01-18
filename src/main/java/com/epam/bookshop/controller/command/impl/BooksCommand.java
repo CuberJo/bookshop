@@ -5,8 +5,6 @@ import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.impl.BookCriteria;
 import com.epam.bookshop.criteria.impl.GenreCriteria;
-import com.epam.bookshop.dao.impl.BookDAO;
-import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
@@ -20,7 +18,6 @@ import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
@@ -42,7 +39,6 @@ public class BooksCommand implements Command {
     @Override
     public ResponseContext execute(RequestContext requestContext) {
 
-        logger.info("hi");
         String genreName = getDecodedGenre(requestContext.getParameter(UtilStrings.GENRE));
 
         Collection<Book> books = getBooksByGenre(genreName, requestContext);
@@ -60,7 +56,7 @@ public class BooksCommand implements Command {
             try {
                 return URLDecoder.decode(encodedGenre, UtilStrings.UTF8);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -94,7 +90,7 @@ public class BooksCommand implements Command {
                 books = bookService.findAll(BookCriteria.builder().genreId(genre.getEntityId()).build());
 
             } catch (EntityNotFoundException | ValidatorException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         } else {
             books = bookService.findAll();
@@ -103,7 +99,7 @@ public class BooksCommand implements Command {
         try {
             bookService.findImagesForBooks(books);
         } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
         return books;

@@ -28,6 +28,7 @@ public class CommandFactory {
     private static final String FINISHED_PURCHASE = "finished_purchase";
     private static final String PERSONAL_PAGE = "personal_page";
     private static final String UNBIND_IBAN = "unbind_iban";
+    private static final String DELETE_ACCOUNT = "delete_account";
 
 
     public static Command command(String command) {
@@ -62,8 +63,6 @@ public class CommandFactory {
                 return new ChangeLocaleCommand();
             case SEND_CONTACT_FORM:
                 return new SendContactFormCommand();
-            case ADD_TO_CART:
-                return new AddToCartCommand();
             case REMOVE_FROM_CART:
                 return new RemoveFromCartCommand();
             case PURCHASE:
@@ -76,6 +75,8 @@ public class CommandFactory {
                 return new FinishedPurchaseCommand();
             case PERSONAL_PAGE:
                 return new PersonalPageCommand();
+            case DELETE_ACCOUNT:
+                return new DeleteAccountCommand();
 //            case LOAD_IBANs:
 //                return new LoadIBANsController();
             default:

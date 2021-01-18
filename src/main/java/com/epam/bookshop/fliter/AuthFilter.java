@@ -25,11 +25,13 @@ public class AuthFilter extends HttpFilter {
     private static final String ADD_TO_CART_COMMAND = "add_to_cart";
     private static final String CART_COMMAND = "cart";
     private static final String CHOOSE_IBAN_COMMAND = "choose_iban";
+    private static final String DELETE_ACCOUNT_COMMAND = "delete_account";
     private static final String FINISHED_PURCHASE_COMMAND = "finished_purchase";
     private static final String LOGOUT_COMMAND = "logout";
     private static final String PERSONAL_COMMAND = "personal_page";
     private static final String PURCHASE_COMMAND = "purchase";
     private static final String REMOVE_FROM_CART_COMMAND = "remove_from_cart";
+
 
     private static final String ACCOUNT_SETTINGS_CONTROLLER = "account_settings";
     private static final String LOAD_IBANs_CONTROLLER = "load_ibans";
@@ -40,6 +42,7 @@ public class AuthFilter extends HttpFilter {
             ADD_TO_CART_COMMAND,
             CART_COMMAND,
             CHOOSE_IBAN_COMMAND,
+            DELETE_ACCOUNT_COMMAND,
             FINISHED_PURCHASE_COMMAND,
             LOGOUT_COMMAND,
             PERSONAL_COMMAND,

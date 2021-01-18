@@ -1,4 +1,4 @@
-package com.epam.bookshop.controller.command.impl;
+package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
@@ -6,20 +6,25 @@ import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.util.UtilStrings;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class AddToCartCommand implements Command {
+@WebServlet("/add_to_cart")
+public class AddToCartController extends HttpServlet {
 
     private static final String ACCOUNT = "account";
 
     private static final String BOOK_TO_CART = "book_to_cart";
 
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
-        final HttpSession session = requestContext.getSession();
+        final HttpSession session = request.getSession();
 
         ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute(UtilStrings.CART);
         if (Objects.isNull(cart)) {
@@ -31,7 +36,8 @@ public class AddToCartCommand implements Command {
 
         for (Book book : cart) {
             if (bookToCart.equals(book)) {
-                return resolvePage(session);
+                return;
+//                return resolvePage(session);
             }
         }
 
@@ -39,7 +45,8 @@ public class AddToCartCommand implements Command {
 
         session.removeAttribute(BOOK_TO_CART);
 
-        return resolvePage(session);
+        return;
+//        return resolvePage(session);
     }
 
 

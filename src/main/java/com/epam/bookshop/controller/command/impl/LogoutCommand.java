@@ -7,7 +7,7 @@ import com.epam.bookshop.util.UtilStrings;
 
 public class LogoutCommand implements Command {
 
-    private static final ResponseContext ACCOUNT_PAGE = () -> "/WEB-INF/jsp/account.jsp";
+    private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {

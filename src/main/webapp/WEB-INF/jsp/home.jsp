@@ -92,7 +92,7 @@
                     <li style="font-weight: bold"><a href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a href="/home?command=change_locale&locale=RN&from=${param.command}">EN</a></li>
                 </ul>
             </nav>
-            <c:if test="${not empty sessionScope.role}">
+            <c:if test="${not empty sessionScope.login}">
                 <a href="home?command=cart"><img src="/images/cart.png" width="30px" height="30px"></a>
             </c:if>
             <img src="/images/menu-icon.png" class="menu-icon" onclick="menutoggle()">
