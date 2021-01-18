@@ -313,10 +313,26 @@
         $('#previewBtn').bind('click', function () {
             $('#popup2.overlay').css({'visibility': 'visible', 'opacity': '1'});
             $('.popup .close').click(function(){
-                $('#popup2.overlay').css({'visibility': 'hidden', 'opacity': '0'});
+                $('#popup2.overlay').css({'visibility': 'hidden', 'opacity': '0', 'cursor': 'default'});
+                $('html').css({'cursor': 'default'});
             })
         })
     })
+</script>
+
+<%--This code will disable mouse click--%>
+
+<script>
+    $(document).ready(function () {
+        $("#popup2").on("contextmenu",function(e){
+            return false;
+        });
+    });
+    $(document).ready(function () {
+        $('#popup2').bind('cut copy paste', function (e) {
+            e.preventDefault();
+        });
+    });
 </script>
 
 </body>

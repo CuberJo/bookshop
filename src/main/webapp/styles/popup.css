@@ -28,6 +28,14 @@
     max-height: 100%;
     width: 100%;
 }
+/* Отключение возможности выделения в теге DIV */
+#popup2 {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
 /**************************************************/
 .popup {
     margin: 70px auto;

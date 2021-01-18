@@ -111,21 +111,43 @@
             <li><a data-toggle="tab" href="#deleteAcc"><fmt:message key="label.delete_acc" bundle="${lang}"/></a></li>
         </ul>
 
+        <style>
+            /*#t { display: block; position: relative; }*/
+
+            /*.mask {*/
+            /*    display: none;*/
+            /*}*/
+            /*.mask { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5);  opacity: 0; }*/
+
+            /*#t:hover:after {*/
+            /*    display: st;*/
+            /*}*/
+            /*#t:hover {*/
+            /*    background-color: #91b7de;*/
+            /*    background: rgba(0,0,0,0.5)*/
+            /*}*/
+
+            #bookHover img:hover {
+                background: url("../../images/library.jpg") no-repeat;
+            }
+        </style>
+
         <div class="tab-content">
             <div class="tab-pane active" id="library">
                 <hr>
+                <div class="row">
                 <c:forEach var="book" items="${library}">
                     <c:if test="${not empty book.base64Image}">
-                        <div class="row">
-                             <div class="col-4" style="flex-basis: 20%"><a href="/home?command=book-details&isbn=${book.ISBN}">
-                                <%--                <img src="../../images/library.jpg">--%>
-                                <img src="data:image/jpg;base64,${book.base64Image}">
-                                <h4>${book.title}</h4>
-                                <p>${book.price}$</p>
-                            </a></div>
-                        </div>
+                         <div id="bookHover" class="col-4" style="flex-basis: 20%"><a href="/home?command=book-details&isbn=${book.ISBN}">
+                            <%--                <img src="../../images/library.jpg">--%>
+                            <img src="data:image/jpg;base64,${book.base64Image}">
+                            <h4>${book.title}</h4>
+                            <p>${book.price}$</p>
+                        </a></div>
                     </c:if>
                 </c:forEach>
+                </div>
+
                 <c:if test="${empty library}">
                     <div class="mcontainer" style="box-shadow: none; border: none" align="center">
                         <br>
@@ -466,6 +488,34 @@
         // window.location = "/home?command=register"
         return true;
     }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#bookHover')
+        .mouseenter(function () {
+            $('.mask').css({'display': 'block'});
+            $(this).css({'display': 'none'})
+        })
+        .mouseenter(function () {
+            $('.mask').css({'display': 'block'});
+            $(this).css({'display': 'none'})
+        })
+        $('#bookHover').bind({
+            mouseenter: function () {
+                $('.mask').css({'display': 'block'});
+                $('#bookHover').css({'display': 'none'})
+            },
+            mouseleave: function () {
+                $('.mask').css({'display': 'none'});
+                $('#bookHover').css({'display': 'block'})
+            }
+        })
+        // $('#bookHover').hover(function () {
+        //     $('.mask').css({'display': 'block'});
+        //     $('#bookHover').css({'display': 'none'})
+        // });
+    })
 </script>
 
 </body>
