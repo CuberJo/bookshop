@@ -65,9 +65,11 @@ public class AddIBANCommand implements Command {
                 session.setAttribute(UtilStrings.IBANs, IBANs);
             }
 
-            if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(BACK_TO_CART))) {
-                session.removeAttribute(BACK_TO_CART);
-                return CHOOSE_IBAN_PAGE_FORWARD;
+            if (!Objects.nonNull(session.getAttribute(CREATE_ADDITIONAL_IBAN).equals(CREATE_ADDITIONAL_IBAN))) {
+                if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(BACK_TO_CART))) {
+                    session.removeAttribute(BACK_TO_CART);
+                    return CHOOSE_IBAN_PAGE_FORWARD;
+                }
             }
 
             if ((IBANs.stream().findAny().isEmpty()

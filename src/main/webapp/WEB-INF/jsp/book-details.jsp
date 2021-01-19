@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+<%@ taglib prefix = "ex" uri = "/WEB-INF/tlds/custom.tld"%>
+
 
 <c:choose>
     <c:when test="${locale eq 'US'}">
@@ -78,6 +80,7 @@
             <br/>
             <c:choose>
                 <c:when test="${empty sessionScope.role}">
+                    <c:set var="back_to_cart" scope="session"/>
                     <a href="/home?command=account" style="color: #F37326"><fmt:message key="label.check_out" bundle="${lang}"/></a>
                 </c:when>
                 <c:otherwise>
@@ -194,7 +197,28 @@
             <h4>$${book.price}</h4>
             <c:set var="book_to_cart" scope="session" value="${book}"/>
 <%--            <form action="/home?command=add_to_cart" method="post">--%>
-            <button id="add" style="cursor: pointer; outline: none; border: none" type="submit" class="btn"><fmt:message key="label.add_to_cart" bundle="${lang}"/></button>
+            <ex:checkBookPresence library="${library}" bookToCheck="${book}"></ex:checkBookPresence>
+<%--            <c:choose>--%>
+<%--                <c:when test="${not empty library}">--%>
+<%--                    <c:set var="contains" value="false" />--%>
+<%--                    <c:forEach var="book" items="${library}">--%>
+<%--                        <c:if test="${item eq myValue}">--%>
+<%--                            <c:set var="contains" value="true" />--%>
+<%--                        </c:if>--%>
+<%--                    </c:forEach>--%>
+<%--                    <c:choose>--%>
+<%--                        <c:when test=""></c:when>--%>
+<%--                    </c:choose>--%>
+<%--                </c:when>--%>
+<%--            </c:choose>--%>
+            <c:choose>
+                <c:when test="${contains}">
+                    <a href="/home?command=read_book&isbn=${book.ISBN}" class="btn"><fmt:message key="label.read" bundle="${lang}"/></a>
+                </c:when>
+                <c:otherwise>
+                    <button id="add" style="cursor: pointer; outline: none; border: none" type="submit" class="btn"><fmt:message key="label.add_to_cart" bundle="${lang}"/></button>
+                </c:otherwise>
+            </c:choose>
             <button id="previewBtn" style="cursor: pointer; outline: none; border: none" type="submit" class="btn"><fmt:message key="label.preview" bundle="${lang}"/></button>
 <%--            </form>--%>
             <br>

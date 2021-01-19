@@ -38,4 +38,22 @@
             <type>double</type>
         </attribute>
     </tag>
+
+    <tag>
+        <name>checkBookPresence</name>
+        <tag-class>com.epam.bookshop.tag.CheckBookPresence</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>library</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.ArrayList</type>
+        </attribute>
+        <attribute>
+            <name>bookToCheck</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>com.epam.bookshop.domain.impl.Book</type>
+        </attribute>
+    </tag>
 </taglib>

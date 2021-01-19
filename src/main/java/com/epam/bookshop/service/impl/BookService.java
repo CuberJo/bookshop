@@ -17,10 +17,14 @@ import com.epam.bookshop.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class BookService implements EntityService<Book> {
@@ -238,5 +242,63 @@ public class BookService implements EntityService<Book> {
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
+    }
+
+//    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void createBookFile(String ISBN, String filePath) {
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        dao.createBookFile(ISBN, filePath);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
+//    public void findImagesForBooks(Collection<Book> books) throws EntityNotFoundException {
+//        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+//        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+//
+//        for (Book book: books) {
+//            Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
+//            if (optionalImage.isEmpty()) {
+//                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND) + UtilStrings.WHITESPACE + book.getISBN();
+//                throw new EntityNotFoundException(errorMessage);
+//            }
+//
+//            book.setBase64Image(optionalImage.get());
+//        }
+//
+//        try {
+//            conn.close();
+//        } catch (SQLException throwables) {
+//            logger.error(throwables.getMessage(), throwables);
+//        }
+//    }
+
+    public byte[] findBookFile(Book book) throws EntityNotFoundException {
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+
+//        Blob bookFile = dao.findBookFileByISBN(book.getISBN());
+        byte[] bookFile = dao.findBookFileByISBN(book.getISBN());
+        if (Objects.isNull(bookFile)) {
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_FILE_NOT_FOUND) + UtilStrings.WHITESPACE + book.getISBN();
+            throw new EntityNotFoundException(errorMessage);
+        }
+
+//        book.setBase64Image(optionalImage.get());
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return bookFile;
     }
 }

@@ -57,7 +57,7 @@
                                 <img src="data:image/jpg;base64,${book.base64Image}">
                                 <div>
                                     <p>${book.title}</p>
-                                    <small><fmt:message key="label.price" bundle="${lang}"/>: $${book.price}</small>
+<%--                                    <small><fmt:message key="label.price" bundle="${lang}"/>: $${book.price}</small>--%>
                                     <br>
 <%--                                    <c:set var="book_to_remove" scope="session" value="${book}"/>--%>
 <%--                                    <form method="post" action="/home?command=remove_from_cart">--%>

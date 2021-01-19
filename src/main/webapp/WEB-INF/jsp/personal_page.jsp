@@ -117,7 +117,10 @@
                 <div class="row">
                 <c:forEach var="book" items="${library}">
                     <c:if test="${not empty book.base64Image}">
-                         <div id="bookHover-${book.ISBN}" class="col-4" style="flex-basis: 20%"><a href="/home?command=book-details&isbn=${book.ISBN}">
+                    <div id="bookHover-${book.ISBN}" class="col-4" style="flex-basis: 20%"><a href="read_book?isbn=${book.ISBN}">
+
+<%--                     <div id="bookHover-${book.ISBN}" class="col-4" style="flex-basis: 20%"><div id="rb" >--%>
+<%--                         <div id="bookHover-${book.ISBN}" class="col-4" style="flex-basis: 20%"><a href="/home?command=read_book&isbn=${book.ISBN}">--%>
                             <%--                <img src="../../images/library.jpg">--%>
                             <img src="data:image/jpg;base64,${book.base64Image}">
                             <h4>${book.title}</h4>
@@ -126,6 +129,25 @@
                     </c:if>
                 </c:forEach>
                 </div>
+<%--${pageContext.request.contextPath}/--%>
+                <script>
+                    $(document).ready(function () {
+                        $('#rb').bind('click', function () {
+                            $.ajax({
+                                url: 'http://localhost:8080/read_book',
+                                type: 'GET',
+                                data: ({
+                                    isbn: '${book.ISBN}'
+                                }),
+                                success: function () {
+                                    $('#rowToReload').load(' #rowToReload');
+                                    $('#rowToReload2').load(' #rowToReload2');
+                                    // $('.small-container').load(' .small-container');
+                                }
+                            });
+                        })
+                    })
+                </script>
 
                 <c:if test="${empty library}">
                     <div class="mcontainer" style="box-shadow: none; border: none" align="center">
@@ -469,87 +491,23 @@
     }
 </script>
 
-<%--<script>--%>
-<%--    var bookTitle = "";--%>
-<%--    var bookPrice = "";--%>
-<%--    $(document).ready(function () {--%>
-<%--        // $('#bookHover')--%>
-<%--        // .mouseenter(function () {--%>
-<%--        //     console.log('ji')--%>
-<%--        //     $('.mask').css({'display': 'block'});--%>
-<%--        //     $(this).css({'display': 'none'})--%>
-<%--        // })--%>
-<%--        // .mouseleave(function () {--%>
-<%--        //     console.log('oooooooooooooo')--%>
-<%--        //     $('.mask').css({'display': 'none'});--%>
-<%--        //     $(this).css({'display': 'block'})--%>
-<%--        // })--%>
-<%--        $("#bookHover").hover(function(){--%>
-<%--            $(this).css("background-color", "yellow");--%>
-<%--            bookTitle = $('#bookHover h4').text();--%>
-<%--            $('#bookHover h4').text('read');--%>
-<%--            bookPrice = $('#bookHover p').text();--%>
-<%--            $('#bookHover p').css({'display': 'none'});--%>
-<%--            // $(this).css({'display': 'none'})--%>
-<%--        }, function(){--%>
-<%--            // $('.mask').css({'display': 'none'});--%>
-<%--            // $(this).css({'display': 'block'});--%>
-<%--            $('#bookHover h4').text(bookTitle);--%>
-<%--            $('#bookHover p').text('$' + bookPrice);--%>
-<%--            $(this).css("background-color", "pink");--%>
-<%--        });--%>
-<%--        // $('#bookHover').bind({--%>
-<%--        //     mouseenter: function () {--%>
-<%--        //         $('.mask').css({'display': 'block'});--%>
-<%--        //         $('#bookHover').css({'display': 'none'})--%>
-<%--        //     },--%>
-<%--        //     mouseleave: function () {--%>
-<%--        //         $('.mask').css({'display': 'none'});--%>
-<%--        //         $('#bookHover').css({'display': 'block'})--%>
-<%--        //     }--%>
-<%--        // })--%>
-<%--        // $('#bookHover').hover(function () {--%>
-<%--        //     $('.mask').css({'display': 'block'});--%>
-<%--        //     $('#bookHover').css({'display': 'none'})--%>
-<%--        // });--%>
-<%--    })--%>
-<%--</script>--%>
-
-
-
-<script id="s">
+<script>
     var bookTitle = "";
     var bookPrice = "";
 
     $(document).ready(function () {
         <c:forEach var="book" items="${library}">
         $("#bookHover-${book.ISBN}").hover(function(){
-            // $(this).css("background-color", "yellow");
             bookTitle = $('#bookHover-${book.ISBN} h4').text();
-            console.log(bookTitle);
             $('#bookHover-${book.ISBN} h4').text('<fmt:message key="label.read" bundle="${lang}"/>');
             bookPrice = $('#bookHover-${book.ISBN} p').text();
-            console.log(bookPrice);
-            $('#bookHover-${book.ISBN} p').css({'display': 'none'});
-            // $(this).css({'display': 'none'})
+            <%--$('#bookHover-${book.ISBN} p').css({'display': 'none'});--%>
+            $('#bookHover-${book.ISBN} p').text('<fmt:message key="label.now" bundle="${lang}"/>');
         }, function(){
-            // $('.mask').css({'display': 'none'});
-            // $(this).css({'display': 'block'});
             $('#bookHover-${book.ISBN} h4').text(bookTitle);
             $('#bookHover-${book.ISBN} p').text(bookPrice);
-            $('#bookHover-${book.ISBN} p').css({'display': 'block'});
-            // $(this).css("background-color", "pink");
+            <%--$('#bookHover-${book.ISBN} p').css({'display': 'block'});--%>
         });
-
-
-
-
-
-        // function () {
-        //             $('.small-container').load(' .small-container');
-        //             $('#s').load('#s');
-        //         }
-
         </c:forEach>
     })
 </script>

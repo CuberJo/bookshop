@@ -12,6 +12,7 @@ public class ErrorMessageConstants {
     public static final String IMAGE_NOT_FOUND = "image_not_found";
     public static final String ORDER_NOT_FOUND = "order_not_found";
     public static final String IBAN_NOT_FOUND = "iban_not_found";
+    public static final String BOOK_FILE_NOT_FOUND = "book_file_not_found";
 
     public static final String NO_SUCH_GENRE_FOUND = "no_such_genre_found";
     public static final String NO_SUCH_SERVICE_TYPE = "no_such_service_type";

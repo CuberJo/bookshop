@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +33,7 @@ public class AuthFilter extends HttpFilter {
 
     private static final String ACCOUNT_SETTINGS_CONTROLLER = "account_settings";
     private static final String LOAD_IBANs_CONTROLLER = "load_ibans";
+    private static final String READ_BOOK_CONTROLLER = "read_book";
     private static final String UNBIND_IBAN_CONTROLLER = "unbind_iban";
 
     private static final List<String> COMMANDS_NEED_AUTHORIZATION = Arrays.asList(
@@ -53,6 +52,7 @@ public class AuthFilter extends HttpFilter {
     private static final List<String> CONTROLLERS_NEED_AUTHORIZATION = Arrays.asList(
             ACCOUNT_SETTINGS_CONTROLLER,
             LOAD_IBANs_CONTROLLER,
+            READ_BOOK_CONTROLLER,
             UNBIND_IBAN_CONTROLLER
     );
 

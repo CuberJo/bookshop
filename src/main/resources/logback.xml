@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Configuration debug="true">
+<Configuration>
     <property name="LOG_DIR" value="C:/Users/User/IdeaProjects/bookshop/logs"/>
 
     <Appender name="Console" class="ch.qos.logback.core.ConsoleAppender">

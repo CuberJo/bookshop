@@ -39,6 +39,9 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String SQL_SELECT_IMG_BY_ISBN = "SELECT Image from TEST_LIBRARY.BOOK_IMAGE WHERE ISBN = ?;";
     private static final String SQL_INSERT_IMG = "INSERT INTO TEST_LIBRARY.BOOK_IMAGE (ISBN, Image) VALUES (?, ?)";
 
+    private static final String SQL_SELECT_BOOK_FILE_BY_ISBN = "SELECT File from TEST_LIBRARY.BOOK_FILE WHERE ISBN = ?;";
+    private static final String SQL_INSERT_BOOK_FILE = "INSERT INTO TEST_LIBRARY.BOOK_FILE (ISBN, File) VALUES (?, ?)";
+
     private static final String ID_COLUMN = "Id";
     private static final String ISBN_COLUMN = "ISBN";
     private static final String TITLE_COLUMN = "Title";
@@ -48,6 +51,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String PUBLISHER_COLUMN = "Publisher";
     private static final String PREVIEW_COLUMN = "Preview";
     private static final String IMAGE_COLUMN = "Image";
+    private static final String FILE_COLUMN = "FIle";
 
     private final String locale = "US";
 
@@ -328,10 +332,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             ps.setBinaryStream(2, is); //   or ps.setBlob(2, is);
 
             ps.execute();
-        } catch (SQLException | FileNotFoundException throwables) {
+        } catch (SQLException | IOException throwables) {
             logger.error(throwables.getMessage(), throwables);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         }
     }
 
@@ -397,5 +399,81 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         }
 
         return imageBytes;
+    }
+
+//    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void createBookFile(String ISBN, String filePath) {
+
+        try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_BOOK_FILE);
+            InputStream is = new FileInputStream(new File(filePath))) {
+
+            ps.setString(1, ISBN);
+            ps.setBlob(2, is);
+
+            ps.execute();
+        } catch (SQLException | IOException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+
+//    private byte[] getArrayFromInputStream(InputStream inputStream) throws IOException {
+//        byte[] bytes;
+//        byte[] buffer = new byte[1024];
+//        try(BufferedInputStream is = new BufferedInputStream(inputStream)){
+//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//            int length;
+//            while ((length = is.read(buffer)) > -1 ) {
+//                bos.write(buffer, 0, length);
+//            }
+//            bos.flush();
+//            bytes = bos.toByteArray();
+//        }
+//        return bytes;
+//    }
+//
+//    private static void writeContent(byte[] content, String fileToWriteTo) throws IOException {
+//        File file = new File(fileToWriteTo);
+//        try(BufferedOutputStream salida = new BufferedOutputStream(new FileOutputStream(file))){
+//            salida.write(content);
+//            salida.flush();
+//        }
+//    }
+
+
+    public byte[] findBookFileByISBN(String ISBN) {
+        ResultSet rs = null;
+
+//        Blob blob = null;
+//        InputStream is = null;
+
+        byte[] bytes = null;
+
+        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_BOOK_FILE_BY_ISBN)) {
+
+            ps.setString(1, ISBN);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+//                blob = rs.getBlob(FILE_COLUMN);
+//                is = rs.getBinaryStream(FILE_COLUMN);
+                bytes = rs.getBytes(FILE_COLUMN);
+//                OutputStream os = rs.getBlob(FILE_COLUMN);
+            }
+
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException throwables) {
+                logger.error(throwables.getMessage(), throwables);
+            }
+        }
+
+        return bytes;
     }
 }

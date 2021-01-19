@@ -34,7 +34,6 @@ public class BookDetailsCommand implements Command {
 
         try {
 
-
             BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
             service.setLocale(locale);
             BookCriteria criteria = BookCriteria.builder()

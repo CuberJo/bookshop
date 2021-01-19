@@ -1,5 +1,6 @@
 package com.epam.bookshop.controller.command;
 
+import com.epam.bookshop.controller.ReadBookController;
 import com.epam.bookshop.controller.command.impl.*;
 
 import java.util.Objects;
@@ -29,6 +30,7 @@ public class CommandFactory {
     private static final String PERSONAL_PAGE = "personal_page";
     private static final String UNBIND_IBAN = "unbind_iban";
     private static final String DELETE_ACCOUNT = "delete_account";
+    private static final String READ_BOOK = "read_book";
 
 
     public static Command command(String command) {
@@ -77,6 +79,8 @@ public class CommandFactory {
                 return new PersonalPageCommand();
             case DELETE_ACCOUNT:
                 return new DeleteAccountCommand();
+//            case READ_BOOK:
+//                return new ReadBookController();
 //            case LOAD_IBANs:
 //                return new LoadIBANsController();
             default:
