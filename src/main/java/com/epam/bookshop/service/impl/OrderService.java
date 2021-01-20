@@ -10,8 +10,8 @@ import com.epam.bookshop.domain.impl.Order;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
-import com.epam.bookshop.util.ErrorMessageConstants;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 import org.slf4j.Logger;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class OrderService implements EntityService<Order> {
-
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     private String locale = "US";

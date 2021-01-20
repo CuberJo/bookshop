@@ -1,8 +1,8 @@
 package com.epam.bookshop.dao.impl;
 
 import com.epam.bookshop.db.ConnectionPool;
-import com.epam.bookshop.util.ErrorMessageConstants;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.mindrot.jbcrypt.BCrypt;
 import com.epam.bookshop.criteria.Criteria;

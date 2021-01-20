@@ -3,8 +3,8 @@ package com.epam.bookshop.strategy.query_creator.impl;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.strategy.query_creator.EntityQueryCreator;
-import com.epam.bookshop.util.ErrorMessageConstants;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 public class EntityQueryCreatorFactory {

@@ -1,6 +1,9 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.constant;
 
 public class UtilStrings {
+    private UtilStrings() {
+
+    }
 
     public static final String NEW_LINE = "\n";
     public static final String WHITESPACE = " ";
@@ -35,7 +38,6 @@ public class UtilStrings {
     public static final String CONTENT_DISPOSITION_HEADER = "Content-disposition";
     public static final String BOOKS_LEN_ATTR = "booksLength";
 
-
     public static final String IBAN_TO_DELETE = "iban_to_delete";
     public static final String BOOK_TO_CART = "book_to_cart";
     public static final String GET_ADD_IBAN_PAGE_ATTR = "getAddIBANPage";
@@ -43,7 +45,8 @@ public class UtilStrings {
     public static final String FROM_CART_PAGE = "fromCartPage";
     public static final String CREATE_ADDITIONAL_IBAN = "additional_iban";
     public static final String BACK_TO_CHOOSE_IBAN = "back_to_choose_iban";
+    public static final String NEED_TO_LINK_BANK_ACCOUNT = "need_to_link_bank_account";
+    public static final String BOOK_TO_REMOVE = "book_to_remove";
 
     public static final Integer ZERO_ROWS_AFFECTED = 0;
-
 }

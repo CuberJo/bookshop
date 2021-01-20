@@ -23,7 +23,7 @@
     <title>Books - Bookstore</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
-    <link rel="stylesheet" type="text/css" href="../../styles/book-details.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/book_details.css">
     <link rel="stylesheet" type="text/css" href="../../styles/book-preview.css">
     <link rel="stylesheet" type="text/css" href="../../styles/home.css">
     <link rel="stylesheet" type="text/css" href="../../styles/books.css">

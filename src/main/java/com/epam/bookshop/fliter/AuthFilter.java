@@ -1,6 +1,6 @@
 package com.epam.bookshop.fliter;
 
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.UtilStrings;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,13 +28,14 @@ public class AuthFilter extends HttpFilter {
     private static final String LOGOUT_COMMAND = "logout";
     private static final String PERSONAL_COMMAND = "personal_page";
     private static final String PURCHASE_COMMAND = "purchase";
-    private static final String REMOVE_FROM_CART_COMMAND = "remove_from_cart";
 
 
     private static final String ACCOUNT_SETTINGS_CONTROLLER = "account_settings";
     private static final String LOAD_IBANs_CONTROLLER = "load_ibans";
     private static final String READ_BOOK_CONTROLLER = "read_book";
     private static final String UNBIND_IBAN_CONTROLLER = "unbind_iban";
+    private static final String REMOVE_FROM_CART_CONTROLLER = "remove_from_cart";
+
 
     private static final List<String> COMMANDS_NEED_AUTHORIZATION = Arrays.asList(
             ADD_IBAN_COMMAND,
@@ -45,14 +46,14 @@ public class AuthFilter extends HttpFilter {
             FINISHED_PURCHASE_COMMAND,
             LOGOUT_COMMAND,
             PERSONAL_COMMAND,
-            PURCHASE_COMMAND,
-            REMOVE_FROM_CART_COMMAND
+            PURCHASE_COMMAND
     );
 
     private static final List<String> CONTROLLERS_NEED_AUTHORIZATION = Arrays.asList(
             ACCOUNT_SETTINGS_CONTROLLER,
             LOAD_IBANs_CONTROLLER,
             READ_BOOK_CONTROLLER,
+            REMOVE_FROM_CART_CONTROLLER,
             UNBIND_IBAN_CONTROLLER
     );
 

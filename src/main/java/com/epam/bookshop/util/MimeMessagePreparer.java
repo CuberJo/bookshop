@@ -6,19 +6,19 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class MessagePreparer {
+public class MimeMessagePreparer {
 
     private static final String CONTENT_TYPE = "text/html";
 
-    private static MessagePreparer instance;
+    private static MimeMessagePreparer instance;
 
-    private MessagePreparer() {
+    private MimeMessagePreparer() {
 
     }
 
-    public static MessagePreparer getInstance() {
+    public static MimeMessagePreparer getInstance() {
         if (instance == null) {
-            instance = new MessagePreparer();
+            instance = new MimeMessagePreparer();
         }
 
         return instance;

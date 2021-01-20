@@ -29,10 +29,10 @@ public class MailSender {
 
         Properties sessionProperties = PropertiesLoader.getInstance().initSessionProperties();
 
-        Session mailSession = SessionCreator.getInstance().createSession(sessionProperties);
+        Session mailSession = MailSessionCreator.getInstance().createSession(sessionProperties);
 
         String accountEmail = sessionProperties.getProperty(MAIL_USER_NAME);
-        Message message = MessagePreparer.getInstance().prepare(mailSession, accountEmail, subject, recipient, response);
+        Message message = MimeMessagePreparer.getInstance().prepare(mailSession, accountEmail, subject, recipient, response);
 
         Transport.send(message);
     }

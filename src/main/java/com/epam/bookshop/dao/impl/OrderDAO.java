@@ -5,8 +5,8 @@ import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.strategy.query_creator.impl.EntityQueryCreatorFactory;
-import com.epam.bookshop.util.ErrorMessageConstants;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class OrderDAO extends AbstractDAO<Long, Order> {
-
     private static final Logger logger = LoggerFactory.getLogger(OrderDAO.class);
 
     private static final String SQL_SELECT_ALL_ORDERS_WHERE =  "SELECT Id, Library_User_Id, Order_Time, Status_Id FROM TEST_LIBRARY.ORDER_BOOK WHERE ";
@@ -28,14 +27,14 @@ public class OrderDAO extends AbstractDAO<Long, Order> {
     private static final String SQL_DELETE_ORDER_BY_ID = "DELETE FROM TEST_LIBRARY.ORDER WHERE Id = ?;";
     private static final String SQL_UPDATE_ORDER_BY_ID = "UPDATE TEST_LIBRARY.ORDER SET Library_User_Id = ?, Order_Time = ?, Status_Id = ? WHERE Id = ?;";
 
-    private static String SQL_SELECT_ALL_ORDERS = "SELECT Id, Library_User_Id, Order_Time, Status_Id " +
+    private static final String SQL_SELECT_ALL_ORDERS = "SELECT Id, Library_User_Id, Order_Time, Status_Id " +
             "FROM TEST_LIBRARY.ORDER ";
 
-    private static String SQL_SELECT_ALL_BOOKS_IN_THIS_ORDER = "SELECT Order_Id, Book_Id " +
+    private static final String SQL_SELECT_ALL_BOOKS_IN_THIS_ORDER = "SELECT Order_Id, Book_Id " +
             "FROM TEST_LIBRARY.ORDER_BOOK " +
             "WHERE Order_Id = ?";
 
-    private static String SQL_SELECT_ORDER_BY_ID = "SELECT Id, Library_User_Id, Order_Time, Status_Id " +
+    private static final String SQL_SELECT_ORDER_BY_ID = "SELECT Id, Library_User_Id, Order_Time, Status_Id " +
             "FROM TEST_LIBRARY.ORDER " +
             "WHERE Id = ?";
 

@@ -5,32 +5,26 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Role;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
-import com.epam.bookshop.exception.InvalidStateException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.MailSender;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
 public class RegisterCommand implements Command {
-
     private static final Logger logger = LoggerFactory.getLogger(RegisterCommand.class);
-
-//    private static final ResponseContext HOME_PAGE = () -> "/WEB-INF/jsp/home.jsp";
-//    private static final ResponseContext ACCOUNT_PAGE = () -> "/WEB-INF/jsp/account.jsp";
 
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
@@ -39,11 +33,7 @@ public class RegisterCommand implements Command {
     private static final String REGISTER_USER_SUBJECT = "Registration completed";
     private static final String REGISTER_RESPONSE = "You have successfully registered!";
 
-    private static final String ERROR_MESSAGE = "error_reg_message";
     private static final String USER_ROLE = "USER";
-    private static final String BACK_TO_CART_ATTR = "back_to_cart";
-    private static final String NEED_TO_LINK_BANK_ACCOUNT = "need_to_link_bank_account";
-
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
@@ -60,26 +50,26 @@ public class RegisterCommand implements Command {
         User user = null;
 
         try {
-            if (!validateEmptyInput(name, login, email, password, locale, requestContext)) {
+            if (!validateEmptyInput(name, login, email, password, locale, session)) {
                 return ACCOUNT_PAGE;
             }
 
             user = register(name, login, email, password, locale);
 
-//            MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
+            MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
 
             session.setAttribute(UtilStrings.LOGIN, login);
             session.setAttribute(UtilStrings.ROLE, user.getRole().getRole());
-            session.setAttribute(NEED_TO_LINK_BANK_ACCOUNT, true);
+            session.setAttribute(UtilStrings.NEED_TO_LINK_BANK_ACCOUNT, true);
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
-            session.setAttribute(ERROR_MESSAGE, errorMessage);
+            session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE, errorMessage);
             logger.error(e.getMessage(), e);
             return ACCOUNT_PAGE;
-        } /*catch (MessagingException e) {
+        } catch (MessagingException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.COULD_NOT_REACH_EMAIL_ADDRESS) + UtilStrings.NEW_LINE + email;
-            session.setAttribute(ERROR_MESSAGE, errorMessage);
+            session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE, errorMessage);
             try {
                 EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
                 service.setLocale(locale);
@@ -90,10 +80,10 @@ public class RegisterCommand implements Command {
             }
             logger.error(e.getMessage(), e);
             return ACCOUNT_PAGE;
-        }*/
+        }
 
-        if (Objects.nonNull(requestContext.getSession().getAttribute(BACK_TO_CART_ATTR))) {
-            requestContext.getSession().removeAttribute(BACK_TO_CART_ATTR);
+        if (Objects.nonNull(requestContext.getSession().getAttribute(UtilStrings.BACK_TO_CART))) {
+            requestContext.getSession().removeAttribute(UtilStrings.BACK_TO_CART);
             return CART_PAGE;
         }
 
@@ -101,12 +91,22 @@ public class RegisterCommand implements Command {
     }
 
 
+    /**
+     * Validates passed name, login, email, password
+     * @param name {@link String} user name
+     * @param login {@link String} user login
+     * @param email {@link String} user email
+     * @param password {@link String} user password
+     * @param locale {@link String} language for error messages
+     * @param session current {@link HttpSession} session
+     * @return true if and only if strings passed validation, otherwise - false
+     */
     private boolean validateEmptyInput(String name, String login, String email, String password,
-                                       String locale, RequestContext requestContext) {
+                                       String locale, HttpSession session) {
 
         if (!new Validator().emptyStringValidator(name, login, email, password)) {
             String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
-            requestContext.getSession().setAttribute(ERROR_MESSAGE, errorMessage);
+            session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE, errorMessage);
             return false;
         }
 
@@ -116,14 +116,13 @@ public class RegisterCommand implements Command {
 
     /**
      * Registers user by given name, login, email, password
-     *
-     * @param name
-     * @param login
-     * @param email
-     * @param password
-     * @param locale
+     * @param name {@link String} user name
+     * @param login {@link String} user login
+     * @param email {@link String} user email
+     * @param password {@link String} user password
+     * @param locale {@link String} language for error messages
      * @return user if he/she was found in database
-     * @throws ValidatorException
+     * @throws ValidatorException if {@link User} object's data fails validation
      */
     private User register(String name, String login, String email, String password, String locale) throws ValidatorException {
 

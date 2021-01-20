@@ -444,7 +444,7 @@
             event.preventDefault();
             error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
         }
-        if (malicious_regex.test(emailField) || !email_regex.test(emailField)) {
+        if (malicious_regex.test(emailField) || (emailField != "" && !email_regex.test(emailField))) {
             event.preventDefault();
             error = "<fmt:message key="incorrect_email" bundle="${mes}"/>";
         }
@@ -458,22 +458,33 @@
             event.preventDefault();
             error = "<fmt:message key="input_pass" bundle="${mes}"/>";
         }
-        if (verifyPassField == "" || whitespace_regex.test(verifyPassField)) {
+        if ((verifyPassField == "" || whitespace_regex.test(verifyPassField)) &&
+            (passField == "" || whitespace_regex.test(passField)) &&
+            (emailField == "" || whitespace_regex.test(emailField)) &&
+            (loginField == "" || whitespace_regex.test(loginField))) {
             event.preventDefault();
-            error = "<fmt:message key="input_pass" bundle="${mes}"/>";
+            error = "<fmt:message key="input_data" bundle="${mes}"/>";
         }
-        if (passField == "" || whitespace_regex.test(passField)) {
-            event.preventDefault();
-            error = "<fmt:message key="input_pass" bundle="${mes}"/>";
-        }
-        if (emailField == "" || whitespace_regex.test(emailField)) {
-            event.preventDefault();
-            error = "<fmt:message key="input_email" bundle="${mes}"/>";
-        }
-        if (loginField == "" || whitespace_regex.test(loginField)) {
-            event.preventDefault();
-            error = "<fmt:message key="input_login" bundle="${mes}"/>";
-        }
+        <%--if (checkPassField == "" || whitespace_regex.test(checkPassField)) {--%>
+        <%--    event.preventDefault();--%>
+        <%--    error = "<fmt:message key="input_pass" bundle="${mes}"/>";--%>
+        <%--}--%>
+        <%--if (verifyPassField == "" || whitespace_regex.test(verifyPassField)) {--%>
+        <%--    event.preventDefault();--%>
+        <%--    error = "<fmt:message key="input_pass" bundle="${mes}"/>";--%>
+        <%--}--%>
+        <%--if (passField == "" || whitespace_regex.test(passField)) {--%>
+        <%--    event.preventDefault();--%>
+        <%--    error = "<fmt:message key="input_pass" bundle="${mes}"/>";--%>
+        <%--}--%>
+        <%--if (emailField == "" || whitespace_regex.test(emailField)) {--%>
+        <%--    event.preventDefault();--%>
+        <%--    error = "<fmt:message key="input_email" bundle="${mes}"/>";--%>
+        <%--}--%>
+        <%--if (loginField == "" || whitespace_regex.test(loginField)) {--%>
+        <%--    event.preventDefault();--%>
+        <%--    error = "<fmt:message key="input_login" bundle="${mes}"/>";--%>
+        <%--}--%>
 
         if (passField != verifyPassField) {
             event.preventDefault();

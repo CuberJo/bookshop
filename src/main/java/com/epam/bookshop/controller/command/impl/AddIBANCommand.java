@@ -6,14 +6,14 @@ import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.util.ErrorMessageConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
-import com.epam.bookshop.util.Regex;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.RegexConstant;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 import org.slf4j.Logger;
@@ -117,7 +117,7 @@ public class AddIBANCommand implements Command {
             return false;
         }
 
-        validator.validateString(iban, Regex.IBAN_REGEX, ErrorMessageConstants.IBAN_INCORRECT);
+        validator.validateString(iban, RegexConstant.IBAN_REGEX, ErrorMessageConstants.IBAN_INCORRECT);
 
         return true;
     }

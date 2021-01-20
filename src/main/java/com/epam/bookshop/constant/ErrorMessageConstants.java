@@ -1,6 +1,9 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.constant;
 
 public class ErrorMessageConstants {
+    private ErrorMessageConstants() {
+
+    }
 
     public static final String USER_NOT_FOUND = "user_not_found";
     public static final String EMAIL_NOT_FOUND_IN_DATABASE = "email_not_found_in_database";
@@ -47,4 +50,9 @@ public class ErrorMessageConstants {
 
     public static final String ERROR_ADD_IBAN_MESSAGE = "error_add_iban_message";
     public static final String ERROR_LOG_MESSAGE = "error_log_message";
+    public static final String ERROR_REG_MESSAGE = "error_reg_message";
+    public static final String ERROR_MESSAGE = "error_message";
+    public static final String ERROR_CONTACT_US_MESSAGE = "error_contact_us_message";
+
+
 }

@@ -9,8 +9,8 @@ import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.ErrorMessageConstants;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 import org.mindrot.jbcrypt.BCrypt;
@@ -21,6 +21,9 @@ import javax.servlet.http.HttpSession;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * to login {@link User} to application
+ */
 public class LoginCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(LoginCommand.class);
 

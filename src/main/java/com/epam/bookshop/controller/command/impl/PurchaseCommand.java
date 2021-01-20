@@ -4,7 +4,7 @@ import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.UtilStrings;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -14,7 +14,6 @@ import java.util.Objects;
 public class PurchaseCommand implements Command {
 
     private static final ResponseContext FINISHED_PURCHASE_PAGE = () -> "/home?command=finished_purchase";
-
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
@@ -26,7 +25,6 @@ public class PurchaseCommand implements Command {
         return FINISHED_PURCHASE_PAGE;
     }
 
-
     /**
      * Purchase operation
      * @param session current {@link HttpSession} session
@@ -37,7 +35,7 @@ public class PurchaseCommand implements Command {
 
 
     /**
-     * Clearing {@} <b>cart</b> attribute in sess
+     * Clearing <b>cart</b> attribute in session
      * @param session current {@link HttpSession} session
      */
     private void clearCart(HttpSession session) {
@@ -47,6 +45,10 @@ public class PurchaseCommand implements Command {
     }
 
 
+    /**
+     * @param session current {@link HttpSession} session
+     * @param cart <b>cart</b> of books, that have been bought
+     */
     private void addBooksToLibrary(HttpSession session, List<Book> cart) {
         List<Book> library = (List<Book>) session.getAttribute(UtilStrings.LIBRARY);
 

@@ -5,20 +5,20 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import java.util.Properties;
 
-public class SessionCreator {
+public class MailSessionCreator {
 
     private static final String MAIL_USER_NAME = "mail.user.name";
     private static final String MAIL_USER_PASSWORD = "mail.user.password";
 
-    private static SessionCreator instance;
+    private static MailSessionCreator instance;
 
-    private SessionCreator() {
+    private MailSessionCreator() {
 
     }
 
-    public static SessionCreator getInstance() {
+    public static MailSessionCreator getInstance() {
         if (instance == null) {
-            instance = new SessionCreator();
+            instance = new MailSessionCreator();
         }
 
         return instance;

@@ -4,11 +4,11 @@ import com.epam.bookshop.context.annotation.Naming;
 import com.epam.bookshop.context.annotation.Size;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
-import com.epam.bookshop.util.Regex;
+import com.epam.bookshop.constant.RegexConstant;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.strategy.validator.impl.NamingValidator;
 import com.epam.bookshop.strategy.validator.impl.SizeValidator;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -21,8 +21,8 @@ public class Validator {
 
     private String locale = "US";
 
-    private NamingValidator namingValidator = new NamingValidator();
-    private SizeValidator sizeValidator = new SizeValidator();
+    private final NamingValidator namingValidator = new NamingValidator();
+    private final SizeValidator sizeValidator = new SizeValidator();
 
     public void setLocale(String locale) {
         namingValidator.setLocale(locale);
@@ -44,7 +44,7 @@ public class Validator {
         }
     }
 
-    public void validate(Criteria criteria) throws ValidatorException {
+    public void validate(Criteria<? extends Entity> criteria) throws ValidatorException {
 
         for (Field field : criteria.getClass().getDeclaredFields()) {
             field.setAccessible(true);
@@ -55,10 +55,6 @@ public class Validator {
                 namingValidator.validateCriteria(field, field.getAnnotation(Naming.class), criteria);
             }
         }
-    }
-
-    public String sanitizeString(String s) {
-        return Jsoup.clean(s, Whitelist.none());
     }
 
     public void validateString(String stringToValidate, String regex, String error) throws ValidatorException {
@@ -114,7 +110,7 @@ public class Validator {
      */
     public boolean emptyStringValidator(String ... strings) {
         for (String string : strings) {
-            if (string.equals(UtilStrings.EMPTY_STRING) || string.matches(Regex.EMPTY_STRING_REGEX)) {
+            if (string.equals(UtilStrings.EMPTY_STRING) || string.matches(RegexConstant.EMPTY_STRING_REGEX)) {
                 return false;
             }
         }

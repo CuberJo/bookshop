@@ -1,6 +1,9 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.constant;
 
-public class Regex {
+public class RegexConstant {
+    private RegexConstant() {
+
+    }
 
     public static final String ISBN_REGEX = "^[\\d]+-[\\d]+-[\\d]+-[\\d]+-[\\d]+$";
     public static final String TITLE_REGEX = "^[-\\(\\)\\!a-zA-Z\\d\\s\\.]{1,50}$";

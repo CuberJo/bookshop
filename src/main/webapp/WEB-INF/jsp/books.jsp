@@ -63,7 +63,7 @@
         <div class="row">
             <c:forEach var="book" items="${requestScope.books}">
                 <c:if test="${not empty book.base64Image}">
-                     <div class="col-4" style="flex-basis: 20%"><a href="/home?command=book-details&isbn=${book.ISBN}">
+                     <div class="col-4" style="flex-basis: 20%"><a href="/home?command=book_details&isbn=${book.ISBN}">
     <%--                <img src="../../images/library.jpg">--%>
                         <img src="data:image/jpg;base64,${book.base64Image}">
                         <h4>${book.title}</h4>

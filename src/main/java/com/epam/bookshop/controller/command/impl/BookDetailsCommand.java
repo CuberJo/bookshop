@@ -10,8 +10,8 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.ErrorMessageConstants;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class BookDetailsCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(BookDetailsCommand.class);
 
     private static final ResponseContext NOT_FOUND_PAGE = () -> "/404error.jsp";
-    private static final ResponseContext BOOK_DETAILS_PAGE = () -> "/WEB-INF/jsp/book-details.jsp";
+    private static final ResponseContext BOOK_DETAILS_PAGE = () -> "/WEB-INF/jsp/book_details.jsp";
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {

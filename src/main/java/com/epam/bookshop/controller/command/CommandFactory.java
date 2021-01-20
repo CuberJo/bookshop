@@ -1,16 +1,20 @@
 package com.epam.bookshop.controller.command;
 
-import com.epam.bookshop.controller.ReadBookController;
 import com.epam.bookshop.controller.command.impl.*;
+import com.epam.bookshop.domain.impl.CommandType;
 
 import java.util.Objects;
 
+
+/**
+ * Factory to create instance of {@link Command}
+ */
 public class CommandFactory {
 
     private static final String BOOKS = "books";
     private static final String ACCOUNT = "account";
     private static final String CART = "cart";
-    private static final String BOOK_DETAILS = "book-details";
+    private static final String BOOK_DETAILS = "book_details";
     private static final String SEARCH = "search";
     private static final String LOGIN = "login";
     private static final String LOGOUT = "logout";
@@ -34,6 +38,7 @@ public class CommandFactory {
 
 
     public static Command command(String command) {
+
         if (Objects.isNull(command)) {
             return new HomeCommand();
         }
@@ -65,8 +70,8 @@ public class CommandFactory {
                 return new ChangeLocaleCommand();
             case SEND_CONTACT_FORM:
                 return new SendContactFormCommand();
-            case REMOVE_FROM_CART:
-                return new RemoveFromCartCommand();
+//            case REMOVE_FROM_CART:
+//                return new RemoveFromCartController();
             case PURCHASE:
                 return new PurchaseCommand();
             case CHOOSE_IBAN:

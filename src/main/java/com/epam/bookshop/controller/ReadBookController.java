@@ -9,8 +9,8 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.ErrorMessageConstants;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +32,9 @@ public class ReadBookController extends HttpServlet {
 
     private static final String HEADER_PARAM = "inline; filename=automatic_start.pdf";
 
-
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
-        render(request, response);
+        renderBook(request, response);
     }
 
 
@@ -44,7 +43,7 @@ public class ReadBookController extends HttpServlet {
      * @param request {@link HttpServletRequest} which comes to a Servlet
      * @param response {@link HttpServletResponse} which comes to a Servlet
      */
-    public void render(HttpServletRequest request, HttpServletResponse response) {
+    public void renderBook(HttpServletRequest request, HttpServletResponse response) {
         final HttpSession session = request.getSession();
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
@@ -67,7 +66,6 @@ public class ReadBookController extends HttpServlet {
 //                httpResponse.setHeader("Content-Disposition", "\"" + getContentDisposition() + "\"" + ((getFileName() != null && !getFileName().isEmpty()) ? "; filename=\"" + getFileName() + "\"": ""));
 //            response.addHeader("Content-Disposition", "attachment; filename=" + pdfFileName);
 
-            System.out.println("hi");
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -131,22 +129,6 @@ public class ReadBookController extends HttpServlet {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * for download
      * @param request
@@ -154,9 +136,7 @@ public class ReadBookController extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
-    private void performTask(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
-
+    private void downloadFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final HttpSession session = request.getSession();
 
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);

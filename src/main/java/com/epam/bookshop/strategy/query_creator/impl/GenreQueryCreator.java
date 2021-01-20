@@ -2,11 +2,10 @@ package com.epam.bookshop.strategy.query_creator.impl;
 
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.GenreCriteria;
-import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.strategy.query_creator.EntityQueryCreator;
-import com.epam.bookshop.util.UtilStrings;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
