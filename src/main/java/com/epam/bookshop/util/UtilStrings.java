@@ -14,6 +14,7 @@ public class UtilStrings {
     public static final String LOGIN = "login";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
+    public static final String ACCOUNT = "account";
     public static final String VERIFY_PASSWORD = "verifyPassword";
     public static final String CHECK_PASSWORD = "checkPassword";
     public static final String IBAN = "iban";
@@ -27,6 +28,13 @@ public class UtilStrings {
     public static final String CHOSEN_IBAN = "chosen_iban";
     public static final String LIBRARY = "library";
     public static final String COMMAND = "command";
+    public static final String APPLICATION_PDF_CONTENT_TYPE = "application/pdf";
+    public static final String CONTENT_DISPOSITION_HEADER = "Content-disposition";
+
+    public static final String IBAN_TO_DELETE = "iban_to_delete";
+    public static final String BOOK_TO_CART = "book_to_cart";
+
+
 
     public static final Integer ZERO_ROWS_AFFECTED = 0;
 

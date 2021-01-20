@@ -1,8 +1,5 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.Command;
-import com.epam.bookshop.controller.command.RequestContext;
-import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.util.UtilStrings;
 
@@ -18,58 +15,29 @@ import java.util.Objects;
 @WebServlet("/add_to_cart")
 public class AddToCartController extends HttpServlet {
 
-    private static final String ACCOUNT = "account";
-
-    private static final String BOOK_TO_CART = "book_to_cart";
-
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
-
         final HttpSession session = request.getSession();
 
-        ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute(UtilStrings.CART);
-        if (Objects.isNull(cart)) {
-            cart = new ArrayList<>();
-            session.setAttribute(UtilStrings.CART, cart);
-        }
-
-        Book bookToCart = (Book) session.getAttribute(BOOK_TO_CART);
-
-        for (Book book : cart) {
-            if (bookToCart.equals(book)) {
-                return;
-//                return resolvePage(session);
-            }
-        }
-
-        if (bookExistsInLibrary(bookToCart, session)) {
-            return;
-        }
-
-        cart.add(bookToCart);
-
-        session.removeAttribute(BOOK_TO_CART);
-
-        return;
-//        return resolvePage(session);
+        add(session, (Book) session.getAttribute(UtilStrings.BOOK_TO_CART));
     }
 
 
     /**
      * Checks whether we have already bought the book
-     * @param bookToCart
-     * @param session
-     * @return
+     * @param book {@link Book} book to be chacked
+     * @param session current {@link HttpSession} session used to set attributes
+     * @return true if and only if book already exists in library, otherwise - false
      */
-    private boolean bookExistsInLibrary(Book bookToCart, HttpSession session) {
+    private boolean bookExistsInLibrary(Book book, HttpSession session) {
         List<Book> library = (List<Book>) session.getAttribute(UtilStrings.LIBRARY);
 
         if (Objects.isNull(library)) {
             return false;
         }
 
-        for (Book book : library) {
-            if (bookToCart.equals(book)) {
+        for (Book b : library) {
+            if (book.equals(b)) {
                 return true;
             }
         }
@@ -78,23 +46,41 @@ public class AddToCartController extends HttpServlet {
     }
 
 
-    private ResponseContext resolvePage(HttpSession session) {
+    /**
+     * Adds {@link Book} to cart
+     * @param session current {@link HttpSession} session used to set attributes
+     * @param book {@link Book} to be added to cart
+     */
+    private void add(HttpSession session, Book book) {
+        List<Book> cart = getCart(session);
 
-        String backToCart = "back_to_cart";
-        String page = "/home?command=%s";
-        
-        String login = (String) session.getAttribute(UtilStrings.LOGIN);
-        String role = (String) session.getAttribute(UtilStrings.ROLE);
-        
-        if (Objects.nonNull(login) && Objects.nonNull(role)) {
-            page = String.format(page, UtilStrings.CART);
-        } else {
-            page = String.format(page, ACCOUNT);
-            // to return back after registration or singing in
-            session.setAttribute(backToCart, backToCart);
+        for (Book b : cart) {
+            if (book.equals(b)) {
+                return;
+            }
         }
-        
-        String pageToReturn = page;
-        return  () -> pageToReturn;
+
+        if (bookExistsInLibrary(book, session)) {
+            return;
+        }
+
+        cart.add(book);
+        session.removeAttribute(UtilStrings.BOOK_TO_CART);
+    }
+
+
+    /**
+     * Fetches {@link List<Book>} cart from {@link HttpSession}. If it not exists creates new cart.
+     * @param session current {@link HttpSession} session used to set attributes
+     * @return {@link List<Book>} of books
+     */
+    private List<Book> getCart(HttpSession session) {
+        List<Book> cart = (List<Book>) session.getAttribute(UtilStrings.CART);
+        if (Objects.isNull(cart)) {
+            cart = new ArrayList<>();
+            session.setAttribute(UtilStrings.CART, cart);
+        }
+
+        return cart;
     }
 }

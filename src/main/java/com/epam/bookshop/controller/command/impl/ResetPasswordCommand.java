@@ -82,9 +82,9 @@ public class ResetPasswordCommand implements Command {
             session.setAttribute(ERROR_MESSAGE, errorMessage);
             logger.error(e.getMessage(), e);
             return FORGOT_PASSWORD_PAGE;
-        } catch (EntityNotFoundException e) {
+        } /*catch (EntityNotFoundException e) {
             logger.error(e.getMessage(), e);
-        }
+        }*/
 
         return HOME_PAGE;
     }

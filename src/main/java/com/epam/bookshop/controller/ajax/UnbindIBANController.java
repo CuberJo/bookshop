@@ -23,17 +23,10 @@ import java.util.Objects;
 
 @WebServlet("/unbind_iban")
 public class UnbindIBANController extends HttpServlet {
-
     private static final Logger logger = LoggerFactory.getLogger(Command.class);
-
-    private static final String IBAN_TO_DELETE = "iban_to_delete";
-
-    private static final ResponseContext PERSONAL_PAGE_PAGE = () -> "/home?command=personal_page";
-
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
-
         final HttpSession session = request.getSession();
 
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
@@ -44,14 +37,18 @@ public class UnbindIBANController extends HttpServlet {
             throw new RuntimeException(error);
         }
 
-        String ibanToDelete = request.getParameter(IBAN_TO_DELETE);
+        String ibanToDelete = request.getParameter(UtilStrings.IBAN_TO_DELETE);
         deleteIBAN(ibanToDelete, locale);
         ibans.remove(ibanToDelete);
     }
 
 
+    /**
+     * Deletes user IBAN
+     * @param iban {@link String} user IBAN to delete
+     * @param locale {@link String} language for error messages
+     */
     private void deleteIBAN(String iban, String locale) {
-
         UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 

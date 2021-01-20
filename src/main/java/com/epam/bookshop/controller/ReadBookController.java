@@ -1,13 +1,12 @@
 package com.epam.bookshop.controller;
 
-import com.epam.bookshop.controller.command.RequestContext;
-import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.BookCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
+import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.ErrorMessageConstants;
@@ -24,110 +23,128 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.Optional;
 
 @WebServlet("/read_book")
 public class ReadBookController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(ReadBookController.class);
-    private static final int DEFAULT_BUFFER_SIZE = 100;
 
-//    private static final ResponseContext READ_BOOK_COMMAND = () -> "/WEB-INF/jsp/read_book.jsp";
+    private static final String HEADER_PARAM = "inline; filename=automatic_start.pdf";
+
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        performTask(request, response);
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
+        render(request, response);
     }
 
 
-
-
-
-    public void render(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-
+    /**
+     * Renders file read from database to a jsp page
+     * @param request {@link HttpServletRequest} which comes to a Servlet
+     * @param response {@link HttpServletResponse} which comes to a Servlet
+     */
+    public void render(HttpServletRequest request, HttpServletResponse response) {
         final HttpSession session = request.getSession();
-
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
-
-        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        String isbn = (String) request.getParameter(UtilStrings.ISBN);
-        Criteria<Book> criteria = BookCriteria.builder()
-                .ISBN(isbn)
-                .build();
+        ByteArrayOutputStream bos = null;
         try {
-            Optional<Book> optionalBook = service.find(criteria);
+            BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
+            service.setLocale(locale);
+            Criteria<Book> criteria = BookCriteria.builder()
+                    .ISBN(request.getParameter(UtilStrings.ISBN))
+                    .build();
+            Book book = findBook(service, criteria, locale);
+
+            bos = getBookByteArray(service, book);
+
+            response.setContentType(UtilStrings.APPLICATION_PDF_CONTENT_TYPE);
+            response.setHeader(UtilStrings.CONTENT_DISPOSITION_HEADER, HEADER_PARAM);
+            response.setContentLength(bos.size());
+            bos.writeTo(response.getOutputStream());
+
+//                httpResponse.setHeader("Content-Disposition", "\"" + getContentDisposition() + "\"" + ((getFileName() != null && !getFileName().isEmpty()) ? "; filename=\"" + getFileName() + "\"": ""));
+//            response.addHeader("Content-Disposition", "attachment; filename=" + pdfFileName);
+
+            System.out.println("hi");
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (bos != null) {
+                    bos.flush();
+                    bos.close();
+                }
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+
+    /**
+     * @param service {@link EntityService<Book>} which is used to fetch the book
+     * @param criteria {@link Criteria<Book>} criterai of book search
+     * @param locale language of error messages
+     * @return book if it was found, otherwise {@link Optional} empty
+     */
+    private Book findBook(EntityService<Book> service, Criteria<Book> criteria, String locale) {
+        Optional<Book> optionalBook;
+        try {
+            optionalBook = service.find(criteria);
             if (optionalBook.isEmpty()) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND + UtilStrings.WHITESPACE + isbn);
+                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN());
                 logger.error(error);
                 throw new RuntimeException(error);
             }
-
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-                int inputStreamLength = 0;
-                int length = 0;
-
-                byte[] file = service.findBookFile(optionalBook.get());
-
-                while ((length = request.getInputStream().read(buffer)) > 0) {
-                    inputStreamLength += length;
-                    baos.write(buffer, 0, length);
-                }
-
-                if (inputStreamLength > getContentLength()) {
-                    setContentLength(inputStreamLength);
-                }
-
-                if (response instanceof HttpServletResponse) {
-                    HttpServletResponse httpResponse = (HttpServletResponse) response;
-                    httpResponse.reset();
-                    httpResponse.setHeader("Content-Type", "inline");//getContentType()
-                    httpResponse.setHeader("Content-Length", String.valueOf()));
-                    httpResponse.setHeader("Content-Disposition", "\"" + getContentDisposition() + "\"" + ((getFileName() != null && !getFileName().isEmpty()) ? "; filename=\"" + getFileName() + "\"": ""));
-                }
-
-                response.getOutputStream().write(baos.toByteArray(), 0, (int)getContentLength());
-
-                //finally
-                response.getOutputStream().flush();
-
-                //clear
-                baos = null;
-            } finally {
-                response.getOutputStream().close();
-                request.getInputStream().close();
-            }
-
-            byte[] file = service.findBookFile(optionalBook.get());
-
-            String pdfFileName = "pdf-test.pdf";
-            response.setContentType("application/pdf");
-            response.addHeader("Content-Disposition", "attachment; filename=" + pdfFileName);
-            response.setContentLength(file.length);
-
-
-//            session.setAttribute("file", file.getBytes(1, (int) file.length()));
-            OutputStream responseOutputStream = response.getOutputStream();
-//            int bytes;
-            for (byte b : file) {
-                responseOutputStream.write(b);
-            }
-//            while ((bytes = file.read()) != -1) {
-//                responseOutputStream.write(bytes);
-//            }
-            System.out.println("hi");
-        } catch (ValidatorException | EntityNotFoundException e) {
+        } catch (ValidatorException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
+
+        return optionalBook.get();
     }
+
+
+    /**
+     * @param service {@link EntityService<Book>} which is used to fetch the book file
+     * @param book {@link Book} which is searching parameter
+     * @return {@link ByteArrayOutputStream} object with written book file in it
+     */
+    private ByteArrayOutputStream getBookByteArray(BookService service, Book book) {
+        byte[] file;
+        try {
+            file = service.findBookFile(book);
+        } catch (EntityNotFoundException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(file.length);
+        bos.write(file, 0, file.length);
+
+        return bos;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**

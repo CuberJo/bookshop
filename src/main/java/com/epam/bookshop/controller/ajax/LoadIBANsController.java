@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.ResponseContext;
+import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -25,62 +25,66 @@ import java.util.Optional;
 
 @WebServlet("/load_ibans")
 public class LoadIBANsController extends HttpServlet {
-
     private static final Logger logger = LoggerFactory.getLogger(LoadIBANsController.class);
 
-    private static final ResponseContext DEFAULT_PAGE = () -> "/home";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         final HttpSession session = req.getSession();
-
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
-        String role = (String) session.getAttribute(UtilStrings.ROLE);
-        String login = (String) session.getAttribute(UtilStrings.LOGIN);
 
-        if (Objects.isNull(role) || Objects.isNull(login)) {
-            return;
-        }
+        UserCriteria criteria = UserCriteria.builder()
+                .login((String) session.getAttribute(UtilStrings.LOGIN))
+                .build();
+        List<String> IBANs = findIBANs(criteria, locale);
 
-        String errorMessage = "";
-
-        try {
-
-            List<String> IBANs = findIBANs(login, locale);
-
-            if (Objects.isNull(session.getAttribute(UtilStrings.IBANs))) {
-                session.setAttribute(UtilStrings.IBANs, IBANs);
-            }
-            List<String> sessionIBANs = (List<String>) session.getAttribute(UtilStrings.IBANs);
-//            for (String iban : IBANs) {
-//                sessionIBANs.add(iban);
-//            }
-            for (int i = 0; i < IBANs.size(); i++) {
-                if(!sessionIBANs.contains(IBANs.get(i))) {
-                    sessionIBANs.add(IBANs.get(i));
-                }
-            }
-
-        } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
-            logger.error(UtilStrings.EMPTY_STRING, e);
-            throw new RuntimeException(errorMessage, e);
-        }
+        addIBANs(session, IBANs);
     }
 
-    private List<String> findIBANs(String login, String locale) throws ValidatorException {
-
+    /**
+     * Looks for IBANs associated with user
+     * @param criteria user search {@link Criteria<User>} criteria
+     * @param locale {@link String} language for error messages
+     * @return {@link List<String>} of found IBANs
+     */
+    private List<String> findIBANs(Criteria<User> criteria, String locale) {
         UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
 
         String error = "";
 
-        Optional<User> optionalUser = service.find(UserCriteria.builder().login(login).build());
-        if (optionalUser.isEmpty()) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
-            throw new RuntimeException(error);
+        Optional<User> optionalUser;
+        try {
+            optionalUser = service.find(criteria);
+            if (optionalUser.isEmpty()) {
+                error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
+                throw new RuntimeException(error);
+            }
+        } catch (ValidatorException e) {
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
+            logger.error(UtilStrings.EMPTY_STRING, e);
+            throw new RuntimeException(error, e);
         }
 
         return service.findUserBankAccounts(optionalUser.get().getEntityId());
+    }
+
+
+    /**
+     * Adds user IBANs to session
+     * @param session current {@link HttpSession} session used to set attributes
+     * @param IBANs {@link List<String>} IBANs to add
+     */
+    private void addIBANs(HttpSession session, List<String> IBANs) {
+        List<String> sessionIBANs = (List<String>) session.getAttribute(UtilStrings.IBANs);
+        if (Objects.isNull(sessionIBANs)) {
+            session.setAttribute(UtilStrings.IBANs, IBANs);
+        }
+
+        for (String iban : IBANs) {
+            if (!sessionIBANs.contains(iban)) {
+                sessionIBANs.add(iban);
+            }
+        }
     }
 }
