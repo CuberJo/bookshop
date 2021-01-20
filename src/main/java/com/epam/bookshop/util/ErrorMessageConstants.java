@@ -44,4 +44,7 @@ public class ErrorMessageConstants {
     public static final String ROLE_INCORRECT = "role_incorrect";
     public static final String STATUS_INCORRECT = "status_incorrect";
     public static final String IBAN_INCORRECT = "iban_incorrect";
+
+    public static final String ERROR_ADD_IBAN_MESSAGE = "error_add_iban_message";
+    public static final String ERROR_LOG_MESSAGE = "error_log_message";
 }

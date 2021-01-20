@@ -3,7 +3,6 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 public class DeleteAccountCommand implements Command {
-
     private static final Logger logger = LoggerFactory.getLogger(DeleteAccountCommand.class);
 
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
@@ -49,11 +47,18 @@ public class DeleteAccountCommand implements Command {
     }
 
 
+    /**
+     * Deletes user in current session.
+     * @param locale {@link String} language for error messages
+     * @param session current {@link HttpSession} session
+     * @throws ValidatorException if user data fails fvalidation
+     * @throws EntityNotFoundException if user not found in database
+     */
     private void delete(String locale, HttpSession session) throws ValidatorException, EntityNotFoundException {
         EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 
-        User user = findUser(session, service, locale);
+        User user = getSessionUser(session, service, locale);
 
         service.delete(user);
         session.removeAttribute(UtilStrings.LOGIN);
@@ -63,7 +68,15 @@ public class DeleteAccountCommand implements Command {
     }
 
 
-    private User findUser(HttpSession session, EntityService<User> service, String locale) throws ValidatorException {
+    /**
+     * Returns user from current session.
+     * @param session current {@link HttpSession} session
+     * @param service {@link EntityService<User>} object used to find user in database
+     * @param locale {@link String} language for error messages
+     * @return {@link User} user if found
+     * @throws ValidatorException if user criteria fails fvalidation
+     */
+    private User getSessionUser(HttpSession session, EntityService<User> service, String locale) throws ValidatorException {
         String login = (String) session.getAttribute(UtilStrings.LOGIN);
         UserCriteria criteria = UserCriteria.builder().login(login).build();
 

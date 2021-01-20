@@ -6,7 +6,6 @@ import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.exception.InvalidStateException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
@@ -15,29 +14,21 @@ import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 import java.util.Optional;
 
 public class LoginCommand implements Command {
-
-//    private static final ResponseContext HOME_PAGE = () -> "/WEB-INF/jsp/home.jsp";
-//    private static final ResponseContext ACCOUNT_PAGE = () -> "/WEB-INF/jsp/account.jsp";
+    private static final Logger logger = LoggerFactory.getLogger(LoginCommand.class);
 
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
     private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
 
-    private static final String ERROR_MESSAGE = "error_log_message";
-    private static final String BACK_TO_CART_ATTR = "back_to_cart";
 
-
-
-    /**
-     * @param requestContext {@link RequestContext} which is wrapper under {@link javax.servlet.http.HttpServletRequest}
-     * @return page uri of jsp
-     */
     @Override
     public ResponseContext execute(RequestContext requestContext) {
         final String login = requestContext.getParameter(UtilStrings.LOGIN);
@@ -51,14 +42,14 @@ public class LoginCommand implements Command {
         try {
             if (!new Validator().emptyStringValidator(login, password)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
-                session.setAttribute(ERROR_MESSAGE, errorMessage);
+                session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
             }
 
             Optional<User> optionalUser = authenticate(login, password, locale);
             if (optionalUser.isEmpty()) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCORRECT_LOGIN_OR_PASSWORD);
-                session.setAttribute(ERROR_MESSAGE, errorMessage);
+                session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;
             }
 
@@ -68,13 +59,13 @@ public class LoginCommand implements Command {
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
-            session.setAttribute(ERROR_MESSAGE, e.getMessage());
-            e.printStackTrace();
+            session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, e.getMessage());
+            logger.error(errorMessage, e);
             return ACCOUNT_PAGE;
         }
 
-        if (Objects.nonNull(requestContext.getSession().getAttribute(BACK_TO_CART_ATTR))) {
-            requestContext.getSession().removeAttribute(BACK_TO_CART_ATTR);
+        if (Objects.nonNull(requestContext.getSession().getAttribute(UtilStrings.BACK_TO_CART))) {
+            requestContext.getSession().removeAttribute(UtilStrings.BACK_TO_CART);
             return CART_PAGE;
         }
 
@@ -88,8 +79,9 @@ public class LoginCommand implements Command {
      *
      * @param login login of user to be authenticated
      * @param password password of user to be authenticated
+     * @param locale {@link String} language for error messages
      * @return user if he/she was found in database
-     * @throws InvalidStateException
+     * @throws ValidatorException if {@link com.epam.bookshop.criteria.Criteria<User>} object fails validation
      */
     private Optional<User> authenticate(String login, String password, String locale) throws ValidatorException {
 
@@ -105,7 +97,6 @@ public class LoginCommand implements Command {
         if (optionalUser.isEmpty() || !BCrypt.checkpw(password, optionalUser.get().getPassword())) {
             return Optional.empty();
         }
-
 
         return optionalUser;
     }

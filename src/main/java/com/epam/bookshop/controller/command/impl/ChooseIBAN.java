@@ -8,10 +8,8 @@ public class ChooseIBAN implements Command {
 
     private static final ResponseContext CHOOSE_IBAN_PAGE = () -> "/WEB-INF/jsp/choose_iban.jsp";
 
-
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-
         return CHOOSE_IBAN_PAGE;
     }
 }

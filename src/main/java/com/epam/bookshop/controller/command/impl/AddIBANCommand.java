@@ -3,6 +3,7 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
+import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.util.ErrorMessageConstants;
@@ -23,20 +24,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.awt.font.GlyphMetrics.WHITESPACE;
-
 public class AddIBANCommand implements Command {
-
     private static final Logger logger = LoggerFactory.getLogger(AddIBANCommand.class);
-
-    private static final String ERROR_MESSAGE = "error_add_iban_message";
-
-    private static final String GET_ADD_IBAN_PAGE_ATTR = "getAddIBANPage";
-
-    private static final String BACK_TO_CART = "back_to_cart";
-    private static final String FROM_CART_PAGE = "fromCartPage";
-    private static final String CREATE_ADDITIONAL_IBAN = "additional_iban";
-    private static final String BACK_TO_CHOOSE_IBAN = "back_to_choose_iban";
 
     private static final ResponseContext ADD_IBAN_PAGE_FORWARD = () -> "/WEB-INF/jsp/add_iban.jsp";
     private static final ResponseContext ADD_IBAN_PAGE_REDIRECT = () -> "/home?command=add_iban";
@@ -48,11 +37,9 @@ public class AddIBANCommand implements Command {
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-
         final HttpSession session = requestContext.getSession();
 
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
-        String login = (String) session.getAttribute(UtilStrings.LOGIN);
 
         if (needToProcessGetRequest(requestContext)) {
             return ADD_IBAN_PAGE_FORWARD;
@@ -60,47 +47,50 @@ public class AddIBANCommand implements Command {
 
         List<String> IBANs;
         try {
-            IBANs = findIBANs(login, locale);
+            UserCriteria criteria = UserCriteria.builder()
+                    .login((String) session.getAttribute(UtilStrings.LOGIN))
+                    .build();
+            IBANs = findIBANs(criteria, locale);
             if (Objects.isNull(session.getAttribute(UtilStrings.IBANs))) {
                 session.setAttribute(UtilStrings.IBANs, IBANs);
             }
 
-            if (!Objects.nonNull(session.getAttribute(CREATE_ADDITIONAL_IBAN).equals(CREATE_ADDITIONAL_IBAN))) {
-                if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(BACK_TO_CART))) {
-                    session.removeAttribute(BACK_TO_CART);
+            if (!Objects.nonNull(session.getAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN))) {
+                if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(UtilStrings.BACK_TO_CART))) {
+                    session.removeAttribute(UtilStrings.BACK_TO_CART);
                     return CHOOSE_IBAN_PAGE_FORWARD;
                 }
             }
 
             if ((IBANs.stream().findAny().isEmpty()
-                    || Objects.nonNull(session.getAttribute(CREATE_ADDITIONAL_IBAN)))) {
+                    || Objects.nonNull(session.getAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN)))) {
                 if (!validateIBAN(requestContext.getParameter(UtilStrings.IBAN), session, locale)) {
-                    session.setAttribute(GET_ADD_IBAN_PAGE_ATTR, GET_ADD_IBAN_PAGE_ATTR);
+                    session.setAttribute(UtilStrings.GET_ADD_IBAN_PAGE_ATTR, UtilStrings.GET_ADD_IBAN_PAGE_ATTR);
                     return ADD_IBAN_PAGE_REDIRECT;
                 }
-                String iban = createIBAN(requestContext, login);
+                String iban = createIBAN(requestContext, criteria, locale);
                 IBANs.add(iban);
 
-                if (Objects.nonNull(session.getAttribute(CREATE_ADDITIONAL_IBAN))) {
-                    session.removeAttribute(CREATE_ADDITIONAL_IBAN);
+                if (Objects.nonNull(session.getAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN))) {
+                    session.removeAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN);
                 }
             }
 
         } catch (ValidatorException e) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_INCORRECT);
-            session.setAttribute(ERROR_MESSAGE, error);
+            session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE, error);
             logger.error(e.getMessage(), e);
-            session.setAttribute(GET_ADD_IBAN_PAGE_ATTR, GET_ADD_IBAN_PAGE_ATTR);
+            session.setAttribute(UtilStrings.GET_ADD_IBAN_PAGE_ATTR, UtilStrings.GET_ADD_IBAN_PAGE_ATTR);
             return ADD_IBAN_PAGE_REDIRECT;
         }
 
-        if (Objects.nonNull(session.getAttribute(BACK_TO_CART))) {
-            session.removeAttribute(BACK_TO_CART);
+        if (Objects.nonNull(session.getAttribute(UtilStrings.BACK_TO_CART))) {
+            session.removeAttribute(UtilStrings.BACK_TO_CART);
             return CART_PAGE;
         }
 
-        if (Objects.nonNull(session.getAttribute(BACK_TO_CHOOSE_IBAN))) {
-            session.removeAttribute(BACK_TO_CHOOSE_IBAN);
+        if (Objects.nonNull(session.getAttribute(UtilStrings.BACK_TO_CHOOSE_IBAN))) {
+            session.removeAttribute(UtilStrings.BACK_TO_CHOOSE_IBAN);
             session.setAttribute(UtilStrings.IBANs, IBANs);
             return CHOOSE_IBAN_PAGE_SEND_REDIRECT;
         }
@@ -109,15 +99,21 @@ public class AddIBANCommand implements Command {
     }
 
 
+    /**
+     * @param iban IBAN {@link String} to validate
+     * @param session current {@link HttpSession} session used to set attributes
+     * @param locale {@link String} language for error messages
+     * @return true if and only if strings passed validation, otherwise - false
+     * @throws ValidatorException if iban argument failed validation
+     */
     private boolean validateIBAN(String iban, HttpSession session, String locale) throws ValidatorException {
 
-        String error = "";
         Validator validator = new Validator();
         validator.setLocale(locale);
 
         if (!validator.emptyStringValidator(iban)) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INPUT_IBAN);
-            session.setAttribute(ERROR_MESSAGE, error);
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INPUT_IBAN);
+            session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE, error);
             return false;
         }
 
@@ -127,16 +123,20 @@ public class AddIBANCommand implements Command {
     }
 
 
+    /**
+     * Checks whether it is <b>GET</b> request
+     * @param requestContext {@link RequestContext} object, which is request wrapper
+     * @return true if and only if it is need to pprocess <b>GET</b> request, otherwise - false
+     */
     private boolean needToProcessGetRequest(RequestContext requestContext) {
-
         HttpSession session = requestContext.getSession();
 
-        if (Objects.nonNull(session.getAttribute(GET_ADD_IBAN_PAGE_ATTR))
-                || Objects.nonNull(requestContext.getParameter(GET_ADD_IBAN_PAGE_ATTR))) {
-            if (Objects.nonNull(requestContext.getParameter(CREATE_ADDITIONAL_IBAN))) {
-                session.setAttribute(CREATE_ADDITIONAL_IBAN, CREATE_ADDITIONAL_IBAN);
+        if (Objects.nonNull(session.getAttribute(UtilStrings.GET_ADD_IBAN_PAGE_ATTR))
+                || Objects.nonNull(requestContext.getParameter(UtilStrings.GET_ADD_IBAN_PAGE_ATTR))) {
+            if (Objects.nonNull(requestContext.getParameter(UtilStrings.CREATE_ADDITIONAL_IBAN))) {
+                session.setAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN, UtilStrings.CREATE_ADDITIONAL_IBAN);
             }
-            session.removeAttribute(GET_ADD_IBAN_PAGE_ATTR);
+            session.removeAttribute(UtilStrings.GET_ADD_IBAN_PAGE_ATTR);
 
             return true;
         }
@@ -145,11 +145,14 @@ public class AddIBANCommand implements Command {
     }
 
 
-
-    private String createIBAN(RequestContext requestContext, String login) {
-
-        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
-
+    /**
+     * Creates user IBAN for user, whi is found by {@link Criteria<User>} criteria
+     * @param requestContext {@link RequestContext} object, which is request wrapper
+     * @param criteria {@link Criteria<User>} criteria by which user is found
+     * @param locale {@link String} language for error messages
+     * @return {@link String} object of created IBAN
+     */
+    private String createIBAN(RequestContext requestContext, Criteria<User> criteria, String locale) {
         UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 
@@ -158,10 +161,10 @@ public class AddIBANCommand implements Command {
 
         try {
 
-            Optional<User> optionalUser = service.find(UserCriteria.builder().login(login).build());
-
+            Optional<User> optionalUser = service.find(criteria);
             if (optionalUser.isEmpty()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + WHITESPACE + login;
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
+                        + UtilStrings.WHITESPACE + ((UserCriteria) criteria).getLogin();
                 throw new EntityNotFoundException(errorMessage);
             }
 
@@ -171,30 +174,38 @@ public class AddIBANCommand implements Command {
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
+            logger.error(errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         } catch (EntityNotFoundException e) {
-            logger.error("", e);
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND
+                    + UtilStrings.WHITESPACE + ((UserCriteria) criteria).getLogin());
+            logger.error(errorMessage, e);
+            throw new RuntimeException(errorMessage, e);
         }
 
         return iban;
     }
 
 
-
-    private List<String> findIBANs(String login, String locale) throws ValidatorException {
+    /**
+     * Find all {@link String} IBANs, associated with the user
+     * @param criteria {@link Criteria<User>} criteria by which user is found
+     * @param locale {@link String} language for error messages
+     * @return all {@link String} IBANs, associated with the user
+     * @throws ValidatorException if criteria argument failed validation
+     */
+    private List<String> findIBANs(Criteria<User> criteria, String locale) throws ValidatorException {
 
         UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
+        service.setLocale(locale);
 
-        String error = "";
-
-        Optional<User> optionalUser = service.find(UserCriteria.builder().login(login).build());
+        Optional<User> optionalUser = service.find(criteria);
         if (optionalUser.isEmpty()) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
+            logger.error(error);
             throw new RuntimeException(error);
         }
 
-        List<String> IBANs = service.findUserBankAccounts(optionalUser.get().getEntityId());
-
-        return IBANs;
+        return service.findUserBankAccounts(optionalUser.get().getEntityId());
     }
 }

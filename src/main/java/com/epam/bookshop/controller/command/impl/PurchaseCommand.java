@@ -13,13 +13,11 @@ import java.util.Objects;
 
 public class PurchaseCommand implements Command {
 
-    private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext FINISHED_PURCHASE_PAGE = () -> "/home?command=finished_purchase";
 
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-
         final HttpSession session = requestContext.getSession();
 
         purchase(session);
@@ -29,11 +27,19 @@ public class PurchaseCommand implements Command {
     }
 
 
+    /**
+     * Purchase operation
+     * @param session current {@link HttpSession} session
+     */
     private void purchase(HttpSession session) {
         session.removeAttribute(UtilStrings.CHOSEN_IBAN);
     }
 
 
+    /**
+     * Clearing {@} <b>cart</b> attribute in sess
+     * @param session current {@link HttpSession} session
+     */
     private void clearCart(HttpSession session) {
         List<Book> cart = (List<Book>) session.getAttribute(UtilStrings.CART);
         addBooksToLibrary(session, cart);

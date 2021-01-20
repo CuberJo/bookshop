@@ -13,13 +13,14 @@ import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.ErrorMessageConstants;
 import com.epam.bookshop.util.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 public class BookDetailsCommand implements Command {
-
-    private static final String ERROR_LOG_MESSAGE = "error_log_message";
+    private static final Logger logger = LoggerFactory.getLogger(BookDetailsCommand.class);
 
     private static final ResponseContext NOT_FOUND_PAGE = () -> "/404error.jsp";
     private static final ResponseContext BOOK_DETAILS_PAGE = () -> "/WEB-INF/jsp/book-details.jsp";
@@ -47,16 +48,20 @@ public class BookDetailsCommand implements Command {
 
             session.setAttribute(UtilStrings.BOOK, optionalBook.get());
 
-            try {
-                service.findImageForBook(optionalBook.get());
-            } catch (EntityNotFoundException e) {
-                e.printStackTrace();
-            }
+            service.findImageForBook(optionalBook.get());
+
 
         } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ISBN_INCORRECT) + UtilStrings.WHITESPACE + ISBN;
-            session.setAttribute(ERROR_LOG_MESSAGE, errorMessage);
-            e.printStackTrace();
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ISBN_INCORRECT)
+                    + UtilStrings.WHITESPACE + ISBN;
+            session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
+            logger.error(errorMessage, e);
+            return NOT_FOUND_PAGE;
+        } catch (EntityNotFoundException e) {
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
+                    + UtilStrings.WHITESPACE + ISBN;
+            session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
+            logger.error(errorMessage, e);
             return NOT_FOUND_PAGE;
         }
 
