@@ -7,24 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Order extends Entity {
+public class Payment extends Entity {
     private User user;
     private LocalDateTime orderTime;
     private Status status;
     List<Book> orderedBooks = new ArrayList<>();
 
-    public Order() {
+    public Payment() {
 
     }
 
-    public Order(User user, LocalDateTime orderTime, Status status, List<Book> orderedBooks) {
+    public Payment(User user, LocalDateTime orderTime, Status status, List<Book> orderedBooks) {
         this.user = new User(user.getEntityId(), user.getName(), user.getLogin(), user.getPassword(), user.getEmail(), user.getRole(), user.getIBANs());
         this.orderTime = LocalDateTime.of(orderTime.getYear(), orderTime.getMonthValue(), orderTime.getDayOfMonth(), orderTime.getHour(), orderTime.getMinute(), orderTime.getSecond(), orderTime.getNano());
         this.status = new Status(status.getEntityId(), status.getStatus());
         this.orderedBooks.addAll(orderedBooks);
     }
 
-    public Order(Long entityId, User user, LocalDateTime orderTime, Status  status, List<Book> orderedBooks) {
+    public Payment(Long entityId, User user, LocalDateTime orderTime, Status  status, List<Book> orderedBooks) {
         super(entityId);
         this.user = new User(user.getEntityId(), user.getName(), user.getLogin(), user.getPassword(), user.getEmail(), user.getRole(), user.getIBANs());
         this.orderTime = LocalDateTime.of(orderTime.getYear(), orderTime.getMonthValue(), orderTime.getDayOfMonth(), orderTime.getHour(), orderTime.getMinute(), orderTime.getSecond(), orderTime.getNano());
@@ -80,11 +80,11 @@ public class Order extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        Order order = (Order) o;
-        return user.equals(order.user) &&
-                orderTime.equals(order.orderTime) &&
-                status.equals(order.status) &&
-                orderedBooks.equals(order.orderedBooks);
+        Payment payment = (Payment) o;
+        return user.equals(payment.user) &&
+                orderTime.equals(payment.orderTime) &&
+                status.equals(payment.status) &&
+                orderedBooks.equals(payment.orderedBooks);
     }
 
     @Override

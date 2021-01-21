@@ -1,5 +1,7 @@
 package com.epam.bookshop.fliter;
 
+import com.epam.bookshop.constant.UtilStrings;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebFilter;
@@ -12,8 +14,9 @@ import java.io.IOException;
 public class URLFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+        req.setCharacterEncoding(UtilStrings.UTF8);
+        res.setCharacterEncoding(UtilStrings.UTF8);
         chain.doFilter(req, res);
-//        req.getRequestDispatcher(getFullURL(req))
     }
 
 //    public static String getFullURL(HttpServletRequest request) {

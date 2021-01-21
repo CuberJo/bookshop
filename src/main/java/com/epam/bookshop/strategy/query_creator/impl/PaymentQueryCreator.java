@@ -1,8 +1,8 @@
 package com.epam.bookshop.strategy.query_creator.impl;
 
 import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.OrderCriteria;
-import com.epam.bookshop.domain.impl.Order;
+import com.epam.bookshop.criteria.impl.PaymentCriteria;
+import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.strategy.query_creator.EntityQueryCreator;
 import com.epam.bookshop.constant.ErrorMessageConstants;
@@ -12,7 +12,7 @@ import com.epam.bookshop.validator.Validator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class OrderQueryCreator implements EntityQueryCreator<Order> {
+public class OrderQueryCreator implements EntityQueryCreator<Payment> {
 
     private static final String ORDER_ID_COLUMN = "Id";
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
@@ -43,10 +43,10 @@ public class OrderQueryCreator implements EntityQueryCreator<Order> {
     }
 
     @Override
-    public String createQuery(Criteria<Order> criteria) {
+    public String createQuery(Criteria<Payment> criteria) {
         StringBuffer condition = new StringBuffer();
 
-        if (!(criteria instanceof OrderCriteria)) {
+        if (!(criteria instanceof PaymentCriteria)) {
             String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA)
                     + UtilStrings.WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
@@ -59,25 +59,25 @@ public class OrderQueryCreator implements EntityQueryCreator<Order> {
                     .append(UtilStrings.AND)
                     .append(UtilStrings.WHITESPACE);
         }
-        if (((OrderCriteria) criteria).getLibraryUserId() != null) {
+        if (((PaymentCriteria) criteria).getLibraryUserId() != null) {
             condition.append(LIBRARY_USER_ID_COLUMN + " = '")
-                    .append(((OrderCriteria) criteria).getLibraryUserId())
+                    .append(((PaymentCriteria) criteria).getLibraryUserId())
                     .append("'")
                     .append(UtilStrings.WHITESPACE)
                     .append(UtilStrings.AND)
                     .append(UtilStrings.WHITESPACE);
         }
-        if (((OrderCriteria) criteria).getOrderTime() != null) {
+        if (((PaymentCriteria) criteria).getOrderTime() != null) {
             condition.append(ORDER_TIME_COLUMN + " = '")
-                    .append(((OrderCriteria) criteria).getOrderTime())
+                    .append(((PaymentCriteria) criteria).getOrderTime())
                     .append("'")
                     .append(UtilStrings.WHITESPACE)
                     .append(UtilStrings.AND)
                     .append(UtilStrings.WHITESPACE);
         }
-        if (((OrderCriteria) criteria).getStatusId() != null) {
+        if (((PaymentCriteria) criteria).getStatusId() != null) {
             condition.append(STATUS_ID_COLUMN + " = '")
-                    .append(((OrderCriteria) criteria).getStatusId())
+                    .append(((PaymentCriteria) criteria).getStatusId())
                     .append("'")
                     .append(UtilStrings.WHITESPACE)
                     .append(UtilStrings.AND)

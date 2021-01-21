@@ -39,9 +39,14 @@ public class BooksCommand implements Command {
         String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
 
         String genreName = decode(requestContext.getParameter(UtilStrings.GENRE));
+        int page = Integer.parseInt(requestContext.getParameter(UtilStrings.PAGE));
+        int total = 12;
 
+        if (--start > 0) {
+            start = start *
+        }
 
-        Collection<Book> books = getBooksByGenre(genreName, locale);
+        Collection<Book> books = getBooksByGenre(genreName, start, total, locale);
 
         requestContext.setAttribute(UtilStrings.BOOKS, books);
         requestContext.setAttribute(UtilStrings.BOOKS_LEN_ATTR, books.size());
@@ -78,7 +83,7 @@ public class BooksCommand implements Command {
      * @param locale {@link String} language for error messages
      * @return {@link Collection<Book>} books genre
      */
-    private Collection<Book> getBooksByGenre(String genreName, String locale) {
+    private Collection<Book> getBooksByGenre(String genreName, int start, int total, String locale) {
 
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         service.setLocale(locale);

@@ -1,11 +1,11 @@
 package com.epam.bookshop.criteria.impl;
 
 import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.domain.impl.Order;
+import com.epam.bookshop.domain.impl.Payment;
 
 import java.time.LocalDateTime;
 
-public class OrderCriteria extends Criteria<Order> {
+public class OrderCriteria extends Criteria<Payment> {
     private Long libraryUserId;
     private LocalDateTime orderTime;
     private Long statusId;
