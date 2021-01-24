@@ -11,6 +11,7 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.util.VerifyReCaptcha;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 import org.mindrot.jbcrypt.BCrypt;
@@ -31,11 +32,14 @@ public class LoginCommand implements Command {
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
     private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
 
+    private static final String G_RECAPTCHA_RESPONSE = "g-recaptcha-response";
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
         final String login = requestContext.getParameter(UtilStrings.LOGIN);
         final String password = requestContext.getParameter(UtilStrings.PASSWORD);
+
+        System.out.println(requestContext.getParameter(login));
 
         final HttpSession session = requestContext.getSession();
         String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
@@ -49,6 +53,12 @@ public class LoginCommand implements Command {
                 return ACCOUNT_PAGE;
             }
 
+            if (!VerifyReCaptcha.getInstance().verify(requestContext.getParameter(G_RECAPTCHA_RESPONSE))) {
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FAILED_RECAPTCHA);
+                session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
+                return ACCOUNT_PAGE;
+            }
+
             Optional<User> optionalUser = authenticate(login, password, locale);
             if (optionalUser.isEmpty()) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCORRECT_LOGIN_OR_PASSWORD);
@@ -58,7 +68,7 @@ public class LoginCommand implements Command {
 
 
             session.setAttribute(UtilStrings.LOGIN, login);
-            session.setAttribute(UtilStrings.ROLE, optionalUser.get().getRole().getRole());
+            session.setAttribute(UtilStrings.ROLE, UtilStrings.USER_ROLE);
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);

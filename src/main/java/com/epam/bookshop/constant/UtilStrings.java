@@ -37,6 +37,24 @@ public class UtilStrings {
     public static final String APPLICATION_PDF_CONTENT_TYPE = "application/pdf";
     public static final String CONTENT_DISPOSITION_HEADER = "Content-disposition";
     public static final String BOOKS_LEN_ATTR = "booksLength";
+    public static final String USER_ROLE = "USER";
+
+    public static final String POST_METHOD = "POST";
+    public static final String USER_AGENT = "User-Agent";
+    public static final String MOZILA_AGENT = "Mozilla/5.0";
+    public static final String ACCEPT_LANG = "Accept-Language";
+    public static final String EN_LAND_DATA = "en-US,en;q=0.5";
+    public static final String SUCCESS = "success";
+
+    public static final String PAGE = "page";
+
+    public static final String SORT = "sort";
+    public static final String BY_PRICE = "price";
+    public static final String BY_AUTHOR = "author";
+    public static final String DEFAULT = "default";
+
+    public static final String FILTERED = "filtered";
+    public static final String PAGE_BOOKS = "pageBooks";
 
     public static final String IBAN_TO_DELETE = "iban_to_delete";
     public static final String BOOK_TO_CART = "book_to_cart";

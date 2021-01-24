@@ -1,5 +1,9 @@
 package com.epam.bookshop.controller;
 
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.VerifyReCaptcha;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,8 +13,20 @@ import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
+
+    private static final String G_RECAPTCHA_RESPONSE = "g-recaptcha-response";
+
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        req.getParameterMap().values().stream().forEach(System.out::println);
+
+        System.out.println("hi");
+        if (!VerifyReCaptcha.getInstance().verify(req.getParameter(G_RECAPTCHA_RESPONSE))) {
+            req.getRequestDispatcher("login").forward(req, resp);
+        }
+
         if (req.getParameter("login") == null) {
             System.out.println("*****************************login-null******************************");
         }

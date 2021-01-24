@@ -2,10 +2,8 @@ package com.epam.bookshop.domain.impl;
 
 public enum EntityType {
     BOOK,
-    ORDER,
+    PAYMENT,
     USER_BANK_ACCOUNT,
     USER,
-    STATUS,
-    ROLE,
     GENRE;
 }

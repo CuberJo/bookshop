@@ -1,6 +1,7 @@
 package com.epam.bookshop.criteria.impl;
 
 import com.epam.bookshop.context.annotation.Naming;
+import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.criteria.Criteria;
 import org.mindrot.jbcrypt.BCrypt;
@@ -18,7 +19,7 @@ public class UserCriteria extends Criteria<User> {
     @Naming(email = true)
     private String email;
 
-    private Long roleId;
+    private Boolean admin;
 
     public UserCriteria(Criteria.Builder<? extends Criteria.Builder> builder) {
         super(builder);
@@ -40,8 +41,8 @@ public class UserCriteria extends Criteria<User> {
         return email;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public Boolean isAdmin() {
+        return admin;
     }
 
     public static Builder builder() {
@@ -61,7 +62,7 @@ public class UserCriteria extends Criteria<User> {
         @Naming(email = true)
         private String email;
 
-        private Long roleId;
+        private Boolean admin;
 
         private Builder() {
 
@@ -87,8 +88,8 @@ public class UserCriteria extends Criteria<User> {
             return this;
         }
 
-        public Builder roleId(Long roleId) {
-            this.roleId = roleId;
+        public Builder admin(Boolean admin) {
+            this.admin = admin;
             return this;
         }
 
@@ -99,7 +100,7 @@ public class UserCriteria extends Criteria<User> {
             criteria.login = login;
             criteria.password = password;
             criteria.email = email;
-            criteria.roleId = roleId;
+            criteria.admin = admin;
 
             return criteria;
         }

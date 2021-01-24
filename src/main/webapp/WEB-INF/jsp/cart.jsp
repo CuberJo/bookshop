@@ -24,7 +24,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cart - Bookstore</title>
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="../../styles/cart.css">
     <link rel="stylesheet" type="text/css" href="../../styles/home.css">
     <link rel="stylesheet" type="text/css" href="../../styles/books.css">
@@ -90,7 +90,7 @@
                 </tr>
                 <tr>
                     <td><fmt:message key="label.total" bundle="${lang}"/></td>
-                    <td>$<ex:countDiscount discount="${discount}" cart="${cart}"/></td>
+                    <td>$<ex:countDiscount discount="${discount}" cart="${cart}" /></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -127,7 +127,7 @@
                 <br>
                 <p><fmt:message key="seem_you_havent_chosen_book" bundle="${mes}"/></p>
                 <div style="height: 30px"></div>
-                <a href="/home?command=books" class="btn"><fmt:message key="go_to_store" bundle="${mes}"/></a>
+                <a href="/books" class="btn"><fmt:message key="go_to_store" bundle="${mes}"/></a>
                 <div style="height: 50px"></div>
             </div>
         </div>
@@ -145,7 +145,7 @@
         <c:forEach var="book" items="${cart}">
         $('#${book.ISBN}').bind('click', function () {
             $.ajax({
-               url: 'http://localhost:8080/home?command=remove_from_cart',
+               url: 'http://localhost:8080/remove_from_cart',
                type: 'POST',
                 data: ({isbn: '${book.ISBN}'}),
                 success: function () {
@@ -164,7 +164,6 @@
             url: 'http://localhost:8080/load_ibans',
             type: 'GET',
             success: function () {
-                console.log('success');
                 $('.total-price').load(' .total-price');
                 // $('#s').load('#s');
             }

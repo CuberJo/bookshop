@@ -11,8 +11,6 @@ import java.sql.Connection;
 
 public class DAOFactory {
 
-    private String locale = "US";
-
     public static final DAOFactory INSTANCE = new DAOFactory();
 
     private DAOFactory() {
@@ -24,6 +22,7 @@ public class DAOFactory {
 
         AbstractDAO daoToReturn;
 
+        String locale = "US";
         switch (type) {
             case BOOK:
                 daoToReturn = new BookDAO(connection);
@@ -31,19 +30,13 @@ public class DAOFactory {
             case USER:
                 daoToReturn = new UserDAO(connection);
                 break;
-            case ORDER:
-                daoToReturn = new OrderDAO(connection);
-                break;
-            case STATUS:
-                daoToReturn = new StatusDAO(connection);
+            case PAYMENT:
+                daoToReturn = new PaymentDAO(connection);
                 break;
             case GENRE:
                 daoToReturn = new GenreDAO(connection);
                 break;
-            case ROLE:
-                daoToReturn = new RoleDAO(connection);
-                break;
-            default:
+         default:
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_DAO_TYPE) + UtilStrings.WHITESPACE + type;
                 throw new UnknownEntityException(errorMessage);
         }

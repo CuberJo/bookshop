@@ -1,16 +1,14 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStrings;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
-import org.mindrot.jbcrypt.BCrypt;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.domain.impl.Role;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.strategy.query_creator.impl.EntityQueryCreatorFactory;
+import com.epam.bookshop.util.manager.ErrorMessageManager;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,20 +19,18 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class UserDAO extends AbstractDAO<Long, User> {
-
     private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
-    private static final String SQL_SELECT_ALL_USERS_WHERE =  "SELECT Id, Name, Login, Password, Email, Role_Id FROM TEST_LIBRARY.LIBRARY_USER WHERE ";
-    private static final String SQL_UPDATE_USER_WHERE =  "UPDATE TEST_LIBRARY.LIBRARY_USER SET %s WHERE Id = ?";
+    private static final String SQL_SELECT_ALL_USERS_WHERE =  "SELECT Id, Name, Login, Password, Email, Admin FROM TEST_LIBRARY.LIBRARY_USER WHERE ";
 
-    private static final String SQL_INSERT_USER = "INSERT INTO TEST_LIBRARY.LIBRARY_USER (Name, Login, Password, Email, Role_Id) VALUES(?, ?, ?, ?, ?);";
+    private static final String SQL_INSERT_USER = "INSERT INTO TEST_LIBRARY.LIBRARY_USER (Name, Login, Password, Email, Admin) VALUES(?, ?, ?, ?, ?);";
     private static final String SQL_DELETE_USER_BY_ID = "DELETE FROM TEST_LIBRARY.LIBRARY_USER WHERE Id = ?;";
-    private static final String SQL_UPDATE_USER_BY_ID = "UPDATE TEST_LIBRARY.LIBRARY_USER SET Name = ?, Login = ?, Password = ?, Email = ?, Role_Id = ? WHERE Id = ?;";
+    private static final String SQL_UPDATE_USER_BY_ID = "UPDATE TEST_LIBRARY.LIBRARY_USER SET Name = ?, Login = ?, Password = ?, Email = ?, Admin = ? WHERE Id = ?;";
 
-    private static String SQL_SELECT_ALL_USERS = "SELECT Id, Name, Login, Password, Email, Role_Id " +
+    private static final String SQL_SELECT_ALL_USERS = "SELECT Id, Name, Login, Password, Email, Admin " +
             "FROM TEST_LIBRARY.LIBRARY_USER ";
 
-    private static String SQL_SELECT_USER_BY_ID = "SELECT Id, Name, Login, Password, Email, Role_Id " +
+    private static final String SQL_SELECT_USER_BY_ID = "SELECT Id, Name, Login, Password, Email, Admin " +
             "FROM TEST_LIBRARY.LIBRARY_USER u " +
             "WHERE Id = ?";
 
@@ -43,7 +39,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
     private static final String LOGIN_COLUMN = "Login";
     private static final String PASSWORD_COLUMN = "Password";
     private static final String EMAIL_COLUMN = "Email";
-    private static final String ROLE_ID_COLUMN = "Role_Id";
+    private static final String ADMIN_COLUMN = "Admin";
 
     private static final String SQL_INSERT_USER_BANK_ACCOUNT = "INSERT INTO TEST_LIBRARY.USER_BANK_ACCOUNT (Library_User_Id, IBAN) VALUES (?, ?);";
     private static final String SQL_SELECT_ALL_USERs_IBANS = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT;";
@@ -53,12 +49,9 @@ public class UserDAO extends AbstractDAO<Long, User> {
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
     private static final String IBAN_COLUMN = "IBAN";
 
-    private final String locale = "US";
-
     UserDAO(Connection connection) {
         super(connection);
     }
-
 
 
     @Override
@@ -72,7 +65,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
             ps.setString(3, hashpw);
 
             ps.setString(4, user.getEmail());
-            ps.setLong(5, user.getRole().getEntityId());
+            ps.setBoolean(5, user.isAdmin());
 
             ps.executeUpdate();
 
@@ -92,8 +85,6 @@ public class UserDAO extends AbstractDAO<Long, User> {
         try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_USERS);
              ResultSet rs = ps.executeQuery()) {
 
-            AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
-
             while (rs.next()) {
                 User user = new User();
                 user.setEntityId(rs.getLong(ID_COLUMN));
@@ -101,13 +92,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 user.setLogin(rs.getString(LOGIN_COLUMN));
                 user.setPassword(rs.getString(PASSWORD_COLUMN));
                 user.setEmail(rs.getString(EMAIL_COLUMN));
-
-                Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
-                if (optionalRole.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
-                }
-                user.setRole(optionalRole.get());
+                user.setAdmin(rs.getBoolean(ADMIN_COLUMN));
 
                 List<String> IBANs = findUserBankAccounts(user.getEntityId());
                 user.setIBANs(IBANs);
@@ -133,8 +118,6 @@ public class UserDAO extends AbstractDAO<Long, User> {
             ps.setLong(1, id);
             rs = ps.executeQuery();
 
-            AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
-
             while (rs.next()) {
                 user = new User();
 
@@ -143,13 +126,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 user.setLogin(rs.getString(LOGIN_COLUMN));
                 user.setPassword(rs.getString(PASSWORD_COLUMN));
                 user.setEmail(rs.getString(EMAIL_COLUMN));
-
-                Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
-                if (optionalRole.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
-                }
-                user.setRole(optionalRole.get());
+                user.setAdmin(rs.getBoolean(ADMIN_COLUMN));
 
                 List<String> IBANs = findUserBankAccounts(user.getEntityId());
                 user.setIBANs(IBANs);
@@ -182,8 +159,6 @@ public class UserDAO extends AbstractDAO<Long, User> {
         try (PreparedStatement ps = getPrepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 
-            AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
-
             while (rs.next()) {
                 User user = new User();
                 user.setEntityId(rs.getLong(ID_COLUMN));
@@ -191,13 +166,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 user.setLogin(rs.getString(LOGIN_COLUMN));
                 user.setPassword(rs.getString(PASSWORD_COLUMN));
                 user.setEmail(rs.getString(EMAIL_COLUMN));
-
-                Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
-                if (optionalRole.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
-                }
-                user.setRole(optionalRole.get());
+                user.setAdmin(rs.getBoolean(ADMIN_COLUMN));
 
                 List<String> IBANs = findUserBankAccounts(user.getEntityId());
                 user.setIBANs(IBANs);
@@ -223,8 +192,6 @@ public class UserDAO extends AbstractDAO<Long, User> {
         try (PreparedStatement ps = getPrepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 
-            AbstractDAO<Long, Role> roleDAO = DAOFactory.INSTANCE.create(EntityType.ROLE, ConnectionPool.getInstance().getAvailableConnection());
-
             while (rs.next()) {
                 user = new User();
 
@@ -233,13 +200,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
                 user.setLogin(rs.getString(LOGIN_COLUMN));
                 user.setPassword(rs.getString(PASSWORD_COLUMN));
                 user.setEmail(rs.getString(EMAIL_COLUMN));
-
-                Optional<Role> optionalRole = roleDAO.findById(rs.getLong(ROLE_ID_COLUMN));
-                if (optionalRole.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(ROLE_ID_COLUMN));
-                }
-                user.setRole(optionalRole.get());
+                user.setAdmin(rs.getBoolean(ADMIN_COLUMN));
 
                 List<String> IBANs = findUserBankAccounts(user.getEntityId());
                 user.setIBANs(IBANs);
@@ -284,9 +245,6 @@ public class UserDAO extends AbstractDAO<Long, User> {
     @Override
     public Optional<User> update(User user) {
 
-//        String query = String.format(SQL_UPDATE_USER_WHERE,
-//                EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria));
-
         Optional<User> optionalUserToUpdate = findById(user.getEntityId());
         if (optionalUserToUpdate.isEmpty()) {
             return Optional.empty();
@@ -297,12 +255,13 @@ public class UserDAO extends AbstractDAO<Long, User> {
             ps.setString(2, user.getLogin());
             ps.setString(3, user.getPassword());
             ps.setString(4, user.getEmail());
-            ps.setLong(5, user.getRole().getEntityId());
+            ps.setBoolean(5, user.isAdmin());
             ps.setLong(6, user.getEntityId());
 
             int result = ps.executeUpdate();
 
             if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+                String locale = "US";
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_USER_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
             }

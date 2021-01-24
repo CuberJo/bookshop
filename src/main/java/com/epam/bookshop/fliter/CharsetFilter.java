@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebFilter("/*")
-public class URLFilter extends HttpFilter {
+public class CharsetFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        req.setCharacterEncoding(UtilStrings.UTF8);
+        res.setCharacterEncoding(UtilStrings.UTF8);
+        res.setContentType("text/html; charset=UTF-8");
         res.setCharacterEncoding(UtilStrings.UTF8);
         chain.doFilter(req, res);
     }

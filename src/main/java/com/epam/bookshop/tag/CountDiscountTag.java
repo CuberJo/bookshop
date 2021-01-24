@@ -5,6 +5,7 @@ import com.epam.bookshop.domain.impl.Book;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -26,7 +27,7 @@ public class CountDiscountTag extends SimpleTagSupport {
         JspWriter out = getJspContext().getOut();
 
         if (Objects.nonNull(discount)) {
-            out.println(countTotalPrice(cart) - discount);
+            out.println(new BigDecimal(String.valueOf(countTotalPrice(cart))).subtract(new BigDecimal(String.valueOf(discount))));
         }
     }
 

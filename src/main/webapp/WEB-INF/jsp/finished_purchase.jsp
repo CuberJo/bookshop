@@ -24,7 +24,7 @@
     <title>Finished purchase - Bookstore</title>
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/home.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,400,700" rel="stylesheet">
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <%--    <!--  -->--%>
@@ -46,6 +46,8 @@
 <div class="small-container">
     <div class="row">
         <div class="mcontainer" align="center">
+            <br>
+            <br>
             <br>
             <h1><fmt:message key="success_purchase" bundle="${mes}"/></h1>
             <br>

@@ -1,7 +1,7 @@
 package com.epam.bookshop.service.impl;
 
 import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.OrderCriteria;
+import com.epam.bookshop.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
@@ -12,24 +12,24 @@ import org.testng.annotations.Test;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-public class OrderServiceTest {
+public class PaymentServiceTest {
 
     EntityService service;
 
     @BeforeMethod
     public void setUp() {
-        service = ServiceFactory.getInstance().create(EntityType.ORDER);
+        service = ServiceFactory.getInstance().create(EntityType.PAYMENT);
     }
 
     @Test
     public void testCreate() {
-//        service.create(new Order("Kevin", "IE29 AIBK 9311 5212 3456 78", "fsa@gmail.com", LocalDateTime.now(), Status.IN_PROGRESS));
-//        service.create(new Order(1L, new User(3L, "Гоша", "гоша", "123", "gosha@gmail.com", new Role("USER"), "214-2523"), LocalDateTime.now(), new Status(1L, "IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre("FANTASY"), "One day at in one city ..."))));
-        try {
-            service.create(new Order(1L, new User(6L, "Samanda", "samanda_", "123", "samanda_@gmail.com", new Role("USER"), Arrays.asList("214-2523")), LocalDateTime.now(), new Status(1L, "IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre("FANTASY"), "One day at in one city ..."))));
-        } catch (ValidatorException e) {
-            e.printStackTrace();
-        }
+//        service.createImage(new Order("Kevin", "IE29 AIBK 9311 5212 3456 78", "fsa@gmail.com", LocalDateTime.now(), Status.IN_PROGRESS));
+//        service.createImage(new Order(1L, new User(3L, "Гоша", "гоша", "123", "gosha@gmail.com", new Role("USER"), "214-2523"), LocalDateTime.now(), new Status(1L, "IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre("FANTASY"), "One day at in one city ..."))));
+//        try {
+//            service.createImage(new Payment(1L, new User(6L, "Samanda", "samanda_", "123", "samanda_@gmail.com", false, Arrays.asList("214-2523")), LocalDateTime.now(), new Status(1L, "IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre("FANTASY"), "One day at in one city ..."))));
+//        } catch (ValidatorException e) {
+//            e.printStackTrace();
+//        }
 
 
     }
@@ -41,12 +41,12 @@ public class OrderServiceTest {
 
     @Test
     public void testTestFindAll() throws ValidatorException {
-        Criteria<Order> criteria = OrderCriteria.builder()
+        Criteria<Payment> criteria = PaymentCriteria.builder()
 //                .libraryUserName("Kevin")
 //                .IBAN("IE29 AG$# 3829 1312 2321 78")
 //                .email("fsa@gmail.com")
 //                .orderTime(LocalDateTime.of(2020, 12, 15, 17, 07, 44))
-                .statusId(1L)
+//                .statusId(1L)
                 .build();
 
         service.findAll(criteria).forEach(System.out::println);
@@ -59,10 +59,10 @@ public class OrderServiceTest {
 
     @Test
     public void testFind() throws EntityNotFoundException, ValidatorException {
-        Criteria<Order> criteria = OrderCriteria.builder()
+        Criteria<Payment> criteria = PaymentCriteria.builder()
 //                .libraryUserId(1L)
 //                .orderTime(LocalDateTime.of(2020, 12, 15, 17, 07, 44))
-                .statusId(1L)
+//                .statusId(1L)
                 .build();
 
         System.out.println(service.find(criteria));
@@ -70,20 +70,20 @@ public class OrderServiceTest {
 
     @Test
     public void testUpdate() throws EntityNotFoundException {
-        try {
-            service.update(new Order(6L, new User(1L, "Erica", "erica", "123", "erica@gmail.com", new Role(1L, "USER"), Arrays.asList("13414-12")), LocalDateTime.now(), new Status(1L, "IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre("FANTASY"), "One day at in one city ..."))));
-        } catch (ValidatorException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            service.update(new Payment(6L, new User(1L, "Erica", "erica", "123", "erica@gmail.com", false, Arrays.asList("13414-12")), LocalDateTime.now(), new Status(1L, "IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre("FANTASY"), "One day at in one city ..."))));
+//        } catch (ValidatorException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Test
     public void testDelete() throws EntityNotFoundException, ValidatorException {
-        service.delete(new Order(7L, new User(), LocalDateTime.now(), new Status(1L, "IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre(1L, "FANTASY"), "One day at in one city ..."))));
+//        service.delete(new Payment(7L, new User(), LocalDateTime.now(), new Status(1L, "IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre(1L, "FANTASY"), "One day at in one city ..."))));
     }
 
     @Test
     public void testTestDelete() throws EntityNotFoundException, ValidatorException {
-        service.delete(new Order(8L, new User(), LocalDateTime.now(), new Status("IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre(1L, "FANTASY"), "One day at in one city ..."))));
+//        service.delete(new Payment(8L, new User(), LocalDateTime.now(), new Status("IN_PROGRESS"), Arrays.asList(new Book("98-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre(1L, "FANTASY"), "One day at in one city ..."))));
     }
 }

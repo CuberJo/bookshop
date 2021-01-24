@@ -28,7 +28,7 @@ public class BookServiceTest {
             e.printStackTrace();
         }
 
-//        BookService.INSTANCE.create(new Book("978-5-389-1", "Опережая некролог", "J. Miller", 12.3, "F&F", Genre.ADVENTURE));
+//        BookService.INSTANCE.createImage(new Book("978-5-389-1", "Опережая некролог", "J. Miller", 12.3, "F&F", Genre.ADVENTURE));
     }
 
     @Test

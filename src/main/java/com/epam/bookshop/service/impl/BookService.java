@@ -187,7 +187,7 @@ public class BookService implements EntityService<Book> {
         return isDeleted;
     }
 
-    public void create(String ISBN, String filePath) {
+    public void createImage(String ISBN, String filePath) {
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
@@ -257,7 +257,7 @@ public class BookService implements EntityService<Book> {
 
 //    public void findImagesForBooks(Collection<Book> books) throws EntityNotFoundException {
 //        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-//        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+//        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.createImage(EntityType.BOOK, conn);
 //
 //        for (Book book: books) {
 //            Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
@@ -297,5 +297,52 @@ public class BookService implements EntityService<Book> {
         }
 
         return bookFile;
+    }
+
+
+    /**
+     * @param criteria {@link Criteria<com.epam.bookshop.domain.impl.User>} search criteria
+     * @param start from where to start limitation
+     * @param total how many books to kake
+     * @return {@link Collection<Book>} found
+     * @throws ValidatorException if book data fails validation
+     */
+    public Collection<Book> findAll(Criteria<Book> criteria, int start, int total) throws ValidatorException {
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        Collection<Book> books = dao.findAll(criteria, start, total);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return books;
+    }
+
+
+    /**
+     * @param start from where to start limitation
+     * @param total how many books to kake
+     * @return {@link Collection<Book>} found
+     */
+    public Collection<Book> findAll(int start, int total) {
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        Collection<Book> books = dao.findAll(start, total);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return books;
     }
 }

@@ -18,7 +18,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Bookstore</title>
-        <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
         <link rel="stylesheet" type="text/css" href='<c:url value="/styles/home.css"/>'>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -115,51 +115,51 @@
 <div class="genres">
     <div class="small-container">
         <div class="row">
-            <div class="col-4"><a href="/home?command=books&genre=ROMANCE">
+            <div class="col-4"><a href="/books?genre=ROMANCE">
                 <img src="images/genres/romance.png">
                 <h3><fmt:message key="label.ROMANCE" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=ACTION_AND_ADVENTURE">
+            <div class="col-4"><a href="/books?genre=ACTION_AND_ADVENTURE">
                 <img src="images/genres/action_and_adventure.png">
                 <h3><fmt:message key="label.ACTION_AND_ADVENTURE" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=MYSTERY_AND_THRILLER">
+            <div class="col-4"><a href="/books?genre=MYSTERY_AND_THRILLER">
                 <img src="images/genres/mystery_and_thriller.png">
                 <h3><fmt:message key="label.MYSTERY_AND_THRILLER" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=BIOGRAPHIES_AND_HISTORY">
+            <div class="col-4"><a href="/books?genre=BIOGRAPHIES_AND_HISTORY">
                 <img src="images/genres/biographies_and_history.png">
                 <h3><fmt:message key="label.BIOGRAPHIES_AND_HISTORY" bundle="${lang}"/></h3>
             </a></div>
         </div>
         <div class="row">
-            <div class="col-4"><a href="/home?command=books&genre=CHILDREN">
+            <div class="col-4"><a href="/books?genre=CHILDREN">
                 <img src="images/genres/children.png">
                 <h3><fmt:message key="label.CHILDREN" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=FANTASY">
+            <div class="col-4"><a href="/books?genre=FANTASY">
                 <img src="images/genres/fantasy.png">
                 <h3><fmt:message key="label.FANTASY" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=HISTORICAL_FICTION">
+            <div class="col-4"><a href="/books?genre=HISTORICAL_FICTION">
                 <img src="images/genres/historical_fiction.png">
                 <h3><fmt:message key="label.HISTORICAL_FICTION" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/home?command=books&genre=HORROR">
+            <div class="col-4"><a href="/books?genre=HORROR">
                 <img src="images/genres/horror.png">
                 <h3><fmt:message key="label.HORROR" bundle="${lang}"/></h3>
             </a></div>
         </div>
         <div class="row">
-            <div class="col-3"><a href="/home?command=books&genre=LITERARY_FICTION">
+            <div class="col-3"><a href="/books?genre=LITERARY_FICTION">
                 <img src="images/genres/literary_fiction.png">
                 <h3><fmt:message key="label.LITERARY_FICTION" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-3"><a href="/home?command=books&genre=NON-FICTION">
+            <div class="col-3"><a href="/books?genre=NON-FICTION">
                 <img src="images/genres/non_fiction.png">
                 <h3><fmt:message key="label.NON-FICTION" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-3"><a href="/home?command=books&genre=SCIENCE-FICTION">
+            <div class="col-3"><a href="/books?genre=SCIENCE-FICTION">
                 <img src="images/genres/science_fiction.png">
                 <h3><fmt:message key="label.SCIENCE-FICTION" bundle="${lang}"/></h3>
             </a></div>

@@ -21,7 +21,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Books - Bookstore</title>
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
     <link rel="stylesheet" type="text/css" href="../../styles/book_details.css">
     <link rel="stylesheet" type="text/css" href="../../styles/book-preview.css">
@@ -48,7 +48,7 @@
                     </form>
                 </li>
                 <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>
-                <li><a href="/home?command=books"><fmt:message key="label.store" bundle="${lang}"/></a></li>
+                <li><a href="/books"><fmt:message key="label.store" bundle="${lang}"/></a></li>
                 <li><a href="/home?command=contact_us"><fmt:message key="label.contact_us" bundle="${lang}"/></a></li>
                 <li><a href="/home?command=search&from=${param.command}"><fmt:message key="label.search_book" bundle="${lang}"/></a></li>
                 <c:choose>
@@ -192,7 +192,7 @@
             <img src="data:image/jpg;base64,${book.base64Image}" width="100%" id="book-img">
         </div>
         <div class="col-2">
-            <p><fmt:message key="label.genre" bundle="${lang}"/> / <a href="/home?command=books&genre=${book.genre.genre}"><fmt:message key="label.${book.genre.genre}" bundle="${lang}"/></a></p>
+            <p><fmt:message key="label.genre" bundle="${lang}"/> / <a href="/books?genre=${book.genre.genre}&page=1"><fmt:message key="label.${book.genre.genre}" bundle="${lang}"/></a></p>
             <h1>${book.title}</h1>
             <h4>$${book.price}</h4>
             <c:set var="book_to_cart" scope="session" value="${book}"/>
@@ -232,7 +232,7 @@
 <div class="small-container">
     <div class="row row-2">
         <h2><fmt:message key="label.related_books" bundle="${lang}"/></h2>
-        <p><a href="/home?command=books"><fmt:message key="label.view_more" bundle="${lang}"/></a></p>
+        <p><a href="/books"><fmt:message key="label.view_more" bundle="${lang}"/></a></p>
     </div>
 </div>
 

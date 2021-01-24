@@ -1,13 +1,14 @@
 package com.epam.bookshop.controller.command;
 
+import com.epam.bookshop.controller.ajax.BooksController;
 import com.epam.bookshop.controller.command.impl.*;
-import com.epam.bookshop.domain.impl.CommandType;
+import com.epam.bookshop.domain.impl.Book;
 
 import java.util.Objects;
 
 
 /**
- * Factory to create instance of {@link Command}
+ * Factory to createImage instance of {@link Command}
  */
 public class CommandFactory {
 
@@ -44,10 +45,10 @@ public class CommandFactory {
         }
 
         switch (command) {
-            case BOOKS:
-                return new BooksCommand();
             case ACCOUNT:
                 return new AccountCommand();
+            case BOOKS:
+                return new BooksCommand();
             case CART:
                 return new CartCommand();
             case BOOK_DETAILS:

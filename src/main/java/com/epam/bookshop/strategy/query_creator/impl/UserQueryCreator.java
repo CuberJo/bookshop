@@ -19,9 +19,7 @@ public class UserQueryCreator implements EntityQueryCreator<User> {
     private static final String LOGIN_COLUMN = "Login";
     private static final String PASSWORD_COLUMN = "Password";
     private static final String EMAIL_COLUMN = "Email";
-    private static final String ROLE_ID_COLUMN = "Role_Id";
-
-    private static final String locale = "US";
+    private static final String ADMIN_COLUMN = "Admin";
 
     private static final ReentrantLock lock = new ReentrantLock();
 
@@ -49,6 +47,7 @@ public class UserQueryCreator implements EntityQueryCreator<User> {
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof UserCriteria)) {
+            String locale = "US";
             String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA)
                     + UtilStrings.WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
@@ -93,14 +92,14 @@ public class UserQueryCreator implements EntityQueryCreator<User> {
                     .append(UtilStrings.AND)
                     .append(UtilStrings.WHITESPACE);
         }
-        if (((UserCriteria) criteria).getRoleId() != null) {
-            condition.append(ROLE_ID_COLUMN + " = '")
-                    .append(((UserCriteria) criteria).getRoleId())
-                    .append("'")
-                    .append(UtilStrings.WHITESPACE)
-                    .append(UtilStrings.AND)
-                    .append(UtilStrings.WHITESPACE);
-        }
+//        if (((UserCriteria) criteria).isAdmin() != null) {
+//            condition.append(ADMIN_COLUMN + " = '")
+//                    .append(((UserCriteria) criteria).isAdmin())
+//                    .append("'")
+//                    .append(UtilStrings.WHITESPACE)
+//                    .append(UtilStrings.AND)
+//                    .append(UtilStrings.WHITESPACE);
+//        }
 
         return new Validator().validatedQuery(condition);
     }

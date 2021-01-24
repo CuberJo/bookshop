@@ -29,17 +29,14 @@ public class EntityQueryCreatorFactory {
             case BOOK:
                 creatorToReturn = BookQueryCreator.getInstance();
                 break;
-            case ORDER:
-                creatorToReturn = OrderQueryCreator.getInstance();
+            case PAYMENT:
+                creatorToReturn = PaymentQueryCreator.getInstance();
                 break;
             case USER:
                 creatorToReturn = UserQueryCreator.getInstance();
                 break;
             case GENRE:
                 creatorToReturn = GenreQueryCreator.getInstance();
-                break;
-            case ROLE:
-                creatorToReturn = RoleQueryCreator.getInstance();
                 break;
             default:
                 String noSuchQueryType = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_SERVICE_TYPE) + UtilStrings.WHITESPACE + type;

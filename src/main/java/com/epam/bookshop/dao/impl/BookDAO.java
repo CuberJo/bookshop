@@ -32,6 +32,10 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String SQL_SELECT_ALL_BOOKS = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview " +
             "FROM TEST_LIBRARY.BOOK ";
 
+    private static final String SQL_SELECT_ALL_BOOKS_BY_LIMIT = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview " +
+            "FROM TEST_LIBRARY.BOOK " +
+            "LIMIT ?, ?";
+
     private static final String SQL_SELECT_BOOk_BY_ID = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview " +
             "FROM TEST_LIBRARY.BOOK " +
             "WHERE Id = ?";
@@ -290,7 +294,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     public Optional<Book> update(Book book) {
 //
 //        String query = String.format(SQL_UPDATE_BOOK_WHERE,
-//                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria));
+//                EntityQueryCreatorFactory.INSTANCE.createImage(EntityType.BOOK).createQuery(criteria));
 
         Optional<Book> optionalBookToUpdate = findById(book.getEntityId());
         if (optionalBookToUpdate.isEmpty()) {
@@ -342,7 +346,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     public Optional<String> findImageByISBN(String ISBN) {
         ResultSet rs = null;
 
-        String base64Image = "";
+        String base64Image = null;
 
         try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_IMG_BY_ISBN)) {
 
@@ -475,5 +479,109 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         }
 
         return bytes;
+    }
+
+
+    public List<Book> findAll(int start, int total) {
+        List<Book> books = new ArrayList<>();
+        ResultSet rs = null;
+
+        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_BOOKS_BY_LIMIT)) {
+
+            ps.setInt(1, start);
+            ps.setInt(2, total);
+            rs = ps.executeQuery();
+
+
+            AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE,
+                    ConnectionPool.getInstance().getAvailableConnection());
+
+            while (rs.next()) {
+                Book book = new Book();
+                book.setEntityId(rs.getLong(ID_COLUMN));
+                book.setISBN(rs.getString(ISBN_COLUMN));
+                book.setTitle(rs.getString(TITLE_COLUMN));
+                book.setPrice(rs.getDouble(PRICE_COLUMN));
+
+                Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
+                if (optionalGenre.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                }
+                book.setGenre(optionalGenre.get());
+
+                book.setAuthor(rs.getString(AUTHOR_COLUMN));
+                book.setPublisher(rs.getString(PUBLISHER_COLUMN));
+                book.setPreview(rs.getString(PREVIEW_COLUMN));
+
+                books.add(book);
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException throwables) {
+                logger.error(throwables.getMessage(), throwables);
+            }
+        }
+
+        return books;
+    }
+
+
+    public List<Book> findAll(Criteria<Book> criteria, int start, int total) {
+        List<Book> books = new ArrayList<>();
+        ResultSet rs = null;
+
+        String query = SQL_SELECT_ALL_BOOKS_WHERE +
+                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria)
+                        .replace(UtilStrings.SEMICOLON, UtilStrings.WHITESPACE) + "LIMIT ?, ?";
+
+        try (PreparedStatement ps = getPrepareStatement(query)) {
+
+            ps.setInt(1, start);
+            ps.setInt(2, total);
+            rs = ps.executeQuery();
+
+
+            AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE,
+                    ConnectionPool.getInstance().getAvailableConnection());
+
+            while (rs.next()) {
+                Book book = new Book();
+                book.setEntityId(rs.getLong(ID_COLUMN));
+                book.setISBN(rs.getString(ISBN_COLUMN));
+                book.setTitle(rs.getString(TITLE_COLUMN));
+                book.setPrice(rs.getDouble(PRICE_COLUMN));
+
+                Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
+                if (optionalGenre.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                }
+                book.setGenre(optionalGenre.get());
+
+                book.setAuthor(rs.getString(AUTHOR_COLUMN));
+                book.setPublisher(rs.getString(PUBLISHER_COLUMN));
+                book.setPreview(rs.getString(PREVIEW_COLUMN));
+
+                books.add(book);
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException throwables) {
+                logger.error(throwables.getMessage(), throwables);
+            }
+        }
+
+        return books;
     }
 }

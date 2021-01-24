@@ -2,8 +2,10 @@ package com.epam.bookshop.controller;
 
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.BookCriteria;
+import com.epam.bookshop.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
+import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
@@ -31,16 +33,53 @@ public class ReadBookController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(ReadBookController.class);
 
     private static final String HEADER_PARAM = "inline; filename=automatic_start.pdf";
+    private static final String HOME_PAGE = "/home";
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) {
-        renderBook(request, response);
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (checkBookPurchase(request)) {
+            renderBook(request, response);
+        } else {
+            request.getRequestDispatcher(HOME_PAGE).forward(request, response);
+        }
+    }
+
+    /**
+     * @param request {@link HttpServletRequest} which comes to a {@link HttpServletRequest}
+     * @return true if and only if requested book was purchased
+     */
+    private boolean checkBookPurchase(HttpServletRequest request) {
+        final String locale = (String) request.getSession().getAttribute(UtilStrings.LOCALE);
+
+        EntityService<Payment> service = ServiceFactory.getInstance().create(EntityType.PAYMENT);
+        service.setLocale(locale);
+
+        Criteria<Book> criteria = BookCriteria.builder()
+                .ISBN(request.getParameter(UtilStrings.ISBN))
+                .build();
+        Book book = findBook(criteria, locale);
+        try {
+            Criteria<Payment> paymentCriteria = PaymentCriteria.builder()
+                    .bookId(book.getEntityId())
+                    .build();
+            Optional<Payment> optionalPayment = service.find(paymentCriteria);
+            if (optionalPayment.isEmpty()) {
+                return false;
+            }
+        } catch (ValidatorException e) {
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA
+                    + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN());
+            logger.error(error, e);
+            throw new RuntimeException(error, e);
+        }
+
+        return true;
     }
 
 
     /**
      * Renders file read from database to a jsp page
-     * @param request {@link HttpServletRequest} which comes to a Servlet
+     * @param request {@link HttpServletRequest} which comes to a {@link HttpServletRequest}
      * @param response {@link HttpServletResponse} which comes to a Servlet
      */
     public void renderBook(HttpServletRequest request, HttpServletResponse response) {
@@ -49,14 +88,12 @@ public class ReadBookController extends HttpServlet {
 
         ByteArrayOutputStream bos = null;
         try {
-            BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-            service.setLocale(locale);
             Criteria<Book> criteria = BookCriteria.builder()
                     .ISBN(request.getParameter(UtilStrings.ISBN))
                     .build();
-            Book book = findBook(service, criteria, locale);
+            Book book = findBook(criteria, locale);
 
-            bos = getBookByteArray(service, book);
+            bos = getBookByteArray(book, locale);
 
             response.setContentType(UtilStrings.APPLICATION_PDF_CONTENT_TYPE);
             response.setHeader(UtilStrings.CONTENT_DISPOSITION_HEADER, HEADER_PARAM);
@@ -85,12 +122,14 @@ public class ReadBookController extends HttpServlet {
 
 
     /**
-     * @param service {@link EntityService<Book>} which is used to fetch the book
      * @param criteria {@link Criteria<Book>} criterai of book search
      * @param locale language of error messages
      * @return book if it was found, otherwise {@link Optional} empty
      */
-    private Book findBook(EntityService<Book> service, Criteria<Book> criteria, String locale) {
+    private Book findBook(Criteria<Book> criteria, String locale) {
+        EntityService<Book> service = ServiceFactory.getInstance().create(EntityType.BOOK);
+        service.setLocale(locale);
+
         Optional<Book> optionalBook;
         try {
             optionalBook = service.find(criteria);
@@ -109,11 +148,14 @@ public class ReadBookController extends HttpServlet {
 
 
     /**
-     * @param service {@link EntityService<Book>} which is used to fetch the book file
      * @param book {@link Book} which is searching parameter
+     * @param locale language of error messages
      * @return {@link ByteArrayOutputStream} object with written book file in it
      */
-    private ByteArrayOutputStream getBookByteArray(BookService service, Book book) {
+    private ByteArrayOutputStream getBookByteArray(Book book, String locale) {
+        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
+        service.setLocale(locale);
+
         byte[] file;
         try {
             file = service.findBookFile(book);
@@ -143,7 +185,7 @@ public class ReadBookController extends HttpServlet {
 
 
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        String isbn = (String) request.getParameter(UtilStrings.ISBN);
+        String isbn = request.getParameter(UtilStrings.ISBN);
         Criteria<Book> criteria = BookCriteria.builder()
                 .ISBN(isbn)
                 .build();
@@ -186,7 +228,7 @@ public class ReadBookController extends HttpServlet {
 //        String locale = (String) requestContext.getAttribute(UtilStrings.LOCALE);
 //
 //
-//        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
+//        BookService service = (BookService) ServiceFactory.getInstance().createImage(EntityType.BOOK);
 //        String isbn = (String) requestContext.getParameter(UtilStrings.ISBN);
 //        Criteria<Book> criteria = BookCriteria.builder()
 //                .ISBN(isbn)

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -78,6 +79,7 @@ public class LoadIBANsController extends HttpServlet {
     private void addIBANs(HttpSession session, List<String> IBANs) {
         List<String> sessionIBANs = (List<String>) session.getAttribute(UtilStrings.IBANs);
         if (Objects.isNull(sessionIBANs)) {
+            sessionIBANs = new ArrayList<>();
             session.setAttribute(UtilStrings.IBANs, IBANs);
         }
 

@@ -1,35 +1,34 @@
 package com.epam.bookshop.strategy.query_creator.impl;
 
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.strategy.query_creator.EntityQueryCreator;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class OrderQueryCreator implements EntityQueryCreator<Payment> {
+public class PaymentQueryCreator implements EntityQueryCreator<Payment> {
 
-    private static final String ORDER_ID_COLUMN = "Id";
+    private static final String PAYMENT_ID_COLUMN = "Id";
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
-    private static final String ORDER_TIME_COLUMN = "Order_Time";
-    private static final String STATUS_ID_COLUMN = "Status_Id";
-
-    private static final String locale = "US";
+    private static final String BOOK_ID_COLUMN = "Book_Id";
+    private static final String PAYMENT_TIME_COLUMN = "Payment_Time";
+    private static final String PRICE_COLUMN = "Price";
 
     private static final ReentrantLock lock = new ReentrantLock();
 
-    private static OrderQueryCreator instance;
+    private static PaymentQueryCreator instance;
 
-    public static OrderQueryCreator getInstance() {
+    public static PaymentQueryCreator getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new OrderQueryCreator();
+                instance = new PaymentQueryCreator();
             }
         } finally {
             lock.unlock();
@@ -38,7 +37,7 @@ public class OrderQueryCreator implements EntityQueryCreator<Payment> {
         return instance;
     }
 
-    private OrderQueryCreator() {
+    private PaymentQueryCreator() {
 
     }
 
@@ -47,13 +46,14 @@ public class OrderQueryCreator implements EntityQueryCreator<Payment> {
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof PaymentCriteria)) {
+            String locale = "US";
             String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA)
                     + UtilStrings.WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }
 
         if (criteria.getEntityId() != null) {
-            condition.append(ORDER_ID_COLUMN + " = ")
+            condition.append(PAYMENT_ID_COLUMN + " = ")
                     .append(criteria.getEntityId())
                     .append(UtilStrings.WHITESPACE)
                     .append(UtilStrings.AND)
@@ -67,17 +67,25 @@ public class OrderQueryCreator implements EntityQueryCreator<Payment> {
                     .append(UtilStrings.AND)
                     .append(UtilStrings.WHITESPACE);
         }
-        if (((PaymentCriteria) criteria).getOrderTime() != null) {
-            condition.append(ORDER_TIME_COLUMN + " = '")
-                    .append(((PaymentCriteria) criteria).getOrderTime())
+        if (((PaymentCriteria) criteria).getBookId() != null) {
+            condition.append(BOOK_ID_COLUMN + " = '")
+                    .append(((PaymentCriteria) criteria).getBookId())
                     .append("'")
                     .append(UtilStrings.WHITESPACE)
                     .append(UtilStrings.AND)
                     .append(UtilStrings.WHITESPACE);
         }
-        if (((PaymentCriteria) criteria).getStatusId() != null) {
-            condition.append(STATUS_ID_COLUMN + " = '")
-                    .append(((PaymentCriteria) criteria).getStatusId())
+        if (((PaymentCriteria) criteria).getPaymentTime() != null) {
+            condition.append(PAYMENT_TIME_COLUMN + " = '")
+                    .append(((PaymentCriteria) criteria).getPaymentTime())
+                    .append("'")
+                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStrings.AND)
+                    .append(UtilStrings.WHITESPACE);
+        }
+        if (((PaymentCriteria) criteria).getPrice() != null) {
+            condition.append(PRICE_COLUMN + " = '")
+                    .append(((PaymentCriteria) criteria).getPrice())
                     .append("'")
                     .append(UtilStrings.WHITESPACE)
                     .append(UtilStrings.AND)

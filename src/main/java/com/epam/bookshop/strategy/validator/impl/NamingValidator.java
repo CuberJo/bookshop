@@ -1,15 +1,19 @@
 package com.epam.bookshop.strategy.validator.impl;
 
-import com.epam.bookshop.context.annotation.Naming;
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.*;
-import com.epam.bookshop.domain.Entity;
-import com.epam.bookshop.domain.impl.*;
-import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.strategy.validator.Validatable;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RegexConstant;
 import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.context.annotation.Naming;
+import com.epam.bookshop.criteria.Criteria;
+import com.epam.bookshop.criteria.impl.BookCriteria;
+import com.epam.bookshop.criteria.impl.GenreCriteria;
+import com.epam.bookshop.criteria.impl.UserCriteria;
+import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.domain.impl.Book;
+import com.epam.bookshop.domain.impl.Genre;
+import com.epam.bookshop.domain.impl.User;
+import com.epam.bookshop.exception.ValidatorException;
+import com.epam.bookshop.strategy.validator.Validatable;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 
 import java.lang.reflect.Field;
@@ -106,24 +110,6 @@ public class NamingValidator implements Validatable<Naming> {
                 throw new ValidatorException(errorMessage);
             }
         }
-        if (annotation.role() && ((Role) entity).getRole() != null) {
-            p = Pattern.compile(RegexConstant.ROLE_REGEX);
-            m = p.matcher(((Role) entity).getRole());
-
-            if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_INCORRECT) + UtilStrings.WHITESPACE + ((Role) entity).getRole();
-                throw new ValidatorException(errorMessage);
-            }
-        }
-        if (annotation.status() && ((Status) entity).getStatus() != null) {
-            p = Pattern.compile(RegexConstant.STATUS_REGEX);
-            m = p.matcher(((Status) entity).getStatus());
-
-            if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.STATUS_INCORRECT) + UtilStrings.WHITESPACE + ((Status) entity).getStatus();
-                throw new ValidatorException(errorMessage);
-            }
-        }
     }
 
 
@@ -204,24 +190,6 @@ public class NamingValidator implements Validatable<Naming> {
 
             if (!m.matches()) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.GENRE_INCORRECT) + UtilStrings.WHITESPACE + ((GenreCriteria) criteria).getGenre();
-                throw new ValidatorException(errorMessage);
-            }
-        }
-        if (annotation.role() && ((RoleCriteria) criteria).getRole() != null) {
-            p = Pattern.compile(RegexConstant.ROLE_REGEX);
-            m = p.matcher(((RoleCriteria) criteria).getRole());
-
-            if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ROLE_INCORRECT) + UtilStrings.WHITESPACE + ((RoleCriteria) criteria).getRole();
-                throw new ValidatorException(errorMessage);
-            }
-        }
-        if (annotation.status() && ((StatusCriteria) criteria).getStatus() != null) {
-            p = Pattern.compile(RegexConstant.STATUS_REGEX);
-            m = p.matcher(((StatusCriteria) criteria).getStatus());
-
-            if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.STATUS_INCORRECT) + UtilStrings.WHITESPACE + ((StatusCriteria) criteria).getStatus();
                 throw new ValidatorException(errorMessage);
             }
         }

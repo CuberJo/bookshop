@@ -3,7 +3,6 @@ package com.epam.bookshop.service.impl;
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.domain.impl.Role;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
@@ -27,7 +26,7 @@ public class UserServiceTest {
 
     @Test
     public void testCreate() {
-        User user = new User("Solomon", "solomon", "123", "solomon@gmail.com", new Role(1L, "USER"));//, Arrays.asList("214-2523"));
+        User user = new User("Solomon", "solomon", "123", "solomon@gmail.com", false);//, Arrays.asList("214-2523"));
         try {
             service.create(user);
         } catch (ValidatorException e) {
@@ -38,7 +37,7 @@ public class UserServiceTest {
     @Test
     public void testCreateWithRussianLang() {
         try {
-            service.create(new User("Ирина", "ирина", "123", " irina@gmail.com", new Role(1L, "USER")));//, Arrays.asList("214-2523")));
+            service.create(new User("Ирина", "ирина", "123", " irina@gmail.com", false));//, Arrays.asList("214-2523")));
         } catch (ValidatorException e) {
             e.printStackTrace();
         }
@@ -84,7 +83,7 @@ public class UserServiceTest {
     @Test
     public void testUpdate() throws EntityNotFoundException {
         try {
-            service.update(new User(2L, "Петр", "петр", "123", "petr00@gmail.com", new Role(1L, "USER")));//, Arrays.asList("214-2523")));
+            service.update(new User(2L, "Петр", "петр", "123", "petr00@gmail.com", false));//, Arrays.asList("214-2523")));
         } catch (ValidatorException e) {
             e.printStackTrace();
         }
@@ -97,6 +96,6 @@ public class UserServiceTest {
 
     @Test
     public void testTestDeleteByEntity() throws EntityNotFoundException, ValidatorException {
-        service.delete(new User(17L, "Samanda", "samanda_", "123", "samanda_@gmail.com", new Role("USER")));//, Arrays.asList("214-2523")));
+        service.delete(new User(17L, "Samanda", "samanda_", "123", "samanda_@gmail.com", false));//, Arrays.asList("214-2523")));
     }
 }

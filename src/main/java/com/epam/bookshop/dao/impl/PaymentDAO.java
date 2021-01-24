@@ -17,57 +17,57 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class OrderDAO extends AbstractDAO<Long, Payment> {
-    private static final Logger logger = LoggerFactory.getLogger(OrderDAO.class);
+/**
+ * DAO for {@link Payment} object
+ */
+public class PaymentDAO extends AbstractDAO<Long, Payment> {
+    private static final Logger logger = LoggerFactory.getLogger(PaymentDAO.class);
 
-    private static final String SQL_SELECT_ALL_ORDERS_WHERE =  "SELECT Id, Library_User_Id, Order_Time, Status_Id FROM TEST_LIBRARY.ORDER_BOOK WHERE ";
-    private static final String SQL_UPDATE_ORDER_WHERE =  "UPDATE TEST_LIBRARY.ORDER SET %s WHERE Id = ?";
-
-    private static final String SQL_INSERT_ORDER = "INSERT INTO TEST_LIBRARY.ORDER (Library_User_Id, Order_Time, Status_Id) VALUES (?, ?, ?);";
-    private static final String SQL_DELETE_ORDER_BY_ID = "DELETE FROM TEST_LIBRARY.ORDER WHERE Id = ?;";
-    private static final String SQL_UPDATE_ORDER_BY_ID = "UPDATE TEST_LIBRARY.ORDER SET Library_User_Id = ?, Order_Time = ?, Status_Id = ? WHERE Id = ?;";
-
-    private static final String SQL_SELECT_ALL_ORDERS = "SELECT Id, Library_User_Id, Order_Time, Status_Id " +
-            "FROM TEST_LIBRARY.ORDER ";
-
-    private static final String SQL_SELECT_ALL_BOOKS_IN_THIS_ORDER = "SELECT Order_Id, Book_Id " +
-            "FROM TEST_LIBRARY.ORDER_BOOK " +
-            "WHERE Order_Id = ?";
-
-    private static final String SQL_SELECT_ORDER_BY_ID = "SELECT Id, Library_User_Id, Order_Time, Status_Id " +
-            "FROM TEST_LIBRARY.ORDER " +
+    private static final String SQL_SELECT_ALL_PAYMENTS_WHERE =  "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price " +
+            "FROM TEST_LIBRARY.PAYMENT WHERE ";
+    private static final String SQL_SELECT_PAYMENT_BY_ID = "SELECT Id,  Library_User_Id, Book_Id, Payment_Time, Price " +
+            "FROM TEST_LIBRARY.PAYMENT " +
             "WHERE Id = ?";
+
+    private static final String SQL_INSERT_PAYMENT = "INSERT INTO TEST_LIBRARY.PAYMENT (Library_User_Id, Book_Id, Payment_Time, Price) " +
+            "VALUES (?, ?, ?, ?);";
+    private static final String SQL_DELETE_PAYMENT_BY_ID = "DELETE FROM TEST_LIBRARY.PAYMENT WHERE Id = ?;";
+    private static final String SQL_UPDATE_PAYMENT_BY_ID = "UPDATE TEST_LIBRARY.PAYMENT SET Library_User_Id = ?, Book_Id = ?, Payment_Time = ?, Price = ? " +
+            "WHERE Id = ?;";
+
+    private static final String SQL_SELECT_ALL_PAYMENTS = "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price " +
+            "FROM TEST_LIBRARY.PAYMENT ";
+
+    private static final String SQL_SELECT_ALL_BOOKS_IN_PAYMENT = "SELECT Book_Id " +
+            "FROM TEST_LIBRARY.PAYMENT " +
+            "WHERE Library_User_Id = ?";
 
     private static final String ID_COLUMN = "Id";
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
-    private static final String ORDER_TIME_COLUMN = "Order_Time";
-    private static final String STATUS_ID_COLUMN = "Status_Id";
-
     private static final String BOOK_ID_COLUMN = "Book_Id";
+    private static final String PAYMENT_TIME_COLUMN = "Payment_Time";
+    private static final String PRICE_COLUMN = "Price";
 
     private final String locale = "US";
 
-    public OrderDAO(Connection connection) {
+    public PaymentDAO(Connection connection) {
         super(connection);
     }
 
 
-
+    /**
+     * @param payment {@link Payment} object to be inserted in database
+     * @return inserted {@link Payment} object
+     */
     @Override
     public Payment create(Payment payment) {
 
-        try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_ORDER)) {
+        try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_PAYMENT)) {
 
             ps.setLong(1, payment.getUser().getEntityId());
-            ps.setTimestamp(2, Timestamp.valueOf(payment.getPaymentTime()));
-
-            AbstractDAO<Long, Status> statusDAO = DAOFactory.INSTANCE.create(EntityType.STATUS, ConnectionPool.getInstance().getAvailableConnection());
-            Optional<Status> optionalStatus = statusDAO.find(StatusCriteria.builder().status(payment.getStatus().getStatus()).build());
-            if (optionalStatus.isEmpty()) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_STATUS_FOUND) + UtilStrings.NEW_LINE + payment.getStatus();
-                throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + payment.getStatus().getStatus());
-            }
-            ps.setLong(3, optionalStatus.get().getEntityId());
+            ps.setLong(2, payment.getBook().getEntityId());
+            ps.setTimestamp(3, Timestamp.valueOf(payment.getPaymentTime()));
+            ps.setDouble(4, payment.getPrice());
 
             ps.executeUpdate();
         } catch (SQLException throwables) {
@@ -78,17 +78,17 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
     }
 
 
-
+    /**
+     * @return {@link List<Payment>} all found {@link Payment} objects
+     */
     @Override
     public List<Payment> findAll() {
         List<Payment> payments = new ArrayList<>();
 
-        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_ORDERS);
+        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_PAYMENTS);
              ResultSet rs = ps.executeQuery()) {
 
             AbstractDAO<Long, User> userDAO = DAOFactory.INSTANCE.create(EntityType.USER, ConnectionPool.getInstance().getAvailableConnection());
-            AbstractDAO<Long, Status> statusDAO = DAOFactory.INSTANCE.create(EntityType.STATUS, ConnectionPool.getInstance().getAvailableConnection());
-
             AbstractDAO<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, ConnectionPool.getInstance().getAvailableConnection());
 
             while (rs.next()) {
@@ -97,22 +97,22 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
 
                 Optional<User> optionalUser = userDAO.findById(rs.getLong(LIBRARY_USER_ID_COLUMN));
                 if (optionalUser.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
                     throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
                 }
                 payment.setUser(optionalUser.get());
 
-                payment.setPaymentTime(rs.getTimestamp(ORDER_TIME_COLUMN).toLocalDateTime());
-
-                Optional<Status> optionalStatus = statusDAO.findById(rs.getLong(STATUS_ID_COLUMN));
-                if (optionalStatus.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.STATUS_NOT_FOUND)  + UtilStrings.WHITESPACE + rs.getLong(STATUS_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(STATUS_ID_COLUMN));
+                Optional<Book> optionalBook = bookDAO.findById(rs.getLong(BOOK_ID_COLUMN));
+                if (optionalBook.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + rs.getLong(BOOK_ID_COLUMN);
+                    throw new RuntimeException(errorMessage);
                 }
-                payment.setStatus(optionalStatus.get());
+                payment.setBook(optionalBook.get());
 
-                List<Book> orderedBooks = findAllBooksInThisOrder(payment.getEntityId(), bookDAO);
-                payment.setOrderedBooks(orderedBooks);
+                payment.setPaymentTime(rs.getTimestamp(PAYMENT_TIME_COLUMN).toLocalDateTime());
+                payment.setPrice(rs.getDouble(PRICE_COLUMN));
 
                 payments.add(payment);
             }
@@ -124,20 +124,21 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
     }
 
 
-
+    /**
+     * @param id payment id
+     * @return {@link Optional<Payment>} object
+     */
     @Override
     public Optional<Payment> findById(Long id) {
         Payment payment = null;
         ResultSet rs = null;
 
-        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_ORDER_BY_ID)) {
+        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_PAYMENT_BY_ID)) {
 
             ps.setLong(1, id);
             rs = ps.executeQuery();
 
             AbstractDAO<Long, User> userDAO = DAOFactory.INSTANCE.create(EntityType.USER, ConnectionPool.getInstance().getAvailableConnection());
-            AbstractDAO<Long, Status> statusDAO = DAOFactory.INSTANCE.create(EntityType.STATUS, ConnectionPool.getInstance().getAvailableConnection());
-
             AbstractDAO<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, ConnectionPool.getInstance().getAvailableConnection());
 
             while (rs.next()) {
@@ -146,22 +147,22 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
 
                 Optional<User> optionalUser = userDAO.findById(rs.getLong(LIBRARY_USER_ID_COLUMN));
                 if (optionalUser.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
                     throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
                 }
                 payment.setUser(optionalUser.get());
 
-                payment.setPaymentTime(rs.getTimestamp(ORDER_TIME_COLUMN).toLocalDateTime());
-
-                Optional<Status> optionalStatus = statusDAO.findById(rs.getLong(STATUS_ID_COLUMN));
-                if (optionalStatus.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(STATUS_ID_COLUMN)  + UtilStrings.WHITESPACE + rs.getLong(STATUS_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(STATUS_ID_COLUMN));
+                Optional<Book> optionalBook = bookDAO.findById(rs.getLong(BOOK_ID_COLUMN));
+                if (optionalBook.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + rs.getLong(BOOK_ID_COLUMN);
+                    throw new RuntimeException(errorMessage);
                 }
-                payment.setStatus(optionalStatus.get());
+                payment.setBook(optionalBook.get());
 
-                List<Book> orderedBooks = findAllBooksInThisOrder(payment.getEntityId(), bookDAO);
-                payment.setOrderedBooks(orderedBooks);
+                payment.setPaymentTime(rs.getTimestamp(PAYMENT_TIME_COLUMN).toLocalDateTime());
+                payment.setPrice(rs.getDouble(PRICE_COLUMN));
 
             }
         } catch (SQLException throwables) {
@@ -180,11 +181,14 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
     }
 
 
-
+    /**
+     * @param criteria {@link Criteria<Payment>} object used to find all payents
+     * @return {@link Collection<Payment>} all found {@link Payment} objects
+     */
     @Override
-    public Collection<Payment> findAll(Criteria criteria) {
-        String query = SQL_SELECT_ALL_ORDERS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.ORDER).createQuery(criteria);
+    public Collection<Payment> findAll(Criteria<Payment> criteria) {
+        String query = SQL_SELECT_ALL_PAYMENTS_WHERE
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria);
 
         List<Payment> payments = new ArrayList<>();
 
@@ -192,8 +196,6 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
              ResultSet rs = ps.executeQuery()) {
 
             AbstractDAO<Long, User> userDAO = DAOFactory.INSTANCE.create(EntityType.USER, ConnectionPool.getInstance().getAvailableConnection());
-            AbstractDAO<Long, Status> statusDAO = DAOFactory.INSTANCE.create(EntityType.STATUS, ConnectionPool.getInstance().getAvailableConnection());
-
             AbstractDAO<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, ConnectionPool.getInstance().getAvailableConnection());
 
             while (rs.next()) {
@@ -202,22 +204,22 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
 
                 Optional<User> optionalUser = userDAO.findById(rs.getLong(LIBRARY_USER_ID_COLUMN));
                 if (optionalUser.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)  + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
                     throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
                 }
                 payment.setUser(optionalUser.get());
 
-                payment.setPaymentTime(rs.getTimestamp(ORDER_TIME_COLUMN).toLocalDateTime());
-
-                Optional<Status> optionalStatus = statusDAO.findById(rs.getLong(STATUS_ID_COLUMN));
-                if (optionalStatus.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.STATUS_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(STATUS_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(STATUS_ID_COLUMN));
+                Optional<Book> optionalBook = bookDAO.findById(rs.getLong(BOOK_ID_COLUMN));
+                if (optionalBook.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + rs.getLong(BOOK_ID_COLUMN);
+                    throw new RuntimeException(errorMessage);
                 }
-                payment.setStatus(optionalStatus.get());
+                payment.setBook(optionalBook.get());
 
-                List<Book> orderedBooks = findAllBooksInThisOrder(payment.getEntityId(), bookDAO);
-                payment.setOrderedBooks(orderedBooks);
+                payment.setPaymentTime(rs.getTimestamp(PAYMENT_TIME_COLUMN).toLocalDateTime());
+                payment.setPrice(rs.getDouble(PRICE_COLUMN));
 
                 payments.add(payment);
             }
@@ -229,11 +231,14 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
     }
 
 
-
+    /**
+     * @param criteria {@link Criteria<Payment>} object used to find all payents
+     * @return {@link Optional<Payment>} object
+     */
     @Override
     public Optional<Payment> find(Criteria<Payment> criteria) {
-        String query = SQL_SELECT_ALL_ORDERS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.ORDER).createQuery(criteria);
+        String query = SQL_SELECT_ALL_PAYMENTS_WHERE
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria);
 
         Payment payment = null;
 
@@ -241,32 +246,30 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
              ResultSet rs = ps.executeQuery()) {
 
             AbstractDAO<Long, User> userDAO = DAOFactory.INSTANCE.create(EntityType.USER, ConnectionPool.getInstance().getAvailableConnection());
-            AbstractDAO<Long, Status> statusDAO = DAOFactory.INSTANCE.create(EntityType.STATUS, ConnectionPool.getInstance().getAvailableConnection());
-
             AbstractDAO<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, ConnectionPool.getInstance().getAvailableConnection());
 
             while (rs.next()) {
                 payment = new Payment();
-
                 payment.setEntityId(rs.getLong(ID_COLUMN));
 
                 Optional<User> optionalUser = userDAO.findById(rs.getLong(LIBRARY_USER_ID_COLUMN));
                 if (optionalUser.isEmpty()) {
-                    throw new RuntimeException("User with id " + rs.getLong(LIBRARY_USER_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
                 }
                 payment.setUser(optionalUser.get());
 
-                payment.setPaymentTime(rs.getTimestamp(ORDER_TIME_COLUMN).toLocalDateTime());
-
-                Optional<Status> optionalStatus = statusDAO.findById(rs.getLong(STATUS_ID_COLUMN));
-                if (optionalStatus.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.STATUS_NOT_FOUND) + UtilStrings.WHITESPACE + rs.getLong(STATUS_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(STATUS_ID_COLUMN));
+                Optional<Book> optionalBook = bookDAO.findById(rs.getLong(BOOK_ID_COLUMN));
+                if (optionalBook.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + rs.getLong(BOOK_ID_COLUMN);
+                    throw new RuntimeException(errorMessage);
                 }
-                payment.setStatus(optionalStatus.get());
+                payment.setBook(optionalBook.get());
 
-                List<Book> orderedBooks = findAllBooksInThisOrder(payment.getEntityId(), bookDAO);
-                payment.setOrderedBooks(orderedBooks);
+                payment.setPaymentTime(rs.getTimestamp(PAYMENT_TIME_COLUMN).toLocalDateTime());
+                payment.setPrice(rs.getDouble(PRICE_COLUMN));
 
             }
         } catch (SQLException throwables) {
@@ -277,18 +280,24 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
     }
 
 
-
+    /**
+     * @param payment {@link Payment} object to delete
+     * @return true if and only if payment was deleted
+     */
     @Override
     public boolean delete(Payment payment) {
         return delete(payment.getEntityId());
     }
 
 
-
+    /**
+     * @param id {@link Payment} object id to delete
+     * @return true if and only if payment was deleted
+     */
     @Override
     public boolean delete(Long id) {
 
-        try (PreparedStatement ps = getPrepareStatement(SQL_DELETE_ORDER_BY_ID)) {
+        try (PreparedStatement ps = getPrepareStatement(SQL_DELETE_PAYMENT_BY_ID)) {
             ps.setLong(1, id);
             int result = ps.executeUpdate();
 
@@ -304,24 +313,25 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
     }
 
 
-
+    /**
+     * @param payment {@link Payment} object to delete
+     * @return {@link Optional<Payment>} object to be updated if was found in database
+     */
     @Override
     public Optional<Payment> update(Payment payment) {
-//
-//        String query = String.format(SQL_UPDATE_ORDER_WHERE,
-//                EntityQueryCreatorFactory.INSTANCE.create(EntityType.ORDER).createQuery(criteria));
 
-        Optional<Payment> optionalOrderToUpdate = findById(payment.getEntityId());
-        if (optionalOrderToUpdate.isEmpty()) {
+        Optional<Payment> optionalPaymentToUpdate = findById(payment.getEntityId());
+        if (optionalPaymentToUpdate.isEmpty()) {
             return Optional.empty();
         }
 
-        try(PreparedStatement ps = getPrepareStatement(SQL_UPDATE_ORDER_BY_ID)) {
+        try(PreparedStatement ps = getPrepareStatement(SQL_UPDATE_PAYMENT_BY_ID)) {
 
             ps.setLong(1, payment.getUser().getEntityId());
-            ps.setTimestamp(2, Timestamp.valueOf(payment.getPaymentTime()));
-            ps.setLong(3, payment.getStatus().getEntityId());
-            ps.setLong(4, payment.getEntityId());
+            ps.setLong(2, payment.getBook().getEntityId());
+            ps.setTimestamp(3, Timestamp.valueOf(payment.getPaymentTime()));
+            ps.setDouble(4, payment.getPrice());
+            ps.setLong(5, payment.getEntityId());
 
             int result = ps.executeUpdate();
 
@@ -334,19 +344,22 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
             logger.error(throwables.getMessage(), throwables);
         }
 
-        return optionalOrderToUpdate;
+        return optionalPaymentToUpdate;
     }
 
 
-
-    private List<Book> findAllBooksInThisOrder(long orderId, AbstractDAO<Long, Book> bookDAO) {
+    /**
+     * @param userId user id which is used to find books
+     * @return all faound books, which user has bought
+     */
+    public List<Book> findAllBooksInPayment(long userId) {
         List<Long> bookIds = new ArrayList<>();
 
         ResultSet rs = null;
 
-        try(PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_BOOKS_IN_THIS_ORDER)) {
+        try(PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_BOOKS_IN_PAYMENT)) {
 
-            ps.setLong(1, orderId);
+            ps.setLong(1, userId);
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -365,6 +378,7 @@ public class OrderDAO extends AbstractDAO<Long, Payment> {
         }
 
         List<Book> books = new ArrayList<>();
+        AbstractDAO<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, ConnectionPool.getInstance().getAvailableConnection());
         for (Long bookId : bookIds) {
             Optional<Book> optionalBook = bookDAO.findById(bookId);
             optionalBook.ifPresent(books::add);

@@ -28,7 +28,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/personal_page.css">
     <link rel="stylesheet" type="text/css" href='<c:url value="/styles/popup.css"/>'>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,400,700" rel="stylesheet">
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
+<%--    <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon">--%>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto:700" rel="stylesheet">
@@ -118,10 +118,6 @@
                 <c:forEach var="book" items="${library}">
                     <c:if test="${not empty book.base64Image}">
                     <div id="bookHover-${book.ISBN}" class="col-4" style="flex-basis: 20%"><a href="read_book?isbn=${book.ISBN}">
-
-<%--                     <div id="bookHover-${book.ISBN}" class="col-4" style="flex-basis: 20%"><div id="rb" >--%>
-<%--                         <div id="bookHover-${book.ISBN}" class="col-4" style="flex-basis: 20%"><a href="/home?command=read_book&isbn=${book.ISBN}">--%>
-                            <%--                <img src="../../images/library.jpg">--%>
                             <img src="data:image/jpg;base64,${book.base64Image}">
                             <h4>${book.title}</h4>
                             <p>${book.price}$</p>
@@ -129,25 +125,6 @@
                     </c:if>
                 </c:forEach>
                 </div>
-<%--${pageContext.request.contextPath}/--%>
-                <script>
-                    $(document).ready(function () {
-                        $('#rb').bind('click', function () {
-                            $.ajax({
-                                url: 'http://localhost:8080/read_book',
-                                type: 'GET',
-                                data: ({
-                                    isbn: '${book.ISBN}'
-                                }),
-                                success: function () {
-                                    $('#rowToReload').load(' #rowToReload');
-                                    $('#rowToReload2').load(' #rowToReload2');
-                                    // $('.small-container').load(' .small-container');
-                                }
-                            });
-                        })
-                    })
-                </script>
 
                 <c:if test="${empty library}">
                     <div class="mcontainer" style="box-shadow: none; border: none" align="center">
@@ -156,7 +133,7 @@
                         <br>
                         <p><fmt:message key="no_books_in_library" bundle="${mes}"/></p>
                         <div style="height: 30px"></div>
-                        <a href="/home?command=books" class="btn"><fmt:message key="go_to_store" bundle="${m}"/></a>
+                        <a href="/books" class="btn"><fmt:message key="go_to_store" bundle="${m}"/></a>
                         <div style="height: 50px"></div>
                     </div>
                 </c:if>

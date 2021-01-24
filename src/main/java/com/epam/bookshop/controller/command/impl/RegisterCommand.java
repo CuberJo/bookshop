@@ -1,19 +1,18 @@
 package com.epam.bookshop.controller.command.impl;
 
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.RequestContext;
+import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.domain.impl.Role;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.controller.command.Command;
-import com.epam.bookshop.controller.command.RequestContext;
-import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.MailSender;
-import com.epam.bookshop.constant.UtilStrings;
 import com.epam.bookshop.util.manager.ErrorMessageManager;
 import com.epam.bookshop.validator.Validator;
 import org.slf4j.Logger;
@@ -32,8 +31,6 @@ public class RegisterCommand implements Command {
 
     private static final String REGISTER_USER_SUBJECT = "Registration completed";
     private static final String REGISTER_RESPONSE = "You have successfully registered!";
-
-    private static final String USER_ROLE = "USER";
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
@@ -59,7 +56,7 @@ public class RegisterCommand implements Command {
             MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
 
             session.setAttribute(UtilStrings.LOGIN, login);
-            session.setAttribute(UtilStrings.ROLE, user.getRole().getRole());
+            session.setAttribute(UtilStrings.ROLE, UtilStrings.USER_ROLE);
             session.setAttribute(UtilStrings.NEED_TO_LINK_BANK_ACCOUNT, true);
 
         } catch (ValidatorException e) {
@@ -129,10 +126,7 @@ public class RegisterCommand implements Command {
         EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 
-//        RoleService roleService = (RoleService) ServiceFactory.getInstance().create(EntityType.ROLE);
-//        roleService.find(RoleCriteria.builder().role(ROLE).build());
-
-        User user = new User(name, login, password, email, new Role(1L, USER_ROLE));
+        User user = new User(name, login, password, email, false);
 
         return service.create(user);
     }

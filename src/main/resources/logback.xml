@@ -9,7 +9,7 @@
     </Appender>
 
     <Appender name="InfoFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DIR}/info_log.log</file>
+        <file>${LOG_DIR}/info.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
@@ -19,7 +19,7 @@
             <maxFileSize>1MB</maxFileSize>
         </triggeringPolicy>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>info-logs.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>info-log.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>10</maxHistory>
             <totalSizeCap>50MB</totalSizeCap>
         </rollingPolicy>
@@ -29,7 +29,7 @@
     </Appender>
 
     <Appender name="ErrorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DIR}/error-logs.log</file>
+        <file>${LOG_DIR}/error.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
@@ -39,7 +39,7 @@
             <maxFileSize>1MB</maxFileSize>
         </triggeringPolicy >
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>error-logs.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>10</maxHistory>
             <totalSizeCap>50MB</totalSizeCap>
         </rollingPolicy>

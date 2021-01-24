@@ -5,12 +5,13 @@ import com.epam.bookshop.domain.impl.Payment;
 
 import java.time.LocalDateTime;
 
-public class OrderCriteria extends Criteria<Payment> {
+public class PaymentCriteria extends Criteria<Payment> {
     private Long libraryUserId;
-    private LocalDateTime orderTime;
-    private Long statusId;
+    private Long bookId;
+    private LocalDateTime paymentTime;
+    private Double price;
 
-    public OrderCriteria(Criteria.Builder<? extends Criteria.Builder> builder) {
+    public PaymentCriteria(Criteria.Builder<? extends Criteria.Builder> builder) {
         super(builder);
     }
 
@@ -18,22 +19,27 @@ public class OrderCriteria extends Criteria<Payment> {
         return libraryUserId;
     }
 
-    public LocalDateTime getOrderTime() {
-        return orderTime;
+    public Long getBookId() {
+        return bookId;
     }
 
-    public Long getStatusId() {
-        return statusId;
+    public LocalDateTime getPaymentTime() {
+        return paymentTime;
+    }
+
+    public Double getPrice() {
+        return price;
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder extends Criteria.Builder<OrderCriteria.Builder> {
+    public static class Builder extends Criteria.Builder<PaymentCriteria.Builder> {
         private Long libraryUserId;
-        private LocalDateTime orderTime;
-        private Long statusId;
+        private Long bookId;
+        private LocalDateTime paymnetTime;
+        private Double price;
 
         private Builder() {
 
@@ -44,22 +50,28 @@ public class OrderCriteria extends Criteria<Payment> {
             return this;
         }
 
-
-        public Builder orderTime(LocalDateTime orderTime) {
-            this.orderTime = orderTime;
+        public Builder bookId(Long bookId) {
+            this.bookId = bookId;
             return this;
         }
 
-        public Builder statusId(Long statusId) {
-            this.statusId = statusId;
+
+        public Builder paymentTime(LocalDateTime paymnetTime) {
+            this.paymnetTime = paymnetTime;
             return this;
         }
 
-        public OrderCriteria build() {
-            OrderCriteria criteria = new OrderCriteria(this);
+        public Builder price(Double price) {
+            this.price = price;
+            return this;
+        }
+
+        public PaymentCriteria build() {
+            PaymentCriteria criteria = new PaymentCriteria(this);
             criteria.libraryUserId = libraryUserId;
-            criteria.orderTime = orderTime;
-            criteria.statusId = statusId;
+            criteria.bookId = bookId;
+            criteria.paymentTime = paymnetTime;
+            criteria.price = price;
 
             return criteria;
         }

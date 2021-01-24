@@ -11,8 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ServiceFactory {
 
-    private String locale = "US";
-
     private static ServiceFactory instance;
 
     private static final ReentrantLock LOCK = new ReentrantLock();
@@ -40,6 +38,7 @@ public class ServiceFactory {
 
         EntityService serviceToReturn;
 
+        String locale = "US";
         switch (type) {
             case BOOK:
                 serviceToReturn = new BookService();
@@ -47,14 +46,11 @@ public class ServiceFactory {
             case USER:
                 serviceToReturn = new UserService();
                 break;
-            case ORDER:
-                serviceToReturn = new OrderService();
+            case PAYMENT:
+                serviceToReturn = new PaymentService();
                 break;
             case GENRE:
                 serviceToReturn = new GenreService();
-                break;
-            case ROLE:
-                serviceToReturn = new RoleService();
                 break;
             default:
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_SERVICE_TYPE);

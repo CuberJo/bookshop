@@ -3,33 +3,31 @@ package com.epam.bookshop.domain.impl;
 import com.epam.bookshop.domain.Entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Payment extends Entity {
     private User user;
-    private LocalDateTime orderTime;
-    private Status status;
-    List<Book> orderedBooks = new ArrayList<>();
+    private Book book;
+    private LocalDateTime paymentTime;
+    private double price;
 
     public Payment() {
 
     }
 
-    public Payment(User user, LocalDateTime orderTime, Status status, List<Book> orderedBooks) {
-        this.user = new User(user.getEntityId(), user.getName(), user.getLogin(), user.getPassword(), user.getEmail(), user.getRole(), user.getIBANs());
-        this.orderTime = LocalDateTime.of(orderTime.getYear(), orderTime.getMonthValue(), orderTime.getDayOfMonth(), orderTime.getHour(), orderTime.getMinute(), orderTime.getSecond(), orderTime.getNano());
-        this.status = new Status(status.getEntityId(), status.getStatus());
-        this.orderedBooks.addAll(orderedBooks);
+    public Payment(User user, Book book, LocalDateTime paymentTime, double price) {
+        this.user = new User(user.getEntityId(), user.getName(), user.getLogin(), user.getPassword(), user.getEmail(), user.isAdmin(), user.getIBANs());
+        this.book = new Book(book.getEntityId(), book.getISBN(), book.getTitle(), book.getAuthor(), book.getPrice(), book.getPublisher(), book.getGenre(), book.getPreview());
+        this.paymentTime = LocalDateTime.of(paymentTime.getYear(), paymentTime.getMonthValue(), paymentTime.getDayOfMonth(), paymentTime.getHour(), paymentTime.getMinute(), paymentTime.getSecond(), paymentTime.getNano());
+        this.price = price;
     }
 
-    public Payment(Long entityId, User user, LocalDateTime orderTime, Status  status, List<Book> orderedBooks) {
+    public Payment(Long entityId, User user, Book book, LocalDateTime paymentTime, double price) {
         super(entityId);
-        this.user = new User(user.getEntityId(), user.getName(), user.getLogin(), user.getPassword(), user.getEmail(), user.getRole(), user.getIBANs());
-        this.orderTime = LocalDateTime.of(orderTime.getYear(), orderTime.getMonthValue(), orderTime.getDayOfMonth(), orderTime.getHour(), orderTime.getMinute(), orderTime.getSecond(), orderTime.getNano());
-        this.status = new Status(status.getEntityId(), status.getStatus());
-        this.orderedBooks.addAll(orderedBooks);
+        this.user = new User(user.getEntityId(), user.getName(), user.getLogin(), user.getPassword(), user.getEmail(), user.isAdmin(), user.getIBANs());
+        this.book = new Book(book.getEntityId(), book.getISBN(), book.getTitle(), book.getAuthor(), book.getPrice(), book.getPublisher(), book.getGenre(), book.getPreview());
+        this.paymentTime = LocalDateTime.of(paymentTime.getYear(), paymentTime.getMonthValue(), paymentTime.getDayOfMonth(), paymentTime.getHour(), paymentTime.getMinute(), paymentTime.getSecond(), paymentTime.getNano());
+        this.price = price;
     }
 
     public User getUser() {
@@ -37,41 +35,41 @@ public class Payment extends Entity {
     }
 
     public void setUser(User user) {
-        this.user = new User(user.getEntityId(), user.getName(), user.getLogin(), user.getPassword(), user.getEmail(), user.getRole(), user.getIBANs());
+        this.user = new User(user.getEntityId(), user.getName(), user.getLogin(), user.getPassword(), user.getEmail(), user.isAdmin(), user.getIBANs());
     }
 
-    public LocalDateTime getOrderTime() {
-        return orderTime;
+    public Book getBook() {
+        return book;
     }
 
-    public void setOrderTime(LocalDateTime orderTime) {
-        this.orderTime = LocalDateTime.of(orderTime.getYear(), orderTime.getMonthValue(), orderTime.getDayOfMonth(), orderTime.getHour(), orderTime.getMinute(), orderTime.getSecond(), orderTime.getNano());
+    public void setBook(Book book) {
+        this.book = new Book(book.getEntityId(), book.getISBN(), book.getTitle(), book.getAuthor(), book.getPrice(), book.getPublisher(), book.getGenre(), book.getPreview());
     }
 
-    public Status  getStatus() {
-        return status;
+    public LocalDateTime getPaymentTime() {
+        return paymentTime;
     }
 
-    public void setStatus(Status status) {
-        this.status = new Status(status.getEntityId(), status.getStatus());
+    public void setPaymentTime(LocalDateTime paymentTime) {
+        this.paymentTime = LocalDateTime.of(paymentTime.getYear(), paymentTime.getMonthValue(), paymentTime.getDayOfMonth(), paymentTime.getHour(), paymentTime.getMinute(), paymentTime.getSecond(), paymentTime.getNano());
     }
 
-    public List<Book> getOrderedBooks() {
-        return orderedBooks;
+    public double getPrice() {
+        return price;
     }
 
-    public void setOrderedBooks(List<Book> orderedBooks) {
-        this.orderedBooks.addAll(orderedBooks);
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     @Override
     public String toString() {
-        return "Order{" +
-                "entityId=" + entityId +
-                ", user=" + user +
-                ", orderTime=" + orderTime +
-                ", status=" + status.getStatus() +
-                ", orderedBooks=" + orderedBooks +
+        return "Payment{" +
+                "user=" + user +
+                ", book=" + book +
+                ", orderTime=" + paymentTime +
+                ", price=" + price +
+                ", entityId=" + entityId +
                 '}';
     }
 
@@ -81,14 +79,14 @@ public class Payment extends Entity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Payment payment = (Payment) o;
-        return user.equals(payment.user) &&
-                orderTime.equals(payment.orderTime) &&
-                status.equals(payment.status) &&
-                orderedBooks.equals(payment.orderedBooks);
+        return Double.compare(payment.price, price) == 0 &&
+                user.equals(payment.user) &&
+                book.equals(payment.book) &&
+                paymentTime.equals(payment.paymentTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), user, orderTime, status, orderedBooks);
+        return Objects.hash(super.hashCode(), user, book, paymentTime, price);
     }
 }

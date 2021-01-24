@@ -2,7 +2,9 @@ package com.epam.bookshop.service.impl;
 
 import com.epam.bookshop.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
+import com.epam.bookshop.dao.impl.BookDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
+import com.epam.bookshop.dao.impl.PaymentDAO;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -23,12 +25,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class OrderService implements EntityService<Payment> {
-    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+public class PaymentService implements EntityService<Payment> {
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
     private String locale = "US";
 
-    OrderService() {
+    PaymentService() {
 
     }
 
@@ -44,7 +46,7 @@ public class OrderService implements EntityService<Payment> {
         validator.validate(payment);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
         dao.create(payment);
 
         try {
@@ -59,7 +61,7 @@ public class OrderService implements EntityService<Payment> {
     @Override
     public Collection<Payment> findAll() {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
         List<Payment> payments = dao.findAll();
 
         try {
@@ -78,7 +80,7 @@ public class OrderService implements EntityService<Payment> {
         validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
 
         Collection<Payment> payments = dao.findAll(criteria);
 
@@ -94,7 +96,7 @@ public class OrderService implements EntityService<Payment> {
     @Override
     public Optional<Payment> findById(long id) {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
         Optional<Payment> optionalOrder = dao.findById(id);
 
         try {
@@ -113,7 +115,7 @@ public class OrderService implements EntityService<Payment> {
         validator.validate(criteria);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
         Optional<Payment> optionalOrder = dao.find(criteria);
 
         try {
@@ -132,7 +134,7 @@ public class OrderService implements EntityService<Payment> {
         validator.validate(payment);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
         Optional<Payment> optionalOrder = dao.update(payment);
 
         try {
@@ -147,7 +149,7 @@ public class OrderService implements EntityService<Payment> {
     @Override
     public boolean delete(long id) throws EntityNotFoundException {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        AbstractDAO<Long, Payment> dao = DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
         boolean isDeleted = dao.delete(id);
         if (!isDeleted) {
             String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ORDER_NOT_FOUND) + UtilStrings.WHITESPACE + id;
@@ -170,7 +172,7 @@ public class OrderService implements EntityService<Payment> {
         validator.validate(payment);
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.ORDER, conn);
+        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
         boolean isDeleted = dao.delete(payment.getEntityId());
         if (!isDeleted) {
             String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ORDER_NOT_FOUND) + UtilStrings.WHITESPACE + payment.getEntityId();
@@ -185,4 +187,19 @@ public class OrderService implements EntityService<Payment> {
 
         return isDeleted;
     }
+
+    public List<Book> findAllBooksInPayment(long userId) {
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        PaymentDAO dao = (PaymentDAO) DAOFactory.INSTANCE.create(EntityType.PAYMENT, conn);
+        List<Book> books = dao.findAllBooksInPayment(userId);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return books;
+    }
+
 }

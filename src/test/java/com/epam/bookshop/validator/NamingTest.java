@@ -2,7 +2,6 @@ package com.epam.bookshop.validator;
 
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.Genre;
-import com.epam.bookshop.domain.impl.Role;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import org.testng.annotations.BeforeMethod;
@@ -19,7 +18,7 @@ public class NamingTest {
 
     @Test
     public void validateUser() {
-        User user = new User("agw", "age", "adga", "awgwa@gmail.com", new Role(1L, "awe"));
+        User user = new User("agw", "age", "adga", "awgwa@gmail.com", false);
         try {
             validator.validate(user);
         } catch (ValidatorException e) {

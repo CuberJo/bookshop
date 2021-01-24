@@ -30,17 +30,17 @@
             <div class="footer-col-3">
                 <h3><fmt:message key="label.genres" bundle="${lang}"/></h3>
                 <ul>
-                    <li><a href="/home?command=books&genre=ROMANCE"><fmt:message key="label.romance" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=ACTION_AND_ADVENTURE"><fmt:message key="label.action_and_adventure" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=MYSTERY_AND_THRILLER"><fmt:message key="label.mystery_and_thriller" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=BIOGRAPHIES_AND_HISTORY"><fmt:message key="label.biographies_and_history" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=CHILDREN"><fmt:message key="label.children" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=FANTASY"><fmt:message key="label.fantasy" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=HISTORICAL_FICTION"><fmt:message key="label.historical_fiction" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=HORROR"><fmt:message key="label.horror" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=LITERARY_FICTION"><fmt:message key="label.literary_fiction" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=NON-FICTION"><fmt:message key="label.non-fiction" bundle="${lang}"/></a></li>
-                    <li><a href="/home?command=books&genre=SCIENCE-FICTION"><fmt:message key="label.science-fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=ROMANCE"><fmt:message key="label.romance" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=ACTION_AND_ADVENTURE"><fmt:message key="label.action_and_adventure" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=MYSTERY_AND_THRILLER"><fmt:message key="label.mystery_and_thriller" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=BIOGRAPHIES_AND_HISTORY"><fmt:message key="label.biographies_and_history" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=CHILDREN"><fmt:message key="label.children" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=FANTASY"><fmt:message key="label.fantasy" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=HISTORICAL_FICTION"><fmt:message key="label.historical_fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=HORROR"><fmt:message key="label.horror" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=LITERARY_FICTION"><fmt:message key="label.literary_fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=NON-FICTION"><fmt:message key="label.non-fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/books?genre=SCIENCE-FICTION"><fmt:message key="label.science-fiction" bundle="${lang}"/></a></li>
                 </ul>
             </div>
             <div class="footer-col-4">
@@ -58,7 +58,7 @@
     </div>
 </div>
 
-<script type="text/javascript">
+<script>
     var menuitems = $('#Menuitems');
 
     menuitems.css('max-height', '0px');

@@ -22,8 +22,6 @@ public class BookQueryCreator implements EntityQueryCreator<Book> {
     private static final String PUBLISHER_COLUMN = "Publisher";
     private static final String GENRE_ID_COLUMN = "Genre_Id";
 
-    private static final String locale = "US";
-
     private static final ReentrantLock lock = new ReentrantLock();
 
     private static BookQueryCreator instance;
@@ -51,6 +49,7 @@ public class BookQueryCreator implements EntityQueryCreator<Book> {
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof BookCriteria)) {
+            String locale = "US";
             String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA) + UtilStrings.NEW_LINE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }

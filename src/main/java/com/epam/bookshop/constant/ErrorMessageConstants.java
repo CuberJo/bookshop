@@ -18,6 +18,7 @@ public class ErrorMessageConstants {
     public static final String BOOK_FILE_NOT_FOUND = "book_file_not_found";
 
     public static final String NO_SUCH_GENRE_FOUND = "no_such_genre_found";
+    public static final String NO_SUCH_STATUS_FOUND = "no_such_status_found";
     public static final String NO_SUCH_SERVICE_TYPE = "no_such_service_type";
     public static final String NO_SUCH_DAO_TYPE = "no_such_DAO_type";
 
@@ -47,6 +48,7 @@ public class ErrorMessageConstants {
     public static final String ROLE_INCORRECT = "role_incorrect";
     public static final String STATUS_INCORRECT = "status_incorrect";
     public static final String IBAN_INCORRECT = "iban_incorrect";
+    public static final String FAILED_RECAPTCHA = "failed_recaptcha";
 
     public static final String ERROR_ADD_IBAN_MESSAGE = "error_add_iban_message";
     public static final String ERROR_LOG_MESSAGE = "error_log_message";

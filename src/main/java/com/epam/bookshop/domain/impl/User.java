@@ -20,46 +20,46 @@ public class User extends Entity {
     @Naming(email = true)
     private String email;
 
-    private Role role;
+    private boolean admin;
     private List<String> IBANs = new ArrayList<>();
 
     public User() {
 
     }
 
-    public User(String name, String login, String password, String email, Role role) {
+    public User(String name, String login, String password, String email, boolean admin) {
         this.name = name;
         this.login = login;
         this.password = password;
         this.email = email;
-        this.role = role;
+        this.admin = admin;
     }
 
-    public User(Long entityId, String name, String login, String password, String email, Role role) {
+    public User(Long entityId, String name, String login, String password, String email, boolean admin) {
         super(entityId);
         this.name = name;
         this.login = login;
         this.password = password;
         this.email = email;
-        this.role = role;
+        this.admin = admin;
     }
 
-    public User(String name, String login, String password, String email, Role role, List<String> IBANs) {
+    public User(String name, String login, String password, String email, boolean admin, List<String> IBANs) {
         this.name = name;
         this.login = login;
         this.password = password;
         this.email = email;
-        this.role = new Role(role.getEntityId(), role.getRole());
+        this.admin = admin;
         this.IBANs.addAll(IBANs);
     }
 
-    public User(Long entityId, String name, String login, String password, String email, Role role, List<String> IBANs) {
+    public User(Long entityId, String name, String login, String password, String email, boolean admin, List<String> IBANs) {
         super(entityId);
         this.name = name;
         this.login = login;
         this.password = password;
         this.email = email;
-        this.role = new Role(role.getEntityId(), role.getRole());
+        this.admin = admin;
         this.IBANs.addAll(IBANs);
     }
 
@@ -95,12 +95,12 @@ public class User extends Entity {
         this.email = email;
     }
 
-    public Role getRole() {
-        return role;
+    public boolean isAdmin() {
+        return admin;
     }
 
-    public void setRole(Role role) {
-        this.role = new Role(role.getEntityId(), role.getRole());
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public List<java.lang.String> getIBANs() {
@@ -119,8 +119,8 @@ public class User extends Entity {
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", role=" + role.getRole() +
-                ", IBAN='" + IBANs + '\'' +
+                ", admin=" + admin + '\'' +
+                ", IBANs='" + IBANs + '\'' +
                 '}';
     }
 
@@ -134,12 +134,12 @@ public class User extends Entity {
                 login.equals(user.login) &&
                 password.equals(user.password) &&
                 email.equals(user.email) &&
-                role.equals(user.role) &&
+                admin == user.admin &&
                 IBANs.equals(user.IBANs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name, login, password, email, role, IBANs);
+        return Objects.hash(super.hashCode(), name, login, password, email, admin, IBANs);
     }
 }

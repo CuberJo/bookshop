@@ -11,8 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
 
-    private String locale = "US";
-
     private static ConnectionPool instance;
     private static final ReentrantLock lock = new ReentrantLock();
     private final ReentrantLock lock2 = new ReentrantLock();
@@ -39,7 +37,6 @@ public class ConnectionPool {
     private BlockingQueue<ConnectionProxy> notAvailableConnections;
 
     public void setLocale(String locale) {
-        this.locale = locale;
     }
 
     public void init() {

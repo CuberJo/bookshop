@@ -16,7 +16,6 @@ public class GenreQueryCreator implements EntityQueryCreator<Genre> {
     private static final String GENRE_ID_COLUMN = "Id";
     private static final String GENRE_COLUMN = "Genre";
 
-    private static final String locale = "US";
     private static final String INCOMPATIBLE_TYPE_OF_CRITERIA = "incompatible_type_of_criteria";
 
     private static final ReentrantLock lock = new ReentrantLock();
@@ -45,6 +44,7 @@ public class GenreQueryCreator implements EntityQueryCreator<Genre> {
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof GenreCriteria)) {
+            String locale = "US";
             String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA)
                     + UtilStrings.WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);

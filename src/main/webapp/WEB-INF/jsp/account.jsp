@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
 
@@ -20,11 +20,32 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Books - Bookstore</title>
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="../../styles/account.css">
     <link rel="stylesheet" type="text/css" href="/styles/home.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<%--    <script src="https://www.google.com/recaptcha/api.js" async defer></script>--%>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<%--    <script>--%>
+<%--        function onSubmit(token) {--%>
+<%--            if (validateLoginForm(event)) {--%>
+<%--                document.getElementById("LoginForm").submit();--%>
+<%--            }--%>
+<%--        }--%>
+<%--    </script>--%>
+
+
+    <script type="text/javascript">
+        var onloadCallback = function() {
+            grecaptcha.render('html_element', {
+                'sitekey' : '6LfLHzYaAAAAAHTl9Fe3pbqnQeIXQ3fNcqE-ePKd'
+            });
+            grecaptcha.render('html_element2', {
+                'sitekey' : '6LfLHzYaAAAAAHTl9Fe3pbqnQeIXQ3fNcqE-ePKd'
+            });
+        };
+    </script>
 </head>
 
 <body>
@@ -50,6 +71,11 @@
                     </div>
 
                     <form id="LoginForm" method="post" action="/home?command=login">
+                        <pre id="errorLogMessage" style="color: #ff523b"></pre>
+                        <c:if test="${not empty error_log_message}">
+                            <pre style="color: #ff523b">${error_log_message}</pre>
+                            <c:remove var="error_log_message" scope="session" />
+                        </c:if>
                         <c:set var="login">
                             <fmt:message key="label.login" bundle="${lang}"/>
                         </c:set>
@@ -58,15 +84,21 @@
                             <fmt:message key="label.password" bundle="${lang}"/>
                         </c:set>
                         <input type="password" name="password" placeholder="${pass}">
-                        <pre id="errorLogMessage" style="color: #ff523b; height: 10px"></pre>
-                        <c:if test="${not empty error_log_message}">
-                            <br><pre style="color: #ff523b">${error_log_message}</pre><br>
-                            <c:remove var="error_log_message" scope="session" />
-                        </c:if>
+
+
+<%--                        <button type="submit"--%>
+<%--                                class="recaptcha" data-sitekey="6LfLHzYaAAAAAHTl9Fe3pbqnQeIXQ3fNcqE-ePKd" data-callback="onSubmit"--%>
+<%--                                class="btn"><fmt:message key="label.sign_in_btn" bundle="${lang}"/></button>--%>
+                        <div style="transform:scale(0.85); transform-origin:0;" id="html_element"></div>
                         <button type="submit" onclick="return validateLoginForm(event)" class="btn"><fmt:message key="label.sign_in_btn" bundle="${lang}"/></button>
                         <a href="/home?command=forgot_password"><fmt:message key="label.forgot_password" bundle="${lang}"/></a>
                     </form>
                     <form id="RegForm" method="post" action="/home?command=register">
+                        <pre id="errorRegMessage" style="color: #ff523b"></pre>
+                        <c:if test="${not empty error_reg_message}">
+                            <pre style="color: #ff523b; height: 20px">${error_reg_message}</pre>
+                            <c:remove var="error_reg_message" scope="session" />
+                        </c:if>
                         <c:set var="name">
                             <fmt:message key="label.name" bundle="${lang}"/>
                         </c:set>
@@ -80,14 +112,30 @@
                             <fmt:message key="label.password" bundle="${lang}"/>
                         </c:set>
                         <input type="password" name="password" placeholder="${pass}">
-                        <pre id="errorRegMessage" style="color: #ff523b"></pre>
-                        <c:if test="${not empty error_reg_message}">
-                            <pre style="color: #ff523b; height: 20px">${error_reg_message}</pre>
-                            <c:remove var="error_reg_message" scope="session" />
-                        </c:if>
+
+                        <div style="transform:scale(0.85); transform-origin:0;" id="html_element2"></div>
+
                         <button type="submit" onclick="return validateRegisterForm(event)" class="btn"><fmt:message key="label.sign_up_btn" bundle="${lang}"/></button>
 <%--                        <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=register"><fmt:message key="label.sign_up_btn" bundle="${lang}"/></button>--%>
                     </form>
+<%--                    <div id='recaptcha' class="g-recaptcha"--%>
+<%--                         data-sitekey="6LfLHzYaAAAAAHTl9Fe3pbqnQeIXQ3fNcqE"--%>
+<%--&lt;%&ndash;                         data-callback="onSubmit"&ndash;%&gt;--%>
+<%--                         data-size="invisible"></div>--%>
+
+<%--                    <div id='recaptcha' class="g-recaptcha"--%>
+<%--                         data-sitekey="6LfLHzYaAAAAAHTl9Fe3pbqnQeIXQ3fNcqE-ePKd"--%>
+<%--                    &lt;%&ndash;                         data-callback="onSubmit"&ndash;%&gt;--%>
+<%--                         data-size="invisible"></div>--%>
+
+                    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+                            async defer>
+                    </script>
+<%--                    <div class="g-recaptcha"--%>
+<%--                         data-sitekey=&lt;%&ndash;"6LeMOTYaAAAAACydRxKNWXqz25PSNXfiOzFDuXfR" &ndash;%&gt;"6LfLHzYaAAAAAHTl9Fe3pbqnQeIXQ3fNcqE-ePKd"--%>
+<%--                    &lt;%&ndash;                             data-callback="onSubmit"&ndash;%&gt;--%>
+<%--                         data-size="invisible">--%>
+<%--                    </div>--%>
                 </div>
             </div>
         </div>
@@ -160,6 +208,9 @@
         }
 
         // window.location = "/home?command=login"
+
+        // grecaptcha.execute();
+
         return true;
     }
 </script>

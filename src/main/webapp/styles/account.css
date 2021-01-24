@@ -28,8 +28,11 @@
     max-width: 300px;
     padding: 0 20px;
     position: absolute;
-    top: 130px;
+    top: 100px;
     transition: transform 1s;
+}
+#RegForm {
+    top: 70px;
 }
 form input {
     width: 100%;
