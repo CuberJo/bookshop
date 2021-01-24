@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.epam.bookshop.constant.UtilStrings.BOOKS;
+import static com.epam.bookshop.constant.UtilStrings.USER_AGENT;
 
 /**
  * Fetches books from database
@@ -56,6 +57,14 @@ public class BooksController extends HttpServlet {
 //            return;
 //        }
 
+        String count = req.getParameter(UtilStrings.COUNT);
+        if (Objects.nonNull(count) && !count.isEmpty()) {
+            int rows = countBooks(locale);
+            resp.setContentType(UtilStrings.TEXT_PLAIN);
+            req.setCharacterEncoding(UtilStrings.UTF8);
+            resp.getWriter().write(String.valueOf(rows));
+            return;
+        }
 
         int start = 1;
         String pageStr = req.getParameter(UtilStrings.PAGE);
@@ -79,7 +88,7 @@ public class BooksController extends HttpServlet {
 //        if (!filtered) {
         String genreName = decode(req.getParameter(UtilStrings.GENRE));
         Collection<Book> books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
-        resp.setContentType("application/json");
+        resp.setContentType(UtilStrings.APPLICATION_JSON);
         req.setCharacterEncoding(UtilStrings.UTF8);
         String jsonStrings = JSONHelper.getInstance().write(books);
         resp.getWriter().write(jsonStrings);
@@ -143,6 +152,15 @@ public class BooksController extends HttpServlet {
 //            resp.sendRedirect("/home?command=books");
 //        }
     }
+
+
+    private int countBooks(String locale) {
+        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
+        service.setLocale(locale);
+
+        return service.count();
+    }
+
 
     /**
      * Decodes encoded  string

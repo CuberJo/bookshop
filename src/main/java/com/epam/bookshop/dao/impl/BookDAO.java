@@ -40,6 +40,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             "FROM TEST_LIBRARY.BOOK " +
             "WHERE Id = ?";
 
+    private static final String SQL_SELECT_COUNT_ALL = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.BOOK;";
+
     private static final String SQL_SELECT_IMG_BY_ISBN = "SELECT Image from TEST_LIBRARY.BOOK_IMAGE WHERE ISBN = ?;";
     private static final String SQL_INSERT_IMG = "INSERT INTO TEST_LIBRARY.BOOK_IMAGE (ISBN, Image) VALUES (?, ?)";
 
@@ -56,6 +58,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String PREVIEW_COLUMN = "Preview";
     private static final String IMAGE_COLUMN = "Image";
     private static final String FILE_COLUMN = "FIle";
+    private static final String NUM_COLUMN = "Num";
+
 
     private final String locale = "US";
 
@@ -583,5 +587,25 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         }
 
         return books;
+    }
+
+
+    /**
+     * @return number of rows in BOOKS table
+     */
+    public int count() {
+        int rows = 0;
+
+        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_COUNT_ALL);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                rows = rs.getInt(NUM_COLUMN);
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return rows;
     }
 }

@@ -345,4 +345,22 @@ public class BookService implements EntityService<Book> {
 
         return books;
     }
+
+    /**
+     * @return number of rows in BOOKS table
+     */
+    public int count() {
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        int rows = dao.count();
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return rows;
+    }
 }

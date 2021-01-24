@@ -21,14 +21,11 @@ import com.epam.bookshop.util.manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpSession;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-
-import static com.epam.bookshop.constant.UtilStrings.BOOKS;
 
 public class BooksCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(BooksCommand.class);

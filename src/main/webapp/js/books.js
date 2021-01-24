@@ -1,22 +1,18 @@
-let pageNum = 1;
-$('.page-num').text(pageNum);
 
-// $(function() { // on page load
-//     $('select').on("change", function() {
-//         let sortAttr = $('option:selected', this).attr('id');
-//         $.get('http://localhost:8080/sort?sort=' +
-//             sortAttr, function(responseText) {
-//             $("#mydiv").text(responseText);           // Locate HTML DOM element with ID "somediv" and set its text content with the response text.
-//         });
-//         // $('#mydiv').load('http://localhost:8080/sort?sort=' +
-//         //     sortAttr +
-//         //     ' #mydiv'); // copy myDiv from the result
-//
-//     });
-// })
+let pageNum = 1;
+const booksPerPage = 8;
+let booksQuantity;
+$('.page-num').text(' ' + pageNum);
+
+hidePrev();
 
 let books;
 
+
+/**
+ * Fetches data from server
+ * @param {number} pageNumber
+ */
 function fetchData(pageNumber) {
     if (pageNumber == null) {
         pageNumber = 1
@@ -32,15 +28,55 @@ function fetchData(pageNumber) {
             render(books);
             // $("#toR").load(" #toR");
             // $('#mydiv').load('http://localhost:8080/books' + ' #mydiv');
+            // or
+            // $('.small-container').load(' .small-container');
+            // $('.page-num').text(pageNum);
         }
     });
 }
 
+почему все равно виден след prev элемент
+
+/**
+ * Fetches books quantity
+ */
+function fetchBooksQuantity() {
+    let needCount = 1;
+
+    $.ajax({
+        url: 'http://localhost:8080/books',
+        type: 'GET',
+        data: ({count: needCount}),
+        success: function (rows) {
+            booksQuantity = rows;
+            console.log('rows: ' + rows);
+            if (booksQuantity < booksPerPage) {
+                hideNext();
+            }
+            fetchData(1)
+        }
+    });
+}
+
+
+
+
+/**
+ * When fetches data from server when document is ready
+ */
 $(document).ready(function () {
-    fetchData(1);
+    // fetchData(1);
+    fetchBooksQuantity();
 })
 
 
+
+
+
+/**
+ * Renders JSON string on page
+ * @param books
+ */
 function render(books) {
     console.log(books);
 
@@ -49,7 +85,7 @@ function render(books) {
         $.each(books, function (index, el) {
             if (el.base64Image != null && el.base64Image !== "") {
                 let block = '<div class="col-4" style="flex-basis: 25%"><a href="/home?command=book_details&isbn=' + el.isbn + '">' +
-                            '<img src="data:image/jpg;base64,' + el.base64Image + '">' +
+                            '<img height="" src="data:image/jpg;base64,' + el.base64Image + '">' +
                             '<h4>' + el.title + '</h4>' +
                             '<p>' + el.price + '&#36;</p>' +
                             '</a></div>';
@@ -94,91 +130,105 @@ function render(books) {
     }
 }
 
-$('select').change(function () {
-    $( "select option:selected" ).each(function() {
-        let sortAttr = $('option:selected').attr('id');
-
-        switch (sortAttr) {
-            case 'price':
-                books.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0));
-                console.log('price');
-                break;
-            case 'author':
-                books.sort((a,b) => (a.author > b.author) ? 1 : ((b.author > a.author) ? -1 : 0));
-                console.log('author');
-                break;
-            default:
-                books.sort(() => Math.random() - 0.5);
-                console.log('default');
-                break;
-        }
-
-        render(books);
-
-        // $.ajax({
-        //     url: 'http://localhost:8080/sort',
-        //     type: 'GET',
-        //     data: ({sort: sortAttr}),
-        //     success: function (jsonStr) {
-        //         $('#mydiv').append('<p>' + jsonStr + '</p>>');
-        //         // $("#toR").load(" #toR");
-        //
-        //
-        //         // $('#mydiv').load('http://localhost:8080/books' + ' #mydiv');
-        //         console.log(location.href)
-        //     }
-        // });
-    })
-});
 
 
 
 
+/**
+ * Binding buttons with actions
+ */
 $(document).ready(function () {
     $('.prev').bind('click', function () {
-        pageNum--;
-        $.ajax({
-            url: 'http://localhost:8080/books',
-            type: 'GET',
-            data: ({page: pageNum}),
-            success: function () {
-                $('.small-container').load(' .small-container');
-                $('.page-num').text(pageNum);
-            }
-        });
+        if (--pageNum > 0) {
+            $.ajax({
+                url: 'http://localhost:8080/books',
+                type: 'GET',
+                data: ({page: pageNum}),
+                success: function (jsonStr) {
+                    books = jsonStr;
+                    $('#toInsert').empty();
+                    render(books);
+                    $('.page-num').text(' ' + pageNum);
+
+                    if ((pageNum * booksPerPage + 1) < booksQuantity) {
+                        showNext();
+                    }
+                }
+            });
+        } else {
+            pageNum++;
+            hidePrev();
+        }
     });
     $('.next').bind('click', function () {
-        pageNum++;
-        $.ajax({
-            url: 'http://localhost:8080/books',
-            type: 'GET',
-            data: ({page: pageNum}),
-            success: function () {
-                $('.small-container').load(' .small-container');
-                $('.page-num').text(pageNum);
-            }
-        });
+        if ((pageNum * booksPerPage + 1) < booksQuantity) {
+            $.ajax({
+                url: 'http://localhost:8080/books',
+                type: 'GET',
+                data: ({page: ++pageNum}),
+                success: function (jsonStr) {
+                    books = jsonStr;
+                    $('#toInsert').empty();
+                    render(books);
+                    $('.page-num').text(' ' + pageNum);
+                    if (pageNum > 0) {
+                        showPrev();
+                    }
+                }
+            });
+        } else {
+            hideNext();
+        }
     });
 
-    // $('select').change(function () {
-    //     $( "select option:selected" ).each(function() {
-    //         let sortAttr = $('option:selected').attr('id');
-    //         console.log(sortAttr);
-    //         $.ajax({
-    //             url: 'http://localhost:8080/sort',
-    //             type: 'GET',
-    //             data: ({sort: sortAttr}),
-    //             success: function () {
-    //                 // $("#mydiv").load(location.href+" #mydiv>*","");
-    //                 // $('#mydiv').load(location.href + ' #mydiv');
-    //                 // $("#mydiv").load(" #mydiv");
-    //                 $("#toR").load(" #toR");
-    //
-    //
-    //                 // $('#mydiv').load('http://localhost:8080/books' + ' #mydiv');
-    //                 console.log(location.href)
-    //             }
-    //         });
-    //     })
-    // });
+    $('select').change(function () {
+        $( "select option:selected" ).each(function() {
+            let sortAttr = $('option:selected').attr('id');
+
+            switch (sortAttr) {
+                case 'price':
+                    books.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0));
+                    console.log('price');
+                    break;
+                case 'author':
+                    books.sort((a,b) => (a.author > b.author) ? 1 : ((b.author > a.author) ? -1 : 0));
+                    console.log('author');
+                    break;
+                default:
+                    books.sort(() => Math.random() - 0.5);
+                    console.log('default');
+                    break;
+            }
+
+            $('#toInsert').empty();
+            render(books);
+        })
+    });
 })
+
+
+
+
+function hideNext() {
+    $('.next').css('border-color', 'gray');
+    $('.next').css('color', 'gray');
+    $('.next').css('pointer-events', 'none');
+}
+
+function showNext() {
+    $('.next').css('color', '#000');
+    $('.next').css('border-color', '#000');
+    $('.next').css('cursor', 'pointer');
+}
+
+function hidePrev() {
+    $('.prev').css('border-color', 'gray');
+    $('.prev').css('color', 'gray');
+    $('.prev').css('pointer-events', 'none');
+}
+
+function showPrev() {
+    $('.prev').css('color', '#000');
+    $('.prev').css('border-color', '#000');
+    $('.prev').css('cursor', 'pointer');
+}

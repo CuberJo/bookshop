@@ -33,12 +33,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <!--  -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<%--    <script>--%>
-<%--        $(document).ready(function () {--%>
-<%--            let locale = '${sessionScope.locale}';--%>
-<%--        })--%>
-<%--    </script>--%>
-
 </head>
 
 
@@ -110,144 +104,70 @@
 
 <script src="../../js/books.js"></script>
 
+
 <script>
-    <%--let pageNum = 1;--%>
-    <%--$('.page-num').text(pageNum);--%>
 
-    <%--// $(function() { // on page load--%>
-    <%--//     $('select').on("change", function() {--%>
-    <%--//         let sortAttr = $('option:selected', this).attr('id');--%>
-    <%--//         $.get('http://localhost:8080/sort?sort=' +--%>
-    <%--//             sortAttr, function(responseText) {--%>
-    <%--//             $("#mydiv").text(responseText);           // Locate HTML DOM element with ID "somediv" and set its text content with the response text.--%>
-    <%--//         });--%>
-    <%--//         // $('#mydiv').load('http://localhost:8080/sort?sort=' +--%>
-    <%--//         //     sortAttr +--%>
-    <%--//         //     ' #mydiv'); // copy myDiv from the result--%>
-    <%--//--%>
-    <%--//     });--%>
-    <%--// })--%>
+    const bookItems=document.querySelector(".mrow .row").children;
+    const prev=document.querySelector(".prev");
+    const next=document.querySelector(".next");
+    const page=document.querySelector(".page-num");
+    const maxItem=8;
+    let index=1;
 
-    <%--$(document).ready(function () {--%>
-    <%--    $('.prev').bind('click', function () {--%>
-    <%--        pageNum--;--%>
-    <%--        $.ajax({--%>
-    <%--            url: 'http://localhost:8080/books',--%>
-    <%--            type: 'GET',--%>
-    <%--            data: ({page: pageNum}),--%>
-    <%--            success: function () {--%>
-    <%--                $('.small-container').load(' .small-container');--%>
-    <%--                $('.page-num').text(pageNum);--%>
-    <%--            }--%>
-    <%--        });--%>
-    <%--    });--%>
-    <%--    $('.next').bind('click', function () {--%>
-    <%--        pageNum++;--%>
-    <%--        $.ajax({--%>
-    <%--            url: 'http://localhost:8080/books',--%>
-    <%--            type: 'GET',--%>
-    <%--            data: ({page: pageNum}),--%>
-    <%--            success: function () {--%>
-    <%--                $('.small-container').load(' .small-container');--%>
-    <%--                $('.page-num').text(pageNum);--%>
-    <%--            }--%>
-    <%--        });--%>
-    <%--    });--%>
+    <%--const bookLength = ${requestScope.booksLength};--%>
+    const pagination = Math.ceil(bookItems.length/maxItem);
+    console.log(pagination)
 
-    <%--    $('select').change(function () {--%>
-    <%--        $( "select option:selected" ).each(function() {--%>
-    <%--            let sortAttr = $('option:selected').attr('id');--%>
-    <%--            console.log(sortAttr);--%>
-    <%--            $.ajax({--%>
-    <%--                url: 'http://localhost:8080/sort',--%>
-    <%--                type: 'GET',--%>
-    <%--                data: ({sort: sortAttr}),--%>
-    <%--                success: function () {--%>
-    <%--                    // $("#mydiv").load(location.href+" #mydiv>*","");--%>
-    <%--                    // $('#mydiv').load(location.href + ' #mydiv');--%>
-    <%--                    // $("#mydiv").load(" #mydiv");--%>
-    <%--                    $("#toR").load(" #toR");--%>
+    prev.addEventListener("click",function(){
+        index--;
+        check();
+        showItems();
+    })
+    next.addEventListener("click",function(){
+        index++;
+        check();
+        showItems();
+    })
+
+    function check(){
+        if(index==pagination){
+            next.classList.add("disabled");
+        }
+        else{
+            next.classList.remove("disabled");
+        }
+
+        if(index==1){
+            prev.classList.add("disabled");
+        }
+        else{
+            prev.classList.remove("disabled");
+        }
+    }
+
+    function showItems() {
+        for(let i = 0;i < bookItems.length; i++){
+            bookItems[i].classList.remove("show");
+            bookItems[i].classList.add("hide");
 
 
-    <%--                    // $('#mydiv').load('http://localhost:8080/books' + ' #mydiv');--%>
-    <%--                    console.log(location.href)--%>
-    <%--                    &lt;%&ndash;for (let i = 0; i < ${booksLength}; ++i) {&ndash;%&gt;--%>
-    <%--                    &lt;%&ndash;    console.log(i);&ndash;%&gt;--%>
-    <%--                    &lt;%&ndash;}&ndash;%&gt;--%>
-    <%--                }--%>
-    <%--            });--%>
-    <%--        })--%>
-    <%--    });--%>
-    <%--})--%>
-    // $('.row').load(' .row');
-    // $('.mrow .row').load(' .mrow.row');
-    // $('.small-container').css({'display': 'block'});
+            if(i >= (index * maxItem) - maxItem && i < index * maxItem) {
 
+
+                bookItems[i].classList.remove("hide");
+                bookItems[i].classList.add("show");
+            }
+            page.innerHTML=index;
+        }
+
+
+    }
+
+    window.onload=function(){
+        showItems();
+        check();
+    }
 </script>
-
-<%--<script>--%>
-
-<%--    const bookItems=document.querySelector(".mrow .row").children;--%>
-<%--    const prev=document.querySelector(".prev");--%>
-<%--    const next=document.querySelector(".next");--%>
-<%--    const page=document.querySelector(".page-num");--%>
-<%--    const maxItem=8;--%>
-<%--    let index=1;--%>
-
-<%--    &lt;%&ndash;const bookLength = ${requestScope.booksLength};&ndash;%&gt;--%>
-<%--    const pagination = Math.ceil(bookItems.length/maxItem);--%>
-<%--    console.log(pagination)--%>
-
-<%--    prev.addEventListener("click",function(){--%>
-<%--        index--;--%>
-<%--        check();--%>
-<%--        showItems();--%>
-<%--    })--%>
-<%--    next.addEventListener("click",function(){--%>
-<%--        index++;--%>
-<%--        check();--%>
-<%--        showItems();--%>
-<%--    })--%>
-
-<%--    function check(){--%>
-<%--        if(index==pagination){--%>
-<%--            next.classList.add("disabled");--%>
-<%--        }--%>
-<%--        else{--%>
-<%--            next.classList.remove("disabled");--%>
-<%--        }--%>
-
-<%--        if(index==1){--%>
-<%--            prev.classList.add("disabled");--%>
-<%--        }--%>
-<%--        else{--%>
-<%--            prev.classList.remove("disabled");--%>
-<%--        }--%>
-<%--    }--%>
-
-<%--    function showItems() {--%>
-<%--        for(let i = 0;i < bookItems.length; i++){--%>
-<%--            bookItems[i].classList.remove("show");--%>
-<%--            bookItems[i].classList.add("hide");--%>
-
-
-<%--            if(i >= (index * maxItem) - maxItem && i < index * maxItem) {--%>
-
-
-<%--                bookItems[i].classList.remove("hide");--%>
-<%--                bookItems[i].classList.add("show");--%>
-<%--            }--%>
-<%--            page.innerHTML=index;--%>
-<%--        }--%>
-
-
-<%--    }--%>
-
-<%--    window.onload=function(){--%>
-<%--        showItems();--%>
-<%--        check();--%>
-<%--    }--%>
-<%--</script>--%>
 
 </body>
 </html>

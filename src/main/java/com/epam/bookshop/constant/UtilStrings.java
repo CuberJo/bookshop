@@ -43,10 +43,14 @@ public class UtilStrings {
     public static final String USER_AGENT = "User-Agent";
     public static final String MOZILA_AGENT = "Mozilla/5.0";
     public static final String ACCEPT_LANG = "Accept-Language";
+    public static final String APPLICATION_JSON = "application/json";
+    public static final String TEXT_PLAIN = "text/plain";
     public static final String EN_LAND_DATA = "en-US,en;q=0.5";
     public static final String SUCCESS = "success";
 
     public static final String PAGE = "page";
+    public static final String COUNT = "count";
+
 
     public static final String SORT = "sort";
     public static final String BY_PRICE = "price";
