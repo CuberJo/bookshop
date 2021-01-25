@@ -107,66 +107,66 @@
 
 <script>
 
-    const bookItems=document.querySelector(".mrow .row").children;
-    const prev=document.querySelector(".prev");
-    const next=document.querySelector(".next");
-    const page=document.querySelector(".page-num");
-    const maxItem=8;
-    let index=1;
+    <%--const bookItems=document.querySelector(".mrow .row").children;--%>
+    <%--const prev=document.querySelector(".prev");--%>
+    <%--const next=document.querySelector(".next");--%>
+    <%--const page=document.querySelector(".page-num");--%>
+    <%--const maxItem=8;--%>
+    <%--let index=1;--%>
 
-    <%--const bookLength = ${requestScope.booksLength};--%>
-    const pagination = Math.ceil(bookItems.length/maxItem);
-    console.log(pagination)
+    <%--&lt;%&ndash;const bookLength = ${requestScope.booksLength};&ndash;%&gt;--%>
+    <%--const pagination = Math.ceil(bookItems.length/maxItem);--%>
+    <%--console.log(pagination)--%>
 
-    prev.addEventListener("click",function(){
-        index--;
-        check();
-        showItems();
-    })
-    next.addEventListener("click",function(){
-        index++;
-        check();
-        showItems();
-    })
+    <%--prev.addEventListener("click",function(){--%>
+    <%--    index--;--%>
+    <%--    check();--%>
+    <%--    showItems();--%>
+    <%--})--%>
+    <%--next.addEventListener("click",function(){--%>
+    <%--    index++;--%>
+    <%--    check();--%>
+    <%--    showItems();--%>
+    <%--})--%>
 
-    function check(){
-        if(index==pagination){
-            next.classList.add("disabled");
-        }
-        else{
-            next.classList.remove("disabled");
-        }
+    <%--function check(){--%>
+    <%--    if(index==pagination){--%>
+    <%--        next.classList.add("disabled");--%>
+    <%--    }--%>
+    <%--    else{--%>
+    <%--        next.classList.remove("disabled");--%>
+    <%--    }--%>
 
-        if(index==1){
-            prev.classList.add("disabled");
-        }
-        else{
-            prev.classList.remove("disabled");
-        }
-    }
+    <%--    if(index==1){--%>
+    <%--        prev.classList.add("disabled");--%>
+    <%--    }--%>
+    <%--    else{--%>
+    <%--        prev.classList.remove("disabled");--%>
+    <%--    }--%>
+    <%--}--%>
 
-    function showItems() {
-        for(let i = 0;i < bookItems.length; i++){
-            bookItems[i].classList.remove("show");
-            bookItems[i].classList.add("hide");
-
-
-            if(i >= (index * maxItem) - maxItem && i < index * maxItem) {
+    <%--function showItems() {--%>
+    <%--    for(let i = 0;i < bookItems.length; i++){--%>
+    <%--        bookItems[i].classList.remove("show");--%>
+    <%--        bookItems[i].classList.add("hide");--%>
 
 
-                bookItems[i].classList.remove("hide");
-                bookItems[i].classList.add("show");
-            }
-            page.innerHTML=index;
-        }
+    <%--        if(i >= (index * maxItem) - maxItem && i < index * maxItem) {--%>
 
 
-    }
+    <%--            bookItems[i].classList.remove("hide");--%>
+    <%--            bookItems[i].classList.add("show");--%>
+    <%--        }--%>
+    <%--        page.innerHTML=index;--%>
+    <%--    }--%>
 
-    window.onload=function(){
-        showItems();
-        check();
-    }
+
+    <%--}--%>
+
+    <%--window.onload=function(){--%>
+    <%--    showItems();--%>
+    <%--    check();--%>
+    <%--}--%>
 </script>
 
 </body>

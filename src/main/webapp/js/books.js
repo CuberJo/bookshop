@@ -35,7 +35,7 @@ function fetchData(pageNumber) {
     });
 }
 
-почему все равно виден след prev элемент
+// почему все равно виден след prev элемент
 
 /**
  * Fetches books quantity
@@ -138,7 +138,15 @@ function render(books) {
  * Binding buttons with actions
  */
 $(document).ready(function () {
+    // // $('.prev').bind('click', function () {
+    // //     console.log('bind')
+    // // });
+    // $('.prev').on('click', function () {
+    //     console.log('bind');
+    // });
+
     $('.prev').bind('click', function () {
+        console.log('hi')
         if (--pageNum > 0) {
             $.ajax({
                 url: 'http://localhost:8080/books',
@@ -152,6 +160,9 @@ $(document).ready(function () {
 
                     if ((pageNum * booksPerPage + 1) < booksQuantity) {
                         showNext();
+                    }
+                    if (pageNum - 1 === 0 ) {
+                        hidePrev();
                     }
                 }
             });
@@ -173,6 +184,9 @@ $(document).ready(function () {
                     $('.page-num').text(' ' + pageNum);
                     if (pageNum > 0) {
                         showPrev();
+                    }
+                    if (pageNum * booksPerPage >= booksQuantity) {
+                        hideNext();
                     }
                 }
             });
@@ -219,6 +233,7 @@ function showNext() {
     $('.next').css('color', '#000');
     $('.next').css('border-color', '#000');
     $('.next').css('cursor', 'pointer');
+    $('.next').css('pointer-events', 'auto');
 }
 
 function hidePrev() {
@@ -231,4 +246,5 @@ function showPrev() {
     $('.prev').css('color', '#000');
     $('.prev').css('border-color', '#000');
     $('.prev').css('cursor', 'pointer');
+    $('.prev').css('pointer-events', 'auto');
 }
