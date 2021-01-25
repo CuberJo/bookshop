@@ -53,13 +53,32 @@
                 <li><a href="/home?command=search&from=${param.command}"><fmt:message key="label.search_book" bundle="${lang}"/></a></li>
                 <c:choose>
                     <c:when test="${not empty sessionScope.role}">
-                        <li><a href="/home?command=logout"><fmt:message key="label.log_out" bundle="${lang}"/></a></li>
+                        <li><a href="/home?command=personal_page"><fmt:message key="label.account" bundle="${lang}"/></a></li>
                     </c:when>
                     <c:when test="${empty sessionScope.role}">
                         <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
                     </c:when>
                 </c:choose>
-                <li style="font-weight: bold"><a href="/home?command=change_locale&locale=RU&from=${param.command}&isbn=${book.ISBN}">RU</a> | <a href="/home?command=change_locale&locale=RN&from=${param.command}&isbn=${book.ISBN}">EN</a></li>
+<%--                <li style="font-weight: bold"><a href="/home?command=change_locale&locale=RU&from=${param.command}&isbn=${book.ISBN}">RU</a> | <a href="/home?command=change_locale&locale=RN&from=${param.command}&isbn=${book.ISBN}">EN</a></li>--%>
+                <li style="font-weight: bold">
+                    <form method="post" action="/home">
+                        <input type='hidden' name='command' value="change_locale">
+                        <input type='hidden' name='locale' value="RU">
+                        <input type='hidden' name='from' value="${param.command}">
+                        <input type='hidden' name='isbn' value="${param.ISBN}">
+
+                        <button class="localeBtn" type="submit">RU</button>
+                    </form>
+                    |
+                    <form method="post" action="/home">
+                        <input type='hidden' name='command' value="change_locale">
+                        <input type='hidden' name='locale' value="US">
+                        <input type='hidden' name='from' value="${param.command}">
+                        <input type='hidden' name='isbn' value="${book.ISBN}">
+
+                        <button class="localeBtn" type="submit">US</button>
+                    </form>
+                </li>
             </ul>
         </nav>
         <c:if test="${not empty sessionScope.login}">
@@ -192,7 +211,7 @@
             <img src="data:image/jpg;base64,${book.base64Image}" width="100%" id="book-img">
         </div>
         <div class="col-2">
-            <p><fmt:message key="label.genre" bundle="${lang}"/> / <a href="/books?genre=${book.genre.genre}&page=1"><fmt:message key="label.${book.genre.genre}" bundle="${lang}"/></a></p>
+            <p><fmt:message key="label.genre" bundle="${lang}"/> / <a href="/home?command=books&genre=${book.genre.genre}&page=1"><fmt:message key="label.${book.genre.genre}" bundle="${lang}"/></a></p>
             <h1>${book.title}</h1>
             <h4>$${book.price}</h4>
             <c:set var="book_to_cart" scope="session" value="${book}"/>
@@ -213,7 +232,7 @@
 <%--            </c:choose>--%>
             <c:choose>
                 <c:when test="${contains}">
-                    <a href="/home?command=read_book&isbn=${book.ISBN}" class="btn"><fmt:message key="label.read" bundle="${lang}"/></a>
+                    <a href="read_book?isbn=${book.ISBN}" class="btn"><fmt:message key="label.read" bundle="${lang}"/></a>
                 </c:when>
                 <c:otherwise>
                     <button id="add" style="cursor: pointer; outline: none; border: none" type="submit" class="btn"><fmt:message key="label.add_to_cart" bundle="${lang}"/></button>

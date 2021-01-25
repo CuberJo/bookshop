@@ -21,10 +21,11 @@ function fetchData(pageNumber) {
     $.ajax({
         url: 'http://localhost:8080/books',
         type: 'GET',
-        data: ({page: pageNumber}),
+        data: ({page: pageNumber, genre: $('#genre').text()}),
         success: function (jsonStr) {
             // books = JSON.parse(jsonStr);
             books = jsonStr;
+            console.log('books: ' + books);
             render(books);
             // $("#toR").load(" #toR");
             // $('#mydiv').load('http://localhost:8080/books' + ' #mydiv');
@@ -100,7 +101,7 @@ function render(books) {
         // }
     }
 
-    if (books == null) {
+    if (books == null || books.length === 0) {
         let block;
         let locale =  $('#locale').text();
 
@@ -118,11 +119,11 @@ function render(books) {
         }
         if (locale === 'RU') {
             block = '<div class="mcontainer" style="box-shadow: none; border: none" align="center">' +
-                '<h1>Не найдено</h1>' +
+                '<h1>\u041d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e</h1>' +
                 '<br>' +
-                '<p>Не найдено подходящей книги</p>' +
+                '<p>\u041d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e \u043f\u043e\u0434\u0445\u043e\u0434\u044f\u0449\u0435\u0439 \u043a\u043d\u0438\u0433\u0438</p>' +
                 '<br>' +
-                '<a href="/home" class="btn">Выберите другой жанр</a>' +
+                '<a href="/home" class="btn">\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0434\u0440\u0443\u0433\u043e\u0439 \u0436\u0430\u043d\u0440</a>' +
                 '</div>';
         }
 
@@ -138,20 +139,16 @@ function render(books) {
  * Binding buttons with actions
  */
 $(document).ready(function () {
-    // // $('.prev').bind('click', function () {
-    // //     console.log('bind')
-    // // });
-    // $('.prev').on('click', function () {
-    //     console.log('bind');
-    // });
 
+    /**
+     * on prev click
+     */
     $('.prev').bind('click', function () {
-        console.log('hi')
         if (--pageNum > 0) {
             $.ajax({
                 url: 'http://localhost:8080/books',
                 type: 'GET',
-                data: ({page: pageNum}),
+                data: ({page: pageNum, genre: $('#genre').text()}),
                 success: function (jsonStr) {
                     books = jsonStr;
                     $('#toInsert').empty();
@@ -171,12 +168,16 @@ $(document).ready(function () {
             hidePrev();
         }
     });
+
+    /**
+     * on next click
+     */
     $('.next').bind('click', function () {
         if ((pageNum * booksPerPage + 1) < booksQuantity) {
             $.ajax({
                 url: 'http://localhost:8080/books',
                 type: 'GET',
-                data: ({page: ++pageNum}),
+                data: ({page: ++pageNum, genre: $('#genre').text()}),
                 success: function (jsonStr) {
                     books = jsonStr;
                     $('#toInsert').empty();

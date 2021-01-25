@@ -36,9 +36,10 @@
 </head>
 
 
-<body>
+<body <%--onload="fetchBooksQuantity()"--%>>
 
-<div id="locale"  style="display: none">${sessionScope.locale}</div>
+<div id="genre" style="display: none">${requestScope.genre}</div>
+<div id="locale" style="display: none">${sessionScope.locale}</div>
 <%--<img src="data:image/jpg;base64,${img}" width="240" height="300"/>--%>
 <!---------- header --------------->
 
@@ -102,10 +103,11 @@
 
 <!---------- js for pagination --------------->
 
-<script src="../../js/books.js"></script>
+<script src="../../js/books.js" charset="UTF-8"></script>
 
 
 <script>
+
 
     <%--const bookItems=document.querySelector(".mrow .row").children;--%>
     <%--const prev=document.querySelector(".prev");--%>

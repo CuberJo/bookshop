@@ -40,7 +40,23 @@
                         <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
                     </c:when>
                 </c:choose>
-                <li style="font-weight: bold"><a id="ru" href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a id="en" href="/home?command=change_locale&locale=RN&from=${param.command}">EN</a></li>
+                <li style="font-weight: bold">
+                    <form method="post" action="/home">
+                        <input type='hidden' name='command' value="change_locale">
+                        <input type='hidden' name='locale' value="RU">
+                        <input type='hidden' name='from' value="${param.command}">
+
+                        <button class="localeBtn" type="submit">RU</button>
+                    </form>
+                    |
+                    <form method="post" action="/home">
+                        <input type='hidden' name='command' value="change_locale">
+                        <input type='hidden' name='locale' value="US">
+                        <input type='hidden' name='from' value="${param.command}">
+                        <button class="localeBtn" type="submit">US</button>
+                    </form>
+                </li>
+<%--                <li style="font-weight: bold"><a id="ru" href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a id="en" href="/home?command=change_locale&locale=US&from=${param.command}">US</a></li>--%>
                 </ul>
         </nav>
         <c:if test="${not empty sessionScope.login}">

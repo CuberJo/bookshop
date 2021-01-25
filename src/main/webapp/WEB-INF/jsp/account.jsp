@@ -37,11 +37,14 @@
 
 
     <script type="text/javascript">
+        let widgetId;
+        let widgetId2;
+
         var onloadCallback = function() {
-            grecaptcha.render('html_element', {
+            widgetId = grecaptcha.render('html_element', {
                 'sitekey' : '6LfLHzYaAAAAAHTl9Fe3pbqnQeIXQ3fNcqE-ePKd'
             });
-            grecaptcha.render('html_element2', {
+            widgetId2 = grecaptcha.render('html_element2', {
                 'sitekey' : '6LfLHzYaAAAAAHTl9Fe3pbqnQeIXQ3fNcqE-ePKd'
             });
         };
@@ -173,6 +176,17 @@
 
         let error = "";
 
+        var failedCapthca = false;
+        let resp = grecaptcha.getResponse(widgetId);
+        if (resp === "") {
+            failedCapthca = true;
+        }
+
+        if (failedCapthca) {
+            event.preventDefault();
+            error = "<fmt:message key="failed_recaptcha" bundle="${err}"/>"
+        }
+
         let malicious_regex = /^[-<>*;='#)+&("]+$/;
         if (malicious_regex.test(passField)) {
             event.preventDefault();
@@ -224,6 +238,17 @@
 
         let error = "";
 
+        var failedCapthca = false;
+        let resp = grecaptcha.getResponse(widgetId2);
+        if (resp === "") {
+            failedCapthca = true;
+        }
+
+        if (failedCapthca) {
+            event.preventDefault();
+            error = "<fmt:message key="failed_recaptcha" bundle="${err}"/>"
+        }
+
         let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
         let malicious_regex = /^[-<>*;='#)+&("]+$/;
         if (malicious_regex.test(passField)) {
@@ -260,7 +285,6 @@
             event.preventDefault();
             error = "<fmt:message key="input_name" bundle="${err}"/>";
         }
-
 
         // if ((loginField.indexOf('"') > -1 && passField.indexOf('"') > -1) ||
         //     (loginField.indexOf('\'') > -1 && passField.indexOf('\'') > -1)) {

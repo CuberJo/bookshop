@@ -74,6 +74,11 @@
     <div class="popup">
         <h2><fmt:message key="label.save_changes" bundle="${lang}"/></h2>
         <a class="close" href="#" <%--onclick="cls()"--%>>&times;</a>
+        <div id="merr2" style="display: none">
+            <div style="background: #EACCCC; padding: 10px 15px">
+                <div id="errorAccMessage2"<%-- style="color: #ff523b; height: 30px"--%>></div>
+            </div>
+        </div>
         <form class="content" method="post" action="#">
             <fmt:message key="label.enter_pass_to_save" bundle="${lang}"/>
             <br/>
@@ -133,7 +138,7 @@
                         <br>
                         <p><fmt:message key="no_books_in_library" bundle="${mes}"/></p>
                         <div style="height: 30px"></div>
-                        <a href="/books" class="btn"><fmt:message key="go_to_store" bundle="${m}"/></a>
+                        <a href="/home?command=books" class="btn"><fmt:message key="go_to_store" bundle="${m}"/></a>
                         <div style="height: 50px"></div>
                     </div>
                 </c:if>
@@ -164,39 +169,37 @@
                         <c:remove var="error_acc_settings" scope="session" />
                     </div>
                 </c:if></div>
-<%--                <form class="form" action="/home?command=account_settings" method="post" id="registrationForm">--%>
-                    <div class="form-group">
-                        <div class="col-xs-6">
-                            <label for="login"><h4><fmt:message key="label.login" bundle="${lang}"/></h4></label>
-                            <input type="text" class="form-control" name="login" id="login" placeholder="<fmt:message key="label.login" bundle="${lang}"/>">
-                        </div>
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="login"><h4><fmt:message key="label.login" bundle="${lang}"/></h4></label>
+                        <input type="text" class="form-control" name="login" id="login" placeholder="<fmt:message key="label.login" bundle="${lang}"/>">
                     </div>
-                    <div class="form-group">
-                        <div class="col-xs-6">
-                            <label for="email"><h4><fmt:message key="label.email" bundle="${lang}"/></h4></label>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com">
-                        </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="email"><h4><fmt:message key="label.email" bundle="${lang}"/></h4></label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com">
                     </div>
-                    <div class="form-group">
-                        <div class="col-xs-6">
-                            <label for="password"><h4><fmt:message key="label.password" bundle="${lang}"/></h4></label>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="<fmt:message key="label.password" bundle="${lang}"/>">
-                        </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="password"><h4><fmt:message key="label.password" bundle="${lang}"/></h4></label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="<fmt:message key="label.password" bundle="${lang}"/>">
                     </div>
-                    <div class="form-group">
-                        <div class="col-xs-6">
-                            <label for="verifyPassword"><h4><fmt:message key="label.verify_password" bundle="${lang}"/></h4></label>
-                            <input type="password" class="form-control" name="verifyPassword" id="verifyPassword" placeholder="<fmt:message key="label.password" bundle="${lang}"/>">
-                        </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="verifyPassword"><h4><fmt:message key="label.verify_password" bundle="${lang}"/></h4></label>
+                        <input type="password" class="form-control" name="verifyPassword" id="verifyPassword" placeholder="<fmt:message key="label.password" bundle="${lang}"/>">
                     </div>
-                    <div class="form-group">
-                        <div class="col-xs-12">
-                            <br>
-                            <button class="btn" type="submit" onclick="save()"><fmt:message key="label.update" bundle="${lang}"/></button>
-                            <button class="btn" onclick="rst()" type="reset"><fmt:message key="label.reset" bundle="${lang}"/></button>
-                        </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <br>
+                        <button class="btn" type="submit" onclick="save()"><fmt:message key="label.update" bundle="${lang}"/></button>
+                        <button class="btn" onclick="rst()" type="reset"><fmt:message key="label.reset" bundle="${lang}"/></button>
                     </div>
-<%--                </form>--%>
+                </div>
             </div>
 
             <div class="tab-pane" id="logout">
@@ -257,8 +260,8 @@
                         </div>
                     </section>
                     <div style="height: 50px"></div>
-                    <a href="/home?command=add_iban&getAddIBANPage=getAddIBANPage&additional_iban=additional_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>                    <div style="height: 50px"></div>
-                    <div style="height: 50px"></div>
+                    <a href="/home?command=add_iban&getAddIBANPage=getAddIBANPage&additional_iban=additional_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>
+                    <div style="height: 100px"></div>
                 </div>
             </div>
 
@@ -281,7 +284,6 @@
 <!---------- footer --------------->
 
 <jsp:include page="footer.jsp"/>
-
 
 <!---------- unbind bank account --------------->
 
@@ -341,13 +343,19 @@
 
 <script>
     function save(isbn) {
+        if (validateInput(event) === false) {
+            return;
+        }
         $('#popup3.overlay').css({'visibility': 'visible', 'opacity': '1'});
     }
 
     function sbmt2() {
         event.preventDefault()
 
-        if (validateInput(event) == false) {
+        // if (validateInput(event) == false) {
+        //     return;
+        // }
+        if (validateInput2(event) === false) {
             return;
         }
 
@@ -403,42 +411,42 @@
         let emailField = $("#email").val();
         let passField = $("#password").val();
         let verifyPassField = $("#verifyPassword").val();
-        let checkPassField = $("#checkPassword").val();
+        // let checkPassField = $("#checkPassword").val();
 
         let error = "";
 
         let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
         let malicious_regex = /^[-<>*;='#)+&("]+$/;
-        if (malicious_regex.test(checkPassField)) {
+        <%--if (checkPassField !== "" && malicious_regex.test(checkPassField)) {--%>
+        <%--    event.preventDefault();--%>
+        <%--    error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";--%>
+        <%--}--%>
+        if (verifyPassField !== "" && malicious_regex.test(verifyPassField)) {
             event.preventDefault();
             error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
         }
-        if (malicious_regex.test(verifyPassField)) {
+        if (passField !== "" && malicious_regex.test(passField)) {
             event.preventDefault();
             error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
         }
-        if (malicious_regex.test(passField)) {
-            event.preventDefault();
-            error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
-        }
-        if (malicious_regex.test(emailField) || (emailField != "" && !email_regex.test(emailField))) {
+        if (emailField !== "" && malicious_regex.test(emailField) || (emailField !== "" && !email_regex.test(emailField))) {
             event.preventDefault();
             error = "<fmt:message key="incorrect_email" bundle="${mes}"/>";
         }
-        if (malicious_regex.test(loginField)) {
+        if (loginField !== "" && malicious_regex.test(loginField)) {
             event.preventDefault();
             error = "<fmt:message key="incorrect_login" bundle="${mes}"/>";
         }
 
         let whitespace_regex = /[\s]+/;
-        if (checkPassField == "" || whitespace_regex.test(checkPassField)) {
-            event.preventDefault();
-            error = "<fmt:message key="input_pass" bundle="${mes}"/>";
-        }
-        if ((verifyPassField == "" || whitespace_regex.test(verifyPassField)) &&
-            (passField == "" || whitespace_regex.test(passField)) &&
-            (emailField == "" || whitespace_regex.test(emailField)) &&
-            (loginField == "" || whitespace_regex.test(loginField))) {
+        <%--if (checkPassField === "" || whitespace_regex.test(checkPassField)) {--%>
+        <%--    event.preventDefault();--%>
+        <%--    error = "<fmt:message key="input_pass" bundle="${mes}"/>";--%>
+        <%--}--%>
+        if ((verifyPassField === "" || whitespace_regex.test(verifyPassField)) &&
+            (passField === "" || whitespace_regex.test(passField)) &&
+            (emailField === "" || whitespace_regex.test(emailField)) &&
+            (loginField === "" || whitespace_regex.test(loginField))) {
             event.preventDefault();
             error = "<fmt:message key="input_data" bundle="${mes}"/>";
         }
@@ -476,6 +484,26 @@
 
         // window.location = "/home?command=register"
         return true;
+    }
+    
+    function validateInput2() {
+        let checkPassField = $("#checkPassword").val();
+
+        if (checkPassField !== "" && malicious_regex.test(checkPassField)) {
+            event.preventDefault();
+            error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
+        }
+        let whitespace_regex = /[\s]+/;
+        if (checkPassField === "" || whitespace_regex.test(checkPassField)) {
+            event.preventDefault();
+            error = "<fmt:message key="input_pass" bundle="${mes}"/>";
+        }
+
+        if (error != "") {
+            $('#merr2').css("display", "block");
+            $("#errorAccMessage2").text(error);
+            return false;
+        }
     }
 </script>
 

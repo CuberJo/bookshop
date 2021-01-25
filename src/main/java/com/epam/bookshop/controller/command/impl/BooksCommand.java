@@ -59,6 +59,11 @@ public class BooksCommand implements Command {
 //        filtered = false;
 //        session.setAttribute(UtilStrings.FILTERED, filtered);
 
+        String genreName = decode(requestContext.getParameter(UtilStrings.GENRE));
+//        if (genreName.isEmpty()) {
+//            genreName = null;
+//        }
+        requestContext.setAttribute("genre", genreName);
 
         return BOOKS_PAGE;
     }

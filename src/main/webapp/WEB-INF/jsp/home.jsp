@@ -14,7 +14,7 @@
 
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Bookstore</title>
@@ -26,14 +26,12 @@
     </head>
 
 <body>
-    <script>
-        // var Title = $('html').html("&nbsp;").text();
-        $('body').each(function(){
-            $(this).html($(this).html().replace(/&nbsp;/gi,''));
-        });
-    </script>
-    <%--<c:set var="v" scope="application" />--%>
-<%--<c:out value="${v}"/>--%>
+
+<script>
+    $('body').each(function(){
+        $(this).html($(this).html().replace(/&nbsp;/gi,''));
+    });
+</script>
 
 <!---------- bind bank account --------------->
 
@@ -89,7 +87,23 @@
                             <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
                         </c:when>
                     </c:choose>
-                    <li style="font-weight: bold"><a href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a href="/home?command=change_locale&locale=RN&from=${param.command}">EN</a></li>
+<%--                    <li style="font-weight: bold"><a id="ru" href="/home?command=change_locale&locale=RU&from=${param.command}">RU</a> | <a  id="us" href="/home?command=change_locale&locale=US&from=${param.command}">US</a></li>--%>
+                    <li>
+                        <form method="post" action="/home">
+                            <input type='hidden' name='command' value="change_locale">
+                            <input type='hidden' name='locale' value="RU">
+                            <input type='hidden' name='from' value="${param.command}">
+
+                            <button class="localeBtn" type="submit">RU</button>
+                        </form>
+                        |
+                        <form method="post" action="/home">
+                            <input type='hidden' name='command' value="change_locale">
+                            <input type='hidden' name='locale' value="US">
+                            <input type='hidden' name='from' value="${param.command}">
+                            <button class="localeBtn" type="submit">US</button>
+                        </form>
+                    </li>
                 </ul>
             </nav>
             <c:if test="${not empty sessionScope.login}">
@@ -115,51 +129,51 @@
 <div class="genres">
     <div class="small-container">
         <div class="row">
-            <div class="col-4"><a href="/books?genre=ROMANCE">
+            <div class="col-4"><a href="/home?command=books&genre=ROMANCE">
                 <img src="images/genres/romance.png">
                 <h3><fmt:message key="label.ROMANCE" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/books?genre=ACTION_AND_ADVENTURE">
+            <div class="col-4"><a href="/home?command=books&genre=ACTION_AND_ADVENTURE">
                 <img src="images/genres/action_and_adventure.png">
                 <h3><fmt:message key="label.ACTION_AND_ADVENTURE" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/books?genre=MYSTERY_AND_THRILLER">
+            <div class="col-4"><a href="/home?command=books&genre=MYSTERY_AND_THRILLER">
                 <img src="images/genres/mystery_and_thriller.png">
                 <h3><fmt:message key="label.MYSTERY_AND_THRILLER" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/books?genre=BIOGRAPHIES_AND_HISTORY">
+            <div class="col-4"><a href="/home?command=books&genre=BIOGRAPHIES_AND_HISTORY">
                 <img src="images/genres/biographies_and_history.png">
                 <h3><fmt:message key="label.BIOGRAPHIES_AND_HISTORY" bundle="${lang}"/></h3>
             </a></div>
         </div>
         <div class="row">
-            <div class="col-4"><a href="/books?genre=CHILDREN">
+            <div class="col-4"><a href="/home?command=books&genre=CHILDREN">
                 <img src="images/genres/children.png">
                 <h3><fmt:message key="label.CHILDREN" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/books?genre=FANTASY">
+            <div class="col-4"><a href="/home?command=books&genre=FANTASY">
                 <img src="images/genres/fantasy.png">
                 <h3><fmt:message key="label.FANTASY" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/books?genre=HISTORICAL_FICTION">
+            <div class="col-4"><a href="/home?command=books&genre=HISTORICAL_FICTION">
                 <img src="images/genres/historical_fiction.png">
                 <h3><fmt:message key="label.HISTORICAL_FICTION" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-4"><a href="/books?genre=HORROR">
+            <div class="col-4"><a href="/home?command=books&genre=HORROR">
                 <img src="images/genres/horror.png">
                 <h3><fmt:message key="label.HORROR" bundle="${lang}"/></h3>
             </a></div>
         </div>
         <div class="row">
-            <div class="col-3"><a href="/books?genre=LITERARY_FICTION">
+            <div class="col-3"><a href="/home?command=books&genre=LITERARY_FICTION">
                 <img src="images/genres/literary_fiction.png">
                 <h3><fmt:message key="label.LITERARY_FICTION" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-3"><a href="/books?genre=NON-FICTION">
+            <div class="col-3"><a href="/home?command=books&genre=NON-FICTION">
                 <img src="images/genres/non_fiction.png">
                 <h3><fmt:message key="label.NON-FICTION" bundle="${lang}"/></h3>
             </a></div>
-            <div class="col-3"><a href="/books?genre=SCIENCE-FICTION">
+            <div class="col-3"><a href="/home?command=books&genre=SCIENCE-FICTION">
                 <img src="images/genres/science_fiction.png">
                 <h3><fmt:message key="label.SCIENCE-FICTION" bundle="${lang}"/></h3>
             </a></div>
@@ -545,6 +559,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!---------- footer --------------->
 

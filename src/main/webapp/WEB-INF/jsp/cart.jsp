@@ -127,7 +127,7 @@
                 <br>
                 <p><fmt:message key="seem_you_havent_chosen_book" bundle="${mes}"/></p>
                 <div style="height: 30px"></div>
-                <a href="/books" class="btn"><fmt:message key="go_to_store" bundle="${mes}"/></a>
+                <a href="/home?command=books" class="btn"><fmt:message key="go_to_store" bundle="${mes}"/></a>
                 <div style="height: 50px"></div>
             </div>
         </div>

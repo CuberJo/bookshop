@@ -264,6 +264,20 @@ ul {
     display: none;
 }
 
+/*---------- for locale buttons -----------------*/
+
+
+li form {
+    display: inline-block;
+}
+.localeBtn {
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
 /*---------- media query for menu ---------------*/
 
 @media only screen and (max-width: 800px) {
@@ -276,6 +290,10 @@ ul {
         width: 100%;
         overflow: hidden;
         transition: max-height .5s;
+
+        /*---------- to display over bootstrap tabs in personal page -------*/
+        z-index: 1;
+
     }
     nav ul li {
         display: block;
@@ -290,6 +308,13 @@ ul {
         display: block;
         cursor: pointer;
     }
+
+    /*---------- for locale buttons -----------------*/
+
+    .localeBtn {
+        color: #fff;
+    }
+
 }
 
 /*---------- media query for menu less than 60px screen size ---------------*/
