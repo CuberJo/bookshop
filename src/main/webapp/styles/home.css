@@ -292,8 +292,7 @@ li form {
         transition: max-height .5s;
 
         /*---------- to display over bootstrap tabs in personal page -------*/
-        z-index: 1;
-
+        z-index: 3;
     }
     nav ul li {
         display: block;
@@ -308,6 +307,10 @@ li form {
         display: block;
         cursor: pointer;
     }
+    .footer img {
+        width: 280px;
+        height: 215px;
+    }
 
     /*---------- for locale buttons -----------------*/
 
@@ -315,6 +318,11 @@ li form {
         color: #fff;
     }
 
+    /*---------- for search field in search page -----------------*/
+
+    .form-control #search {
+        min-width: 250px;
+    }
 }
 
 /*---------- media query for menu less than 60px screen size ---------------*/
@@ -327,4 +335,5 @@ li form {
     .col-2, .col-3, .col-4 {
         flex-basis: 100%;
     }
+
 }

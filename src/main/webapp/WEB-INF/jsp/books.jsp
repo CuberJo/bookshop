@@ -36,6 +36,18 @@
 </head>
 
 
+
+
+
+
+
+
+
+
+
+
+
+<%--                  UNCOMMENT ONLOAD ATTR IF THERE WILL BE CYCLING OF PROGA             --%>
 <body <%--onload="fetchBooksQuantity()"--%>>
 
 <div id="genre" style="display: none">${requestScope.genre}</div>
