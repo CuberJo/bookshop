@@ -1,13 +1,13 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.BookCriteria;
-import com.epam.bookshop.criteria.impl.GenreCriteria;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.BookCriteria;
+import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
@@ -17,7 +17,7 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,10 +60,7 @@ public class BooksCommand implements Command {
 //        session.setAttribute(UtilStrings.FILTERED, filtered);
 
         String genreName = decode(requestContext.getParameter(UtilStrings.GENRE));
-//        if (genreName.isEmpty()) {
-//            genreName = null;
-//        }
-        requestContext.setAttribute("genre", genreName);
+        requestContext.setAttribute(UtilStrings.GENRE, genreName);
 
         return BOOKS_PAGE;
     }
@@ -117,14 +114,7 @@ public class BooksCommand implements Command {
             books = service.findAll(start, total);
         }
 
-        try {
-            service.findImagesForBooks(books);
-        } catch (EntityNotFoundException e) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
-                    + UtilStrings.WHITESPACE + books;
-            logger.error(error, e);
-            throw new RuntimeException(error, e);
-        }
+        service.findImagesForBooks(books);
 
         return books;
     }

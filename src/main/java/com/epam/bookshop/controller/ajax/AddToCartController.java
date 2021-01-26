@@ -1,7 +1,7 @@
 package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStrings;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

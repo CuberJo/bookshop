@@ -1,8 +1,8 @@
 package com.epam.bookshop.controller;
 
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.BookCriteria;
-import com.epam.bookshop.criteria.impl.PaymentCriteria;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.BookCriteria;
+import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Payment;
@@ -11,9 +11,9 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,8 +67,8 @@ public class ReadBookController extends HttpServlet {
                 return false;
             }
         } catch (ValidatorException e) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA
-                    + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN());
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA)
+                    + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN();
             logger.error(error, e);
             throw new RuntimeException(error, e);
         }
@@ -78,6 +78,8 @@ public class ReadBookController extends HttpServlet {
 
 
     /**
+     * Renders book on screen
+     *
      * Renders file read from database to a jsp page
      * @param request {@link HttpServletRequest} which comes to a {@link HttpServletRequest}
      * @param response {@link HttpServletResponse} which comes to a Servlet
@@ -93,7 +95,7 @@ public class ReadBookController extends HttpServlet {
                     .build();
             Book book = findBook(criteria, locale);
 
-            bos = getBookByteArray(book, locale);
+            bos = getBookByteArrayStram(book, locale);
 
             response.setContentType(UtilStrings.APPLICATION_PDF_CONTENT_TYPE);
             response.setHeader(UtilStrings.CONTENT_DISPOSITION_HEADER, HEADER_PARAM);
@@ -122,6 +124,8 @@ public class ReadBookController extends HttpServlet {
 
 
     /**
+     * Finds book in database by criteria
+     *
      * @param criteria {@link Criteria<Book>} criterai of book search
      * @param locale language of error messages
      * @return book if it was found, otherwise {@link Optional} empty
@@ -134,7 +138,8 @@ public class ReadBookController extends HttpServlet {
         try {
             optionalBook = service.find(criteria);
             if (optionalBook.isEmpty()) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN());
+                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
+                        + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN();
                 logger.error(error);
                 throw new RuntimeException(error);
             }
@@ -148,11 +153,13 @@ public class ReadBookController extends HttpServlet {
 
 
     /**
+     * Converts found book in database to ByteArrayOutputStream
+     *
      * @param book {@link Book} which is searching parameter
      * @param locale language of error messages
      * @return {@link ByteArrayOutputStream} object with written book file in it
      */
-    private ByteArrayOutputStream getBookByteArray(Book book, String locale) {
+    private ByteArrayOutputStream getBookByteArrayStram(Book book, String locale) {
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         service.setLocale(locale);
 
@@ -192,7 +199,8 @@ public class ReadBookController extends HttpServlet {
         try {
             Optional<Book> optionalBook = service.find(criteria);
             if (optionalBook.isEmpty()) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND + UtilStrings.WHITESPACE + isbn);
+                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
+                        + UtilStrings.WHITESPACE + isbn;
                 logger.error(error);
                 throw new RuntimeException(error);
             }
@@ -220,35 +228,4 @@ public class ReadBookController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
-
-//    @Override
-//    public ResponseContext execute(RequestContext requestContext) {
-//        final HttpSession session = requestContext.getSession();
-//
-//        String locale = (String) requestContext.getAttribute(UtilStrings.LOCALE);
-//
-//
-//        BookService service = (BookService) ServiceFactory.getInstance().createImage(EntityType.BOOK);
-//        String isbn = (String) requestContext.getParameter(UtilStrings.ISBN);
-//        Criteria<Book> criteria = BookCriteria.builder()
-//                .ISBN(isbn)
-//                .build();
-//        try {
-//            Optional<Book> optionalBook = service.find(criteria);
-//            if (optionalBook.isEmpty()) {
-//                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND + UtilStrings.WHITESPACE + isbn);
-//                logger.error(error);
-//                throw new RuntimeException(error);
-//            }
-//
-//            Blob file = service.findBookFile(optionalBook.get());
-//
-//            session.setAttribute("file", file.getBytes(1, (int) file.length()));
-//        } catch (ValidatorException | EntityNotFoundException | SQLException e) {
-//            logger.error(e.getMessage(), e);
-//            throw new RuntimeException(e);
-//        }
-//
-//        return READ_BOOK_COMMAND;
-//    }
 }

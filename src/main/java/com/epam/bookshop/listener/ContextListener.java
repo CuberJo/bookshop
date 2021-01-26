@@ -7,6 +7,9 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+/**
+ * Configures database properties for this application
+ */
 @WebListener
 public class ContextListener implements ServletContextListener {
 

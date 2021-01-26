@@ -1,6 +1,6 @@
 package com.epam.bookshop.fliter;
 
-import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStrings;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -35,6 +35,9 @@ public class AuthFilter extends HttpFilter {
     private static final String UNBIND_IBAN_CONTROLLER = "unbind_iban";
 
 
+    /**
+     * Command parameter need authorization
+     */
     private static final List<String> COMMANDS_NEED_AUTHORIZATION = Arrays.asList(
             ADD_IBAN_COMMAND,
             CART_COMMAND,
@@ -46,6 +49,9 @@ public class AuthFilter extends HttpFilter {
             PURCHASE_COMMAND
     );
 
+    /**
+     * Controller path need authorization
+     */
     private static final List<String> CONTROLLERS_NEED_AUTHORIZATION = Arrays.asList(
             ACCOUNT_SETTINGS_CONTROLLER,
             LOAD_IBANs_CONTROLLER,
@@ -53,6 +59,16 @@ public class AuthFilter extends HttpFilter {
             UNBIND_IBAN_CONTROLLER
     );
 
+    /**
+     * Checks whether user is allowed to visit this page,
+     * otherwise, redirects to home page
+     *
+     * @param req {@link HttpServletRequest} object
+     * @param res {@link HttpServletResponse} object
+     * @param chain {@link FilterChain} object
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
 

@@ -1,8 +1,6 @@
 package com.epam.bookshop.controller;
 
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.VerifyReCaptcha;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.validator.impl.VerifyReCaptcha;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

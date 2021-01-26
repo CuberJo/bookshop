@@ -1,19 +1,17 @@
 package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;

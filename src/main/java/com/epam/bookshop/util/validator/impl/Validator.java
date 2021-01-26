@@ -1,0 +1,159 @@
+package com.epam.bookshop.util.validator.impl;
+
+import com.epam.bookshop.context.annotation.Naming;
+import com.epam.bookshop.context.annotation.Size;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.util.constant.RegexConstant;
+import com.epam.bookshop.exception.ValidatorException;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+
+import java.lang.reflect.Field;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Validator {
+
+    private String locale = "US";
+
+    private final NamingValidator namingValidator = new NamingValidator();
+    private final SizeValidator sizeValidator = new SizeValidator();
+
+    public void setLocale(String locale) {
+        namingValidator.setLocale(locale);
+        sizeValidator.setLocale(locale);
+        this.locale = locale;
+    }
+
+
+    public void validate(Entity entity) throws ValidatorException {
+
+        for (Field field : entity.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Size.class)) {
+                sizeValidator.validateEntity(field, field.getAnnotation(Size.class), entity);
+            }
+            if (field.isAnnotationPresent(Naming.class)) {
+                namingValidator.validateEntity(field, field.getAnnotation(Naming.class), entity);
+            }
+        }
+    }
+
+    public void validate(Criteria<? extends Entity> criteria) throws ValidatorException {
+
+        for (Field field : criteria.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Size.class)) {
+               sizeValidator.validateCriteria(field, field.getAnnotation(Size.class), criteria);
+            }
+            if (field.isAnnotationPresent(Naming.class)) {
+                namingValidator.validateCriteria(field, field.getAnnotation(Naming.class), criteria);
+            }
+        }
+    }
+
+    public void validateString(String stringToValidate, String regex, String error) throws ValidatorException {
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(stringToValidate);
+
+        if (!m.matches()) {
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(error);
+            throw new ValidatorException(errorMessage + UtilStrings.WHITESPACE + stringToValidate);
+        }
+    }
+
+    /**
+     * Removes extra "AND"and whitespaces.
+     * If 'like' string present, adds '%' character.
+     *
+     * @param condition "WHERE" condition which is to be added to sql query
+     * @return string without ANDs and whitespaces
+     */
+    public String validatedQuery(StringBuffer condition) {
+
+        checkForLIKE(condition);
+        checkForSeq(condition, UtilStrings.AND);
+        checkForSeq(condition, UtilStrings.WHITESPACE);
+
+        return condition + UtilStrings.SEMICOLON;
+    }
+
+
+    /**
+     * Add '%' character whether a string <b>s</b> argument contains 'like' seq
+     *
+     * @param s string to be validated
+     * @return new string with '%' character if 'like present'
+     */
+    private StringBuffer checkForLIKE(StringBuffer s) {
+        final String like = "like";
+        boolean containsLike = s.toString().toLowerCase().contains(like);
+        if (containsLike) {
+            s.replace(0, s.length(), s.toString().replaceAll(" '", " '%").replaceAll("' ", "%' "));
+        }
+
+        return s;
+    }
+
+
+    /**
+     * Whether a string <b>s</b> argument has a special sequence of characters
+     * <b>seq</b>
+     *
+     * @param s string to be validated
+     * @return <b>true</b> if special sequence of characters <b>seq</b>
+     * is present
+     */
+    private boolean checkForSeq(StringBuffer s, String seq) {
+        boolean isSeqPresent = false;
+        int whitespaceIndex = s.lastIndexOf(seq);
+        if (whitespaceIndex != -1) {
+            isSeqPresent = true;
+            s.delete(whitespaceIndex, s.length());
+        }
+
+        return isSeqPresent;
+    }
+
+
+    /**
+     * Checks strings for not being empty and correspond to special pattern
+     *
+     * @param strings - Strings to be validated
+     * @return <b>true</b> if, and only if, passed strings not empty and correspond
+     * to special pattern
+     */
+    public boolean emptyStringValidator(String ... strings) {
+        for (String string : strings) {
+            if (string.equals(UtilStrings.EMPTY_STRING) || string.matches(RegexConstant.EMPTY_STRING_REGEX)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    //    private boolean checkForAND(StringBuffer s) {
+//        boolean isANDPresent = false;
+//        int whitespaceIndex = s.lastIndexOf(AND);
+//        if (whitespaceIndex != -1) {
+//            isANDPresent = true;
+//            s.delete(whitespaceIndex, s.length());
+//        }
+//
+//        return isANDPresent;
+//    }
+//    private boolean checkForWhitespace(StringBuffer s) {
+//        boolean isWhitespacePresent = false;
+//        int whitespaceIndex = s.lastIndexOf(WHITESPACE);
+//        if (whitespaceIndex != -1) {
+//            isWhitespacePresent = true;
+//            s.deleteCharAt(whitespaceIndex);
+//        }
+//
+//        return isWhitespacePresent;
+//    }
+
+}

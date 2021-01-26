@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller;
 
-import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStrings;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.CommandFactory;
 import com.epam.bookshop.controller.command.ResponseContext;

@@ -1,6 +1,7 @@
 package com.epam.bookshop.service.impl;
 
-import com.epam.bookshop.criteria.Criteria;
+import com.epam.bookshop.util.ImgToBase64Converter;
+import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.dao.impl.BookDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
@@ -10,13 +11,16 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
-import com.epam.bookshop.validator.Validator;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -34,6 +38,9 @@ public class BookService implements EntityService<Book> {
 
     }
 
+    /**
+     * @param locale service language for error messages
+     */
     @Override
     public void setLocale(String locale) {
         this.locale = locale;
@@ -58,6 +65,9 @@ public class BookService implements EntityService<Book> {
         return book;
     }
 
+    /**
+     * @return collection {@link Collection<Book>} found
+     */
     @Override
     public Collection<Book> findAll() {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
@@ -187,6 +197,13 @@ public class BookService implements EntityService<Book> {
         return isDeleted;
     }
 
+
+    /**
+     * Creates image in database
+     *
+     * @param ISBN book's unique identifier
+     * @param filePath file system path of image
+     */
     public void createImage(String ISBN, String filePath) {
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
@@ -200,27 +217,30 @@ public class BookService implements EntityService<Book> {
         }
     }
 
-    public void findImagesForBooks(Collection<Book> books) throws EntityNotFoundException {
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
 
-        for (Book book: books) {
-            Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
-            if (optionalImage.isEmpty()) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND) + UtilStrings.WHITESPACE + book.getISBN();
-                throw new EntityNotFoundException(errorMessage);
-            }
-
-            book.setBase64Image(optionalImage.get());
-        }
-
+    /**
+     * @param book book needed to be set with default img
+     */
+    private void setDefaultImg(Book book) {
+        final String IMAGE_NOT_FOUND_PATH = "C:\\Users\\User\\IdeaProjects\\bookshop\\src\\main\\webapp\\images\\books\\image-not-found.jpg";
+        InputStream is = null;
         try {
-            conn.close();
-        } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
+            is = new FileInputStream(new File(IMAGE_NOT_FOUND_PATH));
+//            byte[] bytes = Files.readAllBytes(Paths.get(IMAGE_NOT_FOUND_PATH));
+        } catch (FileNotFoundException e) {
+            logger.error(e.getMessage(), e);
         }
+        String base64Image = ImgToBase64Converter.getInstance().convert(is);
+        book.setBase64Image(base64Image);
     }
 
+
+    /**
+     * Finds book image in database and set it to book
+     *
+     * @param book {@link Book} instance
+     * @throws EntityNotFoundException if image not found in database
+     */
     public void findImageForBook(Book book) throws EntityNotFoundException {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
 
@@ -241,7 +261,41 @@ public class BookService implements EntityService<Book> {
         }
     }
 
-//    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Finds images for books in database and set it to each of them
+     *
+     * @param books {@link Collection<Book>} for which images needed be set
+     */
+    public void findImagesForBooks(Collection<Book> books) {
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+
+        for (Book book: books) {
+            Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
+            if (optionalImage.isEmpty()) {
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
+                        + UtilStrings.WHITESPACE + book.getISBN();
+                logger.error(errorMessage);
+                setDefaultImg(book);
+                continue;
+            }
+
+            book.setBase64Image(optionalImage.get());
+        }
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+    /**
+     * @param ISBN book's unique identifier
+     * @param filePath file system path of book
+     */
     public void createBookFile(String ISBN, String filePath) {
 
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
@@ -255,40 +309,23 @@ public class BookService implements EntityService<Book> {
         }
     }
 
-//    public void findImagesForBooks(Collection<Book> books) throws EntityNotFoundException {
-//        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-//        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.createImage(EntityType.BOOK, conn);
-//
-//        for (Book book: books) {
-//            Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
-//            if (optionalImage.isEmpty()) {
-//                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND) + UtilStrings.WHITESPACE + book.getISBN();
-//                throw new EntityNotFoundException(errorMessage);
-//            }
-//
-//            book.setBase64Image(optionalImage.get());
-//        }
-//
-//        try {
-//            conn.close();
-//        } catch (SQLException throwables) {
-//            logger.error(throwables.getMessage(), throwables);
-//        }
-//    }
 
+    /**
+     * @param book {@link Book} needed to find file for
+     * @return book file converted to byte array
+     * @throws EntityNotFoundException if file not found
+     */
     public byte[] findBookFile(Book book) throws EntityNotFoundException {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
 
         BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
 
-//        Blob bookFile = dao.findBookFileByISBN(book.getISBN());
         byte[] bookFile = dao.findBookFileByISBN(book.getISBN());
         if (Objects.isNull(bookFile)) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_FILE_NOT_FOUND) + UtilStrings.WHITESPACE + book.getISBN();
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_FILE_NOT_FOUND)
+                    + UtilStrings.WHITESPACE + book.getISBN();
             throw new EntityNotFoundException(errorMessage);
         }
-
-//        book.setBase64Image(optionalImage.get());
 
         try {
             conn.close();
@@ -346,6 +383,7 @@ public class BookService implements EntityService<Book> {
         return books;
     }
 
+
     /**
      * @return number of rows in BOOKS table
      */
@@ -362,5 +400,29 @@ public class BookService implements EntityService<Book> {
         }
 
         return rows;
+    }
+
+
+    /**
+     * @param criteria builded {@link Criteria<Book>} to search by
+     * @return collection of books found
+     * @throws ValidatorException if criteria data is incorrect
+     */
+    public Collection<Book> findAllLike(Criteria<Book> criteria) throws ValidatorException {
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        Collection<Book> books = dao.findAllLike(criteria);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return books;
     }
 }

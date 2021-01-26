@@ -1,0 +1,36 @@
+/* for same height */
+.input-group .form-control {
+    height: 35px;
+    margin-top: 30px;
+}
+
+.btn {
+    height: 35px;
+}
+/********************/
+
+
+.col-xs-8.col-xs-offset-2 {
+    min-width: 370px;
+}
+
+.small-container {
+    max-width: 1980px;
+}
+
+.col-xs-offset-2 {
+    margin-left: revert;
+}
+
+.mrow {
+    margin: 10%;
+    margin-top: 5%;
+}
+
+/* Style to create scroll bar in dropdown */
+.scrollable-dropdown {
+    height: auto;
+    max-height: 320px;
+    /* Increase / Decrease value as per your need */
+    overflow-x: hidden;
+}

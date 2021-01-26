@@ -1,12 +1,11 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.criteria.Criteria;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
-import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
-import com.epam.bookshop.strategy.query_creator.EntityQueryCreator;
-import com.epam.bookshop.strategy.query_creator.impl.EntityQueryCreatorFactory;
+import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +103,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     @Override
     public Collection<Genre> findAll(Criteria<Genre> criteria) {
         String query = SQL_SELECT_ALL_GENRES_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStrings.EQUALS);
 
         List<Genre> genres = new ArrayList<>();
 
@@ -130,7 +129,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     @Override
     public Optional<Genre> find(Criteria<Genre> criteria) {
         String query = SQL_SELECT_ALL_GENRES_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStrings.EQUALS);
 
         Genre genre = null;
 
@@ -169,4 +168,33 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     public Optional<Genre> update(Genre entity) {
         return Optional.empty();
     }
+
+
+    /**
+     * Finds {@link Genre} genre which genre name is similar to criteria's genre name
+     *
+     * @param criteria {@link Criteria<Genre>} criteria by which genre is found
+     * @return {@link Optional<Genre>} if found, otherwise - empty
+     */
+    public Optional<Genre> findLike(Criteria<Genre> criteria) {
+        String query = SQL_SELECT_ALL_GENRES_WHERE
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStrings.LIKE);
+
+        Genre genre = null;
+
+        try (PreparedStatement ps = getPrepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                genre = new Genre();
+                genre.setEntityId(rs.getLong(ID_COLUMN));
+                genre.setGenre(rs.getString(GENRE_COLUMN));
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return Optional.ofNullable(genre);
+    }
+
 }

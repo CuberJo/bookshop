@@ -1,6 +1,6 @@
 package com.epam.bookshop.db;
 
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 
 import java.sql.*;
 import java.util.Map;

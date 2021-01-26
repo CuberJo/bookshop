@@ -1,17 +1,17 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.UserCriteria;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
-import com.epam.bookshop.constant.UtilStrings;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
-import com.epam.bookshop.validator.Validator;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.validator.impl.Validator;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +60,7 @@ public class AccountSettingsController extends HttpServlet {
 
     /**
      * Validates passed strings for emptiness
+     *
      * @param login login string to validate
      * @param email email string to validate
      * @param password password string to validate
@@ -96,6 +97,7 @@ public class AccountSettingsController extends HttpServlet {
 
     /**
      * Looks for {@link User} by certain {@link Criteria<User>} criteria
+     *
      * @param locale language for error messages
      * @return {@link User} object if it is found
      */
@@ -124,6 +126,7 @@ public class AccountSettingsController extends HttpServlet {
 
     /**
      * Updates {@link User} object by given data
+     *
      * @param login {@link String} login to be set if not null
      * @param email {@link String} email to be set if not null
      * @param password {@link String} password to be set if not null
@@ -160,6 +163,7 @@ public class AccountSettingsController extends HttpServlet {
 
     /**
      * Checks whether entered check password is correct, so we can update {@link User} user
+     *
      * @param checkPass {@link String} password from user input
      * @param userPass {@link String} hashed {@link User} password stored in database
      * @param session current {@link HttpSession} session used to set attributes
@@ -178,6 +182,8 @@ public class AccountSettingsController extends HttpServlet {
 
 
     /**
+     * Checks whether passwords are equal
+     *
      * @param password {@link String} first not hashed password
      * @param verifyPassword {@link String} second not hashed password
      * @param session current {@link HttpSession} session used to set attributes

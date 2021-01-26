@@ -1,16 +1,18 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.GenreCriteria;
+import com.epam.bookshop.exception.EntityNotFoundException;
+import com.epam.bookshop.util.ImgToBase64Converter;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
-import com.epam.bookshop.strategy.query_creator.impl.EntityQueryCreatorFactory;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,7 +190,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     @Override
     public Collection<Book> findAll(Criteria<Book> criteria) {
         String query = SQL_SELECT_ALL_BOOKS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.EQUALS);
 
         List<Book> books = new ArrayList<>();
 
@@ -229,7 +231,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     @Override
     public Optional<Book> find(Criteria<Book> criteria) {
         String query = SQL_SELECT_ALL_BOOKS_WHERE +
-                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria);
+                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.EQUALS);
 
         Book book = null;
 
@@ -296,9 +298,6 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
     @Override
     public Optional<Book> update(Book book) {
-//
-//        String query = String.format(SQL_UPDATE_BOOK_WHERE,
-//                EntityQueryCreatorFactory.INSTANCE.createImage(EntityType.BOOK).createQuery(criteria));
 
         Optional<Book> optionalBookToUpdate = findById(book.getEntityId());
         if (optionalBookToUpdate.isEmpty()) {
@@ -330,7 +329,12 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     }
 
 
-
+    /**
+     * Creates image in database
+     *
+     * @param ISBN book's unique identifier
+     * @param filePath file system path of image
+     */
     public void createImage(String ISBN, String filePath) {
 
         try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_IMG);
@@ -346,7 +350,12 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     }
 
 
-
+    /**
+     * Finds image by ISBN in database
+     *
+     * @param ISBN book's unique identifier
+     * @return {@link Optional<String>} decoded image
+     */
     public Optional<String> findImageByISBN(String ISBN) {
         ResultSet rs = null;
 
@@ -360,8 +369,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             while (rs.next()) {
                 Blob blob = rs.getBlob(IMAGE_COLUMN);
 
-                byte[] imageBytes = convertImageToBytes(blob);
-                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                InputStream is = blob.getBinaryStream();
+                base64Image = ImgToBase64Converter.getInstance().convert(is);
             }
 
         } catch (SQLException throwables) {
@@ -380,36 +389,10 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     }
 
 
-
-    private byte[] convertImageToBytes(Blob blob) {
-
-        byte[] imageBytes = null;
-        try(InputStream inputStream = blob.getBinaryStream();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-
-            byte[] buffer = new byte[4096];
-            int bytesRead = -1;
-
-            while (true) {
-                try {
-                    if (!((bytesRead = inputStream.read(buffer)) != -1)) break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            imageBytes = outputStream.toByteArray();
-        } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        return imageBytes;
-    }
-
-//    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * @param ISBN book's unique identifier
+     * @param filePath file system path of book
+     */
     public void createBookFile(String ISBN, String filePath) {
 
         try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_BOOK_FILE);
@@ -450,11 +433,12 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 //    }
 
 
+    /**
+     * @param ISBN book's unique identifier
+     * @return book file converted to byte array
+     */
     public byte[] findBookFileByISBN(String ISBN) {
         ResultSet rs = null;
-
-//        Blob blob = null;
-//        InputStream is = null;
 
         byte[] bytes = null;
 
@@ -464,10 +448,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-//                blob = rs.getBlob(FILE_COLUMN);
-//                is = rs.getBinaryStream(FILE_COLUMN);
                 bytes = rs.getBytes(FILE_COLUMN);
-//                OutputStream os = rs.getBlob(FILE_COLUMN);
             }
 
         } catch (SQLException throwables) {
@@ -486,6 +467,13 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     }
 
 
+    /**
+     * Finds limited by <b>start</b> and <b>end</b> portion of books
+     *
+     * @param start from where to start search
+     * @param total how many row to find
+     * @return found {@link List<Book>}
+     */
     public List<Book> findAll(int start, int total) {
         List<Book> books = new ArrayList<>();
         ResultSet rs = null;
@@ -536,12 +524,21 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     }
 
 
+    /**
+     * Finds limited by <b>start</b> and <b>end</b> portion of books
+     * by criteria
+     *
+     * @param criteria {@link Criteria<Book>} by which search happens
+     * @param start from where to start search
+     * @param total how many row to find
+     * @return found {@link List<Book>}
+     */
     public List<Book> findAll(Criteria<Book> criteria, int start, int total) {
         List<Book> books = new ArrayList<>();
         ResultSet rs = null;
 
         String query = SQL_SELECT_ALL_BOOKS_WHERE +
-                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria)
+                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.EQUALS)
                         .replace(UtilStrings.SEMICOLON, UtilStrings.WHITESPACE) + "LIMIT ?, ?";
 
         try (PreparedStatement ps = getPrepareStatement(query)) {
@@ -591,6 +588,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
 
     /**
+     * Counts number of rows in 'BOOK' table
+     *
      * @return number of rows in BOOKS table
      */
     public int count() {
@@ -607,5 +606,51 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         }
 
         return rows;
+    }
+
+
+    /**
+     * Finds collection of books by criteria params, similar to
+     * passed as argument {@link Criteria<Book>} instance
+     *
+     * @param criteria {@link Criteria<Book>} by which search happens
+     * @return found {@link Collection<Book>}
+     */
+    public Collection<Book> findAllLike(Criteria<Book> criteria) {
+        String query = SQL_SELECT_ALL_BOOKS_WHERE
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.LIKE);
+
+        List<Book> books = new ArrayList<>();
+
+        try (PreparedStatement ps = getPrepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, ConnectionPool.getInstance().getAvailableConnection());
+
+            while (rs.next()) {
+                Book book = new Book();
+                book.setEntityId(rs.getLong(ID_COLUMN));
+                book.setISBN(rs.getString(ISBN_COLUMN));
+                book.setTitle(rs.getString(TITLE_COLUMN));
+                book.setPrice(rs.getDouble(PRICE_COLUMN));
+
+                Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
+                if (optionalGenre.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                }
+                book.setGenre(optionalGenre.get());
+
+                book.setAuthor(rs.getString(AUTHOR_COLUMN));
+                book.setPublisher(rs.getString(PUBLISHER_COLUMN));
+                book.setPreview(rs.getString(PREVIEW_COLUMN));
+
+                books.add(book);
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return books;
     }
 }

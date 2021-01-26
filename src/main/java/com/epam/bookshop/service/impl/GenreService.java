@@ -1,6 +1,7 @@
 package com.epam.bookshop.service.impl;
 
-import com.epam.bookshop.criteria.Criteria;
+import com.epam.bookshop.dao.impl.GenreDAO;
+import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
 import com.epam.bookshop.db.ConnectionPool;
@@ -9,7 +10,7 @@ import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
-import com.epam.bookshop.validator.Validator;
+import com.epam.bookshop.util.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,5 +111,29 @@ public class GenreService implements EntityService<Genre> {
     @Override
     public boolean delete(Genre entity) throws EntityNotFoundException {
         return false;
+    }
+
+    /**
+     * Finds {@link Genre} genre which genre name is similar to criteria's genre name
+     *
+     * @param criteria {@link Criteria<Genre>} criteria by which genre is found
+     * @return {@link Optional<Genre>} instance
+     */
+    public Optional<Genre> findLike(Criteria<Genre> criteria) throws ValidatorException {
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        GenreDAO dao = (GenreDAO) DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
+        Optional<Genre> optionalGenre = dao.findLike(criteria);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return optionalGenre;
     }
 }

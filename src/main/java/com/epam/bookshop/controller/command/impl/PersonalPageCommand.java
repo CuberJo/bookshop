@@ -1,23 +1,22 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.UserCriteria;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.PaymentService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.UserFinder;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,16 +45,11 @@ public class PersonalPageCommand implements Command {
                 service.setLocale(locale);
                 Collection<Book> library = service.findAllBooksInPayment(user.getEntityId());
 
-                try {
-                    BookService bookService = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-                    bookService.setLocale(locale);
-                    bookService.findImagesForBooks(library);
-                } catch (EntityNotFoundException e) {
-                    String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
-                            + UtilStrings.WHITESPACE + library;
-                    logger.error(error, e);
-                    throw new RuntimeException(error, e);
-                }
+
+                BookService bookService = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
+                bookService.setLocale(locale);
+                bookService.findImagesForBooks(library);
+
 
                 session.setAttribute(UtilStrings.LIBRARY, library);
             } catch (ValidatorException e) {

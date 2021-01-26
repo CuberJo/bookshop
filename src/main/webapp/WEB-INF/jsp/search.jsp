@@ -21,6 +21,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Search - Bookstore</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,700" rel="stylesheet" />
 
@@ -31,156 +32,106 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="../../styles/home.css" rel="stylesheet" type="text/css">
+    <link href="../../styles/search.css" rel="stylesheet" type="text/css">
 
-
-    <link rel="stylesheet" type="text/css" href="../../styles/home.css">
-
-
-    <style>
-
-        .input-group .form-control {
-           height: 35px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            height: 35px;
-        }
-
-
-        /*что-то такое*/
-        .row {
-            text-align: center;
-        }
-        .col-2, .col-3, .col-4 {
-            flex-basis: 100%;
-        }
-
-        }
-        .col-xs-offset-2 {
-            margin-left:auto
-            margin-right: 22px;
-        }
-        .mrow {
-            margin-left: auto;
-            margin-right: 22px;
-        }
-        /****************/
-
-        /*.col-xs-offset-2 {*/
-        /*     margin-left: 220px;*/
-        /*}*/
-
-
-        /*#search.form-control {*/
-        /*    min-width: 150px;*/
-        /*}*/
-
-        .container {
-            margin-top: 2%;
-        }
-
-        /* Style to create scroll bar in dropdown */
-        .scrollable-dropdown {
-            height: auto;
-            max-height: 320px;
-            /* Increase / Decrease value as per your need */
-            overflow-x: hidden;
-        }
-    </style>
     <noscript>
         For full functionality of this site it is necessary to enable JavaScript.
         Here are the <a href="https://www.enablejavascript.io/">
         instructions how to enable JavaScript in your web browser</a>.
     </noscript>
-    <script>
-        $(document).ready(function(e) {
-            $('.search-panel .dropdown-menu').find('a').click(function(e) {
-                e.preventDefault();
-                var param = $(this).attr("href").replace("#", "");
-                var concept = $(this).text();
-                $('.search-panel span#search_concept').text(concept);
-                $('.input-group #search_param').val(param);
-            });
-        });
-        var a = document.getElementsByTagName('a').item(0);
-        // $(a).on('keyup', function(evt) {
-        //     console.log(evt);
-        //     if (evt.keycode === 13) {
 
-        //         alert('search?');
-        //     }
-        // });
-        $(function(){ // this will be called when the DOM is ready
-            // var t = $('a');
-            $(a).item(0).onclick(function() {
-                console.log($('a')[0]);
-                alert('Handler for .keyup() called.');
-            });
-        });
-    </script>
+    <script src="../../js/search.js"></script>
 </head>
 
 
 
 <body>
+
 <!---------- header --------------->
 
-<jsp:include page="header.jsp" />
+<noscript>Need Javascript</noscript>
+
+<div class="mcontainer">
+    <div class="navbar">
+        <div class="logo">
+            <img src="../../images/bookstore2.png" width="125px">
+        </div>
+        <nav>
+            <ul id="Menuitems">
+                <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>
+                <li><a href="/home?command=books"><fmt:message key="label.store" bundle="${lang}"/></a></li>
+                <li><a href="/home?command=contact_us"><fmt:message key="label.contact_us" bundle="${lang}"/></a></li>
+                <li><a href="/home?command=search&from=${param.command}"><fmt:message key="label.search_book" bundle="${lang}"/></a></li>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.role}">
+                        <li><a href="/home?command=personal_page"><fmt:message key="label.account" bundle="${lang}"/></a></li>
+                    </c:when>
+                    <c:when test="${empty sessionScope.role}">
+                        <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
+                    </c:when>
+                </c:choose>
+                <li style="font-weight: bold">
+                    <form method="post" action="/home">
+                        <input type='hidden' name='command' value="change_locale">
+                        <input type='hidden' name='locale' value="RU">
+                        <input type='hidden' name='from' value="${param.command}">
+
+                        <button class="localeBtn" type="submit">RU</button>
+                    </form>
+                    |
+                    <form method="post" action="/home">
+                        <input type='hidden' name='command' value="change_locale">
+                        <input type='hidden' name='locale' value="US">
+                        <input type='hidden' name='from' value="${param.command}">
+                        <button class="localeBtn" type="submit">US</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+        <c:if test="${not empty sessionScope.login}">
+            <a href="home?command=cart"><img src="../../images/cart.png" width="30px" height="30px"></a>
+        </c:if>
+        <img src="../../images/menu-icon.png" class="menu-icon" onclick="menutoggle()">
+    </div>
+</div>
 
 <!---------- books --------------->
 
-<div style="margin: 0; padding: 0" class="small-container">
+<div class="small-container">
 
     <div class="row row-2">
-        <h2>
-
-        </h2>
-
+        <h2><fmt:message key="label.advanced_search" bundle="${lang}"/></h2>
     </div>
 
 
-    <div style="margin: auto;" class="mrow">
+    <div class="mrow">
         <div class="row">
-<%--            <div class="container">--%>
-<%--                <div class="row">--%>
-                    <div class="col-xs-8 col-xs-offset-2">
-                        <div class="input-group">
-                            <div class="input-group-btn search-panel">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span id="search_concept">All</span> <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu scrollable-dropdown" role="menu">
-                                    <li><a href="#">Automotive Accesories</a></li>
-                                    <li><a href="#">Cell Phone Accesories</a></li>
-                                    <li><a href="#">Computer Accesories</a></li>
-                                    <li><a href="#">Health and Personal Care</a></li>
-                                    <li><a href="#">Automotive Accesories</a></li>
-                                    <li><a href="#">Cell Phone Accesories</a></li>
-                                    <li><a href="#">Computer Accesories</a></li>
-                                    <li><a href="#">Health and Personal Care</a></li>
-                                    <li><a href="#">Automotive Accesories</a></li>
-                                    <li><a href="#">Cell Phone Accesories</a></li>
-                                    <li><a href="#">Computer Accesories</a></li>
-                                    <li><a href="#">Health and Personal Care</a></li>
-                                    <li><a href="#">Automotive Accesories</a></li>
-                                    <li><a href="#">Cell Phone Accesories</a></li>
-                                    <li><a href="#">Computer Accesories</a></li>
-                                    <li><a href="#">Health and Personal Care</a></li>
-                                </ul>
-                            </div>
-                            <input type="hidden" name="search_param" value="all" id="search_param">
-                            <input type="text" class="form-control" name="x" id="search" placeholder="Search">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <span class="glyphicon glyphicon-search"></span>
-                                </button>
-                            </span>
-                        </div>
+            <div class="col-xs-8 col-xs-offset-2">
+                <div class="input-group">
+                    <div class="input-group-btn search-panel">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span id="search_concept"><fmt:message key="label.all" bundle="${lang}"/></span> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu scrollable-dropdown" role="menu">
+                            <li><a id="book" href="#"><fmt:message key="label.book" bundle="${lang}"/></a></li>
+                            <li><a id="genre" href="#"><fmt:message key="label.genre" bundle="${lang}"/></a></li>
+                            <li><a id="publisher" href="#"><fmt:message key="label.publisher" bundle="${lang}"/></a></li>
+                            <li><a id="author" href="#"><fmt:message key="label.author" bundle="${lang}"/></a></li>
+                        </ul>
                     </div>
-<%--                </div>--%>
-<%--            </div>--%>
+                    <input type="hidden" name="search_param" value="all" id="search_param">
+                    <input type="text" class="form-control" name="x" id="search" placeholder="<fmt:message key="label.search" bundle="${lang}"/>" onkeyup="loadBooks(this.value)">
+                    <span class="input-group-btn">
+                        <button id="srch" class="btn btn-default" type="submit">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+
+                <div id="livesearch"></div>
+
+            </div>
         </div>
     </div>
 </div>
@@ -188,14 +139,6 @@
 <!---------- footer --------------->
 
 <jsp:include page="footer.jsp" />
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#back').click(function (){
-            window.location = "index.jsp"
-        });
-    });
-</script>
 
 </body>
 </html>

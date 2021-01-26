@@ -4,6 +4,7 @@ import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
+import com.epam.bookshop.util.validator.impl.Validator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

@@ -1,6 +1,6 @@
 package com.epam.bookshop.dao;
 
-import com.epam.bookshop.criteria.Criteria;
+import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
 
 import java.sql.Connection;

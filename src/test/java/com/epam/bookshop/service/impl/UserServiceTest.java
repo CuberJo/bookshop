@@ -1,7 +1,7 @@
 package com.epam.bookshop.service.impl;
 
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.UserCriteria;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;

@@ -1,16 +1,13 @@
 package com.epam.bookshop.service.impl;
 
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.PaymentCriteria;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
 public class PaymentServiceTest {
 

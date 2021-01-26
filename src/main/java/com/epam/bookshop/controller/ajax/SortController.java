@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStrings;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.Book;
 
@@ -43,7 +43,7 @@ public class SortController extends HttpServlet {
      * @param req {@link HttpServletRequest} request from where parameters are taken
      */
     private void sort(List<Book> books, HttpServletRequest req) {
-        if (Objects.nonNull(req.getParameter(UtilStrings.SORT)) && req.getParameter(UtilStrings.SORT).equals(UtilStrings.BY_AUTHOR)) {
+        if (Objects.nonNull(req.getParameter(UtilStrings.SORT)) && req.getParameter(UtilStrings.SORT).equals(UtilStrings.AUTHOR)) {
             books.sort((a, b) -> a.getAuthor().compareToIgnoreCase(b.getAuthor()));
             return;
         }

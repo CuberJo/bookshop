@@ -1,10 +1,12 @@
 package com.epam.bookshop.strategy.query_creator.impl;
 
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.UserCriteria;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.strategy.query_creator.EntityQueryCreator;
+import com.epam.bookshop.util.query_creator.EntityQueryCreator;
+import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
 import org.testng.annotations.Test;
 
 public class UserQueryCreatorTest {
@@ -17,7 +19,7 @@ public class UserQueryCreatorTest {
                 .email("john@gmail.com")
                 .build();
         EntityQueryCreator queryCreator = EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
-        String query = queryCreator.createQuery(criteria);
+        String query = queryCreator.createQuery(criteria, UtilStrings.EQUALS);
         System.out.println(query);
     }
 }

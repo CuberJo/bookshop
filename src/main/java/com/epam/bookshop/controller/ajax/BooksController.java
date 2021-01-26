@@ -1,10 +1,10 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.BookCriteria;
-import com.epam.bookshop.criteria.impl.GenreCriteria;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.BookCriteria;
+import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
@@ -14,8 +14,8 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.JSONHelper;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.JSONWriter;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +32,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.epam.bookshop.constant.UtilStrings.BOOKS;
-import static com.epam.bookshop.constant.UtilStrings.USER_AGENT;
+import static com.epam.bookshop.util.constant.UtilStrings.BOOKS;
 
 /**
  * Fetches books from database
@@ -47,7 +46,7 @@ public class BooksController extends HttpServlet {
     private static final int ITEMS_PER_PAGE = 8;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
@@ -90,7 +89,7 @@ public class BooksController extends HttpServlet {
         Collection<Book> books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
         resp.setContentType(UtilStrings.APPLICATION_JSON);
         req.setCharacterEncoding(UtilStrings.UTF8);
-        String jsonStrings = JSONHelper.getInstance().write(books);
+        String jsonStrings = JSONWriter.getInstance().write(books);
         resp.getWriter().write(jsonStrings);
 //        session.setAttribute(BOOKS, books);
 //        session.setAttribute(UtilStrings.BOOKS_LEN_ATTR, books.size());
@@ -216,14 +215,7 @@ public class BooksController extends HttpServlet {
             books = service.findAll(start, total);
         }
 
-        try {
-            service.findImagesForBooks(books);
-        } catch (EntityNotFoundException e) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
-                    + UtilStrings.WHITESPACE + books;
-            logger.error(error, e);
-            throw new RuntimeException(error, e);
-        }
+        service.findImagesForBooks(books);
 
         return books;
     }

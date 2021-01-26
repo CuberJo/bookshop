@@ -1,13 +1,13 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.criteria.Criteria;
+import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.*;
-import com.epam.bookshop.strategy.query_creator.impl.EntityQueryCreatorFactory;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,7 +188,7 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
     @Override
     public Collection<Payment> findAll(Criteria<Payment> criteria) {
         String query = SQL_SELECT_ALL_PAYMENTS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStrings.EQUALS);
 
         List<Payment> payments = new ArrayList<>();
 
@@ -238,7 +238,7 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
     @Override
     public Optional<Payment> find(Criteria<Payment> criteria) {
         String query = SQL_SELECT_ALL_PAYMENTS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStrings.EQUALS);
 
         Payment payment = null;
 

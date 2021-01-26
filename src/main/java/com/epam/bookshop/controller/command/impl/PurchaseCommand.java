@@ -1,13 +1,13 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStrings;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.criteria.Criteria;
-import com.epam.bookshop.criteria.impl.PaymentCriteria;
-import com.epam.bookshop.criteria.impl.UserCriteria;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Payment;
@@ -18,7 +18,7 @@ import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.PaymentService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.UserFinder;
-import com.epam.bookshop.util.manager.ErrorMessageManager;
+import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,13 +137,7 @@ public class PurchaseCommand implements Command {
             BookService bookService = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
             bookService.setLocale(locale);
 
-            try {
-                bookService.findImagesForBooks(library);
-            } catch (EntityNotFoundException e) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND);
-                session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
-                logger.error(errorMessage, e);
-            }
+            bookService.findImagesForBooks(library);
 
             session.setAttribute(UtilStrings.LIBRARY, library);
         } else {

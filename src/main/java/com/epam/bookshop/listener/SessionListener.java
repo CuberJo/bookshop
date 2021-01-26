@@ -1,22 +1,24 @@
 package com.epam.bookshop.listener;
 
+import com.epam.bookshop.util.constant.UtilStrings;
+
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import java.util.Locale;
 
+/**
+ * Sets default locale when session is created
+ */
 @WebListener
 public class SessionListener implements HttpSessionListener {
 
-    private static final String LOCALE_ATTRIBUTE = "locale";
-    private static final String US = "US";
-    private static final String RU = "RU";
+//    private static final String RU = "RU";
 
-    @Override
+//    @Override
 //    public void sessionCreated(HttpSessionEvent se) {
 //        se.getSession().setAttribute(LOCALE_ATTRIBUTE, new Locale("en", "US"));
 //    }
     public void sessionCreated(HttpSessionEvent se) {
-        se.getSession().setAttribute(LOCALE_ATTRIBUTE, US);
+        se.getSession().setAttribute(UtilStrings.LOCALE, UtilStrings.US);
     }
 }
