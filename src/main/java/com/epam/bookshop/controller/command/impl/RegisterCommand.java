@@ -22,6 +22,9 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
+/**
+ * to register in application
+ */
 public class RegisterCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(RegisterCommand.class);
 
@@ -101,7 +104,7 @@ public class RegisterCommand implements Command {
     private boolean validateEmptyInput(String name, String login, String email, String password,
                                        String locale, HttpSession session) {
 
-        if (!new Validator().emptyStringValidator(name, login, email, password)) {
+        if (new Validator().empty(name, login, email, password)) {
             String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
             session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE, errorMessage);
             return false;

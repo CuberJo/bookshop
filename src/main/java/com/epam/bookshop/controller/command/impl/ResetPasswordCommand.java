@@ -24,6 +24,9 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+/**
+ * to reset {@link User} user password
+ */
 public class ResetPasswordCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(ResetPasswordCommand.class);
 
@@ -43,13 +46,13 @@ public class ResetPasswordCommand implements Command {
         Validator validator = new Validator();
 
         try {
-            if (!validator.emptyStringValidator(email)) {
+            if (validator.empty(email)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
                 return FORGOT_PASSWORD_PAGE;
             }
 
-            validator.validateString(email, RegexConstant.EMAIL_REGEX, ErrorMessageConstants.EMAIL_INCORRECT);
+            validator.validate(email, RegexConstant.EMAIL_REGEX, ErrorMessageConstants.EMAIL_INCORRECT);
 
             EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
             service.setLocale(locale);

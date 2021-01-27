@@ -48,7 +48,7 @@ public class LoginCommand implements Command {
 
 
         try {
-            if (!new Validator().emptyStringValidator(login, password)) {
+            if (new Validator().empty(login, password)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;

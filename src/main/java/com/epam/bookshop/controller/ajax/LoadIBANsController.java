@@ -1,5 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -24,6 +25,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 
+/**
+ * Loads user IBANs into session
+ */
 @WebServlet("/load_ibans")
 public class LoadIBANsController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(LoadIBANsController.class);
@@ -38,36 +42,17 @@ public class LoadIBANsController extends HttpServlet {
         UserCriteria criteria = UserCriteria.builder()
                 .login((String) session.getAttribute(UtilStrings.LOGIN))
                 .build();
-        List<String> IBANs = findIBANs(criteria, locale);
 
-        addIBANs(session, IBANs);
-    }
-
-    /**
-     * Looks for IBANs associated with user
-     * @param criteria user search {@link Criteria<User>} criteria
-     * @param locale {@link String} language for error messages
-     * @return {@link List<String>} of found IBANs
-     */
-    private List<String> findIBANs(Criteria<User> criteria, String locale) {
-        UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
-
-        String error = "";
-
-        Optional<User> optionalUser;
+        List<String> IBANs;
         try {
-            optionalUser = service.find(criteria);
-            if (optionalUser.isEmpty()) {
-                error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
-                throw new RuntimeException(error);
-            }
+            IBANs = EntityFinder.getInstance().findIBANs(criteria, logger, locale);
         } catch (ValidatorException e) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
             logger.error(UtilStrings.EMPTY_STRING, e);
             throw new RuntimeException(error, e);
         }
 
-        return service.findUserBankAccounts(optionalUser.get().getEntityId());
+        addIBANs(session, IBANs);
     }
 
 

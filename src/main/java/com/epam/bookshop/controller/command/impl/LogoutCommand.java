@@ -5,6 +5,9 @@ import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.util.constant.UtilStrings;
 
+/**
+ * to logout from application
+ */
 public class LogoutCommand implements Command {
 
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";

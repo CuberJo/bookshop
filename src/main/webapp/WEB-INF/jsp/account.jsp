@@ -187,7 +187,7 @@
             error = "<fmt:message key="failed_recaptcha" bundle="${err}"/>"
         }
 
-        let malicious_regex = /^[-<>*;='#)+&("]+$/;
+        let malicious_regex = /[<>*;='#)+("]+/;
         if (malicious_regex.test(passField)) {
             event.preventDefault();
             error = "<fmt:message key="incorrect_pass" bundle="${err}"/>";
@@ -197,11 +197,11 @@
         }
 
         let whitespace_regex = /[\s]+/;
-        if (passField == "" || whitespace_regex.test(passField)) {
+        if (passField === "" || whitespace_regex.test(passField)) {
             event.preventDefault();
             error = "<fmt:message key="input_pass" bundle="${err}"/>";
         }
-        if (loginField == "" || whitespace_regex.test(loginField)) {
+        if (loginField === "" || whitespace_regex.test(loginField)) {
             event.preventDefault();
             error = "<fmt:message key="input_login" bundle="${err}"/>";
         }
@@ -216,7 +216,7 @@
         //     error = "Please input your password\n without quotes";
         // }
 
-        if (error != "") {
+        if (error !== "") {
             $("#errorLogMessage").text(error);
             return false;
         }
@@ -250,7 +250,7 @@
         }
 
         let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
-        let malicious_regex = /^[-<>*;='#)+&("]+$/;
+        let malicious_regex = /[<>*;='#)+&("]+/;
         if (malicious_regex.test(passField)) {
             event.preventDefault();
             error = "<fmt:message key="incorrect_pass" bundle="${err}"/>";
@@ -269,19 +269,19 @@
         }
 
         let whitespace_regex = /[\s]+/;
-        if (passField == "" || whitespace_regex.test(passField)) {
+        if (passField === "" || whitespace_regex.test(passField)) {
             event.preventDefault();
             error = "<fmt:message key="input_pass" bundle="${err}"/>";
         }
-        if (emailField == "" || whitespace_regex.test(emailField)) {
+        if (emailField === "" || whitespace_regex.test(emailField)) {
             event.preventDefault();
             error = "<fmt:message key="input_email" bundle="${err}"/>";
         }
-        if (loginField == "" || whitespace_regex.test(loginField)) {
+        if (loginField === "" || whitespace_regex.test(loginField)) {
             event.preventDefault();
             error = "<fmt:message key="input_login" bundle="${err}"/>";
         }
-        if (nameField == "" || whitespace_regex.test(nameField)) {
+        if (nameField === "" || whitespace_regex.test(nameField)) {
             event.preventDefault();
             error = "<fmt:message key="input_name" bundle="${err}"/>";
         }
@@ -299,7 +299,7 @@
         //     return false;
         // }
 
-        if (error != "") {
+        if (error !== "") {
             $("#errorRegMessage").text(error);
             return false;
         }

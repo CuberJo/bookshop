@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Optional;
 
+/**
+ * Renders book in browser
+ */
 @WebServlet("/read_book")
 public class ReadBookController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(ReadBookController.class);

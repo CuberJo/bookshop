@@ -10,12 +10,11 @@ import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.PaymentService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.UserFinder;
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,9 @@ import javax.servlet.http.HttpSession;
 import java.util.Collection;
 import java.util.Objects;
 
+/**
+ * to get to peronal page
+ */
 public class PersonalPageCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(PersonalPageCommand.class);
 
@@ -39,7 +41,7 @@ public class PersonalPageCommand implements Command {
                 Criteria<User> criteria = UserCriteria.builder()
                         .login((String) session.getAttribute(UtilStrings.LOGIN))
                         .build();
-                User user = UserFinder.getInstance().find(session, logger, criteria);
+                User user = EntityFinder.getInstance().find(session, logger, criteria);
 
                 PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);
                 service.setLocale(locale);

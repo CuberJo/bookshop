@@ -3,6 +3,7 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -50,7 +51,7 @@ public class AddIBANCommand implements Command {
             UserCriteria criteria = UserCriteria.builder()
                     .login((String) session.getAttribute(UtilStrings.LOGIN))
                     .build();
-            IBANs = findIBANs(criteria, locale);
+            IBANs = EntityFinder.getInstance().findIBANs(criteria, logger, locale);
             if (Objects.isNull(session.getAttribute(UtilStrings.IBANs))) {
                 session.setAttribute(UtilStrings.IBANs, IBANs);
             }
@@ -111,13 +112,13 @@ public class AddIBANCommand implements Command {
         Validator validator = new Validator();
         validator.setLocale(locale);
 
-        if (!validator.emptyStringValidator(iban)) {
+        if (validator.empty(iban)) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INPUT_IBAN);
             session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE, error);
             return false;
         }
 
-        validator.validateString(iban, RegexConstant.IBAN_REGEX, ErrorMessageConstants.IBAN_INCORRECT);
+        validator.validate(iban, RegexConstant.IBAN_REGEX, ErrorMessageConstants.IBAN_INCORRECT);
 
         return true;
     }
@@ -184,28 +185,5 @@ public class AddIBANCommand implements Command {
         }
 
         return iban;
-    }
-
-
-    /**
-     * Find all {@link String} IBANs, associated with the user
-     * @param criteria {@link Criteria<User>} criteria by which user is found
-     * @param locale {@link String} language for error messages
-     * @return all {@link String} IBANs, associated with the user
-     * @throws ValidatorException if criteria argument failed validation
-     */
-    private List<String> findIBANs(Criteria<User> criteria, String locale) throws ValidatorException {
-
-        UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
-        service.setLocale(locale);
-
-        Optional<User> optionalUser = service.find(criteria);
-        if (optionalUser.isEmpty()) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
-            logger.error(error);
-            throw new RuntimeException(error);
-        }
-
-        return service.findUserBankAccounts(optionalUser.get().getEntityId());
     }
 }

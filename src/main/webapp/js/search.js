@@ -36,10 +36,13 @@ $(document).ready(function(e) {
  * @param str
  */
 function loadBooks(str) {
+
     /**
      * Clear search result hint
      */
-    if (str.length === 0) {
+    const whitespace_regex = /[\s]+/;
+
+    if (str.length <= 2 || whitespace_regex.test(str)) {
         document.getElementById("livesearch").innerHTML="";
         document.getElementById("livesearch").style.border="0px";
         return;
@@ -78,6 +81,8 @@ function loadBooks(str) {
  * Function responsible for fetching data from server
  */
 function load() {
+
+
     /**
      * Instantiating XMLHttpRequest object
      *
@@ -86,19 +91,21 @@ function load() {
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
-            document.getElementById("livesearch").innerHTML = this.response;
-            document.getElementById("livesearch").style.border = "1px solid #A5ACB2";
 
-            let responseObj = xhr.response;
-            alert(responseObj.title);
+            $.each(this.response, function(index, el) {
+                console.log('item ' + el.title);
+
+                $('#livesearch').append(
+                    '<a href="/home?command=book_details&isbn=' + el.isbn + '"><div class="sr">' +
+                    '<img src="data:image/jpg;base64,' + el.base64Image + '">' +
+                    '<div><h4>' + el.title + '</h4>' +
+                    '<p>' + el.price + '&#36;</p></div>' +
+                    '</div></a>'
+                )
+            });
+            document.getElementById("livesearch").style.border = "1px solid #A5ACB2";
         }
     }
-
-    проверить что здесь
-    // xhr.onload = function() {
-    //     let responseObj = xhr.response;
-    //     alert(responseObj.title); // Привет, мир!
-    // };
 
 
     /**

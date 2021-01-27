@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Adds selected book to cart
+ */
 @WebServlet("/add_to_cart")
 public class AddToCartController extends HttpServlet {
 

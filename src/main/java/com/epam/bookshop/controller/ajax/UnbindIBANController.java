@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * Deletes selected IBAN for user
+ */
 @WebServlet("/unbind_iban")
 public class UnbindIBANController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(Command.class);

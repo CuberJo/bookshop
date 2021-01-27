@@ -18,4 +18,5 @@ public class RegexConstant {
 //    public static final String EMAIL_REGEX = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{1,30}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{1,10}[a-zA-Z0-9])?){1,10}$";//*
     public static final String EMPTY_STRING_REGEX = "^[\\s]+$";
     public static final String IBAN_REGEX = "^[\\d]{4}\\s[\\d]{4}\\s[\\d]{4}\\s[\\d]{4}$";
+    public static final String MALICIOUS_REGEX = "[<>*;='#)+&(\"]+";
 }

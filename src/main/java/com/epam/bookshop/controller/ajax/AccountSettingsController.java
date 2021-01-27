@@ -1,5 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -24,6 +25,9 @@ import javax.servlet.http.HttpSession;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Sets new user account data
+ */
 @WebServlet("/account_settings")
 public class AccountSettingsController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(AccountSettingsController.class);
@@ -45,7 +49,7 @@ public class AccountSettingsController extends HttpServlet {
         UserCriteria criteria = UserCriteria.builder()
                 .login((String) session.getAttribute(UtilStrings.LOGIN))
                 .build();
-        User userToUpdate = findUser(criteria, locale);
+        User userToUpdate = EntityFinder.getInstance().find(criteria, logger, locale);
 
 
         if (!validateEmptyInput(login, email, password, verifyPassword, checkPass, session, locale) ||
@@ -76,51 +80,22 @@ public class AccountSettingsController extends HttpServlet {
         Validator validator = new Validator();
         String errorMessage = "";
 
-        if (!validator.emptyStringValidator(checkPassword)) {
+        if (validator.empty(checkPassword)) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_CHECK_PASS);
             session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS, errorMessage);
             return false;
         }
 
-        if (!validator.emptyStringValidator(login) &&
-                !validator.emptyStringValidator(email) &&
-                !validator.emptyStringValidator(password) &&
-                !validator.emptyStringValidator(verifyPassword)) {
+        if (validator.empty(login) &&
+                validator.empty(email) &&
+                validator.empty(password) &&
+                validator.empty(verifyPassword)) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
             session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS, errorMessage);
             return false;
         }
 
         return true;
-    }
-
-
-    /**
-     * Looks for {@link User} by certain {@link Criteria<User>} criteria
-     *
-     * @param locale language for error messages
-     * @return {@link User} object if it is found
-     */
-    private User findUser(Criteria<User> criteria, String locale) {
-        UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
-        service.setLocale(locale);
-
-        User user = null;
-
-        try {
-            Optional<User> optionalUser = service.find(criteria);
-            if (optionalUser.isEmpty()) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
-                        + ((UserCriteria) criteria).getLogin();
-                throw new RuntimeException(error);
-            }
-
-            user = optionalUser.get();
-        } catch (ValidatorException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        return user;
     }
 
 

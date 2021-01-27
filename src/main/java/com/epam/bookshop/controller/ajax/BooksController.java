@@ -1,5 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.constant.UtilStrings;
 import com.epam.bookshop.util.criteria.Criteria;
@@ -153,6 +154,12 @@ public class BooksController extends HttpServlet {
     }
 
 
+    /**
+     * Counts total number of books in database
+     *
+     * @param locale language for error messages
+     * @return total number of books in database
+     */
     private int countBooks(String locale) {
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         service.setLocale(locale);
@@ -163,6 +170,7 @@ public class BooksController extends HttpServlet {
 
     /**
      * Decodes encoded  string
+     *
      * @param encodedString enoded {@link String}
      * @return encoded {@link String}
      */
@@ -171,12 +179,6 @@ public class BooksController extends HttpServlet {
 
         if(Objects.nonNull(encodedString)) {
             decodedString = URLDecoder.decode(encodedString, StandardCharsets.UTF_8);
-
-            //        try {
-//            dcodedGenre = URLDecoder.decode(encodedGenre, UtilStrings.UTF8);
-//        } catch (UnsupportedEncodingException e) {
-//            logger.error(e.getMessage(), e);
-//        }
         }
 
         return decodedString;
@@ -185,6 +187,7 @@ public class BooksController extends HttpServlet {
 
     /**
      * Finds books for given genre name.
+     *
      * @param genreName {@link String} name of book to be found
      * @param locale {@link String} language for error messages
      * @return {@link Collection<Book>} books genre
@@ -201,7 +204,7 @@ public class BooksController extends HttpServlet {
                 GenreCriteria genreCriteria = GenreCriteria.builder()
                         .genre(genreName)
                         .build();
-                Genre genre = findGenre(locale, genreCriteria);
+                Genre genre = EntityFinder.getInstance().find(locale, logger, genreCriteria);
 
                 BookCriteria bookCriteria = BookCriteria.builder()
                         .genreId(genre.getEntityId())
@@ -218,35 +221,5 @@ public class BooksController extends HttpServlet {
         service.findImagesForBooks(books);
 
         return books;
-    }
-
-
-    /**
-     * Finds genreby criteria
-     * @param locale {@link String} language for error messages
-     * @param criteria {@link Criteria<Genre>} criteria by which genre is found
-     * @return {@link Genre} object if found
-     * @throws EntityNotFoundException if no such genre found
-     */
-    private Genre findGenre(String locale, Criteria<Genre> criteria) throws EntityNotFoundException {
-        EntityService<Genre> genreService = (GenreService) ServiceFactory.getInstance().create(EntityType.GENRE);
-        genreService.setLocale(locale);
-        Optional<Genre> optionalGenre;
-        try {
-            optionalGenre = genreService.find(criteria);
-
-            if (optionalGenre.isEmpty()) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
-                        + UtilStrings.WHITESPACE + ((GenreCriteria) criteria).getGenre();
-                throw new EntityNotFoundException(errorMessage);
-            }
-        } catch (ValidatorException e) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.GENRE_INCORRECT)
-                    + UtilStrings.WHITESPACE + ((GenreCriteria) criteria).getGenre();
-            logger.error(error, e);
-            throw new RuntimeException(error, e);
-        }
-
-        return optionalGenre.get();
     }
 }

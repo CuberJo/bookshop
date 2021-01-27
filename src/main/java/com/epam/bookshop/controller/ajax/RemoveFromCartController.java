@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Removes book from cart
+ */
 @WebServlet("/remove_from_cart")
 public class RemoveFromCartController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(RemoveFromCartController.class);

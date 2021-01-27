@@ -12,12 +12,11 @@ import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.PaymentService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.UserFinder;
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +36,7 @@ public class PurchaseCommand implements Command {
 
     /**
      * Executes purchase command.
+     *
      * @param requestContext wrapper object of {@link java.net.http.HttpRequest}
      * @return instance of {@link ResponseContext, which is used to redirect to
      * another page.
@@ -80,6 +80,7 @@ public class PurchaseCommand implements Command {
         }
     }
 
+
     /**
      * Purchase imitation.
      */
@@ -114,7 +115,7 @@ public class PurchaseCommand implements Command {
             Criteria<User> criteria = UserCriteria.builder()
                     .login((String) session.getAttribute(UtilStrings.LOGIN))
                     .build();
-            user = UserFinder.getInstance().find(session, logger, criteria);
+            user = EntityFinder.getInstance().find(session, logger, criteria);
 
             for (Book book : cart) {
                 service.create(new Payment(user, book, LocalDateTime.now(), book.getPrice()));

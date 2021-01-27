@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 
+/**
+ * processes sending contact form
+ */
 public class SendContactFormCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(SendContactFormCommand.class);
 
@@ -41,13 +44,13 @@ public class SendContactFormCommand implements Command {
 
 
         try {
-            if (!validator.emptyStringValidator(name, email, subject)) {
+            if (validator.empty(name, email, subject)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
                 return CONTACT_US_PAGE;
             }
 
-            validator.validateString(email, RegexConstant.EMAIL_REGEX, ErrorMessageConstants.EMAIL_INCORRECT);
+            validator.validate(email, RegexConstant.EMAIL_REGEX, ErrorMessageConstants.EMAIL_INCORRECT);
             String sanitizedName = sanitizer.sanitize(name);
             String sanitizedEmail = sanitizer.sanitize(email);
             String sanitizedSubject = sanitizer.sanitize(subject);

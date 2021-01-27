@@ -4,6 +4,9 @@ import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 
+/**
+ * to get advanced search page
+ */
 public class SearchCommand implements Command {
 
     private static final ResponseContext SEARCH_PAGE = () -> "/WEB-INF/jsp/search.jsp";

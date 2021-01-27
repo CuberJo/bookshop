@@ -65,7 +65,7 @@
         let error = "";
 
         let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
-        let malicious_regex = /^[-<>*;='#)+&("]+$/;
+        let malicious_regex = /[<>*;='#)+&("]+/;
         if (malicious_regex.test(emailField) || !email_regex.test(emailField)) {
             event.preventDefault();
             error = "Incorrect email";

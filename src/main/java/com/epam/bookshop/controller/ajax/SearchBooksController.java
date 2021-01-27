@@ -3,21 +3,23 @@ package com.epam.bookshop.controller.ajax;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
+import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
-import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.JSONWriter;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.RegexConstant;
 import com.epam.bookshop.util.constant.UtilStrings;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,21 +27,28 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Optional;
 
+/**
+ * Alive book search
+ */
 @WebServlet("/search_books")
 public class SearchBooksController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(SearchBooksController.class);
 
     private static final String SEARCH_CRITERIA = "searchCriteria";
     private static final String SEARCH_STR = "str";
+    private static final int DEFAULT_GENRE_ID = 1;
 
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+
+        if (istSearchInputCorrect(req.getParameter(SEARCH_STR))) {
+            return;
+        }
 
         Criteria<Book> criteria = buildCriteria(req, locale);
         Collection<Book> books = findBooksLike(criteria, locale);
@@ -50,20 +59,56 @@ public class SearchBooksController extends HttpServlet {
 
 
     /**
+     * Checks, if passed string corresponds to correct input
+     *
+     * @param searchStr string to validate
+     * @return returns <b>true</b> if and only if passed
+     * string corresponds to correct input, otherwise - <b>false</b>
+     */
+    private boolean istSearchInputCorrect(String searchStr) {
+        Validator validator = new Validator();
+        try {
+            if (validator.empty(searchStr)) {
+                return false;
+            }
+            validator.validate(searchStr, RegexConstant.MALICIOUS_REGEX, ErrorMessageConstants.INVALID_INPUT_DATA);
+        } catch (ValidatorException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+
+
+    /**
      * Builds criteria by request params
      *
      * @param request instance of {@link HttpServletRequest} class
      * @param locale language of error messages
      * @return built {@link Criteria<Book>} instance
      */
-    private Criteria<Book> buildCriteria(HttpServletRequest request, String locale) {
+    public static Criteria<Book> buildCriteria(HttpServletRequest request, String locale) {
 
         String searchStr = request.getParameter(SEARCH_STR);
 
         Criteria<Book> criteria;
         switch (request.getParameter(SEARCH_CRITERIA)) {
             case UtilStrings.GENRE:
-                long genreId = findGenreId(locale, searchStr);
+                Criteria<Genre> genreCriteria = GenreCriteria.builder()
+                        .genre(searchStr)
+                        .build();
+                Genre genre;
+                long genreId;
+                try {
+                    genre = EntityFinder.getInstance().find(locale, logger, genreCriteria);
+                    genreId = genre.getEntityId();
+                } catch (EntityNotFoundException e) {
+                    String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
+                            + UtilStrings.WHITESPACE + searchStr;
+                    logger.error(error, e);
+                    genreId = DEFAULT_GENRE_ID;
+                }
 
                 criteria = BookCriteria.builder()
                         .genreId(genreId)
@@ -87,43 +132,6 @@ public class SearchBooksController extends HttpServlet {
         }
 
         return criteria;
-    }
-
-
-    /**
-     * Finds genre id by it's name
-     *
-     * @param locale language of error messages
-     * @param genreName {@link String} genre name
-     * @return genre id
-     */
-    private long findGenreId(String locale, String genreName) {
-        GenreService service = (GenreService) ServiceFactory.getInstance().create(EntityType.GENRE);
-        service.setLocale(locale);
-
-        Criteria<Genre> criteria = GenreCriteria.builder()
-                .genre(genreName)
-                .build();
-
-        Optional<Genre> optionalGenre;
-        String error;
-        try {
-            optionalGenre = service.findLike(criteria);
-
-            if (optionalGenre.isEmpty()) {
-                error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
-                        + UtilStrings.WHITESPACE + genreName;
-                logger.error(error);
-                throw new RuntimeException(error);
-            }
-        } catch (ValidatorException e) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA)
-                    + UtilStrings.WHITESPACE + genreName;
-            logger.error(error);
-            throw new RuntimeException(error, e);
-        }
-
-        return optionalGenre.get().getEntityId();
     }
 
 

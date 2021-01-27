@@ -416,7 +416,7 @@
         let error = "";
 
         let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
-        let malicious_regex = /^[-<>*;='#)+&("]+$/;
+        let malicious_regex = /[<>*;='#)+&("]+/;
         <%--if (checkPassField !== "" && malicious_regex.test(checkPassField)) {--%>
         <%--    event.preventDefault();--%>
         <%--    error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";--%>
