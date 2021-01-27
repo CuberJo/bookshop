@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Alive book search
@@ -36,7 +38,6 @@ public class SearchBooksController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(SearchBooksController.class);
 
     private static final String SEARCH_CRITERIA = "searchCriteria";
-    private static final String SEARCH_STR = "str";
     private static final int DEFAULT_GENRE_ID = 1;
 
 
@@ -46,7 +47,9 @@ public class SearchBooksController extends HttpServlet {
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
-        if (istSearchInputCorrect(req.getParameter(SEARCH_STR))) {
+        if (!isSearchInputCorrect(req.getParameter(UtilStrings.SEARCH_STR))) {
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
+            session.setAttribute(ErrorMessageConstants.ERROR_SEARCH_MESSAGE, error);
             return;
         }
 
@@ -65,18 +68,13 @@ public class SearchBooksController extends HttpServlet {
      * @return returns <b>true</b> if and only if passed
      * string corresponds to correct input, otherwise - <b>false</b>
      */
-    private boolean istSearchInputCorrect(String searchStr) {
+    private boolean isSearchInputCorrect(String searchStr) {
         Validator validator = new Validator();
-        try {
-            if (validator.empty(searchStr)) {
-                return false;
-            }
-            validator.validate(searchStr, RegexConstant.MALICIOUS_REGEX, ErrorMessageConstants.INVALID_INPUT_DATA);
-        } catch (ValidatorException e) {
-            e.printStackTrace();
-        }
 
-        return false;
+        Pattern p = Pattern.compile(RegexConstant.MALICIOUS_REGEX);
+        Matcher m = p.matcher(searchStr);
+
+        return !validator.empty(searchStr) && !m.matches();
     }
 
 
@@ -88,9 +86,9 @@ public class SearchBooksController extends HttpServlet {
      * @param locale language of error messages
      * @return built {@link Criteria<Book>} instance
      */
-    public static Criteria<Book> buildCriteria(HttpServletRequest request, String locale) {
+    private Criteria<Book> buildCriteria(HttpServletRequest request, String locale) {
 
-        String searchStr = request.getParameter(SEARCH_STR);
+        String searchStr = request.getParameter(UtilStrings.SEARCH_STR);
 
         Criteria<Book> criteria;
         switch (request.getParameter(SEARCH_CRITERIA)) {

@@ -8,9 +8,29 @@
          version="4.0">
   <display-name>Archetype Created Web Application</display-name>
 
+  <!--CharsetFilter start-->
+
+  <filter>
+    <filter-name>CharsetFilter</filter-name>
+    <filter-class>com.epam.bookshop.fliter.CharsetFilter</filter-class>
+    <init-param>
+      <param-name>requestEncoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>CharsetFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!--Session timeout-->
+
   <session-config>
       <session-timeout>60</session-timeout>
   </session-config>
+
+  <!--ail params-->
 
   <context-param>
     <param-name>mail</param-name>
@@ -18,10 +38,14 @@
     <param-value>resources/mail.properties</param-value>
   </context-param>
 
+  <!--404 page location-->
+
   <error-page>
     <error-code>404</error-code>
     <location>/error404.jsp</location>
   </error-page>
+
+  <!--Pages for exceptions-->
 
   <error-page>
     <exception-type>com.epam.bookshop.exception.EntityNotFoundException</exception-type>

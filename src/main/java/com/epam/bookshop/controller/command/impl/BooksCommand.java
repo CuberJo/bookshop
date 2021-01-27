@@ -3,70 +3,46 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.domain.impl.Genre;
-import com.epam.bookshop.exception.EntityNotFoundException;
-import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.service.impl.BookService;
-import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.util.criteria.impl.BookCriteria;
-import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpSession;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Objects;
 
 public class BooksCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(BooksCommand.class);
 
-    private static final ResponseContext BOOKS_PAGE = () -> "/WEB-INF/jsp/books.jsp";
+    private static final ResponseContext BOOKS_PAGE_FORWARD = () -> "/WEB-INF/jsp/books.jsp";
+    private static final ResponseContext BOOKS_PAGE_REDIRECT = () -> "/home?command=books";
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-//        final HttpSession session = requestContext.getSession();
-//        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
-//
-//        String genreName = decode(requestContext.getParameter(UtilStrings.GENRE));
-//        int page = 1;
-//        String pageStr = requestContext.getParameter(UtilStrings.PAGE);
-//        if (Objects.nonNull(pageStr) && !pageStr.isEmpty()) {
-//            page = Integer.parseInt(pageStr);
-//        }
-//        int total = 8;
-//        if (--page > 0) {
-//            page *= total;
-//        }
-//        Boolean filtered = (Boolean) session.getAttribute(UtilStrings.FILTERED);
-//        if (Objects.isNull(filtered)) {
-//            filtered = false;
-//        }
-//        if (!filtered) {
-//            Collection<Book> books = getBooksByGenre(genreName, page, total, locale);
-//            requestContext.setAttribute(BOOKS, books);
-//            requestContext.setAttribute(UtilStrings.BOOKS_LEN_ATTR, books.size());
-//        }
-//        filtered = false;
-//        session.setAttribute(UtilStrings.FILTERED, filtered);
+
+        final HttpSession session = requestContext.getSession();
+        if (Objects.nonNull(requestContext.getParameter(UtilStrings.SEARCH_CRITERIA))) {
+            session.setAttribute(UtilStrings.SEARCH_CRITERIA, requestContext.getParameter(UtilStrings.SEARCH_CRITERIA));
+            session.setAttribute(UtilStrings.CUSTOMIZED_SEARCH, "true");
+            session.setAttribute(UtilStrings.SEARCH_STR, requestContext.getParameter(UtilStrings.SEARCH_STR));
+            return BOOKS_PAGE_REDIRECT;
+        }
 
         String genreName = decode(requestContext.getParameter(UtilStrings.GENRE));
         requestContext.setAttribute(UtilStrings.GENRE, genreName);
 
-        return BOOKS_PAGE;
+        return BOOKS_PAGE_FORWARD;
     }
 
 
     /**
      * Decodes encoded  string
+     *
      * @param encodedString enoded {@link String}
      * @return encoded {@link String}
      */
-    private String decode(String encodedString) {
+    public static String decode(String encodedString) {
         String decodedString = "";
 
         if(Objects.nonNull(encodedString)) {
@@ -74,43 +50,5 @@ public class BooksCommand implements Command {
         }
 
         return decodedString;
-    }
-
-
-    /**
-     * Finds books for given genre name.
-     * @param genreName {@link String} name of book to be found
-     * @param locale {@link String} language for error messages
-     * @return {@link Collection<Book>} books genre
-     */
-    private Collection<Book> getBooksByGenre(String genreName, int start, int total, String locale) {
-
-        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        service.setLocale(locale);
-
-        Collection<Book> books = null;
-
-        if (Objects.nonNull(genreName) && !genreName.isEmpty()) {
-            try {
-                GenreCriteria genreCriteria = GenreCriteria.builder()
-                        .genre(genreName)
-                        .build();
-                Genre genre = EntityFinder.getInstance().find(locale, logger, genreCriteria);
-
-                BookCriteria bookCriteria = BookCriteria.builder()
-                        .genreId(genre.getEntityId())
-                        .build();
-                books = service.findAll(bookCriteria, start, total);
-
-            } catch (EntityNotFoundException | ValidatorException e) {
-                logger.error(e.getMessage(), e);
-            }
-        } else {
-            books = service.findAll(start, total);
-        }
-
-        service.findImagesForBooks(books);
-
-        return books;
     }
 }

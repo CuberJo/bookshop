@@ -48,6 +48,9 @@
 
 <body>
 
+<div id="searchgenre" style="display: none">${requestScope.genre}</div>
+<div id="searchlocale" style="display: none">${sessionScope.locale}</div>
+
 <!---------- header --------------->
 
 <noscript>Need Javascript</noscript>
@@ -104,6 +107,13 @@
         <h2><fmt:message key="label.advanced_search" bundle="${lang}"/></h2>
     </div>
 
+    <div class="row row-2">
+        <pre id="errorSearchMessage" style="color: #ff523b; display: none"></pre>
+        <c:if test="${not empty error_search_message}">
+            <pre style="color: #ff523b">${error_search_message}</pre>
+            <c:remove var="error_search_message" scope="session" />
+        </c:if>
+    </div>
 
     <div class="mrow">
         <div class="row">
@@ -114,19 +124,27 @@
                             <span id="search_concept"><fmt:message key="label.all" bundle="${lang}"/></span> <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu scrollable-dropdown" role="menu">
-                            <li><a id="book" href="#"><fmt:message key="label.book" bundle="${lang}"/></a></li>
-                            <li><a id="genre" href="#"><fmt:message key="label.genre" bundle="${lang}"/></a></li>
-                            <li><a id="publisher" href="#"><fmt:message key="label.publisher" bundle="${lang}"/></a></li>
-                            <li><a id="author" href="#"><fmt:message key="label.author" bundle="${lang}"/></a></li>
+                            <li><a class="book" href="#"><fmt:message key="label.book" bundle="${lang}"/></a></li>
+                            <li><a class="genre" href="#"><fmt:message key="label.genre" bundle="${lang}"/></a></li>
+                            <li><a class="publisher" href="#"><fmt:message key="label.publisher" bundle="${lang}"/></a></li>
+                            <li><a class="author" href="#"><fmt:message key="label.author" bundle="${lang}"/></a></li>
                         </ul>
                     </div>
                     <input type="hidden" name="search_param" value="all" id="search_param">
                     <input type="text" class="form-control" name="x" id="search" placeholder="<fmt:message key="label.search" bundle="${lang}"/>" onkeyup="loadBooks(this.value)">
-                    <span class="input-group-btn">
-                        <button id="srch" class="btn btn-default" type="submit">
+<%--                    <span class="input-group-btn">--%>
+<%--                        <button id="srch" class="btn btn-default" type="submit">--%>
+<%--                            <span class="glyphicon glyphicon-search"></span>--%>
+<%--                        </button>--%>
+<%--                    </span>--%>
+                    <form class="input-group-btn" method="post" action="/home?command=books">
+                        <input type="hidden" name="customizedSearch" value="true" />
+                        <input type="hidden" name="searchCriteria" id="scr" />
+                        <input type="hidden" name="str" id="str" />
+                        <button class="btn btn-default" type="submit" onclick="validateSearchInput(event)">
                             <span class="glyphicon glyphicon-search"></span>
                         </button>
-                    </span>
+                    </form>
                 </div>
 
                 <div id="livesearch"></div>
@@ -134,6 +152,32 @@
             </div>
         </div>
     </div>
+
+    <div class="row row-2">
+        <h2>
+            <fmt:message key="label.all_books" bundle="${lang}" />
+        </h2>
+        <select>
+            <option class="default"><fmt:message key="label.default_shorting" bundle="${lang}"/></option>
+            <option class="price"><fmt:message key="label.short_by_price" bundle="${lang}"/></option>
+            <option class="author"><fmt:message key="label.short_by_author" bundle="${lang}"/></option>
+            <%--            <option><fmt:message key="label.short_by_popularity" bundle="${lang}"/></option>--%>
+            <%--            <option><fmt:message key="label.short_by_rating" bundle="${lang}"/></option>--%>
+            <%--            <option><fmt:message key="label.short_by_sale" bundle="${lang}"/></option>--%>
+        </select>
+    </div>
+
+    <div class="mrow">
+        <div id="toInsert" class="row">
+
+        </div>
+        <div class="pagination">
+            <div class="prev"><fmt:message key="label.prev" bundle="${lang}" /></div>
+            <div class="page"><fmt:message key="label.page" bundle="${lang}"/><span class="page-num"></span></div>
+            <div class="next"><fmt:message key="label.next" bundle="${lang}" /></div>
+        </div>
+    </div>
+</div>
 </div>
 
 <!---------- footer --------------->

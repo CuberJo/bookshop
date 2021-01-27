@@ -12,10 +12,13 @@ import java.io.IOException;
 
 @WebFilter("/*")
 public class CharsetFilter extends HttpFilter {
+
+    private static final String CONCRETE_CONTENT_TYPE = "text/html; charset=UTF-8";
+
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         req.setCharacterEncoding(UtilStrings.UTF8);
-        res.setContentType("text/html; charset=UTF-8");
+        res.setContentType(CONCRETE_CONTENT_TYPE);
         res.setCharacterEncoding(UtilStrings.UTF8);
         chain.doFilter(req, res);
     }

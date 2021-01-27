@@ -1,7 +1,7 @@
 
 let searchCriteria;
 let typingTimer;                //timer identifier
-let doneTypingInterval = 1500;  //time in ms (5 seconds)
+let doneTypingInterval = 4000;  //time in ms (5 seconds)
 let searchStr;
 
 $(document).ready(function(e) {
@@ -10,23 +10,22 @@ $(document).ready(function(e) {
         let param = $(this).attr("href").replace("#", "");
         let concept = $(this).text();
 
-        searchCriteria = this.id;
+        searchCriteria = this.className;
+        $('#scr').val(searchCriteria);
 
         $('.search-panel span#search_concept').text(concept);
         $('.input-group #search_param').val(param);
     });
+    // $('ul li a').click(function(){
+    //     chosenSearchCriteria = $(this).attr('id');
+    // });
+    // $('#srch').click(function (e) {
+    //     // e.preventDefault();
+    //     if (!validateSearchInput(e)) {
+    //         return;
+    //     }
+    // })
 });
-// var a = document.getElementsByTagName('a').item(0);
-// console.log(a);
-// $(function(){ // this will be called when the DOM is ready
-//     var t = $('a');
-//     console.log(t)
-//     t.item(0).onclick(function() {
-//         console.log('hi')
-//         console.log($('a')[0]);
-//         alert('Handler for .keyup() called.');
-//     });
-// });
 
 
 /**
@@ -37,10 +36,16 @@ $(document).ready(function(e) {
  */
 function loadBooks(str) {
 
+    $('#errorSearchMessage').css('display', 'none');
+
+    if (!validateSearchInput(event, str)) {
+        return;
+    }
+
     /**
      * Clear search result hint
      */
-    const whitespace_regex = /[\s]+/;
+    const whitespace_regex = /^[\s]+$/;
 
     if (str.length <= 2 || whitespace_regex.test(str)) {
         document.getElementById("livesearch").innerHTML="";
@@ -55,25 +60,6 @@ function loadBooks(str) {
      */
     clearTimeout(typingTimer);
     typingTimer = setTimeout(load, doneTypingInterval);
-
-
-    // $.ajax({
-    //     url: 'http://localhost:8080/loadBooks',
-    //     type: 'GET',
-    //     data: ({page: ++pageNum, genre: $('#genre').text()}),
-    //     success: function (jsonStr) {
-    //         books = jsonStr;
-    //         $('#toInsert').empty();
-    //         render(books);
-    //         $('.page-num').text(' ' + pageNum);
-    //         if (pageNum > 0) {
-    //             showPrev();
-    //         }
-    //         if (pageNum * booksPerPage >= booksQuantity) {
-    //             hideNext();
-    //         }
-    //     }
-    // });
 }
 
 
@@ -104,6 +90,10 @@ function load() {
                 )
             });
             document.getElementById("livesearch").style.border = "1px solid #A5ACB2";
+
+            if (this.response == "") {
+                document.getElementById("livesearch").style.border="0px";
+            }
         }
     }
 
@@ -134,10 +124,47 @@ function load() {
 }
 
 
-// $(function () {
-//     $('#srch').on('click', function () {
-//         $.ajax({
-//             url:
-//         })
-//     })
-// })
+/**
+ * Validates searh string
+ *
+ * @returns {boolean}
+ */
+function validateSearchInput(event) {
+
+    searchStr = $('#search').val();
+    console.log('searchStr ' + searchStr);
+
+    let error;
+
+    let locale =  $('#searchlocale').text();
+    let malicious_regex = /[<>*;='#)+&("]+/;
+    if (malicious_regex.test(searchStr)) {
+        event.preventDefault();
+        if (locale === 'RU') {
+            error = 'Неверно введены данные';
+        } else {
+            error = 'Invalid input data';
+        }
+    }
+
+    // let whitespace_regex = /^[\s]+$/;
+    // if (searchStr === "" || whitespace_regex.test(searchStr)) {
+    //     event.preventDefault();
+    //     if (locale === 'RU') {
+    //         error = 'Неверно введены данные';
+    //     } else {
+    //         error = 'Invalid input data';
+    //     }
+    // }
+
+    if (error !== "" && error !== undefined) {
+        $('#errorSearchMessage').css('display', 'block');
+        $("#errorSearchMessage").text(error);
+        return false;
+    }
+
+    $('#str').val(searchStr)
+
+    return true;
+}
+

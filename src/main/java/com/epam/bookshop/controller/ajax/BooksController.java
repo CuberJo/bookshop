@@ -1,5 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
+import com.epam.bookshop.controller.command.impl.BooksCommand;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.constant.UtilStrings;
@@ -45,17 +46,12 @@ public class BooksController extends HttpServlet {
     private static final String  BOOKS_PAGE = "/WEB-INF/jsp/books.jsp";
 
     private static final int ITEMS_PER_PAGE = 8;
+    private static final int DEFAULT_GENRE_ID = 1;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
-
-//        if (session.getAttribute("page") != null && session.getAttribute("page").equals("get")) {
-//            session.removeAttribute("page");
-//            req.getRequestDispatcher(BOOKS_PAGE).forward(req, resp);
-//            return;
-//        }
 
         String count = req.getParameter(UtilStrings.COUNT);
         if (Objects.nonNull(count) && !count.isEmpty()) {
@@ -66,6 +62,26 @@ public class BooksController extends HttpServlet {
             return;
         }
 
+
+        String searchCriteria = (String) session.getAttribute(UtilStrings.SEARCH_CRITERIA);
+        if (Objects.nonNull(searchCriteria) /*&& !searchCriteria.isEmpty()*/) {
+            Criteria<Book> criteria = buildCriteria(session, locale);
+
+            Collection<Book> books = getBooks(criteria, 1, 8, locale);
+
+            session.removeAttribute(UtilStrings.SEARCH_CRITERIA);
+            session.removeAttribute(UtilStrings.CUSTOMIZED_SEARCH);
+            session.removeAttribute(UtilStrings.SEARCH_STR);
+
+            resp.setContentType(UtilStrings.APPLICATION_JSON);
+            req.setCharacterEncoding(UtilStrings.UTF8);
+            String jsonStrings = JSONWriter.getInstance().write(books);
+            resp.getWriter().write(jsonStrings);
+
+            return;
+        }
+
+
         int start = 1;
         String pageStr = req.getParameter(UtilStrings.PAGE);
         if (Objects.nonNull(pageStr) && !pageStr.isEmpty()) {
@@ -73,84 +89,13 @@ public class BooksController extends HttpServlet {
         }
         start = --start * ITEMS_PER_PAGE;
 
-
-//        boolean needPage = false;
-//        if ((Objects.isNull(pageStr) || pageStr.isEmpty()) && (Objects.isNull(session.getAttribute("process")) || !((Boolean) session.getAttribute("process")))) {
-////            session.removeAttribute("process");
-//            needPage = true;
-//        }
-
-
-//        Boolean filtered = (Boolean) session.getAttribute(UtilStrings.FILTERED);
-//        if (Objects.isNull(filtered)) {
-//            filtered = false;
-//        }
-//        if (!filtered) {
-        String genreName = decode(req.getParameter(UtilStrings.GENRE));
+        String genreName = BooksCommand.decode(req.getParameter(UtilStrings.GENRE));
         Collection<Book> books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
+
         resp.setContentType(UtilStrings.APPLICATION_JSON);
         req.setCharacterEncoding(UtilStrings.UTF8);
         String jsonStrings = JSONWriter.getInstance().write(books);
         resp.getWriter().write(jsonStrings);
-//        session.setAttribute(BOOKS, books);
-//        session.setAttribute(UtilStrings.BOOKS_LEN_ATTR, books.size());
-//        }
-//        filtered = false;
-//        session.setAttribute("process", false);
-//        session.setAttribute(UtilStrings.FILTERED, filtered);
-
-//        if (needPage) {
-//        req.getRequestDispatcher(BOOKS_PAGE).forward(req, resp);
-//        }
-    }
-
-    //    @Override
-    protected void doGGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final HttpSession session = req.getSession();
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
-
-        if (session.getAttribute("page") != null && session.getAttribute("page").equals("get")) {
-            session.removeAttribute("page");
-            req.getRequestDispatcher(BOOKS_PAGE).forward(req, resp);
-            return;
-        }
-
-        boolean needPage = false;
-
-        String genreName = decode(req.getParameter(UtilStrings.GENRE));
-        int page = 1;
-        String pageStr = req.getParameter(UtilStrings.PAGE);
-        if ((Objects.isNull(pageStr) || pageStr.isEmpty()) && (Objects.isNull(session.getAttribute("process")) || !((Boolean) session.getAttribute("process")))) {
-//            session.removeAttribute("process");
-            needPage = true;
-        }
-        if (Objects.nonNull(pageStr) && !pageStr.isEmpty()) {
-            page = Integer.parseInt(pageStr);
-        }
-        int total = 8;
-        if (--page > 0) {
-            page *= total;
-        }
-
-        Boolean filtered = (Boolean) session.getAttribute(UtilStrings.FILTERED);
-        if (Objects.isNull(filtered)) {
-            filtered = false;
-        }
-        if (!filtered) {
-            Collection<Book> books = getBooksByGenre(genreName, page, total, locale);
-            session.setAttribute(BOOKS, books);
-            session.setAttribute(UtilStrings.BOOKS_LEN_ATTR, books.size());
-        }
-        filtered = false;
-        session.setAttribute("process", false);
-        session.setAttribute(UtilStrings.FILTERED, filtered);
-
-        if (needPage) {
-            req.getRequestDispatcher(BOOKS_PAGE).forward(req, resp);
-        }
-//        if (Objects.nonNull(req.getParameter("action")) && req.getParameter("action").equals("getPage")) {
-//            resp.sendRedirect("/home?command=books");
-//        }
     }
 
 
@@ -168,25 +113,35 @@ public class BooksController extends HttpServlet {
     }
 
 
-    /**
-     * Decodes encoded  string
-     *
-     * @param encodedString enoded {@link String}
-     * @return encoded {@link String}
-     */
-    private String decode(String encodedString) {
-        String decodedString = "";
 
-        if(Objects.nonNull(encodedString)) {
-            decodedString = URLDecoder.decode(encodedString, StandardCharsets.UTF_8);
+    /**
+     * Finds books by given criteria
+     *
+     * @param criteria {@link Criteria<Book>} search criteria
+     * @param locale {@link String} language for error messages
+     * @return {@link Collection<Book>} books genre
+     */
+    private Collection<Book> getBooks(Criteria<Book> criteria, int start, int total, String locale) {
+
+        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
+        service.setLocale(locale);
+
+        Collection<Book> books = null;
+
+        try {
+            books = service.findAllLike(criteria);
+            service.findImagesForBooks(books);
+
+        } catch (ValidatorException e) {
+            logger.error(e.getMessage(), e);
         }
 
-        return decodedString;
+        return books;
     }
 
 
     /**
-     * Finds books for given genre name.
+     * Finds books by given genre name.
      *
      * @param genreName {@link String} name of book to be found
      * @param locale {@link String} language for error messages
@@ -221,5 +176,59 @@ public class BooksController extends HttpServlet {
         service.findImagesForBooks(books);
 
         return books;
+    }
+
+
+    /**
+     * Builds criteria by request params
+     *
+     * @param session instance of {@link HttpSession} class
+     * @param locale language of error messages
+     * @return built {@link Criteria<Book>} instance
+     */
+    private Criteria<Book> buildCriteria(HttpSession session, String locale) {
+
+        String searchStr = (String) session.getAttribute(UtilStrings.SEARCH_STR);
+
+        Criteria<Book> criteria;
+        switch ((String) session.getAttribute(UtilStrings.SEARCH_CRITERIA)) {
+            case UtilStrings.GENRE:
+                Criteria<Genre> genreCriteria = GenreCriteria.builder()
+                        .genre(searchStr)
+                        .build();
+                Genre genre;
+                long genreId;
+                try {
+                    genre = EntityFinder.getInstance().find(locale, logger, genreCriteria);
+                    genreId = genre.getEntityId();
+                } catch (EntityNotFoundException e) {
+                    String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
+                            + UtilStrings.WHITESPACE + searchStr;
+                    logger.error(error, e);
+                    genreId = DEFAULT_GENRE_ID;
+                }
+
+                criteria = BookCriteria.builder()
+                        .genreId(genreId)
+                        .build();
+                break;
+            case UtilStrings.PUBLISHER:
+                criteria = BookCriteria.builder()
+                        .publisher(searchStr)
+                        .build();
+                break;
+            case UtilStrings.AUTHOR:
+                criteria = BookCriteria.builder()
+                        .author(searchStr)
+                        .build();
+                break;
+            case UtilStrings.BOOK:
+            default:
+                criteria = BookCriteria.builder()
+                        .title(searchStr)
+                        .build();
+        }
+
+        return criteria;
     }
 }

@@ -53,6 +53,7 @@ public class ErrorMessageConstants {
     public static final String ERROR_ADD_IBAN_MESSAGE = "error_add_iban_message";
     public static final String ERROR_LOG_MESSAGE = "error_log_message";
     public static final String ERROR_REG_MESSAGE = "error_reg_message";
+    public static final String ERROR_SEARCH_MESSAGE = "error_search_message";
     public static final String ERROR_MESSAGE = "error_message";
     public static final String ERROR_CONTACT_US_MESSAGE = "error_contact_us_message";
 
