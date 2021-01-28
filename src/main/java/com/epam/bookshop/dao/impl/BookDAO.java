@@ -3,6 +3,7 @@ package com.epam.bookshop.dao.impl;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.util.ImgToBase64Converter;
 import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.db.ConnectionPool;
@@ -25,6 +26,9 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final Logger logger = LoggerFactory.getLogger(BookDAO.class);
 
     private static final String SQL_SELECT_ALL_BOOKS_WHERE =  "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK WHERE ";
+    private static final String SQL_SELECT_ALL_BOOKS_WHERE_LIKE_OR = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK " +
+            "WHERE Title LIKE ? OR Author LIKE ? OR Publisher LIKE ? ;";
+
     private static final String SQL_UPDATE_BOOK_WHERE =  "UPDATE TEST_LIBRARY.BOOK SET %s WHERE Id = ?";
 
     private static final String SQL_INSERT_BOOK = "INSERT INTO TEST_LIBRARY.BOOK (ISBN, Title, Author, Price, Publisher, Genre_Id, Preview) VALUES (?, ?, ?, ?, ?, ?, ?);";
@@ -42,7 +46,13 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             "FROM TEST_LIBRARY.BOOK " +
             "WHERE Id = ?";
 
+    private static final String SQL_SELECT_RAND = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM BOOK ORDER BY RAND() LIMIT 1;";
+
     private static final String SQL_SELECT_COUNT_ALL = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.BOOK;";
+    private static final String SQL_SELECT_COUNT_ALL_WHERE = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.BOOK WHERE ";
+    private static final String SQL_SELECT_COUNT_ALL_WHERE_LIKE_OR = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.BOOK " +
+            "WHERE Title LIKE ? OR Author LIKE ? OR Publisher LIKE ? ;";
+
 
     private static final String SQL_SELECT_IMG_BY_ISBN = "SELECT Image from TEST_LIBRARY.BOOK_IMAGE WHERE ISBN = ?;";
     private static final String SQL_INSERT_IMG = "INSERT INTO TEST_LIBRARY.BOOK_IMAGE (ISBN, Image) VALUES (?, ?)";
@@ -588,6 +598,50 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
 
     /**
+     * Finds random row in table
+     *
+     * @return found random book
+     */
+    public Optional<Book> findRand() {
+
+        Book book = null;
+
+        AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, ConnectionPool.getInstance().getAvailableConnection());
+
+        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_RAND);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                book = new Book();
+
+                book.setEntityId(rs.getLong(ID_COLUMN));
+                book.setISBN(rs.getString(ISBN_COLUMN));
+                book.setTitle(rs.getString(TITLE_COLUMN));
+                book.setPrice(rs.getDouble(PRICE_COLUMN));
+
+                Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
+                if (optionalGenre.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                }
+                book.setGenre(optionalGenre.get());
+
+                book.setAuthor(rs.getString(AUTHOR_COLUMN));
+                book.setPublisher(rs.getString(PUBLISHER_COLUMN));
+                book.setPreview(rs.getString(PREVIEW_COLUMN));
+
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return Optional.ofNullable(book);
+    }
+
+
+
+
+    /**
      * Counts number of rows in 'BOOK' table
      *
      * @return number of rows in BOOKS table
@@ -603,6 +657,79 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             }
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
+        }
+
+        return rows;
+    }
+
+
+    /**
+     * Counts number of rows in 'BOOK' table
+     * that are similar to passed as argument
+     * {@link Criteria<Book>} instance
+     *
+     * @param criteria criteria, by which fields rows would be counted
+     * @return number of rows in 'BOOKS' table
+     */
+    public int count(Criteria<Book> criteria) {
+        String query;
+
+        if (((BookCriteria) criteria).getGenreId() != null) {
+            query = SQL_SELECT_COUNT_ALL_WHERE
+                    + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.EQUALS);
+        } else {
+            query = SQL_SELECT_COUNT_ALL_WHERE
+                    + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.LIKE);
+        }
+
+        int rows = 0;
+
+        try (PreparedStatement ps = getPrepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                rows = rs.getInt(NUM_COLUMN);
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return rows;
+    }
+
+
+    /**
+     * Counts number of rows in 'BOOK' table
+     * that are similar to argument
+     *
+     * @param searchParam string to look for in table
+     * @return number of rows in 'BOOKS' table
+     */
+    public int count(String searchParam) {
+        int rows = 0;
+
+        ResultSet rs = null;
+
+        try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_COUNT_ALL_WHERE_LIKE_OR)) {
+
+            ps.setString(1, "%" + searchParam + "%");
+            ps.setString(2, "%" + searchParam + "%");
+            ps.setString(3, "%" + searchParam + "%");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                rows = rs.getInt(NUM_COLUMN);
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    logger.error(throwables.getMessage(), throwables);
+                }
+            }
         }
 
         return rows;
@@ -649,6 +776,88 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             }
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
+        }
+
+        return books;
+    }
+
+
+
+    /**
+     * Finds collection of books by criteria params, similar to
+     * passed as argument {@link Criteria<Book>} instance
+     *
+     * @param criteria {@link Criteria<Book>} by which search happens
+     * @return found {@link Collection<Book>}
+     */
+    public Collection<Book> findAllLike(Criteria<Book> criteria, int start, int total) {
+        List<Book> books = new ArrayList<>();
+
+        ResultSet rs = null;
+
+        String query;
+
+        if (((BookCriteria) criteria).getAuthor() != null
+                && ((BookCriteria) criteria).getTitle() != null
+                && ((BookCriteria) criteria).getPublisher() != null) {
+            query = SQL_SELECT_ALL_BOOKS_WHERE_LIKE_OR
+                    .replace(UtilStrings.SEMICOLON, UtilStrings.WHITESPACE) + "LIMIT ?, ?";
+        } else {
+            query = SQL_SELECT_ALL_BOOKS_WHERE
+                    + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.LIKE)
+                    .replace(UtilStrings.SEMICOLON, UtilStrings.WHITESPACE) + "LIMIT ?, ?";
+        }
+
+
+        try (PreparedStatement ps = getPrepareStatement(query)) {
+
+            if (((BookCriteria) criteria).getAuthor() != null
+                    && ((BookCriteria) criteria).getTitle() != null
+                    && ((BookCriteria) criteria).getPublisher() != null) {
+                ps.setString(1, "%" + ((BookCriteria) criteria).getTitle() + "%");
+                ps.setString(2, "%" + ((BookCriteria) criteria).getAuthor() + "%");
+                ps.setString(3, "%" + ((BookCriteria) criteria).getPublisher() + "%");
+                ps.setInt(4, start);
+                ps.setInt(5, total);
+            } else {
+                ps.setInt(1, start);
+                ps.setInt(2, total);
+            }
+
+            rs = ps.executeQuery();
+
+            AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, ConnectionPool.getInstance().getAvailableConnection());
+
+            while (rs.next()) {
+                Book book = new Book();
+                book.setEntityId(rs.getLong(ID_COLUMN));
+                book.setISBN(rs.getString(ISBN_COLUMN));
+                book.setTitle(rs.getString(TITLE_COLUMN));
+                book.setPrice(rs.getDouble(PRICE_COLUMN));
+
+                Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
+                if (optionalGenre.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                }
+                book.setGenre(optionalGenre.get());
+
+                book.setAuthor(rs.getString(AUTHOR_COLUMN));
+                book.setPublisher(rs.getString(PUBLISHER_COLUMN));
+                book.setPreview(rs.getString(PREVIEW_COLUMN));
+
+                books.add(book);
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException throwables) {
+                logger.error(throwables.getMessage(), throwables);
+            }
         }
 
         return books;

@@ -22,15 +22,30 @@ public class BooksCommand implements Command {
     public ResponseContext execute(RequestContext requestContext) {
 
         final HttpSession session = requestContext.getSession();
+
+        if (Objects.nonNull(requestContext.getParameter(UtilStrings.NOT_ADVANCED_SEARCH))) {
+            session.setAttribute(UtilStrings.NOT_ADVANCED_SEARCH, requestContext.getParameter(UtilStrings.NOT_ADVANCED_SEARCH));
+            session.setAttribute(UtilStrings.SEARCH_STR, requestContext.getParameter(UtilStrings.SEARCH_STR));
+            session.setAttribute(UtilStrings.REQUEST_FROM_SEARCH_INPUT, true);
+
+            return BOOKS_PAGE_REDIRECT;
+        }
+
         if (Objects.nonNull(requestContext.getParameter(UtilStrings.SEARCH_CRITERIA))) {
             session.setAttribute(UtilStrings.SEARCH_CRITERIA, requestContext.getParameter(UtilStrings.SEARCH_CRITERIA));
             session.setAttribute(UtilStrings.CUSTOMIZED_SEARCH, "true");
             session.setAttribute(UtilStrings.SEARCH_STR, requestContext.getParameter(UtilStrings.SEARCH_STR));
+            session.setAttribute(UtilStrings.REQUEST_FROM_SEARCH_PAGE, true);
+
             return BOOKS_PAGE_REDIRECT;
         }
 
         String genreName = decode(requestContext.getParameter(UtilStrings.GENRE));
-        requestContext.setAttribute(UtilStrings.GENRE, genreName);
+        if (Objects.nonNull(genreName) && genreName.isEmpty()) {
+            requestContext.setAttribute(UtilStrings.GENRE, null);
+        } else {
+            requestContext.setAttribute(UtilStrings.GENRE, genreName);
+        }
 
         return BOOKS_PAGE_FORWARD;
     }

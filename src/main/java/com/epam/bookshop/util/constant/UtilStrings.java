@@ -60,14 +60,12 @@ public class UtilStrings {
     public static final String CUSTOMIZED_SEARCH = "customizedSearch";
     public static final String SEARCH_CRITERIA = "searchCriteria";
     public static final String SEARCH_STR = "str";
+    public static final String REQUEST_FROM_SEARCH_PAGE = "requestFromSearchPage";
+    public static final String REQUEST_FROM_SEARCH_INPUT = "requestFromSearchInput";
 
-    public static final String SORT = "sort";
-    public static final String BY_PRICE = "price";
+
+    public static final String NOT_ADVANCED_SEARCH = "notAdvancedSearch";
     public static final String AUTHOR = "author";
-    public static final String DEFAULT = "default";
-
-    public static final String FILTERED = "filtered";
-    public static final String PAGE_BOOKS = "pageBooks";
 
     public static final String IBAN_TO_DELETE = "iban_to_delete";
     public static final String BOOK_TO_CART = "book_to_cart";

@@ -99,7 +99,7 @@
     </div>
 </div>
 
-<!---------- books --------------->
+<!---------- live search --------------->
 
 <div class="small-container">
 
@@ -152,33 +152,8 @@
             </div>
         </div>
     </div>
-
-    <div class="row row-2">
-        <h2>
-            <fmt:message key="label.all_books" bundle="${lang}" />
-        </h2>
-        <select>
-            <option class="default"><fmt:message key="label.default_shorting" bundle="${lang}"/></option>
-            <option class="price"><fmt:message key="label.short_by_price" bundle="${lang}"/></option>
-            <option class="author"><fmt:message key="label.short_by_author" bundle="${lang}"/></option>
-            <%--            <option><fmt:message key="label.short_by_popularity" bundle="${lang}"/></option>--%>
-            <%--            <option><fmt:message key="label.short_by_rating" bundle="${lang}"/></option>--%>
-            <%--            <option><fmt:message key="label.short_by_sale" bundle="${lang}"/></option>--%>
-        </select>
-    </div>
-
-    <div class="mrow">
-        <div id="toInsert" class="row">
-
-        </div>
-        <div class="pagination">
-            <div class="prev"><fmt:message key="label.prev" bundle="${lang}" /></div>
-            <div class="page"><fmt:message key="label.page" bundle="${lang}"/><span class="page-num"></span></div>
-            <div class="next"><fmt:message key="label.next" bundle="${lang}" /></div>
-        </div>
-    </div>
 </div>
-</div>
+
 
 <!---------- footer --------------->
 

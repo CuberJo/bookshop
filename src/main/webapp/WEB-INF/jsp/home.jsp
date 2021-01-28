@@ -23,15 +23,22 @@
         <link rel="stylesheet" type="text/css" href='<c:url value="/styles/home.css"/>'>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="../../js/home.js"></script>
     </head>
 
 <body>
 
 <script>
-    $('body').each(function(){
-        $(this).html($(this).html().replace(/&nbsp;/gi,''));
-    });
+    var el = document.querySelector('body');
+    el.innerHTML = el.innerHTML.replace(/&nbsp;/g,'');
+
+    // $('body').each(function(){
+    //     $(this).html().replace(/&nbsp;/gi,'');
+    //     // $(this).html($(this).html().replace(/&nbsp;/gi,''));
+    // });
 </script>
+
+<div id="locale" style="display: none">${sessionScope.locale}</div>
 
 <!---------- bind bank account --------------->
 
@@ -185,154 +192,87 @@
 
 <div class="small-container s">
     <h2 class="title"><fmt:message key="label.bestsellers" bundle="${lang}"/></h2>
-    <div class="row bestsellers">
-        <div class="col-4">
-            <img src="images/books/The Three Musketeers Paperback.jpg">
-            <h4>The Three Musketeers Paperback</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$11.79</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Brazen and the Beast.jpg">
-            <h4>Brazen and the Beast</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-            </div>
-            <p>$8.25</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Circe.jpg">
-            <h4>Circe</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$22.00</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
+    <div id="bestsellersToInsert" class="row bestsellers">
+
     </div>
-    <div class="row bestsellers">
-        <div class="col-4">
-            <img src="images/books/The Three Musketeers Paperback.jpg">
-            <h4>The Three Musketeers Paperback</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$11.79</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Brazen and the Beast.jpg">
-            <h4>Brazen and the Beast</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-            </div>
-            <p>$8.25</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Circe.jpg">
-            <h4>Circe</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$22.00</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
+
+    <div id="bestsellersToInsert2" class="row bestsellers">
+
     </div>
+<%--    <div class="row bestsellers">--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/The Three Musketeers Paperback.jpg">--%>
+<%--            <h4>The Three Musketeers Paperback</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$11.79</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Brazen and the Beast.jpg">--%>
+<%--            <h4>Brazen and the Beast</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$8.25</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Circe.jpg">--%>
+<%--            <h4>Circe</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$22.00</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/To Kill a Mockingbird.jpg">--%>
+<%--            <h4>To Kill a Mockingbird</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$12.65</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/To Kill a Mockingbird.jpg">--%>
+<%--            <h4>To Kill a Mockingbird</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$12.65</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/To Kill a Mockingbird.jpg">--%>
+<%--            <h4>To Kill a Mockingbird</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$12.65</p>--%>
+<%--        </div>--%>
+<%--    </div>--%>
 </div>
 
 
@@ -340,16 +280,16 @@
 
 <div class="offer">
     <div class="small-container">
-        <div class="row">
-            <div class="col-2">
-                <img src="images/books/To Kill a Mockingbird.jpg" class="offer-img">
-            </div>
-            <div class="col-2">
-                <p><fmt:message key="label.exclusive" bundle="${lang}"/></p>
-                <h1>To Kill a Mockingbird</h1>
-                <small><fmt:message key="label.read_this_book" bundle="${lang}"/></small>
-                <a href="" class="btn"><fmt:message key="label.buy_now" bundle="${lang}"/> &#8594;</a>
-            </div>
+        <div id="exclusiveBook" class="row">
+<%--            <div class="col-2">--%>
+<%--                <img src="images/books/To Kill a Mockingbird.jpg" class="offer-img">--%>
+<%--            </div>--%>
+<%--            <div class="col-2">--%>
+<%--                <p><fmt:message key="label.exclusive" bundle="${lang}"/></p>--%>
+<%--                <h1>To Kill a Mockingbird</h1>--%>
+<%--                <small><fmt:message key="label.read_this_book" bundle="${lang}"/></small>--%>
+<%--                <a href="" class="btn"><fmt:message key="label.buy_now" bundle="${lang}"/> &#8594;</a>--%>
+<%--            </div>--%>
         </div>
     </div>
 </div>
@@ -358,205 +298,205 @@
 
 <div class="small-container">
     <h2 class="title"><fmt:message key="label.latest_products" bundle="${lang}"/></h2>
-    <div class="row">
-        <div class="col-4">
-            <img src="images/books/The Three Musketeers Paperback.jpg">
-            <h4>The Three Musketeers Paperback</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$11.79</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Brazen and the Beast.jpg">
-            <h4>Brazen and the Beast</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-            </div>
-            <p>$8.25</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Circe.jpg">
-            <h4>Circe</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$22.00</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
+    <div id="latestBooks" class="row">
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/The Three Musketeers Paperback.jpg">--%>
+<%--            <h4>The Three Musketeers Paperback</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$11.79</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Brazen and the Beast.jpg">--%>
+<%--            <h4>Brazen and the Beast</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$8.25</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Circe.jpg">--%>
+<%--            <h4>Circe</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$22.00</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/To Kill a Mockingbird.jpg">--%>
+<%--            <h4>To Kill a Mockingbird</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$12.65</p>--%>
+<%--        </div>--%>
     </div>
-    <div class="row">
-        <div class="col-4">
-            <img src="images/books/The Three Musketeers Paperback.jpg">
-            <h4>The Three Musketeers Paperback</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$11.79</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Brazen and the Beast.jpg">
-            <h4>Brazen and the Beast</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-            </div>
-            <p>$8.25</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Circe.jpg">
-            <h4>Circe</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$22.00</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
+    <div id="latestBooks2" class="row">
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/The Three Musketeers Paperback.jpg">--%>
+<%--            <h4>The Three Musketeers Paperback</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$11.79</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Brazen and the Beast.jpg">--%>
+<%--            <h4>Brazen and the Beast</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$8.25</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Circe.jpg">--%>
+<%--            <h4>Circe</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$22.00</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/To Kill a Mockingbird.jpg">--%>
+<%--            <h4>To Kill a Mockingbird</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$12.65</p>--%>
+<%--        </div>--%>
     </div>
-    <div class="row">
-        <div class="col-4">
-            <img src="images/books/The Three Musketeers Paperback.jpg">
-            <h4>The Three Musketeers Paperback</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$11.79</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Brazen and the Beast.jpg">
-            <h4>Brazen and the Beast</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-            </div>
-            <p>$8.25</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Circe.jpg">
-            <h4>Circe</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$22.00</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
+    <div id="latestBooks3" class="row">
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/The Three Musketeers Paperback.jpg">--%>
+<%--            <h4>The Three Musketeers Paperback</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$11.79</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Brazen and the Beast.jpg">--%>
+<%--            <h4>Brazen and the Beast</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$8.25</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Circe.jpg">--%>
+<%--            <h4>Circe</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$22.00</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/To Kill a Mockingbird.jpg">--%>
+<%--            <h4>To Kill a Mockingbird</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$12.65</p>--%>
+<%--        </div>--%>
     </div>
-    <div class="row">
-        <div class="col-4">
-            <img src="images/books/The Three Musketeers Paperback.jpg">
-            <h4>The Three Musketeers Paperback</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$11.79</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Brazen and the Beast.jpg">
-            <h4>Brazen and the Beast</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-            </div>
-            <p>$8.25</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Circe.jpg">
-            <h4>Circe</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$22.00</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
+    <div id="latestBooks4" class="row">
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/The Three Musketeers Paperback.jpg">--%>
+<%--            <h4>The Three Musketeers Paperback</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$11.79</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Brazen and the Beast.jpg">--%>
+<%--            <h4>Brazen and the Beast</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$8.25</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Circe.jpg">--%>
+<%--            <h4>Circe</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$22.00</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/To Kill a Mockingbird.jpg">--%>
+<%--            <h4>To Kill a Mockingbird</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$12.65</p>--%>
+<%--        </div>--%>
     </div>
 </div>
 

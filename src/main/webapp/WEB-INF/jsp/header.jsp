@@ -23,8 +23,9 @@
         <nav>
             <ul id="Menuitems">
                 <li>
-                    <form action="">
-                        <input type="search" style="outline: none">
+                    <form id="headerSearchForm" method="post" action="/home?command=books">
+                        <input type="hidden" name="notAdvancedSearch" value="true">
+                        <input type="search" name="str" style="outline: none" class="searchInput">
 <%--                        <i class="fa fa-search"></i>--%>
                     </form>
                 </li>
@@ -45,7 +46,6 @@
                         <input type='hidden' name='command' value="change_locale">
                         <input type='hidden' name='locale' value="RU">
                         <input type='hidden' name='from' value="${param.command}">
-
                         <button class="localeBtn" type="submit">RU</button>
                     </form>
                     |
@@ -65,3 +65,18 @@
         <img src="../../images/menu-icon.png" class="menu-icon" onclick="menutoggle()">
     </div>
 </div>
+
+
+<script>
+    $('#headerSearchForm').submit(function(event){
+
+        let whitespace_regex = /^[\s]+$/;
+        if ($('.searchInput').val() === "" || whitespace_regex.test($('.searchInput').val())) {
+            event.preventDefault()
+        }
+        let malicious_regex = /[<>*;='#)+&("]+/;
+        if (malicious_regex.test($('.searchInput').val())) {
+            event.preventDefault()
+        }
+    });
+</script>

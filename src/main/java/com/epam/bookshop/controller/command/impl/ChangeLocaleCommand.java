@@ -46,10 +46,14 @@ public class ChangeLocaleCommand implements Command {
     private ResponseContext resolvePage(RequestContext requestContext) {
 
         String fromPage = requestContext.getParameter(UtilStrings.FROM);
+        String isbn = requestContext.getParameter(UtilStrings.ISBN);
 
         String page = "/home?command=%s";
         if (Objects.nonNull(fromPage) && !fromPage.isEmpty()) {
             page = String.format(page, fromPage);
+            if (Objects.nonNull(isbn) && !isbn.isEmpty()) {
+                page += "&isbn=" + isbn;
+            }
         } else {
             page = HOME_PAGE;
         }

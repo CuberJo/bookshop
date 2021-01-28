@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +47,7 @@ public class SearchBooksController extends HttpServlet {
 
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+
 
         if (!isSearchInputCorrect(req.getParameter(UtilStrings.SEARCH_STR))) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);

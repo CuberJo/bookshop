@@ -57,13 +57,13 @@ public class BookDetailsCommand implements Command {
             session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
             logger.error(errorMessage, e);
             return NOT_FOUND_PAGE;
-        } catch (EntityNotFoundException e) {
+        } /*catch (EntityNotFoundException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
                     + UtilStrings.WHITESPACE + ISBN;
             session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
             logger.error(errorMessage, e);
             return NOT_FOUND_PAGE;
-        }
+        }*/
 
         return BOOK_DETAILS_PAGE;
     }

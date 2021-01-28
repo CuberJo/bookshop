@@ -13,6 +13,7 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
 import org.slf4j.Logger;
@@ -239,17 +240,18 @@ public class BookService implements EntityService<Book> {
      * Finds book image in database and set it to book
      *
      * @param book {@link Book} instance
-     * @throws EntityNotFoundException if image not found in database
      */
-    public void findImageForBook(Book book) throws EntityNotFoundException {
+    public void findImageForBook(Book book) {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
 
         BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
 
         Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
         if (optionalImage.isEmpty()) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND) + UtilStrings.WHITESPACE + book.getISBN();
-            throw new EntityNotFoundException(errorMessage);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
+                    + UtilStrings.WHITESPACE + book.getISBN();
+            logger.error(errorMessage);
+            setDefaultImg(book);
         }
 
         book.setBase64Image(optionalImage.get());
@@ -365,7 +367,7 @@ public class BookService implements EntityService<Book> {
 
     /**
      * @param start from where to start limitation
-     * @param total how many books to kake
+     * @param total how many books to take
      * @return {@link Collection<Book>} found
      */
     public Collection<Book> findAll(int start, int total) {
@@ -384,7 +386,31 @@ public class BookService implements EntityService<Book> {
     }
 
 
+
     /**
+     * Finds random row in table
+     *
+     * @return found random book
+     */
+    public Optional<Book> findRand() {
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        Optional<Book> optionalBook = dao.findRand();
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return optionalBook;
+    }
+
+
+    /**
+     * Counts total number of books
+     *
      * @return number of rows in BOOKS table
      */
     public int count() {
@@ -404,6 +430,55 @@ public class BookService implements EntityService<Book> {
 
 
     /**
+     * Counts number of rows that are similar
+     * to passed as argument {@link Criteria<Book>} instance
+     *
+     * @param criteria criteria, by which fields rows would be counted
+     * @return number of rows in 'BOOKS' table
+     */
+    public int count(Criteria<Book> criteria) {
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        int rows = dao.count(criteria);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return rows;
+    }
+
+
+    /**
+     * Counts number of rows in 'BOOK' table
+     * that are similar to passed argument
+     *
+     * @param searchParam string to look for in table
+     * @return number of rows in 'BOOKS' table
+     */
+    public int count(String searchParam) {
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        int rows = dao.count(searchParam);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return rows;
+    }
+
+
+
+    /**
+     * Finds books similar to data fields in criteria
+     *
      * @param criteria builded {@link Criteria<Book>} to search by
      * @return collection of books found
      * @throws ValidatorException if criteria data is incorrect
@@ -416,6 +491,35 @@ public class BookService implements EntityService<Book> {
         Connection conn = ConnectionPool.getInstance().getAvailableConnection();
         BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
         Collection<Book> books = dao.findAllLike(criteria);
+
+        try {
+            conn.close();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return books;
+    }
+
+
+    /**
+     * Finds limited quantity of books similar
+     * to data fields in criteria
+     *
+     * @param criteria builded {@link Criteria<Book>} to search by
+     * @param start from where to start limitation
+     * @param total how many books to take
+     * @return collection of books found
+     * @throws ValidatorException if criteria data is incorrect
+     */
+    public Collection<Book> findAllLike(Criteria<Book> criteria, int start, int total) throws ValidatorException {
+        Validator validator = new Validator();
+        validator.setLocale(locale);
+        validator.validate(criteria);
+
+        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        Collection<Book> books = dao.findAllLike(criteria, start, total);
 
         try {
             conn.close();

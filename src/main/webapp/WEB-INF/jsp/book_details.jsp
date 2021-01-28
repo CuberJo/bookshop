@@ -29,6 +29,7 @@
     <link rel="stylesheet" type="text/css" href="../../styles/books.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../../js/book-details.js"></script>
 </head>
 
 <body>
@@ -43,8 +44,9 @@
         <nav>
             <ul id="Menuitems">
                 <li>
-                    <form action="">
-                        <input type="search" style="outline: none">
+                    <form id="bookDetailsSearchForm" method="post" action="/home?command=books">
+                        <input type="hidden" name="notAdvancedSearch" value="true">
+                        <input type="search" name="str" style="outline: none" class="searchInput">
                     </form>
                 </li>
                 <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>
@@ -65,8 +67,7 @@
                         <input type='hidden' name='command' value="change_locale">
                         <input type='hidden' name='locale' value="RU">
                         <input type='hidden' name='from' value="${param.command}">
-                        <input type='hidden' name='isbn' value="${param.ISBN}">
-
+                        <input type='hidden' name='isbn' value="${param.isbn}">
                         <button class="localeBtn" type="submit">RU</button>
                     </form>
                     |
@@ -74,8 +75,7 @@
                         <input type='hidden' name='command' value="change_locale">
                         <input type='hidden' name='locale' value="US">
                         <input type='hidden' name='from' value="${param.command}">
-                        <input type='hidden' name='isbn' value="${book.ISBN}">
-
+                        <input type='hidden' name='isbn' value="${param.isbn}">
                         <button class="localeBtn" type="submit">US</button>
                     </form>
                 </li>
@@ -251,60 +251,60 @@
 <div class="small-container">
     <div class="row row-2">
         <h2><fmt:message key="label.related_books" bundle="${lang}"/></h2>
-        <p><a href="/books"><fmt:message key="label.view_more" bundle="${lang}"/></a></p>
+        <p><a href="/home?command=books"><fmt:message key="label.view_more" bundle="${lang}"/></a></p>
     </div>
 </div>
 
 <div class="small-container">
-    <div class="row">
-        <div class="col-4">
-            <img src="images/books/The Three Musketeers Paperback.jpg">
-            <h4>The Three Musketeers Paperback</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$11.79</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Brazen and the Beast.jpg">
-            <h4>Brazen and the Beast</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-            </div>
-            <p>$8.25</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/Circe.jpg">
-            <h4>Circe</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$22.00</p>
-        </div>
-        <div class="col-4">
-            <img src="images/books/To Kill a Mockingbird.jpg">
-            <h4>To Kill a Mockingbird</h4>
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <i class="fa fa-star-o"></i>
-            </div>
-            <p>$12.65</p>
-        </div>
+    <div id="relatedBooks" class="row">
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/The Three Musketeers Paperback.jpg">--%>
+<%--            <h4>The Three Musketeers Paperback</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$11.79</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Brazen and the Beast.jpg">--%>
+<%--            <h4>Brazen and the Beast</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$8.25</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/Circe.jpg">--%>
+<%--            <h4>Circe</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$22.00</p>--%>
+<%--        </div>--%>
+<%--        <div class="col-4">--%>
+<%--            <img src="images/books/To Kill a Mockingbird.jpg">--%>
+<%--            <h4>To Kill a Mockingbird</h4>--%>
+<%--            <div class="rating">--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star"></i>--%>
+<%--                <i class="fa fa-star-half-o"></i>--%>
+<%--                <i class="fa fa-star-o"></i>--%>
+<%--            </div>--%>
+<%--            <p>$12.65</p>--%>
+<%--        </div>--%>
     </div>
 
 </div>
@@ -374,6 +374,22 @@
     $(document).ready(function () {
         $('#popup2').bind('cut copy paste', function (e) {
             e.preventDefault();
+        });
+    });
+</script>
+
+<script>
+    $(function () {
+        $('#bookDetailsSearchForm').submit(function(event) {
+
+            let whitespace_regex = /^[\s]+$/;
+            if ($('.searchInput').val() === "" || whitespace_regex.test($('.searchInput').val())) {
+                event.preventDefault()
+            }
+            let malicious_regex = /[<>*;='#)+&("]+/;
+            if (malicious_regex.test($('.searchInput').val())) {
+                event.preventDefault()
+            }
         });
     });
 </script>
