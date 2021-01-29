@@ -56,7 +56,7 @@ public class RegisterCommand implements Command {
 
             user = register(name, login, email, password, locale);
 
-            MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
+//            MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
 
             session.setAttribute(UtilStrings.LOGIN, login);
             session.setAttribute(UtilStrings.ROLE, UtilStrings.USER_ROLE);
@@ -67,7 +67,7 @@ public class RegisterCommand implements Command {
             session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE, errorMessage);
             logger.error(e.getMessage(), e);
             return ACCOUNT_PAGE;
-        } catch (MessagingException e) {
+        } /*catch (MessagingException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.COULD_NOT_REACH_EMAIL_ADDRESS) + UtilStrings.NEW_LINE + email;
             session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE, errorMessage);
             try {
@@ -80,7 +80,7 @@ public class RegisterCommand implements Command {
             }
             logger.error(e.getMessage(), e);
             return ACCOUNT_PAGE;
-        }
+        }*/
 
         if (Objects.nonNull(requestContext.getSession().getAttribute(UtilStrings.BACK_TO_CART))) {
             requestContext.getSession().removeAttribute(UtilStrings.BACK_TO_CART);

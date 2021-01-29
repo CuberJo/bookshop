@@ -68,12 +68,22 @@
                 <li><a href="/home?command=search&from=${param.command}"><fmt:message key="label.search_book" bundle="${lang}"/></a></li>
                 <c:choose>
                     <c:when test="${not empty sessionScope.role}">
-                        <li><a href="/home?command=personal_page"><fmt:message key="label.account" bundle="${lang}"/></a></li>
+                        <c:choose>
+                            <c:when test="${sessionScope.role eq 'ADMIN'}">
+                                <li><a href="/home?command=logout"><fmt:message key="label.log_out" bundle="${lang}"/></a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <li><a href="/home?command=personal_page"><fmt:message key="label.account" bundle="${lang}"/></a></li>
+                            </c:otherwise>
+                        </c:choose>
                     </c:when>
-                    <c:when test="${empty sessionScope.role}">
+                    <c:otherwise>
                         <li><a href="/home?command=account"><fmt:message key="label.log_in" bundle="${lang}"/></a></li>
-                    </c:when>
+                    </c:otherwise>
                 </c:choose>
+                <c:if test="${sessionScope.role eq 'ADMIN'}">
+                    <li><a href="/home?command=admin"><fmt:message key="label.admin" bundle="${lang}"/></a></li>
+                </c:if>
                 <li style="font-weight: bold">
                     <form method="post" action="/home">
                         <input type='hidden' name='command' value="change_locale">

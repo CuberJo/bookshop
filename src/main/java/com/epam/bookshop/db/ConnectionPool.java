@@ -87,6 +87,7 @@ public class ConnectionPool {
             lock2.unlock();
         }
 
+        System.out.println(availableConnections.size());
 
         return connectionToReturn;
     }

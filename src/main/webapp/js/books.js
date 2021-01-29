@@ -204,11 +204,14 @@ $(document).ready(function () {
      * on next click
      */
     $('.next').bind('click', function () {
-        if ((pageNum * booksPerPage + 1) < booksQuantity) {
+        if ((pageNum * booksPerPage + 1) <= booksQuantity) {
             $.ajax({
                 url: 'http://localhost:8080/books',
                 type: 'GET',
-                data: ({page: ++pageNum, genre: $('#genre').text()}),
+                data: ({
+                    page: ++pageNum,
+                    genre: $('#genre').text()
+                }),
                 success: function (jsonStr) {
                     books = jsonStr;
                     $('#toInsert').empty();

@@ -13,11 +13,13 @@ public interface EntityService<T extends Entity> {
     T create(T entity) throws ValidatorException;
     Collection<T> findAll();
     Collection<T> findAll(Criteria<T> criteria) throws ValidatorException;
+    Collection<T> findAll(int start, int total);
     Optional<T> findById(long id) throws EntityNotFoundException;
     Optional<T> find(Criteria<T> criteria) throws ValidatorException;
     Optional<T> update(T entity) throws ValidatorException;
     boolean delete(long id) throws EntityNotFoundException;
     boolean delete(T entity) throws EntityNotFoundException, ValidatorException;
+    int count();
 
     void setLocale(String locale);
 }

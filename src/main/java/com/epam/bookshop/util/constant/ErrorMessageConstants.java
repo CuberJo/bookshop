@@ -1,9 +1,8 @@
 package com.epam.bookshop.util.constant;
 
 public class ErrorMessageConstants {
-    private ErrorMessageConstants() {
 
-    }
+    private ErrorMessageConstants() {}
 
     public static final String USER_NOT_FOUND = "user_not_found";
     public static final String EMAIL_NOT_FOUND_IN_DATABASE = "email_not_found_in_database";

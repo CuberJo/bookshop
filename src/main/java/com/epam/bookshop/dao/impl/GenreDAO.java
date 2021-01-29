@@ -1,5 +1,6 @@
 package com.epam.bookshop.dao.impl;
 
+import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.util.constant.UtilStrings;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
@@ -19,11 +20,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class GenreDAO extends AbstractDAO<Long, Genre> {
-
     private static final Logger logger = LoggerFactory.getLogger(GenreDAO.class);
 
     private static final String SQL_SELECT_ALL_GENRES_WHERE =  "SELECT Id, Genre FROM TEST_LIBRARY.GENRE WHERE ";
-
     private static final String SQL_SELECT_ALL_GENRES = "SELECT Id, Genre FROM TEST_LIBRARY.GENRE;";
     private static final String SQL_SELECT_GENRE_BY_ID = "SELECT Id, Genre FROM TEST_LIBRARY.GENRE WHERE Id = ?;";
 
@@ -32,17 +31,15 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
 
     private final String locale = "US";
 
-    public GenreDAO(Connection connection) {
+    GenreDAO(Connection connection) {
         super(connection);
     }
-
 
 
     @Override
     public Genre create(Genre entity) {
         return null;
     }
-
 
 
     @Override
@@ -52,14 +49,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
         try(PreparedStatement ps = getPrepareStatement(SQL_SELECT_ALL_GENRES);
             ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                Genre genre = new Genre();
-
-                genre.setEntityId(rs.getLong(ID_COLUMN));
-                genre.setGenre(rs.getString(GENRE_COLUMN));
-
-                genres.add(genre);
-            }
+            genres = fill(rs);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -75,26 +65,17 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
         ResultSet rs = null;
 
         try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_GENRE_BY_ID)) {
-
             ps.setLong(1, id);
             rs = ps.executeQuery();
 
-            while (rs.next()) {
-                genre = new Genre();
-                genre.setEntityId(rs.getLong(ID_COLUMN));
-                genre.setGenre(rs.getString(GENRE_COLUMN));
+            List<Genre> genres = fill(rs);
+            if (!genres.isEmpty()) {
+                genre  = genres.get(0);
             }
-
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException throwables) {
-                logger.error(throwables.getMessage(), throwables);
-            }
+            closeResultSet(rs, logger);
         }
 
         return Optional.ofNullable(genre);
@@ -110,13 +91,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
         try (PreparedStatement ps = getPrepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                Genre genre = new Genre();
-                genre.setEntityId(rs.getLong(ID_COLUMN));
-                genre.setGenre(rs.getString(GENRE_COLUMN));
-
-                genres.add(genre);
-            }
+            genres = fill(rs);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -136,10 +111,9 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
         try (PreparedStatement ps = getPrepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                genre = new Genre();
-                genre.setEntityId(rs.getLong(ID_COLUMN));
-                genre.setGenre(rs.getString(GENRE_COLUMN));
+            List<Genre> genres = fill(rs);
+            if (!genres.isEmpty()) {
+                genre  = genres.get(0);
             }
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -185,10 +159,9 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
         try (PreparedStatement ps = getPrepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                genre = new Genre();
-                genre.setEntityId(rs.getLong(ID_COLUMN));
-                genre.setGenre(rs.getString(GENRE_COLUMN));
+            List<Genre> genres = fill(rs);
+            if (!genres.isEmpty()) {
+                genre  = genres.get(0);
             }
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -197,4 +170,35 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
         return Optional.ofNullable(genre);
     }
 
+
+    @Override
+    public int count() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Genre> findAll(int start, int total) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    /**
+     * Fills list with data in ResultSet
+     *
+     * @param rs sql ResultSet from where data is taken
+     * @return list of parsed instances
+     * @throws SQLException
+     */
+    private List<Genre> fill(ResultSet rs) throws SQLException {
+        List<Genre> genres = new ArrayList<>();
+
+        while (rs.next()) {
+            Genre genre = new Genre();
+            genre.setEntityId(rs.getLong(ID_COLUMN));
+            genre.setGenre(rs.getString(GENRE_COLUMN));
+            genres.add(genre);
+        }
+
+        return genres;
+    }
 }

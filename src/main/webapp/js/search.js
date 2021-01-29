@@ -1,7 +1,7 @@
 
 let searchCriteria;
 let typingTimer;                //timer identifier
-let doneTypingInterval = 4000;  //time in ms (5 seconds)
+let doneTypingInterval = 1500;  //time in ms (1,5 seconds)
 let searchStr;
 
 $(document).ready(function(e) {
@@ -47,7 +47,7 @@ function loadBooks(str) {
      */
     const whitespace_regex = /^[\s]+$/;
 
-    if (str.length <= 2 || whitespace_regex.test(str)) {
+    if (str.length <= 1 || whitespace_regex.test(str)) {
         document.getElementById("livesearch").innerHTML="";
         document.getElementById("livesearch").style.border="0px";
         return;

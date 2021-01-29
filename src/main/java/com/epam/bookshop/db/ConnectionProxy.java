@@ -73,7 +73,7 @@ public class ConnectionProxy implements Connection {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            System.out.println("Connection " + this + " is returned into pool");
+            System.out.println("Connection " + this + " is returned into pool");
         } else {
 //            logger.error("Connection has not been initialize");
             String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(CONNECTION_HAS_NOT_BEEN_INITIALIZED);

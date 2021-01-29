@@ -1,6 +1,8 @@
 package com.epam.bookshop.service.impl;
 
+import com.epam.bookshop.dao.impl.BookDAO;
 import com.epam.bookshop.dao.impl.GenreDAO;
+import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
@@ -16,12 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class GenreService implements EntityService<Genre> {
-
     private static final Logger logger = LoggerFactory.getLogger(GenreService.class);
 
     GenreService() {
@@ -42,12 +41,11 @@ public class GenreService implements EntityService<Genre> {
 
     @Override
     public Collection<Genre> findAll() {
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
-        List<Genre> genres = dao.findAll();
+        List<Genre> genres = new ArrayList<>();
 
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
+            genres = dao.findAll();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -61,12 +59,11 @@ public class GenreService implements EntityService<Genre> {
         validator.setLocale(locale);
         validator.validate(criteria);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
-        Collection<Genre> genres = dao.findAll(criteria);
+        Collection<Genre> genres = new ArrayList<>();
 
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
+            genres = dao.findAll(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -85,12 +82,11 @@ public class GenreService implements EntityService<Genre> {
         validator.setLocale(locale);
         validator.validate(criteria);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
-        Optional<Genre> optionalGenre = dao.find(criteria);
+        Optional<Genre> optionalGenre = Optional.empty();
 
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Genre> dao = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
+            optionalGenre = dao.find(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -113,6 +109,31 @@ public class GenreService implements EntityService<Genre> {
         return false;
     }
 
+
+    /**
+     * Counts total number of genres
+     *
+     * @return number of rows in 'GENRE' table
+     */
+    @Override
+    public int count() {
+        int rows = 0;
+
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            GenreDAO dao = (GenreDAO) DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
+            rows = dao.count();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
+        return rows;
+    }
+
+    @Override
+    public Collection<Genre> findAll(int start, int total) {
+        return null;
+    }
+
     /**
      * Finds {@link Genre} genre which genre name is similar to criteria's genre name
      *
@@ -124,12 +145,11 @@ public class GenreService implements EntityService<Genre> {
         validator.setLocale(locale);
         validator.validate(criteria);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        GenreDAO dao = (GenreDAO) DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
-        Optional<Genre> optionalGenre = dao.findLike(criteria);
+        Optional<Genre> optionalGenre = Optional.empty();
 
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            GenreDAO dao = (GenreDAO) DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
+            optionalGenre = dao.findLike(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }

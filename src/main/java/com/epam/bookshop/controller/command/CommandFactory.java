@@ -12,8 +12,9 @@ import java.util.Objects;
  */
 public class CommandFactory {
 
-    private static final String BOOKS = "books";
     private static final String ACCOUNT = "account";
+    private static final String ADMIN = "admin";
+    private static final String BOOKS = "books";
     private static final String CART = "cart";
     private static final String BOOK_DETAILS = "book_details";
     private static final String SEARCH = "search";
@@ -47,6 +48,8 @@ public class CommandFactory {
         switch (command) {
             case ACCOUNT:
                 return new AccountCommand();
+            case ADMIN:
+                return new AdminCommand();
             case BOOKS:
                 return new BooksCommand();
             case CART:

@@ -44,6 +44,7 @@ public class UtilStrings {
     public static final String CONTENT_DISPOSITION_HEADER = "Content-disposition";
     public static final String BOOKS_LEN_ATTR = "booksLength";
     public static final String USER_ROLE = "USER";
+    public static final String ADMIN_ROLE = "ADMIN";
 
     public static final String POST_METHOD = "POST";
     public static final String USER_AGENT = "User-Agent";

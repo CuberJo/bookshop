@@ -24,10 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class BookService implements EntityService<Book> {
 
@@ -53,12 +50,9 @@ public class BookService implements EntityService<Book> {
         validator.setLocale(locale);
         validator.validate(book);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        dao.create(book);
-
-        try {
-            conn.close();
+        try(Connection conn =  ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            dao.create(book);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -71,12 +65,10 @@ public class BookService implements EntityService<Book> {
      */
     @Override
     public Collection<Book> findAll() {
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        List<Book> books = dao.findAll();
-
-        try {
-            conn.close();
+        List<Book> books = new ArrayList<>();
+        try(Connection conn =  ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            books = dao.findAll();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -90,12 +82,10 @@ public class BookService implements EntityService<Book> {
         validator.setLocale(locale);
         validator.validate(criteria);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Collection<Book> books = dao.findAll(criteria);
-
-        try {
-            conn.close();
+        Collection<Book> books = new ArrayList<>();
+        try(Connection conn =  ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            books = dao.findAll(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -105,12 +95,10 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public Optional<Book> findById(long id) {
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Optional<Book> optionalBook = dao.findById(id);
-
-        try {
-            conn.close();
+        Optional<Book> optionalBook = Optional.empty();
+        try(Connection conn =  ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            optionalBook = dao.findById(id);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -124,12 +112,10 @@ public class BookService implements EntityService<Book> {
         validator.setLocale(locale);
         validator.validate(criteria);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Optional<Book> optionalBook = dao.find(criteria);
-
-        try {
-            conn.close();
+        Optional<Book> optionalBook = Optional.empty();
+        try(Connection conn =  ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            optionalBook = dao.find(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -143,12 +129,10 @@ public class BookService implements EntityService<Book> {
         validator.setLocale(locale);
         validator.validate(book);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Optional<Book> optionalBook = dao.update(book);
-
-        try {
-            conn.close();
+        Optional<Book> optionalBook = Optional.empty();
+        try(Connection conn =  ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            optionalBook = dao.update(book);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -158,18 +142,18 @@ public class BookService implements EntityService<Book> {
 
     @Override
     public boolean delete(long id) throws EntityNotFoundException {
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        boolean isDeleted = dao.delete(id);
+        boolean isDeleted = false;
+
+        try(Connection conn =  ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            isDeleted = dao.delete(id);
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
         if (!isDeleted) {
             String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND) + UtilStrings.WHITESPACE + id;
             throw new EntityNotFoundException(errorMessage + UtilStrings.WHITESPACE + id);
-        }
-
-        try {
-            conn.close();
-        } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
         }
 
         return isDeleted;
@@ -181,18 +165,17 @@ public class BookService implements EntityService<Book> {
         validator.setLocale(locale);
         validator.validate(book);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        boolean isDeleted = dao.delete(book.getEntityId());
+        boolean isDeleted = false;
+        try(Connection conn =  ConnectionPool.getInstance().getAvailableConnection()) {
+            AbstractDAO<Long, Book> dao = DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            isDeleted = dao.delete(book.getEntityId());
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+
         if (!isDeleted) {
             String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND) + UtilStrings.WHITESPACE + book.getEntityId();
             throw new EntityNotFoundException(errorMessage + UtilStrings.WHITESPACE + book.getEntityId());
-        }
-
-        try {
-            conn.close();
-        } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
         }
 
         return isDeleted;
@@ -206,13 +189,9 @@ public class BookService implements EntityService<Book> {
      * @param filePath file system path of image
      */
     public void createImage(String ISBN, String filePath) {
-
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        dao.createImage(ISBN, filePath);
-
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            dao.createImage(ISBN, filePath);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -220,6 +199,8 @@ public class BookService implements EntityService<Book> {
 
 
     /**
+     * Sets defaul image from system path
+     *
      * @param book book needed to be set with default img
      */
     private void setDefaultImg(Book book) {
@@ -242,25 +223,23 @@ public class BookService implements EntityService<Book> {
      * @param book {@link Book} instance
      */
     public void findImageForBook(Book book) {
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
 
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            if (optionalImage.isEmpty()) {
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
+                        + UtilStrings.WHITESPACE + book.getISBN();
+                logger.error(errorMessage);
+                setDefaultImg(book);
+            }
 
-        Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
-        if (optionalImage.isEmpty()) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
-                    + UtilStrings.WHITESPACE + book.getISBN();
-            logger.error(errorMessage);
-            setDefaultImg(book);
-        }
-
-        book.setBase64Image(optionalImage.get());
-
-        try {
-            conn.close();
+            book.setBase64Image(optionalImage.get());
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
+
+
     }
 
 
@@ -270,24 +249,20 @@ public class BookService implements EntityService<Book> {
      * @param books {@link Collection<Book>} for which images needed be set
      */
     public void findImagesForBooks(Collection<Book> books) {
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
 
-        for (Book book: books) {
-            Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
-            if (optionalImage.isEmpty()) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
-                        + UtilStrings.WHITESPACE + book.getISBN();
-                logger.error(errorMessage);
-                setDefaultImg(book);
-                continue;
+            for (Book book: books) {
+                Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
+                if (optionalImage.isEmpty()) {
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
+                            + UtilStrings.WHITESPACE + book.getISBN();
+                    logger.error(errorMessage);
+                    setDefaultImg(book);
+                    continue;
+                }
+                book.setBase64Image(optionalImage.get());
             }
-
-            book.setBase64Image(optionalImage.get());
-        }
-
-        try {
-            conn.close();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -299,13 +274,9 @@ public class BookService implements EntityService<Book> {
      * @param filePath file system path of book
      */
     public void createBookFile(String ISBN, String filePath) {
-
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        dao.createBookFile(ISBN, filePath);
-
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            dao.createBookFile(ISBN, filePath);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -318,19 +289,16 @@ public class BookService implements EntityService<Book> {
      * @throws EntityNotFoundException if file not found
      */
     public byte[] findBookFile(Book book) throws EntityNotFoundException {
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
+        byte[] bookFile = new byte[0];
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
 
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-
-        byte[] bookFile = dao.findBookFileByISBN(book.getISBN());
-        if (Objects.isNull(bookFile)) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_FILE_NOT_FOUND)
-                    + UtilStrings.WHITESPACE + book.getISBN();
-            throw new EntityNotFoundException(errorMessage);
-        }
-
-        try {
-            conn.close();
+            bookFile = dao.findBookFileByISBN(book.getISBN());
+            if (Objects.isNull(bookFile)) {
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_FILE_NOT_FOUND)
+                        + UtilStrings.WHITESPACE + book.getISBN();
+                throw new EntityNotFoundException(errorMessage);
+            }
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -351,12 +319,10 @@ public class BookService implements EntityService<Book> {
         validator.setLocale(locale);
         validator.validate(criteria);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Collection<Book> books = dao.findAll(criteria, start, total);
-
-        try {
-            conn.close();
+        Collection<Book> books = new ArrayList<>();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            books = dao.findAll(criteria, start, total);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -370,14 +336,13 @@ public class BookService implements EntityService<Book> {
      * @param total how many books to take
      * @return {@link Collection<Book>} found
      */
+    @Override
     public Collection<Book> findAll(int start, int total) {
+        Collection<Book> books = new ArrayList<>();
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Collection<Book> books = dao.findAll(start, total);
-
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            books = dao.findAll(start, total);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -393,13 +358,11 @@ public class BookService implements EntityService<Book> {
      * @return found random book
      */
     public Optional<Book> findRand() {
+        Optional<Book> optionalBook = Optional.empty();
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Optional<Book> optionalBook = dao.findRand();
-
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            optionalBook = dao.findRand();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -413,14 +376,13 @@ public class BookService implements EntityService<Book> {
      *
      * @return number of rows in BOOKS table
      */
+    @Override
     public int count() {
+        int rows = 0;
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        int rows = dao.count();
-
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            rows = dao.count();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -437,13 +399,11 @@ public class BookService implements EntityService<Book> {
      * @return number of rows in 'BOOKS' table
      */
     public int count(Criteria<Book> criteria) {
+        int rows = 0;
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        int rows = dao.count(criteria);
-
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            rows = dao.count(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -460,13 +420,11 @@ public class BookService implements EntityService<Book> {
      * @return number of rows in 'BOOKS' table
      */
     public int count(String searchParam) {
+        int rows = 0;
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        int rows = dao.count(searchParam);
-
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            rows = dao.count(searchParam);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -488,12 +446,11 @@ public class BookService implements EntityService<Book> {
         validator.setLocale(locale);
         validator.validate(criteria);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Collection<Book> books = dao.findAllLike(criteria);
+        Collection<Book> books = new ArrayList<>();
 
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            books = dao.findAllLike(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }
@@ -517,12 +474,11 @@ public class BookService implements EntityService<Book> {
         validator.setLocale(locale);
         validator.validate(criteria);
 
-        Connection conn = ConnectionPool.getInstance().getAvailableConnection();
-        BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
-        Collection<Book> books = dao.findAllLike(criteria, start, total);
+        Collection<Book> books = new ArrayList<>();
 
-        try {
-            conn.close();
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            books = dao.findAllLike(criteria, start, total);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }

@@ -25,7 +25,7 @@ public class Book extends Entity implements Serializable {
     private java.lang.String publisher;
 
     private Genre genre;
-    private String  preview;
+    private String preview;
 
     private String base64Image;
 

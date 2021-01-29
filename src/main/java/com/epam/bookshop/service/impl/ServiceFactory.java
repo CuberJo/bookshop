@@ -12,7 +12,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ServiceFactory {
 
     private static ServiceFactory instance;
-
     private static final ReentrantLock LOCK = new ReentrantLock();
 
     private ServiceFactory() {
@@ -21,7 +20,6 @@ public class ServiceFactory {
 
     public static ServiceFactory getInstance() {
         LOCK.lock();
-
         try {
             if (Objects.isNull(instance)) {
                 instance = new ServiceFactory();

@@ -41,12 +41,17 @@ public class BooksController extends HttpServlet {
     private static final int ITEMS_PER_PAGE = 8;
     private static final int DEFAULT_GENRE_ID = 1;
 
+    private static final String RELATED_BOOKS = "relatedBooks";
+    private static final String BESTSELLERS = "bestsellers";
+    private static final String EXCLUSIVE = "exclusive";
+    private static final String LATEST_PRODUCTS = "latestProducts";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
-        String relatedBooks = req.getParameter("relatedBooks");
+        String relatedBooks = req.getParameter(RELATED_BOOKS);
         if (Objects.nonNull(relatedBooks)) {
             Collection<Book> books = getBooks(23, 4, locale);
             resp.setContentType(UtilStrings.APPLICATION_JSON);
@@ -56,7 +61,7 @@ public class BooksController extends HttpServlet {
             return;
         }
 
-        String bestsellers = req.getParameter("bestsellers");
+        String bestsellers = req.getParameter(BESTSELLERS);
         if (Objects.nonNull(bestsellers)) {
             Collection<Book> books = getBooks(0, 12, locale);
             resp.setContentType(UtilStrings.APPLICATION_JSON);
@@ -66,7 +71,7 @@ public class BooksController extends HttpServlet {
             return;
         }
 
-        String exclusive = req.getParameter("exclusive");
+        String exclusive = req.getParameter(EXCLUSIVE);
         if (Objects.nonNull(exclusive)) {
             Book book = getRandomBook(locale);
             resp.setContentType(UtilStrings.APPLICATION_JSON);
@@ -76,7 +81,7 @@ public class BooksController extends HttpServlet {
             return;
         }
 
-        String latestProducts = req.getParameter("latestProducts");
+        String latestProducts = req.getParameter(LATEST_PRODUCTS);
         if (Objects.nonNull(latestProducts)) {
             Collection<Book> books = getBooks(8, 16, locale);
             resp.setContentType(UtilStrings.APPLICATION_JSON);
@@ -95,7 +100,7 @@ public class BooksController extends HttpServlet {
             return;
         }
 
-        int start = getStartPage(req);
+        int start = getStart(req, ITEMS_PER_PAGE);
 
         Collection<Book> books;
 
@@ -145,13 +150,13 @@ public class BooksController extends HttpServlet {
      * @param req request to this servlet
      * @return counted start page number
      */
-    private int getStartPage(HttpServletRequest req) {
+    public static int getStart(HttpServletRequest req, int itemsPerPage) {
         int start = 1;
         String pageStr = req.getParameter(UtilStrings.PAGE);
         if (Objects.nonNull(pageStr) && !pageStr.isEmpty()) {
             start = Integer.parseInt(pageStr);
         }
-        start = --start * ITEMS_PER_PAGE;
+        start = --start * itemsPerPage;
 
         return start;
     }

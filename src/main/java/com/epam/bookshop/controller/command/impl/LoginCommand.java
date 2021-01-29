@@ -69,7 +69,7 @@ public class LoginCommand implements Command {
 
 
             session.setAttribute(UtilStrings.LOGIN, login);
-            session.setAttribute(UtilStrings.ROLE, UtilStrings.USER_ROLE);
+            authorize(login, password, session);
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
@@ -113,5 +113,24 @@ public class LoginCommand implements Command {
         }
 
         return optionalUser;
+    }
+
+
+
+    /**
+     * Authorizes user by given login and password
+     *
+     * @param login login of user to be authenticated
+     * @param password password of user to be authenticated
+     */
+    private void authorize(String login, String password, HttpSession session) {
+        final String admin = "admin";
+        final String adminPass = "admin";
+
+        if (login.equals(admin) && password.equals(adminPass)) {
+            session.setAttribute(UtilStrings.ROLE, UtilStrings.ADMIN_ROLE);
+        } else {
+            session.setAttribute(UtilStrings.ROLE, UtilStrings.USER_ROLE);
+        }
     }
 }
