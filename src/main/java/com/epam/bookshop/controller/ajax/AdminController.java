@@ -3,6 +3,8 @@ package com.epam.bookshop.controller.ajax;
 import com.epam.bookshop.controller.command.impl.AdminCommand;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.EntityType;
+import com.epam.bookshop.domain.impl.Payment;
+import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.JSONWriter;
@@ -17,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -28,11 +32,13 @@ public class AdminController extends HttpServlet {
     private static final String COUNT_PAYMENTS = "countPayments";
     private static final String COUNT_USERS = "countUsers";
     private static final String FETCH = "fetch";
+    private static final String PAYMENTS = "payments";
+    private static final String USERS = "users";
 
     private static final int ITEMS_PER_PAGE = 4;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         final HttpSession session = req.getSession();
         final String locale = (String) session.getAttribute(UtilStrings.LOCALE);
@@ -101,7 +107,7 @@ public class AdminController extends HttpServlet {
         EntityService service;
 
         switch (fetchParam) {
-            case "payments":
+            case PAYMENTS:
                 service = ServiceFactory.getInstance().create(EntityType.PAYMENT);
                 service.setLocale(locale);
                 break;
@@ -114,6 +120,21 @@ public class AdminController extends HttpServlet {
                 throw new RuntimeException(REQUEST_PARAM_NOT_FOUND);
         }
 
-        return service.findAll(start, total);
+        Collection<Entity> enities = service.findAll(start, total);
+        if (USERS.equals(fetchParam)) {
+            convertToDTO(enities);
+        }
+
+        return enities;
+    }
+
+
+    private void convertToDTO(Collection<Entity> entities) {
+        if (Objects.nonNull(entities) && !entities.isEmpty()) {
+            entities.forEach(entity -> {
+                ((User) entity).setPassword(null);
+                ((User) entity).getIBANs().forEach(s -> s = null);
+            });
+        }
     }
 }

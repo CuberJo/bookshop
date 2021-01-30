@@ -464,17 +464,30 @@ function renderBooks(books) {
 
         $.each(books, function (index, el) {
 
+            let i = 0;
             let block = '<tr>' +
-                '<td>' + el.isbn + '</td>' +
-            '<td>' + el.title + '</td>' +
-            '<td>' + el.author + '</td>' +
-            '<td>' + el.price + '$</td>' +
-            '<td>' + el.publisher + '</td>' +
-            '<td>' + el.genre.genre + '</td>' +
-            '<td><img height="70px" src="data:image/jpg;base64,' + el.base64Image + '"></td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.isbn + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.title + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.author + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.price + '$</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.publisher + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.genre.genre + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' +
+                    '<img height="70px" src="data:image/jpg;base64,' + el.base64Image + '" onclick="editImg(' + index + ')">' +
+                    '<div id="divFileUp_' + index + '" style="display: none" class="example-2">' +
+                        '<div class="form-group">' +
+                            '<input  type="file" name="file" id="fileUp_' + index + '" class="input-file">' +
+                            '<label for="file" class="btn btn-tertiary js-labelFile">' +
+                                '<i class="icon fa fa-check"></i>' +
+                                '<span class="js-fileName">Upload file</span>' +
+                            '</label>' +
+                        '</div>' +
+                    '</div>' +
+                    // '<input style="display: none;" type="file" id="fileUp_' + index + '"/>' +
+                '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '"><button type="button" onclick="edit(' + index + ')">Edit</button></td>' +
             '</tr>';
             $('#books').append(block);
-
         })
     }
 
@@ -549,6 +562,12 @@ $(function () {
             hideNext('booksPagination');
         }
     });
+
+    $('#edit').click(function () {
+        let block = '<a id="save" href="#">Save</a>';
+        $(this).append(block);
+
+    })
 })
 
 
@@ -560,80 +579,196 @@ $(function () {
 
 
 
+/******************************************************************************************************/
+/**************************************  Books editing   **********************************************/
+/******************************************************************************************************/
 
 
 
 
-// /**
-//  * Binding buttons with actions
-//  */
-// $(document).ready(function () {
-//
-//     let genreName = $('#genre').text();
-//     if (genreName === "") {
-//         genreName = undefined;
-//     }
-//
-//     /**
-//      * on prev click
-//      */
-//     $('.prev').bind('click', function () {
-//         if (--pageNum > 0) {
-//             $.ajax({
-//                 url: 'http://localhost:8080/books',
-//                 type: 'GET',
-//                 data: ({
-//                     page: pageNum,
-//                     genre: genreName
-//                 }),
-//                 success: function (jsonStr) {
-//                     books = jsonStr;
-//                     $('#toInsert').empty();
-//                     render(books);
-//                     $('.page-num').text(' ' + pageNum);
-//
-//                     if ((pageNum * booksPerPage + 1) < booksQuantity) {
-//                         showNext();
-//                     }
-//                     if (pageNum - 1 === 0 ) {
-//                         hidePrev();
-//                     }
-//                 }
-//             });
-//         } else {
-//             pageNum++;
-//             hidePrev();
-//         }
-//     });
-//
-//     /**
-//      * on next click
-//      */
-//     $('.next').bind('click', function () {
-//         if ((pageNum * booksPerPage + 1) < booksQuantity) {
-//             $.ajax({
-//                 url: 'http://localhost:8080/books',
-//                 type: 'GET',
-//                 data: ({page: ++pageNum, genre: $('#genre').text()}),
-//                 success: function (jsonStr) {
-//                     books = jsonStr;
-//                     $('#toInsert').empty();
-//                     render(books);
-//                     $('.page-num').text(' ' + pageNum);
-//                     if (pageNum > 0) {
-//                         showPrev();
-//                     }
-//                     if (pageNum * booksPerPage >= booksQuantity) {
-//                         hideNext();
-//                     }
-//                 }
-//             });
-//         } else {
-//             hideNext();
-//         }
-//     });
-//
-// })
+
+
+
+
+
+
+let selectedGenre;
+let oldSelectedGenre;
+let base64Image;
+let oldBase64Image;
+
+
+let optionsBlock = '<select class="genres">' +
+    '<option selected value="">Choose genre</option>'+
+    '<option value="ROMANCE" selected>Romance</option>'+
+    '<option value="ACTION_AND_ADVENTURE">Action and adventure</option>'+
+    '<option value="MYSTERY_AND_THRILLER">Mystery and thriller</option>'+
+    '<option value="BIOGRAPHIES_AND_HISTORY">Biographies and history</option>'+
+    '<option value="CHILDREN">Children</option>'+
+    '<option value="FANTASY">Fantasy</option>'+
+    '<option value="HISTORICAL_FICTION">Historical fiction</option>'+
+    '<option value="HORROR">Horror</option>'+
+    '<option value="LITERARY_FICTION">Literaly fiction</option>'+
+    '<option value="NON-FICTION">Non-fiction</option>'+
+    '<option value="SCIENCE-FICTION">Sci-fiction</option>'+
+    '</select>';
+
+
+/**
+ * Permits to edit row
+ *
+ * @param rowNum
+ */
+function edit(rowNum) {
+    console.log('edit')
+    $('.' + rowNum).attr('contenteditable', 'true');
+
+    oldSelectedGenre = $('#' + rowNum + '_6').text();
+    $('#' + rowNum + '_6').empty();
+    $('#' + rowNum + '_6').attr('contenteditable', 'false');
+    $('#' + rowNum + '_6').html(optionsBlock);
+
+    /**
+     * Processes genre option selections
+     */
+    $(".genres").change(function(){
+        selectedGenre = $(this).children("option:selected").val();
+    });
+
+    $('#' + rowNum + '_8').replaceWith('<td class="' + rowNum + '" id="' + rowNum + '_8"><button onclick="save(' + rowNum + ')">Save</button></td>');
+
+    oldBase64Image = $('#' + rowNum + '_7 img').attr('src');
+    // console.log(oldBase64Image)
+}
+
+
+/**
+ * Saves edited data
+ *
+ * @param {string} rowNum
+ */
+function save(rowNum) {
+    console.log('save')
+    $('.' + rowNum).attr('contenteditable', 'false');
+
+    if (selectedGenre !== "" && selectedGenre != undefined) {
+        $('#' + rowNum + '_6').empty();
+        $('#' + rowNum + '_6').text(selectedGenre);
+    } else {
+        $('#' + rowNum + '_6').empty();
+        $('#' + rowNum + '_6').text(oldSelectedGenre);
+    }
+
+    if (base64Image !== "" && base64Image !== undefined) {
+        $('#' + rowNum + '_7 img').attr('src', base64Image);
+        // console.log(base64Image)
+    } else {
+        $('#' + rowNum + '_7 img').attr('src', oldBase64Image);
+    }
+
+    // $('#' + rowNum + '_7 input').css('display', 'none');
+    $('#divFileUp_' + rowNum).css('display', 'none');
+    $('#' + rowNum + '_7 img').css('display', 'block');
+
+    $('#' + rowNum + '_8').replaceWith('<td class="' + rowNum + '" id="' + rowNum + '_8"><button onclick="edit(' + rowNum + ')">Edit</button></td>');
+}
+
+
+
+/**
+ * Allows to upload new img
+ *
+ * @param {string} imgRow
+ */
+function editImg(imgRow) {
+    console.log('click');
+    if ($('#' + imgRow + '_7').attr('contenteditable') == 'true') {
+
+        $('#' + imgRow + '_7 img').css('display', 'none');
+        $('#' + '_6').attr('contenteditable', 'false');
+        // $('#' + imgRow + '_7 divFileUp_' + imgRow).css('display', 'block');
+        $('#divFileUp_' + imgRow).css('display', 'block');
+
+        // $('#' + imgRow + '_7').attr('contenteditable', 'false');
+
+        $('#fileUp_' + imgRow).change(function () {
+            console.log('change')
+            encodeImageFileURL(imgRow);
+        });
+    }
+}
+
+
+/**
+ * Encodes image to base64 format
+ */
+function encodeImageFileURL(imgRow) {
+    let fileSelect = document.getElementById('fileUp_' + imgRow).files;
+    if (fileSelect.length > 0) {
+        fileSelect = fileSelect[0];
+        let fileReader = new FileReader();
+
+        console.log('result')
+        fileReader.onload = function(FileLoadEvent) {
+            let srcData = FileLoadEvent.target.result;
+
+            // document.getElementById('imageFile').src = srcData;
+            // document.getElementById('base64Image').innerHTML = srcData;
+            base64Image = srcData;
+            // console.log('base64Image: '+base64Image)
+        }
+        fileReader.readAsDataURL(fileSelect);
+    }
+}
+
+
+
+
+$(function () {
+    /**
+     * Adds new row
+     */
+    $('#add').click(function () {
+        let block = '<tr>' +
+            '<td class="' + (booksQuantity + 1) + '" id="' + (booksQuantity + 1) + '_1"></td>' +
+            '<td class="' + (booksQuantity + 1) + '" id="' + (booksQuantity + 1) + '_2"></td>' +
+            '<td class="' + (booksQuantity + 1) + '" id="' + (booksQuantity + 1) + '_3"></td>' +
+            '<td class="' + (booksQuantity + 1) + '" id="' + (booksQuantity + 1) + '_4"></td>' +
+            '<td class="' + (booksQuantity + 1) + '" id="' + (booksQuantity + 1) + '_5"></td>' +
+            '<td class="' + (booksQuantity + 1) + '" id="' + (booksQuantity + 1) + '_6">' +
+                optionsBlock +
+            '</td>' +
+            '<td class="' + (booksQuantity + 1) + '" id="' + (booksQuantity + 1) + '_7">' +
+                '<input style="display: none;" type="file" id="fileUp_' + (booksQuantity + 1) + '"/>' +
+            '</td>' +
+            '<td class="' + (booksQuantity + 1) + '" id="' + (booksQuantity + 1) + '_6"><button id="saveNew">Save</button></td>' +
+            '</tr>';
+
+        // /**
+        //  * Processes genre option selections
+        //  */
+        // $(".genres").change(function(){
+        //     selectedGenre = $(this).children("option:selected").val();
+        //     console.log('selected genre is ' + selectedGenre)
+        // });
+
+        $('#' + (booksQuantity + 1) + '_6').empty();
+        $('#' + (booksQuantity + 1) + '_6').attr('contenteditable', 'false');
+        $('#' + (booksQuantity + 1) + '_6').html(optionsBlock);
+
+        $('#books').append(block);
+        $('#books').attr('contenteditable', 'true');
+    })
+})
+
+
+
+
+
+
+
+
+
 
 
 

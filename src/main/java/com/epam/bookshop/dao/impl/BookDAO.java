@@ -115,7 +115,6 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         ResultSet rs = null;
 
         try (PreparedStatement ps = getPrepareStatement(SQL_SELECT_BOOk_BY_ID)) {
-
             ps.setLong(1, id);
             rs = ps.executeQuery();
 
