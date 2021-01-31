@@ -474,6 +474,19 @@ function renderBooks(books) {
                 '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.genre.genre + '</td>' +
                 '<td class="' + index + '" id="' + index + '_' + ++i + '">' +
                     '<img height="70px" src="data:image/jpg;base64,' + el.base64Image + '" onclick="editImg(' + index + ')">' +
+                    '<input type="file" name="file" style="display: none" id="fileUp_' + index + '">' +
+                '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '"><button type="button" onclick="edit(' + index + ')">Edit</button></td>' +
+                '</tr>';
+            let block2 = '<tr>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.isbn + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.title + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.author + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.price + '$</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.publisher + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' + el.genre.genre + '</td>' +
+                '<td class="' + index + '" id="' + index + '_' + ++i + '">' +
+                    '<img height="70px" src="data:image/jpg;base64,' + el.base64Image + '" onclick="editImg(' + index + ')">' +
                     '<div id="divFileUp_' + index + '" style="display: none" class="example-2">' +
                         '<div class="form-group">' +
                             '<input  type="file" name="file" id="fileUp_' + index + '" class="input-file">' +
@@ -563,11 +576,11 @@ $(function () {
         }
     });
 
-    $('#edit').click(function () {
-        let block = '<a id="save" href="#">Save</a>';
-        $(this).append(block);
-
-    })
+    // $('#edit').click(function () {
+    //     let block = '<a id="save" href="#">Save</a>';
+    //     $(this).append(block);
+    //
+    // })
 })
 
 
@@ -594,8 +607,11 @@ $(function () {
 
 let selectedGenre;
 let oldSelectedGenre;
+let oldISBN;
 let base64Image;
 let oldBase64Image;
+let fileToSend;
+let fd;
 
 
 let optionsBlock = '<select class="genres">' +
@@ -623,6 +639,8 @@ function edit(rowNum) {
     console.log('edit')
     $('.' + rowNum).attr('contenteditable', 'true');
 
+    oldISBN = $('#' + rowNum + '_1').text();
+
     oldSelectedGenre = $('#' + rowNum + '_6').text();
     $('#' + rowNum + '_6').empty();
     $('#' + rowNum + '_6').attr('contenteditable', 'false');
@@ -649,6 +667,11 @@ function edit(rowNum) {
  */
 function save(rowNum) {
     console.log('save')
+
+    if (!sendData(rowNum)) {
+        return;
+    }
+
     $('.' + rowNum).attr('contenteditable', 'false');
 
     if (selectedGenre !== "" && selectedGenre != undefined) {
@@ -667,10 +690,127 @@ function save(rowNum) {
     }
 
     // $('#' + rowNum + '_7 input').css('display', 'none');
-    $('#divFileUp_' + rowNum).css('display', 'none');
+    // $('#divFileUp_' + rowNum).css('display', 'none');
+    $('#fileUp_' + rowNum).css('display', 'none');
     $('#' + rowNum + '_7 img').css('display', 'block');
 
     $('#' + rowNum + '_8').replaceWith('<td class="' + rowNum + '" id="' + rowNum + '_8"><button onclick="edit(' + rowNum + ')">Edit</button></td>');
+}
+
+
+function sendData(rowNum) {
+    let isbn = $('#' + rowNum + '_1').text();
+    let title = $('#' + rowNum + '_2').text();
+    let author = $('#' + rowNum + '_3').text();
+    let price = $('#' + rowNum + '_4').text();
+    let publisher = $('#' + rowNum + '_5').text();
+    let genre = selectedGenre !== "" && selectedGenre !== undefined ? selectedGenre : oldSelectedGenre;
+
+
+    let error = "";
+
+    // let isbnRegex = /^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$/;
+    // if (!isbnRegex.test(isbn)) {
+    //     error += "Invalid ISBN input; ";
+    // }
+    // let titleRegex = /^[-()!\d\s.a-zA-Zа-яА-Я]{1,50}$/;
+    // if (!titleRegex.test(title)) {
+    //     error += "Invalid title input; ";
+    // }
+    // let authorRegex = /^[-\s.a-zA-Zа-яА-Я]{1,50}$/;
+    // if (!authorRegex.test(author)) {
+    //     error += "Invalid author name input; ";
+    // }
+    // let publisherRegex = /^[-&a-zA-Zа-яА-Я\s]{1,50}$/;
+    // if (!publisherRegex.test(publisher)) {
+    //     error += "Invalid publisher input; ";
+    // }
+    // let priceRegex = /^[0-9]+(\.[0-9]+)?(\$)$/;
+    // if (!priceRegex.test(price)) {
+    //     error += "Invalid price number input; ";
+    // }
+
+    let malicious_regex = /[<>*;='#)+("]+/;
+    if (malicious_regex.test(isbn)) {
+        error = "Invalid isbn input";
+    }
+    if (malicious_regex.test(title)) {
+        error = "Invalid title input";
+    }
+    if (malicious_regex.test(author)) {
+        error = "Invalid author input";
+    }
+    if (malicious_regex.test(price)) {
+        error = "Invalid price input";
+    }
+    if (malicious_regex.test(publisher)) {
+        error = "Invalid publisher input";
+    }
+
+    let whitespace_regex = /^[\s]+$/;
+    if (whitespace_regex.test(isbn)) {
+        error = "Empty isbn input";
+    }
+    if (whitespace_regex.test(title)) {
+        error = "Empty title input";
+    }
+    if (whitespace_regex.test(author)) {
+        error = "Empty author input";
+    }
+    if (whitespace_regex.test(price)) {
+        error = "Empty price input";
+    }
+    if (whitespace_regex.test(publisher)) {
+        error = "Empty publisher input";
+    }
+
+    if (error !== "" && error !== undefined) {
+        $('#er').text(error);
+        return false;
+    }
+
+    // let formData = new FormData();
+    // formData.append("file", fileToSend);
+
+
+    /**
+     * Sends updated data to server
+     */
+    $.ajax({
+        url: 'http://localhost:8080/admin',
+        type: 'POST',
+        data: ({
+            oldISBN: oldISBN,
+            isbn: isbn,
+            title: title,
+            author: author,
+            price: price,
+            publisher: publisher,
+            genre: genre,
+            imgFile: fd
+            // base64Image: base64Image !== "" && base64Image !== undefined ? base64Image : oldBase64Image
+        }),
+        success: function (erMes) {
+            if (erMes !== undefined && erMes !== "") {
+                $('#er').text(erMes);
+                return;
+            }
+            console.log('sending image...');
+            $.ajax({
+                url: 'http://localhost:8080/admin',
+                data: fd,
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                success: function(data){
+                    alert(data);
+                }
+            });
+
+        }
+    });
+
+    return true;
 }
 
 
@@ -682,15 +822,18 @@ function save(rowNum) {
  */
 function editImg(imgRow) {
     console.log('click');
-    if ($('#' + imgRow + '_7').attr('contenteditable') == 'true') {
+    if ($('#' + imgRow + '_8 button').text() === 'Save') {
+    // if ($('#' + imgRow + '_7').attr('contenteditable') == 'true') {
 
         $('#' + imgRow + '_7 img').css('display', 'none');
-        $('#' + '_6').attr('contenteditable', 'false');
+        // $('#' + '_6').attr('contenteditable', 'false');
         // $('#' + imgRow + '_7 divFileUp_' + imgRow).css('display', 'block');
-        $('#divFileUp_' + imgRow).css('display', 'block');
+        // $('#divFileUp_' + imgRow).css('display', 'block');
+        $('#fileUp_' + imgRow).css('display', 'block');
 
-        // $('#' + imgRow + '_7').attr('contenteditable', 'false');
+        $('#' + imgRow + '_7').attr('contenteditable', 'false');
 
+        console.log('#fileUp_' + imgRow);
         $('#fileUp_' + imgRow).change(function () {
             console.log('change')
             encodeImageFileURL(imgRow);
@@ -705,7 +848,12 @@ function editImg(imgRow) {
 function encodeImageFileURL(imgRow) {
     let fileSelect = document.getElementById('fileUp_' + imgRow).files;
     if (fileSelect.length > 0) {
+        fd = new FormData();
+        fd.append( 'file', fileSelect[0] );
+
         fileSelect = fileSelect[0];
+
+
         let fileReader = new FileReader();
 
         console.log('result')

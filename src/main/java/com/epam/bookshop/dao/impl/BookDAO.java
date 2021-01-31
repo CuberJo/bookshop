@@ -255,6 +255,25 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
 
     /**
+     * Creates image in database
+     *
+     * @param ISBN book's unique identifier
+     * @param is stream with uploaded image
+     */
+    public void createImage(String ISBN, InputStream is) {
+        try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_IMG)) {
+
+            ps.setString(1, ISBN);
+            ps.setBinaryStream(2, is); //   or ps.setBlob(2, is);
+
+            ps.execute();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+    /**
      * Finds image by ISBN in database
      *
      * @param ISBN book's unique identifier

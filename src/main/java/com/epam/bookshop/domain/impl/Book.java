@@ -58,7 +58,7 @@ public class Book extends Entity implements Serializable {
         return ISBN;
     }
 
-    public void setISBN(java.lang.String ISBN) {
+    public void setISBN(String ISBN) {
         this.ISBN = ISBN;
     }
 

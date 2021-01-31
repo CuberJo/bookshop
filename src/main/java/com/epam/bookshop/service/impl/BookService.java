@@ -183,7 +183,7 @@ public class BookService implements EntityService<Book> {
 
 
     /**
-     * Creates image in database
+     * Creates image in database, by reading it in file system
      *
      * @param ISBN book's unique identifier
      * @param filePath file system path of image
@@ -192,6 +192,22 @@ public class BookService implements EntityService<Book> {
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
             BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
             dao.createImage(ISBN, filePath);
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+    /**
+     * Creates image in database
+     *
+     * @param ISBN book's unique identifier
+     * @param is stream with uploaded image
+     */
+    public void createImage(String ISBN, InputStream is) {
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            dao.createImage(ISBN, is);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
         }

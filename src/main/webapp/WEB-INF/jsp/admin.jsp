@@ -267,7 +267,7 @@
         </article>
         <article id="trends-1">trends</article>
         <article id="books-1">
-            <h2><fmt:message key="label.books" bundle="${lang}"/></h2>
+            <h2><fmt:message key="label.books" bundle="${lang}"/></h2><div id="er" style="color: red"></div>
             <table id="books">
                 <tr>
                     <th>ISBN</th>
@@ -279,16 +279,85 @@
                     <th><fmt:message key="label.image" bundle="${lang}"/></th>
                     <th><fmt:message key="label.options" bundle="${lang}"/></th>
                 </tr>
+
+<%--                <input type="file" name="file" id="mf" class="input-file">--%>
+<%--                <button id="b1">button</button>--%>
+
+<%--                <script>--%>
+<%--                    $('#b1').click(function () {--%>
+
+<%--                        console.log('done click')--%>
+
+<%--                        let fileSelect = document.getElementById('mf').files;--%>
+<%--                        // if (fileSelect.length > 0) {--%>
+<%--                        //     fileSelect = fileSelect[0];--%>
+<%--                        // }--%>
+<%--                        var fd = new FormData();--%>
+<%--                        fd.append( 'file', fileSelect[0] );--%>
+<%--    --%>
+<%--                        $.ajax({--%>
+<%--                            url: 'http://localhost:8080/admin',--%>
+<%--                            data: fd,--%>
+<%--                            processData: false,--%>
+<%--                            contentType: false,--%>
+<%--                            type: 'POST',--%>
+<%--                            success: function(data){--%>
+<%--                                alert(data);--%>
+<%--                            }--%>
+<%--                        });--%>
+<%--                    })--%>
+<%--                </script>--%>
+
+
+                <div style="display: none" class="example-2">
+                    <div class="form-group">
+                        <input type="file" name="file" id="file" class="input-file">
+                        <label for="file" class="btn btn-tertiary js-labelFile">
+                            <i class="icon fa fa-check"></i>
+                            <span class="js-fileName">Загрузить файл</span>
+                        </label>
+                    </div>
+                </div>
             </table>
 
             <style>
-                .example-2 .btn-tertiary{color:#555;padding:0;line-height:40px;width:300px;margin:auto;display:block;border:2px solid #555}
-                .example-2 .btn-tertiary:hover,.example-2 .btn-tertiary:focus{color:#888;border-color:#888}
-                .example-2 .input-file{width:.1px;height:.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}
-                .example-2 .input-file + .js-labelFile{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 10px;cursor:pointer}
-                .example-2 .input-file + .js-labelFile .icon:before{content:"\f093"}
-                .example-2 .input-file + .js-labelFile.has-file .icon:before{content:"\f00c";color:#5AAC7B}
+                .example-2 .btn-tertiary{
+                    color:#555;
+                    padding:0;
+                    line-height:40px;
+                    width:300px;
+                    margin:auto;
+                    display:block;
+                    border:2px solid #555
+                }
+                .example-2 .btn-tertiary:hover,.example-2 .btn-tertiary:focus{
+                    color:#888;
+                    border-color:#888
+                }
+                .example-2 .input-file{
+                    width:.1px;
+                    height:.1px;
+                    opacity:0;
+                    overflow:hidden;
+                    position:absolute;
+                    z-index:-1
+                }
+                .example-2 .input-file + .js-labelFile{
+                    overflow:hidden;
+                    text-overflow:ellipsis;
+                    white-space:nowrap;
+                    padding:0 10px;
+                    cursor:pointer
+                }
+                .example-2 .input-file + .js-labelFile .icon:before{
+                    content:"\f093"
+                }
+                .example-2 .input-file + .js-labelFile.has-file .icon:before{
+                    content:"\f00c";
+                    color:#5AAC7B
+                }
             </style>
+
             <div id="booksPagination" class="pagination">
                 <div class="prev"><fmt:message key="label.prev" bundle="${lang}" /></div>
                 <div class="page"><fmt:message key="label.page" bundle="${lang}"/><span class="page-num"></span></div>
