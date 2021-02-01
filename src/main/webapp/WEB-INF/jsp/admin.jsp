@@ -320,44 +320,6 @@
                 </div>
             </table>
 
-            <style>
-                .example-2 .btn-tertiary{
-                    color:#555;
-                    padding:0;
-                    line-height:40px;
-                    width:300px;
-                    margin:auto;
-                    display:block;
-                    border:2px solid #555
-                }
-                .example-2 .btn-tertiary:hover,.example-2 .btn-tertiary:focus{
-                    color:#888;
-                    border-color:#888
-                }
-                .example-2 .input-file{
-                    width:.1px;
-                    height:.1px;
-                    opacity:0;
-                    overflow:hidden;
-                    position:absolute;
-                    z-index:-1
-                }
-                .example-2 .input-file + .js-labelFile{
-                    overflow:hidden;
-                    text-overflow:ellipsis;
-                    white-space:nowrap;
-                    padding:0 10px;
-                    cursor:pointer
-                }
-                .example-2 .input-file + .js-labelFile .icon:before{
-                    content:"\f093"
-                }
-                .example-2 .input-file + .js-labelFile.has-file .icon:before{
-                    content:"\f00c";
-                    color:#5AAC7B
-                }
-            </style>
-
             <div id="booksPagination" class="pagination">
                 <div class="prev"><fmt:message key="label.prev" bundle="${lang}" /></div>
                 <div class="page"><fmt:message key="label.page" bundle="${lang}"/><span class="page-num"></span></div>
@@ -367,114 +329,14 @@
         <article id="add-book">
             <h2><fmt:message key="label.add_book" bundle="${lang}"/></h2>
 
-            <style>
-                .inp {
-                    position: relative;
-                    margin: auto;
-                    width: 100%;
-                    max-width: 280px;
-                    height: 53px;
-                }
-                .inp .border {
-                    position: absolute;
-                    left: 0;
-                    bottom: 0;
-                    height: 18px;
-                    fill: none;
-                }
-                .inp .border path {
-                    stroke: #c8ccd4;
-                    stroke-width: 2;
-                }
-                .inp .border path d {
-                    transition: all 0.2s ease;
-                }
-                .inp .check {
-                    position: absolute;
-                    top: 20px;
-                    right: 20px;
-                    fill: none;
-                    transform: translate(0, 9px) scale(0);
-                    transition: all 0.3s cubic-bezier(0.5, 0.9, 0.25, 1.3);
-                    transition-delay: 0.15s;
-                }
-                .inp .check path {
-                    stroke: #07f;
-                    stroke-width: 2;
-                }
-                .inp input {
-                    -webkit-appearance: none;
-                    width: 100%;
-                    border: 0;
-                    font-family: inherit;
-                    padding: 0;
-                    height: 48px;
-                    font-size: 16px;
-                    font-weight: 500;
-                    background: none;
-                    border-radius: 0;
-                    color: #223254;
-                    transition: all 0.15s ease;
-                }
-                .inp input:focus {
-                    outline: none;
-                }
-                .inp input:focus + .border path {
-                    stroke: #07f;
-                }
-                .inp input:valid + .border path {
-                    animation: elasticInput 0.8s ease forwards;
-                }
-                .inp input:valid + .border + .check {
-                    transform: translate(0, 0) scale(1);
-                }
-                ::placeholder {
-                    color: #9098a9;
-                }
-                @-moz-keyframes elasticInput {
-                    33% {
-                        d: path("M0,12 L226,12 C220,12 220.666667,12 228,12 C239,12 245,1 253,1 C261,1 268,12 278,12 C284.666667,12 285.333333,12 280,12");
-                    }
-                    66% {
-                        d: path("M0,12 L226,12 C220,12 220.666667,12 228,12 C239,12 245,17 253,17 C261,17 268,12 278,12 C284.666667,12 285.333333,12 280,12");
-                    }
-                }
-                @-webkit-keyframes elasticInput {
-                    33% {
-                        d: path("M0,12 L226,12 C220,12 220.666667,12 228,12 C239,12 245,1 253,1 C261,1 268,12 278,12 C284.666667,12 285.333333,12 280,12");
-                    }
-                    66% {
-                        d: path("M0,12 L226,12 C220,12 220.666667,12 228,12 C239,12 245,17 253,17 C261,17 268,12 278,12 C284.666667,12 285.333333,12 280,12");
-                    }
-                }
-                @-o-keyframes elasticInput {
-                    33% {
-                        d: path("M0,12 L226,12 C220,12 220.666667,12 228,12 C239,12 245,1 253,1 C261,1 268,12 278,12 C284.666667,12 285.333333,12 280,12");
-                    }
-                    66% {
-                        d: path("M0,12 L226,12 C220,12 220.666667,12 228,12 C239,12 245,17 253,17 C261,17 268,12 278,12 C284.666667,12 285.333333,12 280,12");
-                    }
-                }
-                @keyframes elasticInput {
-                    33% {
-                        d: path("M0,12 L226,12 C220,12 220.666667,12 228,12 C239,12 245,1 253,1 C261,1 268,12 278,12 C284.666667,12 285.333333,12 280,12");
-                    }
-                    66% {
-                        d: path("M0,12 L226,12 C220,12 220.666667,12 228,12 C239,12 245,17 253,17 C261,17 268,12 278,12 C284.666667,12 285.333333,12 280,12");
-                    }
-                }
-
-            </style>
-
-            <form>
-            <label for="inp" class="inp">
-                <input type="password" id="inp" placeholder="Password" pattern=".{6,}" required>
-                <input name="isbn" type="text" size="17" placeholder="<fmt:message key="label.isbn" bundle="${lang}"/>"/>
+            <form id="addBookForm" action="admin" method="post">
+            <label class="inp">
+                <input name="isbn" pattern="^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$" type="text" size="17" placeholder="<fmt:message key="label.isbn" bundle="${lang}"/>"/>
                 <input name="title" pattern="^[-()!\d\s.\p{L}]{1,50}$" type="text" placeholder="<fmt:message key="label.title" bundle="${lang}"/>"/>
                 <input name="author" type="text" pattern="^[-\s.\p{L}]{1,50}$" placeholder="<fmt:message key="label.author" bundle="${lang}"/>"/>
                 <input name="price" type="text" pattern="^[0-9]+(\.[0-9]+)?$" placeholder="<fmt:message key="label.price" bundle="${lang}"/>"/>
                 <input name="publisher" type="text" pattern="^[-&\p{L}\s]{1,50}$" placeholder="<fmt:message key="label.publisher" bundle="${lang}"/>"/>
-                <select class="genres"> +
+                <select class="genres" style="margin: 25px 0"> +
                     <option selected value=""><fmt:message key="label.choose_genre" bundle="${lang}" /></option>
                     <option value="ROMANCE" selected><fmt:message key="label.romance" bundle="${lang}" /></option>
                     <option value="ACTION_AND_ADVENTURE"><fmt:message key="label.action_and_adventure" bundle="${lang}" /></option>
@@ -482,32 +344,24 @@
                     <option value="BIOGRAPHIES_AND_HISTORY"><fmt:message key="label.biographies_and_history" bundle="${lang}" /></option>
                     <option value="CHILDREN"><fmt:message key="label.children" bundle="${lang}" /></option>
                     <option value="FANTASY"><fmt:message key="label.fantasy" bundle="${lang}" /></option>
-                    <option value="HISTORICAL_FICTION">Historical fiction</option>
+                    <option value="HISTORICAL_FICTION"><fmt:message key="label.historical_fiction" bundle="${lang}" /></option>
                     <option value="HORROR"><fmt:message key="label.horror" bundle="${lang}" /></option>
                     <option value="LITERARY_FICTION"><fmt:message key="label.literary_fiction" bundle="${lang}" /></option>
                     <option value="NON-FICTION"><fmt:message key="label.non-fiction" bundle="${lang}" /></option>
                     <option value="SCIENCE-FICTION"><fmt:message key="label.science-fiction" bundle="${lang}" /></option>
                 </select>
-                <style>
-                    .example-1 .form-group{padding:1em;margin:1em}
-                    .example-1 input[type=file]{outline:0;opacity:0;pointer-events:none;user-select:none}
-                    .example-1 .label{width:120px;border:2px dashed grey;border-radius:5px;display:block;padding:1.2em;transition:border 300ms ease;cursor:pointer;text-align:center}
-                    .example-1 .label i{display:block;font-size:42px;padding-bottom:16px}
-                    .example-1 .label i,.example-1 .label .title{color:grey;transition:200ms color}
-                    .example-1 .label:hover{border:2px solid #000}
-                    .example-1 .label:hover i,.example-1 .label:hover .title{color:#000}
-                </style>
+
                 <div class="example-1">
                     <div class="form-group">
                         <label class="label">
                             <i class="material-icons">attach_file</i>
-                            <span class="title">Добавить файл</span>
-                            <input type="file">
+                            <span class="title"><fmt:message key="label.add_file" bundle="${lang}" /></span>
+                            <input type="file" id="fileBookToAdd">
                         </label>
                     </div>
                 </div>
-                <input name="base64Image" type="file" placeholder="<fmt:message key="label.image" bundle="${lang}"/>"/>
-                <input name="bookFile" type="file" placeholder="<fmt:message key="label.book_file" bundle="${lang}"/>"/>
+
+                <input type="submit" id="addBtn" value="<fmt:message key="label.save" bundle="${lang}"/>">
             </label>
             </form>
         </article>

@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.util.criteria.Criteria;
@@ -26,8 +26,8 @@ import java.util.Optional;
 /**
  * to login {@link User} to application
  */
-public class LoginCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(LoginCommand.class);
+public class LoginFrontCommand implements FrontCommand {
+    private static final Logger logger = LoggerFactory.getLogger(LoginFrontCommand.class);
 
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";

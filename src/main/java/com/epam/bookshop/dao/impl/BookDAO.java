@@ -40,6 +40,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     private static final String SQL_SELECT_COUNT_ALL_WHERE_LIKE_OR = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.BOOK WHERE Title LIKE ? OR Author LIKE ? OR Publisher LIKE ? ;";
     private static final String SQL_SELECT_IMG_BY_ISBN = "SELECT Image from TEST_LIBRARY.BOOK_IMAGE WHERE ISBN = ?;";
     private static final String SQL_INSERT_IMG = "INSERT INTO TEST_LIBRARY.BOOK_IMAGE (ISBN, Image) VALUES (?, ?)";
+    private static final String SQL_UPDATE_IMG = "UPDATE TEST_LIBRARY.BOOK_IMAGE SET Image = ? WHERE ISBN = ?";
     private static final String SQL_SELECT_BOOK_FILE_BY_ISBN = "SELECT File from TEST_LIBRARY.BOOK_FILE WHERE ISBN = ?;";
     private static final String SQL_INSERT_BOOK_FILE = "INSERT INTO TEST_LIBRARY.BOOK_FILE (ISBN, File) VALUES (?, ?)";
 
@@ -265,6 +266,25 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
             ps.setString(1, ISBN);
             ps.setBinaryStream(2, is); //   or ps.setBlob(2, is);
+
+            ps.execute();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+    /**
+     * Updates image in database
+     *
+     * @param ISBN book's unique identifier
+     * @param is stream with uploaded image
+     */
+    public void updateImage(String ISBN, InputStream is) {
+        try(PreparedStatement ps = getPrepareStatement(SQL_UPDATE_IMG)) {
+
+            ps.setBinaryStream(1, is); //   or ps.setBlob(2, is);
+            ps.setString(2, ISBN);
 
             ps.execute();
         } catch (SQLException throwables) {

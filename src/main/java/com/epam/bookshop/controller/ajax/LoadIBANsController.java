@@ -26,7 +26,7 @@ import java.util.Optional;
 
 
 /**
- * Loads user IBANs into session
+ * Retrieves user IBANs from database and loads them into session
  */
 @WebServlet("/load_ibans")
 public class LoadIBANsController extends HttpServlet {
@@ -57,7 +57,8 @@ public class LoadIBANsController extends HttpServlet {
 
 
     /**
-     * Adds user IBANs to session
+     * Adds user IBANs to {@link HttpSession} object
+     *
      * @param session current {@link HttpSession} session used to set attributes
      * @param IBANs {@link List<String>} IBANs to add
      */

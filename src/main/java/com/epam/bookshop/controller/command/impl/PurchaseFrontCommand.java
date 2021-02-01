@@ -1,13 +1,8 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
-import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Payment;
@@ -17,6 +12,11 @@ import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.PaymentService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +29,8 @@ import java.util.Objects;
 /**
  * Makes book purchase
  */
-public class PurchaseCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(PurchaseCommand.class);
+public class PurchaseFrontCommand implements FrontCommand {
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseFrontCommand.class);
 
     private static final ResponseContext FINISHED_PURCHASE_PAGE = () -> "/home?command=finished_purchase";
 
@@ -44,10 +44,11 @@ public class PurchaseCommand implements Command {
     @Override
     public ResponseContext execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
+        final String locale = (String) session.getAttribute(UtilStrings.LOCALE);
 
-        alreadyBought(session);
+        alreadyBought(session, locale);
         purchase();
-        addBooksToLibrary(session);
+        addBooksToLibrary(session, locale);
         clearCart(session);
 
 
@@ -55,12 +56,13 @@ public class PurchaseCommand implements Command {
     }
 
     /**
-     * Removes book from cart if it was bought
+     * Removes book from  <b>cart</b> object of type of {@link List<Book>},
+     * stored in session, if it has already been bought.
+     *
      * @param session current {@link HttpSession} object
+     * @param locale language for error messages whether ones take place
      */
-    private void alreadyBought(HttpSession session) {
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
-
+    private void alreadyBought(HttpSession session, String locale) {
         PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);
         service.setLocale(locale);
 
@@ -91,6 +93,7 @@ public class PurchaseCommand implements Command {
 
     /**
      * Clearing <b>cart</b> attribute in session
+     *
      * @param session current {@link HttpSession} session
      */
     private void clearCart(HttpSession session) {
@@ -100,11 +103,13 @@ public class PurchaseCommand implements Command {
 
 
     /**
+     * Commits purchase operation in database, and adds bought {@link Book} to <b>library</b>
+     * object of type of {@link List<Book>}, stored in session
+     *
      * @param session current {@link HttpSession} session
+     * @param locale language for error messages whether ones take place
      */
-    private void addBooksToLibrary(HttpSession session) {
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
-
+    private void addBooksToLibrary(HttpSession session, String locale) {
         List<Book> cart = (List<Book>) session.getAttribute(UtilStrings.CART);
 
         PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);

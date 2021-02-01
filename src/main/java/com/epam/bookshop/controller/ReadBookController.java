@@ -48,6 +48,8 @@ public class ReadBookController extends HttpServlet {
     }
 
     /**
+     * Checks, whether user, requesting this book, purchased it
+     *
      * @param request {@link HttpServletRequest} which comes to a {@link HttpServletRequest}
      * @return true if and only if requested book was purchased
      */

@@ -3,7 +3,7 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.constant.RegexConstant;
 import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
@@ -27,8 +27,8 @@ import java.util.Optional;
 /**
  * to reset {@link User} user password
  */
-public class ResetPasswordCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(ResetPasswordCommand.class);
+public class ResetPasswordFrontCommand implements FrontCommand {
+    private static final Logger logger = LoggerFactory.getLogger(ResetPasswordFrontCommand.class);
 
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext FORGOT_PASSWORD_PAGE = () -> "/home?command=forgot_password";
@@ -84,7 +84,8 @@ public class ResetPasswordCommand implements Command {
 
 
     /**
-     * Resets new random password
+     * Resets user password by creating new random password
+     *
      * @param locale {@link String} language for error messages
      * @param user {@link User} user to update
      * @param email email to send new password

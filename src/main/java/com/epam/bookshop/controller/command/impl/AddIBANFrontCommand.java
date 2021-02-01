@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.util.EntityFinder;
@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AddIBANCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(AddIBANCommand.class);
+public class AddIBANFrontCommand implements FrontCommand {
+    private static final Logger logger = LoggerFactory.getLogger(AddIBANFrontCommand.class);
 
     private static final ResponseContext ADD_IBAN_PAGE_FORWARD = () -> "/WEB-INF/jsp/add_iban.jsp";
     private static final ResponseContext ADD_IBAN_PAGE_REDIRECT = () -> "/home?command=add_iban";

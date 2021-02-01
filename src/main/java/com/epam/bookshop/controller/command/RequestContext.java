@@ -1,9 +1,13 @@
 package com.epam.bookshop.controller.command;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This interface is a wrapper over {@link HttpServletRequest}.
+ */
 public interface RequestContext {
 
     List<String> getParamList();

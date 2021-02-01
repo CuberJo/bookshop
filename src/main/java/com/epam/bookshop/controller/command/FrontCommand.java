@@ -5,6 +5,6 @@ package com.epam.bookshop.controller.command;
  * implementation of Command design pattern
  */
 @FunctionalInterface
-public interface Command {
+public interface FrontCommand {
     ResponseContext execute(RequestContext requestContext);
 }

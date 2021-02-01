@@ -28,7 +28,8 @@ public class AddToCartController extends HttpServlet {
 
     /**
      * Checks whether we have already bought the book
-     * @param book {@link Book} book to be chacked
+     *
+     * @param book {@link Book} book to be checked
      * @param session current {@link HttpSession} session used to set attributes
      * @return true if and only if book already exists in library, otherwise - false
      */
@@ -50,7 +51,8 @@ public class AddToCartController extends HttpServlet {
 
 
     /**
-     * Adds {@link Book} to cart
+     * Adds {@link Book} to {@link List<Book>} cart object in {@link HttpSession}
+     *
      * @param session current {@link HttpSession} session used to set attributes
      * @param book {@link Book} to be added to cart
      */
@@ -73,7 +75,9 @@ public class AddToCartController extends HttpServlet {
 
 
     /**
-     * Fetches {@link List<Book>} cart from {@link HttpSession}. If it not exists creates new cart.
+     * Fetches {@link List<Book>} cart object from {@link HttpSession}.
+     * If it not exists creates new one.
+     *
      * @param session current {@link HttpSession} session used to set attributes
      * @return {@link List<Book>} of books
      */

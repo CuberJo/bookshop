@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
@@ -19,8 +19,11 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
-public class DeleteAccountCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(DeleteAccountCommand.class);
+/**
+ * Deletes user account both from session and from database
+ */
+public class DeleteAccountFrontCommand implements FrontCommand {
+    private static final Logger logger = LoggerFactory.getLogger(DeleteAccountFrontCommand.class);
 
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
 

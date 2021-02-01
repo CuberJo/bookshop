@@ -215,6 +215,23 @@ public class BookService implements EntityService<Book> {
 
 
     /**
+     * Updates image in database
+     *
+     * @param ISBN book's unique identifier
+     * @param is stream with uploaded image
+     */
+    public void updateImage(String ISBN, InputStream is) {
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            dao.updateImage(ISBN, is);
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+
+    /**
      * Sets defaul image from system path
      *
      * @param book book needed to be set with default img

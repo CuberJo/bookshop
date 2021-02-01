@@ -2,7 +2,7 @@ package com.epam.bookshop.controller.command.impl;
 
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.util.criteria.Criteria;
@@ -24,10 +24,10 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * to get to peronal page
+ * to get to personal page
  */
-public class PersonalPageCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(PersonalPageCommand.class);
+public class PersonalPageFrontCommand implements FrontCommand {
+    private static final Logger logger = LoggerFactory.getLogger(PersonalPageFrontCommand.class);
 
     private static final ResponseContext PERSONAL_PAGE = () -> "/WEB-INF/jsp/personal_page.jsp";
 
@@ -38,22 +38,9 @@ public class PersonalPageCommand implements Command {
 
         if (Objects.isNull(session.getAttribute(UtilStrings.LIBRARY))) {
             try {
-                Criteria<User> criteria = UserCriteria.builder()
-                        .login((String) session.getAttribute(UtilStrings.LOGIN))
-                        .build();
-                User user = EntityFinder.getInstance().find(session, logger, criteria);
 
-                PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);
-                service.setLocale(locale);
-                Collection<Book> library = service.findAllBooksInPayment(user.getEntityId());
+                fillLibrary(session, locale);
 
-
-                BookService bookService = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-                bookService.setLocale(locale);
-                bookService.findImagesForBooks(library);
-
-
-                session.setAttribute(UtilStrings.LIBRARY, library);
             } catch (ValidatorException e) {
                 String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
                 logger.error(error, e);
@@ -62,5 +49,33 @@ public class PersonalPageCommand implements Command {
         }
 
         return PERSONAL_PAGE;
+    }
+
+
+    /**
+     * Fills <b>library</b> object of type of {@code List<Book>}
+     * that is stored in session with books, that user has already
+     * bought
+     *
+     * @param session current {@link HttpSession} object
+     * @param locale language of error messages whether ones taka place
+     * @throws ValidatorException if criteria {@link Criteria<User>} composed
+     */
+    private void fillLibrary(HttpSession session, String locale) throws ValidatorException {
+        Criteria<User> criteria = UserCriteria.builder()
+                .login((String) session.getAttribute(UtilStrings.LOGIN))
+                .build();
+        User user = EntityFinder.getInstance().find(session, logger, criteria);
+
+        PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);
+        service.setLocale(locale);
+        Collection<Book> library = service.findAllBooksInPayment(user.getEntityId());
+
+
+        BookService bookService = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
+        bookService.setLocale(locale);
+        bookService.findImagesForBooks(library);
+
+        session.setAttribute(UtilStrings.LIBRARY, library);
     }
 }

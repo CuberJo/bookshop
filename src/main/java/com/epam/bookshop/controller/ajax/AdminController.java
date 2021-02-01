@@ -1,21 +1,12 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.impl.AdminCommand;
+import com.epam.bookshop.controller.command.impl.AdminFrontCommand;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.*;
-import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
-import com.epam.bookshop.service.impl.BookService;
-import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.JSONWriter;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.BookCriteria;
-import com.epam.bookshop.util.criteria.impl.GenreCriteria;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,17 +16,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 
 @WebServlet("/admin")
 @MultipartConfig
 public class AdminController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(AdminCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminFrontCommand.class);
 
     private static final String REQUEST_PARAM_NOT_FOUND = "Request param not found";
     private static final String COUNT_PAYMENTS = "countPayments";
@@ -86,93 +74,101 @@ public class AdminController extends HttpServlet {
         String price = req.getParameter(UtilStrings.PRICE);
         String publisher = req.getParameter(UtilStrings.PUBLISHER);
         String genre = req.getParameter(UtilStrings.GENRE);
+
+        Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+        InputStream fileContent = filePart.getInputStream();
+
+
 //        String base64Image = req.getParameter(UtilStrings.BASE64_IMAGE);
 //        String imgFile = req.getParameter("imgFile");
 
-        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        Criteria<Book> criteria = BookCriteria.builder()
-                .ISBN(oldISBN)
-                .build();
-        Book bookToUpdate;
-        try {
-            Optional<Book> optionalBook = service.find(criteria);
-            if (optionalBook.isEmpty()) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                        + UtilStrings.WHITESPACE + oldISBN;
-                logger.error(error);
-                throw new RuntimeException(error);
-            }
-            bookToUpdate = optionalBook.get();
-        } catch (ValidatorException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
-        }
+//        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
+//        Criteria<Book> criteria = BookCriteria.builder()
+//                .ISBN(oldISBN)
+//                .build();
+//        Book bookToUpdate;
+//        try {
+//            Optional<Book> optionalBook = service.find(criteria);
+//            if (optionalBook.isEmpty()) {
+//                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
+//                        + UtilStrings.WHITESPACE + oldISBN;
+//                logger.error(error);
+//                throw new RuntimeException(error);
+//            }
+//            bookToUpdate = optionalBook.get();
+//        } catch (ValidatorException e) {
+//            logger.error(e.getMessage(), e);
+//            throw new RuntimeException(e.getMessage(), e);
+//        }
+//
+//        if (Objects.nonNull(isbn) && !isbn.isEmpty()) {
+//            bookToUpdate.setISBN(isbn);
+//        }
+//        if (Objects.nonNull(title) && !title.isEmpty()) {
+//            bookToUpdate.setTitle(title);
+//        }
+//        if (Objects.nonNull(author) && !author.isEmpty()) {
+//            bookToUpdate.setAuthor(author);
+//        }
+//        if (Objects.nonNull(price) && !price.isEmpty()) {
+//            if (price.contains("$")) {
+//                price = price.replace("$", UtilStrings.EMPTY_STRING);
+//            }
+//            bookToUpdate.setPrice(Double.parseDouble(price));
+//        }
+//        if (Objects.nonNull(publisher) && !publisher.isEmpty()) {
+//            bookToUpdate.setPublisher(publisher);
+//        }
+//        if (Objects.nonNull(genre) && !genre.isEmpty()) {
+//            GenreService genreService = (GenreService) ServiceFactory.getInstance().create(EntityType.GENRE);
+//            Criteria<Genre> genreCriteria = GenreCriteria.builder()
+//                    .genre(genre)
+//                    .build();
+//            Optional<Genre> optionalGenre = Optional.empty();
+//            try {
+//                optionalGenre = genreService.find(genreCriteria);
+//                if (optionalGenre.isEmpty()) {
+//                    String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
+//                            + UtilStrings.WHITESPACE + genre;
+//                    logger.error(error);
+//                    throw new RuntimeException(error);
+//                }
+//            } catch (ValidatorException e) {
+//                logger.error(e.getMessage(), e);
+//            }
+//            bookToUpdate.setGenre(optionalGenre.get());
+//        }
+//
+////        установить атрибут isbnBookToUpdate в сессии и потом..
+//        try {
+//            service.update(bookToUpdate);
+//
+//            Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
+//            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+//            InputStream fileContent = filePart.getInputStream();
 
-        if (Objects.nonNull(isbn) && !isbn.isEmpty()) {
-            bookToUpdate.setISBN(isbn);
-        }
-        if (Objects.nonNull(title) && !title.isEmpty()) {
-            bookToUpdate.setTitle(title);
-        }
-        if (Objects.nonNull(author) && !author.isEmpty()) {
-            bookToUpdate.setAuthor(author);
-        }
-        if (Objects.nonNull(price) && !price.isEmpty()) {
-            if (price.contains("$")) {
-                price.replace("$", UtilStrings.EMPTY_STRING);
-            }
-            bookToUpdate.setPrice(Double.parseDouble(price));
-        }
-        if (Objects.nonNull(publisher) && !publisher.isEmpty()) {
-            bookToUpdate.setPublisher(publisher);
-        }
-        if (Objects.nonNull(genre) && !genre.isEmpty()) {
-            GenreService genreService = (GenreService) ServiceFactory.getInstance().create(EntityType.GENRE);
-            Criteria<Genre> genreCriteria = GenreCriteria.builder()
-                    .genre(genre)
-                    .build();
-            Optional<Genre> optionalGenre = Optional.empty();
-            try {
-                optionalGenre = genreService.find(genreCriteria);
-                if (optionalGenre.isEmpty()) {
-                    String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
-                            + UtilStrings.WHITESPACE + genre;
-                    logger.error(error);
-                    throw new RuntimeException(error);
-                }
-            } catch (ValidatorException e) {
-                logger.error(e.getMessage(), e);
-            }
-            bookToUpdate.setGenre(optionalGenre.get());
-        }
-
-        установить атрибут isbnBookToUpdate в сессии и потом..
-        try {
-            service.update(bookToUpdate);
-
-            Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
-            InputStream fileContent = filePart.getInputStream();
-
-            if (Objects.nonNull(fileContent)) {
-                if (Objects.nonNull(isbn) && !isbn.isEmpty()){
-                    service.createImage(isbn, fileContent);
-                }
-            }
-        } catch (ValidatorException e) {
-            logger.error(e.getMessage(), e);
-            resp.setContentType("text/plain");
-            req.setCharacterEncoding(UtilStrings.UTF8);
-            resp.getWriter().write(e.getMessage());
-        }
-
-        System.out.println(isbn);
-        System.out.println(title);
-        System.out.println(author);
-        System.out.println(price);
-        System.out.println(publisher);
-        System.out.println(genre);
-//        System.out.println(base64Image);
+//            if (Objects.nonNull(fileContent)) {
+//                if (Objects.nonNull(isbn) && !isbn.isEmpty()){
+//                    service.updateImage(isbn, fileContent);
+//                } else {
+//                    service.updateImage(oldISBN, fileContent);
+//                }
+//            }
+//        } catch (ValidatorException e) {
+//            logger.error(e.getMessage(), e);
+//            resp.setContentType("text/plain");
+//            req.setCharacterEncoding(UtilStrings.UTF8);
+//            resp.getWriter().write(e.getMessage());
+//        }
+//
+//        System.out.println(isbn);
+//        System.out.println(title);
+//        System.out.println(author);
+//        System.out.println(price);
+//        System.out.println(publisher);
+//        System.out.println(genre);
+////        System.out.println(base64Image);
 
     }
 

@@ -1,10 +1,10 @@
 package com.epam.bookshop.controller;
 
-import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.controller.command.Command;
 import com.epam.bookshop.controller.command.CommandFactory;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.controller.command.impl.CustomRequestContext;
+import com.epam.bookshop.util.constant.UtilStrings;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,8 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Initial entry point for handling all requests
+ * implementation of Front FrontController design pattern
+ */
 @WebServlet("/home")
-public class Controller extends HttpServlet {
+public class FrontController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -31,17 +35,10 @@ public class Controller extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + responseContext.getPage());
     }
 
-//    protected void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        final String commandParam = req.getParameter(COMMAND_PARAM);
-//        Command command = CommandFactory.command(commandParam);
-//        final ResponseContext responseContext = command.execute(new CustomRequestContext(req));
-//        RequestDispatcher requestDispatcher = req.getRequestDispatcher(responseContext.getPage());
-//        requestDispatcher.forward(req, resp);
-//    }
 
     protected ResponseContext processRequest(HttpServletRequest req, HttpServletResponse resp) {
         final String commandParam = req.getParameter(UtilStrings.COMMAND);
-        Command command = CommandFactory.command(commandParam);
-        return command.execute(new CustomRequestContext(req));
+        FrontCommand frontCommand = CommandFactory.command(commandParam);
+        return frontCommand.execute(new CustomRequestContext(req));
     }
 }

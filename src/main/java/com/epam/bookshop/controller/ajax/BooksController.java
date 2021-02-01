@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.impl.BooksCommand;
+import com.epam.bookshop.controller.command.impl.BooksFrontCommand;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
@@ -131,7 +131,7 @@ public class BooksController extends HttpServlet {
 
 //            req.setAttribute();
         } else {
-            String genreName = BooksCommand.decode(req.getParameter(UtilStrings.GENRE));
+            String genreName = BooksFrontCommand.decode(req.getParameter(UtilStrings.GENRE));
             books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
         }
 
@@ -181,7 +181,7 @@ public class BooksController extends HttpServlet {
         } else if (Objects.nonNull(session.getAttribute(UtilStrings.REQUEST_FROM_SEARCH_INPUT))) {
             rows = service.count((String) session.getAttribute(UtilStrings.SEARCH_STR));
         } else if (Objects.nonNull(request.getParameter(UtilStrings.GENRE)) && !request.getParameter(UtilStrings.GENRE).isEmpty()) {
-            String genreName = BooksCommand.decode(request.getParameter(UtilStrings.GENRE));
+            String genreName = BooksFrontCommand.decode(request.getParameter(UtilStrings.GENRE));
             Criteria<Genre> genreCriteria = GenreCriteria.builder()
                     .genre(genreName)
                     .build();

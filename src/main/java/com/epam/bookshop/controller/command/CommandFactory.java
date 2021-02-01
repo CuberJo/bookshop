@@ -1,14 +1,12 @@
 package com.epam.bookshop.controller.command;
 
-import com.epam.bookshop.controller.ajax.BooksController;
 import com.epam.bookshop.controller.command.impl.*;
-import com.epam.bookshop.domain.impl.Book;
 
 import java.util.Objects;
 
 
 /**
- * Factory to createImage instance of {@link Command}
+ * Factory to create instance of {@link FrontCommand} by query parameter <b>command</b>
  */
 public class CommandFactory {
 
@@ -39,61 +37,61 @@ public class CommandFactory {
     private static final String READ_BOOK = "read_book";
 
 
-    public static Command command(String command) {
+    public static FrontCommand command(String command) {
 
         if (Objects.isNull(command)) {
-            return new HomeCommand();
+            return new HomeFrontCommand();
         }
 
         switch (command) {
             case ACCOUNT:
-                return new AccountCommand();
+                return new AccountFrontCommand();
             case ADMIN:
-                return new AdminCommand();
+                return new AdminFrontCommand();
             case BOOKS:
-                return new BooksCommand();
+                return new BooksFrontCommand();
             case CART:
-                return new CartCommand();
+                return new CartFrontCommand();
             case BOOK_DETAILS:
-                return new BookDetailsCommand();
+                return new BookDetailsFrontCommand();
             case SEARCH:
-                return new SearchCommand();
+                return new SearchFrontCommand();
             case LOGIN:
-                return new LoginCommand();
+                return new LoginFrontCommand();
             case LOGOUT:
-                return new LogoutCommand();
+                return new LogoutFrontCommand();
             case REGISTER:
-                return new RegisterCommand();
+                return new RegisterFrontCommand();
             case FORGOT_PASSWORD:
-                return new ForgotPasswordCommand();
+                return new ForgotPasswordFrontCommand();
             case RESET_PASSWORD:
-                return new ResetPasswordCommand();
+                return new ResetPasswordFrontCommand();
             case CONTACT_US:
-                return new ContactUsCommand();
+                return new ContactUsFrontCommand();
             case CHANGE_LOCALE:
-                return new ChangeLocaleCommand();
+                return new ChangeLocaleFrontCommand();
             case SEND_CONTACT_FORM:
-                return new SendContactFormCommand();
+                return new SendContactFormFrontCommand();
 //            case REMOVE_FROM_CART:
 //                return new RemoveFromCartController();
             case PURCHASE:
-                return new PurchaseCommand();
+                return new PurchaseFrontCommand();
             case CHOOSE_IBAN:
                 return new ChooseIBAN();
             case ADD_IBAN:
-                return new AddIBANCommand();
+                return new AddIBANFrontCommand();
             case FINISHED_PURCHASE:
-                return new FinishedPurchaseCommand();
+                return new FinishedPurchaseFrontCommand();
             case PERSONAL_PAGE:
-                return new PersonalPageCommand();
+                return new PersonalPageFrontCommand();
             case DELETE_ACCOUNT:
-                return new DeleteAccountCommand();
+                return new DeleteAccountFrontCommand();
 //            case READ_BOOK:
 //                return new ReadBookController();
 //            case LOAD_IBANs:
 //                return new LoadIBANsController();
             default:
-                return new HomeCommand();
+                return new HomeFrontCommand();
         }
     }
 }

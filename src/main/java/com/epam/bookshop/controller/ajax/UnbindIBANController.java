@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.service.impl.ServiceFactory;
@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 @WebServlet("/unbind_iban")
 public class UnbindIBANController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(Command.class);
+    private static final Logger logger = LoggerFactory.getLogger(FrontCommand.class);
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -46,7 +46,8 @@ public class UnbindIBANController extends HttpServlet {
 
 
     /**
-     * Deletes user IBAN
+     * Deletes user IBAN from database
+     *
      * @param iban {@link String} user IBAN to delete
      * @param locale {@link String} language for error messages
      */

@@ -33,6 +33,7 @@ public class RemoveFromCartController extends HttpServlet {
 
     /**
      * Removes {@link Book} from {@link ArrayList<Book>} cart
+     *
      * @param session current {@link HttpSession} session
      * @param locale {@link String} language for error messages
      * @param isbn {@link String} ISBN to remove
@@ -62,6 +63,7 @@ public class RemoveFromCartController extends HttpServlet {
 
     /**
      * Gets cart of user in current {@link HttpSession} session
+     *
      * @param session current {@link HttpSession} session
      * @param locale {@link String} language for error messages
      * @return {@link ArrayList<Book>} cart associated with user in current session
@@ -78,6 +80,7 @@ public class RemoveFromCartController extends HttpServlet {
 
     /**
      * Finds {@link Book} in cart by ISBN
+     *
      * @param cart {@link ArrayList<Book>} cart where to be looking for
      * @param isbn {@link String} ISBN of Book to be found
      * @param locale {@link String} language for error messages

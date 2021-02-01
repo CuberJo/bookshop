@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.exception.ValidatorException;
@@ -20,8 +20,8 @@ import javax.servlet.http.HttpSession;
 /**
  * processes sending contact form
  */
-public class SendContactFormCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(SendContactFormCommand.class);
+public class SendContactFormFrontCommand implements FrontCommand {
+    private static final Logger logger = LoggerFactory.getLogger(SendContactFormFrontCommand.class);
 
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext CONTACT_US_PAGE = () -> "/home?command=contact_us";

@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Sets new user account data
+ * Updates user account data
  */
 @WebServlet("/account_settings")
 public class AccountSettingsController extends HttpServlet {

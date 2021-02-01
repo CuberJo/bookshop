@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.command.impl;
 
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.util.constant.UtilStrings;
@@ -8,7 +8,7 @@ import com.epam.bookshop.util.constant.UtilStrings;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
-public class ChangeLocaleCommand implements Command {
+public class ChangeLocaleFrontCommand implements FrontCommand {
 
     private static final String HOME_PAGE = "/home";
 

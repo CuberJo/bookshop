@@ -2,31 +2,27 @@ package com.epam.bookshop.controller.command.impl;
 
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.controller.command.Command;
+import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.mail.MailSender;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
 /**
  * to register in application
  */
-public class RegisterCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(RegisterCommand.class);
+public class RegisterFrontCommand implements FrontCommand {
+    private static final Logger logger = LoggerFactory.getLogger(RegisterFrontCommand.class);
 
     private static final ResponseContext HOME_PAGE = () -> "/home";
     private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
@@ -92,7 +88,8 @@ public class RegisterCommand implements Command {
 
 
     /**
-     * Validates passed name, login, email, password
+     * Validates passed name, login, email, password for emptiness
+     *
      * @param name {@link String} user name
      * @param login {@link String} user login
      * @param email {@link String} user email
@@ -116,6 +113,8 @@ public class RegisterCommand implements Command {
 
     /**
      * Registers user by given name, login, email, password
+     * and create new {@link User} in database
+     *
      * @param name {@link String} user name
      * @param login {@link String} user login
      * @param email {@link String} user email

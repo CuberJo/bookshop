@@ -53,7 +53,7 @@ public class AuthFilter extends HttpFilter {
     );
 
     /**
-     * Controller path need authorization
+     * FrontController path need authorization
      */
     private static final List<String> CONTROLLERS_NEED_AUTHORIZATION = Arrays.asList(
             ACCOUNT_SETTINGS_CONTROLLER,

@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * This class is a wrapper over {@link HttpServletRequest}.
+ * Implements {@link RequestContext}
+ */
 public class CustomRequestContext implements RequestContext {
-
     private HttpServletRequest httpServletRequest;
 
     public CustomRequestContext(HttpServletRequest httpServletRequest) {

@@ -32,7 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Alive book search
+ * Live book search
  */
 @WebServlet("/search_books")
 public class SearchBooksController extends HttpServlet {

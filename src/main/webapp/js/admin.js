@@ -611,7 +611,7 @@ let oldISBN;
 let base64Image;
 let oldBase64Image;
 let fileToSend;
-let fd;
+let fd = new FormData();
 
 
 let optionsBlock = '<select class="genres">' +
@@ -773,42 +773,55 @@ function sendData(rowNum) {
     // formData.append("file", fileToSend);
 
 
-    /**
-     * Sends updated data to server
-     */
+    fd.append('oldISBN', oldISBN);
+    fd.append('isbn', isbn);
+    fd.append('title', title);
+    fd.append('author', author);
+    fd.append('price', price);
+    fd.append('publisher', publisher);
+    fd.append('genre', genre);
+
+
     $.ajax({
         url: 'http://localhost:8080/admin',
+        data: fd,
+        processData: false,
+        contentType: false,
         type: 'POST',
-        data: ({
-            oldISBN: oldISBN,
-            isbn: isbn,
-            title: title,
-            author: author,
-            price: price,
-            publisher: publisher,
-            genre: genre,
-            imgFile: fd
-            // base64Image: base64Image !== "" && base64Image !== undefined ? base64Image : oldBase64Image
-        }),
-        success: function (erMes) {
+        success: function(erMes){
             if (erMes !== undefined && erMes !== "") {
                 $('#er').text(erMes);
                 return;
             }
-            console.log('sending image...');
-            $.ajax({
-                url: 'http://localhost:8080/admin',
-                data: fd,
-                processData: false,
-                contentType: false,
-                type: 'POST',
-                success: function(data){
-                    alert(data);
-                }
-            });
-
+            console.log('sending done...');
         }
     });
+
+    // /**
+    //  * Sends updated data to server
+    //  */
+    // $.ajax({
+    //     url: 'http://localhost:8080/admin',
+    //     type: 'POST',
+    //     data: ({
+    //         oldISBN: oldISBN,
+    //         isbn: isbn,
+    //         title: title,
+    //         author: author,
+    //         price: price,
+    //         publisher: publisher,
+    //         genre: genre,
+    //         imgFile: fd
+    //         // base64Image: base64Image !== "" && base64Image !== undefined ? base64Image : oldBase64Image
+    //     }),
+    //     success: function (erMes) {
+    //         if (erMes !== undefined && erMes !== "") {
+    //             $('#er').text(erMes);
+    //             return;
+    //         }
+    //         console.log('sending done...');
+    //     }
+    // });
 
     return true;
 }
@@ -848,7 +861,6 @@ function editImg(imgRow) {
 function encodeImageFileURL(imgRow) {
     let fileSelect = document.getElementById('fileUp_' + imgRow).files;
     if (fileSelect.length > 0) {
-        fd = new FormData();
         fd.append( 'file', fileSelect[0] );
 
         fileSelect = fileSelect[0];
@@ -870,9 +882,58 @@ function encodeImageFileURL(imgRow) {
 }
 
 
-
-
+let newBookForm = new FormData();
 $(function () {
+
+    $('#fileBookToAdd').change(function () {
+        // let fFiles = $(this).files;
+        let fileSelect = document.getElementById('fileBookToAdd').files;
+        newBookForm.append( 'file', fileSelect[0]);
+
+        // newBookForm.append('file', fFiles[0])
+        console.log('added')
+    })
+
+    $('#addBookForm').submit(function () {
+        newBookForm.append('isbn', $('#addBookForm input[name=isbn]').val());
+        newBookForm.append('title', $('#addBookForm input[name=title]').val());
+        newBookForm.append('author', $('#addBookForm input[name=author]').val());
+        newBookForm.append('price', $('#addBookForm input[name=price]').val());
+        newBookForm.append('publisher', $('#addBookForm input[name=publisher]').val());
+        newBookForm.append('genre', $('#addBookForm input[name=genre]').val() );
+
+
+        $.ajax({
+            url: 'http://localhost:8080/admin',
+            data: newBookForm,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function(erMes){
+                if (erMes !== undefined && erMes !== "") {
+                    $('#er').text(erMes);
+                    return;
+                }
+                console.log('sending done...');
+            }
+        });
+    })
+
+    // $('#addBookForm').submit(function () {
+    //     var url = $(this).attr("action");
+    //     var formData = new FormData($(this));
+    //     formData.append( 'file', newBookFiles[0] )
+    //     // $("input[name=isbn]").val()
+    //     //     formData[node.isbn] = node.value;
+    //     // });
+    //     // $(this).find("input[name]").each(function (index, node) {
+    //     //     formData[node.name] = node.value;
+    //     // });
+    //     $.post(url, formData).done(function (data) {
+    //         alert(data);
+    //     });
+    // })
+
     /**
      * Adds new row
      */
