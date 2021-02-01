@@ -616,7 +616,7 @@ let fd = new FormData();
 
 let optionsBlock = '<select class="genres">' +
     '<option selected value="">Choose genre</option>'+
-    '<option value="ROMANCE" selected>Romance</option>'+
+    '<option value="ROMANCE">Romance</option>'+
     '<option value="ACTION_AND_ADVENTURE">Action and adventure</option>'+
     '<option value="MYSTERY_AND_THRILLER">Mystery and thriller</option>'+
     '<option value="BIOGRAPHIES_AND_HISTORY">Biographies and history</option>'+
@@ -651,6 +651,7 @@ function edit(rowNum) {
      */
     $(".genres").change(function(){
         selectedGenre = $(this).children("option:selected").val();
+        console.log('selected genre: ' + selectedGenre);
     });
 
     $('#' + rowNum + '_8').replaceWith('<td class="' + rowNum + '" id="' + rowNum + '_8"><button onclick="save(' + rowNum + ')">Save</button></td>');
@@ -706,66 +707,8 @@ function sendData(rowNum) {
     let publisher = $('#' + rowNum + '_5').text();
     let genre = selectedGenre !== "" && selectedGenre !== undefined ? selectedGenre : oldSelectedGenre;
 
-
-    let error = "";
-
-    // let isbnRegex = /^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$/;
-    // if (!isbnRegex.test(isbn)) {
-    //     error += "Invalid ISBN input; ";
-    // }
-    // let titleRegex = /^[-()!\d\s.a-zA-Zа-яА-Я]{1,50}$/;
-    // if (!titleRegex.test(title)) {
-    //     error += "Invalid title input; ";
-    // }
-    // let authorRegex = /^[-\s.a-zA-Zа-яА-Я]{1,50}$/;
-    // if (!authorRegex.test(author)) {
-    //     error += "Invalid author name input; ";
-    // }
-    // let publisherRegex = /^[-&a-zA-Zа-яА-Я\s]{1,50}$/;
-    // if (!publisherRegex.test(publisher)) {
-    //     error += "Invalid publisher input; ";
-    // }
-    // let priceRegex = /^[0-9]+(\.[0-9]+)?(\$)$/;
-    // if (!priceRegex.test(price)) {
-    //     error += "Invalid price number input; ";
-    // }
-
-    let malicious_regex = /[<>*;='#)+("]+/;
-    if (malicious_regex.test(isbn)) {
-        error = "Invalid isbn input";
-    }
-    if (malicious_regex.test(title)) {
-        error = "Invalid title input";
-    }
-    if (malicious_regex.test(author)) {
-        error = "Invalid author input";
-    }
-    if (malicious_regex.test(price)) {
-        error = "Invalid price input";
-    }
-    if (malicious_regex.test(publisher)) {
-        error = "Invalid publisher input";
-    }
-
-    let whitespace_regex = /^[\s]+$/;
-    if (whitespace_regex.test(isbn)) {
-        error = "Empty isbn input";
-    }
-    if (whitespace_regex.test(title)) {
-        error = "Empty title input";
-    }
-    if (whitespace_regex.test(author)) {
-        error = "Empty author input";
-    }
-    if (whitespace_regex.test(price)) {
-        error = "Empty price input";
-    }
-    if (whitespace_regex.test(publisher)) {
-        error = "Empty publisher input";
-    }
-
-    if (error !== "" && error !== undefined) {
-        $('#er').text(error);
+    let erDivId = "er";
+    if(!validate(isbn, title, author, price, publisher, genre, erDivId)) {
         return false;
     }
 
@@ -828,6 +771,79 @@ function sendData(rowNum) {
 
 
 
+function validate(isbn, title, author, price, publisher, genre, errorDivId) {
+    let error = "";
+
+    let malicious_regex = /[<>*;='#)+("]+/;
+    if (malicious_regex.test(isbn)) {
+        error = "Invalid isbn input; ";
+    }
+    if (malicious_regex.test(title)) {
+        error += "Invalid title input; ";
+    }
+    if (malicious_regex.test(author)) {
+        error += "Invalid author input; ";
+    }
+    if (malicious_regex.test(price)) {
+        error += "Invalid price input; ";
+    }
+    if (malicious_regex.test(publisher)) {
+        error += "Invalid publisher input; ";
+    }
+
+    let whitespace_regex = /^[\s]+$/;
+    if (isbn === "" || whitespace_regex.test(isbn)) {
+        error += "Empty isbn input; ";
+    }
+    if (title === "" || whitespace_regex.test(title)) {
+        error += "Empty title input; ";
+    }
+    if (author === "" || whitespace_regex.test(author)) {
+        error += "Empty author input; ";
+    }
+    if (price === "" || whitespace_regex.test(price)) {
+        error += "Empty price input; ";
+    }
+    if (publisher === "" || whitespace_regex.test(publisher)) {
+        error += "Empty publisher input; ";
+    }
+
+    // let genre_regex = /^[-a-zA-Z&_\s]{1,50}$/;
+    // if (genre_regex.test(genre)) {
+    //     error = "Genre incorrect";
+    // }
+    // let publisher_regex = /^[-&a-zA-Zа-яА-Я\s]{1,50}$/;
+    // if (publisher_regex.test(publisher)) {
+    //     error = "Publisher incorrect";
+    // }
+    // let price_regex = /^[0-9]+(\.[0-9]+)?\$?$/;
+    // if (publisher_regex.test(price)) {
+    //     error = "Price incorrect";
+    // }
+    // let author_regex = /^[-\s.a-zA-Zа-яА-Я]{1,50}$/
+    // if (author_regex.test(author)) {
+    //     error = "Author incorrect";
+    // }
+    // let title_regex = /^[-()!\d\s.a-zA-Zа-яА-Я]{1,50}$/;
+    // if (title_regex.test(title)) {
+    //     error = "Title incorrect";
+    // }
+    // let isbn_regex = /^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$/;
+    // if (isbn_regex.test(isbn)) {
+    //     error = "ISBN incorrect";
+    // }
+
+    if (error !== "" && error !== undefined) {
+        $('#' + errorDivId).text(error);
+        return false;
+    }
+
+    return true;
+}
+
+
+
+
 /**
  * Allows to upload new img
  *
@@ -885,23 +901,65 @@ function encodeImageFileURL(imgRow) {
 let newBookForm = new FormData();
 $(function () {
 
+    /**
+     * Processes genre option selections
+     */
+    $(".genres").change(function(){
+        selectedGenre = $(this).children("option:selected").val();
+        console.log('selected genre: ' + selectedGenre);
+    });
+
     $('#fileBookToAdd').change(function () {
         // let fFiles = $(this).files;
         let fileSelect = document.getElementById('fileBookToAdd').files;
         newBookForm.append( 'file', fileSelect[0]);
 
         // newBookForm.append('file', fFiles[0])
-        console.log('added')
+        console.log('added file')
     })
 
-    $('#addBookForm').submit(function () {
-        newBookForm.append('isbn', $('#addBookForm input[name=isbn]').val());
-        newBookForm.append('title', $('#addBookForm input[name=title]').val());
-        newBookForm.append('author', $('#addBookForm input[name=author]').val());
-        newBookForm.append('price', $('#addBookForm input[name=price]').val());
-        newBookForm.append('publisher', $('#addBookForm input[name=publisher]').val());
-        newBookForm.append('genre', $('#addBookForm input[name=genre]').val() );
+    $('#imgBookToAdd').change(function () {
+        // let fFiles = $(this).files;
+        let fileSelect = document.getElementById('imgBookToAdd').files;
+        newBookForm.append( 'file-img', fileSelect[0]);
 
+        // newBookForm.append('file', fFiles[0])
+        console.log('img added')
+    })
+
+    $('#addBtn').click(function (event) {
+        let isbn = $('#addBookForm input[name=isbn]').val();
+        let title = $('#addBookForm input[name=title]').val();
+        let author = $('#addBookForm input[name=author]').val();
+        let price = $('#addBookForm input[name=price]').val();
+        let publisher = $('#addBookForm input[name=publisher]').val();
+        // let genre = $('#addBookForm input[name=genre]').val();
+        let genre = selectedGenre !== "" && selectedGenre !== undefined ? selectedGenre : oldSelectedGenre;
+        let preview = $('#addBookForm input[name=preview]').val();
+
+        let erDivId2 = "er2";
+        if(!validate(isbn, title, author, price, publisher, genre, erDivId2)) {
+            event.preventDefault();
+            return false;
+        }
+
+        let whitespace_regex = /^[\s]+$/;
+        if (preview === "" || whitespace_regex.test(preview)) {
+            $('#er').text("Empty preview input");
+            $(this).preventDefault();
+            return false;
+        }
+
+        debugger;
+
+        newBookForm.append('isbn', isbn);
+        newBookForm.append('title', title);
+        newBookForm.append('author', author);
+        newBookForm.append('price', price);
+        newBookForm.append('publisher', publisher);
+        newBookForm.append('genre', genre);
+        newBookForm.append('preview', preview);
+        newBookForm.append('addNewBook', 'add');
 
         $.ajax({
             url: 'http://localhost:8080/admin',
@@ -917,6 +975,8 @@ $(function () {
                 console.log('sending done...');
             }
         });
+
+        return true;
     })
 
     // $('#addBookForm').submit(function () {

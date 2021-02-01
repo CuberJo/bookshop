@@ -576,7 +576,8 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 /***********************************************  Style for input file 1  ************************************************/
 
 .example-1 .form-group{
-    padding:1em;margin:1em
+    padding:1em;
+    margin:1em
 }
 .example-1 input[type=file]{
     outline:0;

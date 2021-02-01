@@ -69,6 +69,7 @@ public class UtilStrings {
     public static final String AUTHOR = "author";
     public static final String TITLE = "title";
     public static final String PRICE = "price";
+    public static final String PREVIEW = "preview";
     public static final String BASE64_IMAGE = "base64Image";
 
     public static final String IBAN_TO_DELETE = "iban_to_delete";

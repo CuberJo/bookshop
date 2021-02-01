@@ -49,8 +49,13 @@ public class SendContactFormFrontCommand implements FrontCommand {
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
                 return CONTACT_US_PAGE;
             }
+            if(!validator.validate(email, RegexConstant.EMAIL_REGEX)) {
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT);
+                session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
+                logger.error(errorMessage);
+                return CONTACT_US_PAGE;
+            }
 
-            validator.validate(email, RegexConstant.EMAIL_REGEX, ErrorMessageConstants.EMAIL_INCORRECT);
             String sanitizedName = sanitizer.sanitize(name);
             String sanitizedEmail = sanitizer.sanitize(email);
             String sanitizedSubject = sanitizer.sanitize(subject);
@@ -61,11 +66,6 @@ public class SendContactFormFrontCommand implements FrontCommand {
 
             //todo make stuff with sanitized data
 
-        } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
-            session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
-            logger.error(errorMessage, e);
-            return CONTACT_US_PAGE;
         } catch (MessagingException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.COULD_NOT_REACH_EMAIL_ADDRESS) + UtilStrings.NEW_LINE + email;
             session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);

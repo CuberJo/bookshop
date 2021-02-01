@@ -47,6 +47,7 @@ public class ErrorMessageConstants {
     public static final String ROLE_INCORRECT = "role_incorrect";
     public static final String STATUS_INCORRECT = "status_incorrect";
     public static final String IBAN_INCORRECT = "iban_incorrect";
+    public static final String PRICE_INCORRECT = "price_incorrect";
     public static final String FAILED_RECAPTCHA = "failed_recaptcha";
 
     public static final String ERROR_ADD_IBAN_MESSAGE = "error_add_iban_message";
@@ -56,5 +57,5 @@ public class ErrorMessageConstants {
     public static final String ERROR_MESSAGE = "error_message";
     public static final String ERROR_CONTACT_US_MESSAGE = "error_contact_us_message";
 
-
+    public static final String EMPTY_FILE_DATA = "empty_file_data";
 }

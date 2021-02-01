@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Filter using for setting encoding of request and response to UTF-8
+ */
 @WebFilter("/*")
 public class CharsetFilter extends HttpFilter {
 
@@ -22,15 +25,4 @@ public class CharsetFilter extends HttpFilter {
         res.setCharacterEncoding(UtilStrings.UTF8);
         chain.doFilter(req, res);
     }
-
-//    public static String getFullURL(HttpServletRequest request) {
-//        StringBuilder requestURL = new StringBuilder(request.getRequestURL().toString());
-//        String queryString = request.getQueryString();
-//
-//        if (queryString == null) {
-//            return requestURL.toString();
-//        } else {
-//            return requestURL.append('?').append(queryString).toString();
-//        }
-//    }
 }

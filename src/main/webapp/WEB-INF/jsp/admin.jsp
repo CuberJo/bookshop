@@ -327,7 +327,7 @@
             </div>
         </article>
         <article id="add-book">
-            <h2><fmt:message key="label.add_book" bundle="${lang}"/></h2>
+            <h2><fmt:message key="label.add_book" bundle="${lang}"/></h2><div style="color: red">${erAddBookMes}</div><c:remove var="erAddBookMes" scope="session"/><div id="er2" style="color: red"></div>
 
             <form id="addBookForm" action="admin" method="post">
             <label class="inp">
@@ -338,7 +338,7 @@
                 <input name="publisher" type="text" pattern="^[-&\p{L}\s]{1,50}$" placeholder="<fmt:message key="label.publisher" bundle="${lang}"/>"/>
                 <select class="genres" style="margin: 25px 0"> +
                     <option selected value=""><fmt:message key="label.choose_genre" bundle="${lang}" /></option>
-                    <option value="ROMANCE" selected><fmt:message key="label.romance" bundle="${lang}" /></option>
+                    <option value="ROMANCE"><fmt:message key="label.romance" bundle="${lang}" /></option>
                     <option value="ACTION_AND_ADVENTURE"><fmt:message key="label.action_and_adventure" bundle="${lang}" /></option>
                     <option value="MYSTERY_AND_THRILLER"><fmt:message key="label.mystery_and_thriller" bundle="${lang}" /></option>
                     <option value="BIOGRAPHIES_AND_HISTORY"><fmt:message key="label.biographies_and_history" bundle="${lang}" /></option>
@@ -350,13 +350,20 @@
                     <option value="NON-FICTION"><fmt:message key="label.non-fiction" bundle="${lang}" /></option>
                     <option value="SCIENCE-FICTION"><fmt:message key="label.science-fiction" bundle="${lang}" /></option>
                 </select>
+                <input name="preview" type="text" pattern="[^<>]+" placeholder="<fmt:message key="label.book_description" bundle="${lang}"/>"/>
 
                 <div class="example-1">
-                    <div class="form-group">
+                    <div class="form-group" style="display: flex;">
                         <label class="label">
                             <i class="material-icons">attach_file</i>
                             <span class="title"><fmt:message key="label.add_file" bundle="${lang}" /></span>
                             <input type="file" id="fileBookToAdd">
+                        </label>
+
+                        <label class="label" style="margin-left: 30px">
+                            <i class="material-icons">attach_file</i>
+                            <span class="title"><fmt:message key="label.add_img" bundle="${lang}" /></span>
+                            <input type="file" id="imgBookToAdd">
                         </label>
                     </div>
                 </div>

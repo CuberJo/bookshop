@@ -226,7 +226,7 @@
             <h4>$${book.price}</h4>
             <c:set var="book_to_cart" scope="session" value="${book}"/>
 <%--            <form action="/home?command=add_to_cart" method="post">--%>
-            <ex:checkBookPresence library="${library}" bookToCheck="${book}"></ex:checkBookPresence>
+            <ex:checkBookPresence library="${library}" bookToCheck="${book}"/>
 <%--            <c:choose>--%>
 <%--                <c:when test="${not empty library}">--%>
 <%--                    <c:set var="contains" value="false" />--%>
@@ -242,6 +242,9 @@
 <%--            </c:choose>--%>
             <c:choose>
                 <c:when test="${contains}">
+                    <a href="read_book?isbn=${book.ISBN}" class="btn"><fmt:message key="label.read" bundle="${lang}"/></a>
+                </c:when>
+                <c:when test="${sessionScope.role eq 'ADMIN'}">
                     <a href="read_book?isbn=${book.ISBN}" class="btn"><fmt:message key="label.read" bundle="${lang}"/></a>
                 </c:when>
                 <c:otherwise>

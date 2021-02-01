@@ -51,8 +51,12 @@ public class ResetPasswordFrontCommand implements FrontCommand {
                 session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
                 return FORGOT_PASSWORD_PAGE;
             }
-
-            validator.validate(email, RegexConstant.EMAIL_REGEX, ErrorMessageConstants.EMAIL_INCORRECT);
+            if(!validator.validate(email, RegexConstant.EMAIL_REGEX)) {
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT);
+                session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
+                logger.error(errorMessage);
+                return FORGOT_PASSWORD_PAGE;
+            }
 
             EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
             service.setLocale(locale);
@@ -69,7 +73,7 @@ public class ResetPasswordFrontCommand implements FrontCommand {
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
             session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
-            logger.error(e.getMessage(), e);
+            logger.error(errorMessage, e);
             return FORGOT_PASSWORD_PAGE;
         } catch (MessagingException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_NOT_FOUND_IN_DATABASE)

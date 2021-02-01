@@ -36,7 +36,7 @@ import java.util.Optional;
 public class BooksController extends HttpServlet {
     final static Logger logger = LoggerFactory.getLogger(BooksController.class);
 
-    private static final String  BOOKS_PAGE = "/WEB-INF/jsp/books.jsp";
+    private static final String BOOKS_PAGE = "/WEB-INF/jsp/books.jsp";
 
     private static final int ITEMS_PER_PAGE = 8;
     private static final int DEFAULT_GENRE_ID = 1;
@@ -54,49 +54,39 @@ public class BooksController extends HttpServlet {
         String relatedBooks = req.getParameter(RELATED_BOOKS);
         if (Objects.nonNull(relatedBooks)) {
             Collection<Book> books = getBooks(23, 4, locale);
-            resp.setContentType(UtilStrings.APPLICATION_JSON);
-            req.setCharacterEncoding(UtilStrings.UTF8);
             String jsonStrings = JSONWriter.getInstance().write(books);
-            resp.getWriter().write(jsonStrings);
+            writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
             return;
         }
 
         String bestsellers = req.getParameter(BESTSELLERS);
         if (Objects.nonNull(bestsellers)) {
             Collection<Book> books = getBooks(0, 12, locale);
-            resp.setContentType(UtilStrings.APPLICATION_JSON);
-            req.setCharacterEncoding(UtilStrings.UTF8);
             String jsonStrings = JSONWriter.getInstance().write(books);
-            resp.getWriter().write(jsonStrings);
+            writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
             return;
         }
 
         String exclusive = req.getParameter(EXCLUSIVE);
         if (Objects.nonNull(exclusive)) {
             Book book = getRandomBook(locale);
-            resp.setContentType(UtilStrings.APPLICATION_JSON);
-            req.setCharacterEncoding(UtilStrings.UTF8);
             String jsonStrings = JSONWriter.getInstance().write(book);
-            resp.getWriter().write(jsonStrings);
+            writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
             return;
         }
 
         String latestProducts = req.getParameter(LATEST_PRODUCTS);
         if (Objects.nonNull(latestProducts)) {
             Collection<Book> books = getBooks(8, 16, locale);
-            resp.setContentType(UtilStrings.APPLICATION_JSON);
-            req.setCharacterEncoding(UtilStrings.UTF8);
             String jsonStrings = JSONWriter.getInstance().write(books);
-            resp.getWriter().write(jsonStrings);
+            writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
             return;
         }
 
         String count = req.getParameter(UtilStrings.COUNT);
         if (Objects.nonNull(count) && !count.isEmpty()) {
             int rows = countBooks(req, locale);
-            resp.setContentType(UtilStrings.TEXT_PLAIN);
-            req.setCharacterEncoding(UtilStrings.UTF8);
-            resp.getWriter().write(String.valueOf(rows));
+            writeResp(resp, UtilStrings.TEXT_PLAIN, String.valueOf(rows));
             return;
         }
 
@@ -118,9 +108,7 @@ public class BooksController extends HttpServlet {
 
             session.removeAttribute(UtilStrings.NOT_ADVANCED_SEARCH);
             session.removeAttribute(UtilStrings.SEARCH_STR);
-        } else
-//        String searchCriteria = (String) session.getAttribute(UtilStrings.SEARCH_CRITERIA);
-        if (Objects.nonNull(session.getAttribute(UtilStrings.SEARCH_CRITERIA)) /*&& !searchCriteria.isEmpty()*/) {
+        } else if (Objects.nonNull(session.getAttribute(UtilStrings.SEARCH_CRITERIA)) ) {
             Criteria<Book> criteria = buildCriteria(session, locale);
 
             books = getBooksLike(criteria, start, ITEMS_PER_PAGE, locale);
@@ -128,23 +116,26 @@ public class BooksController extends HttpServlet {
             session.removeAttribute(UtilStrings.SEARCH_CRITERIA);
             session.removeAttribute(UtilStrings.CUSTOMIZED_SEARCH);
             session.removeAttribute(UtilStrings.SEARCH_STR);
-
-//            req.setAttribute();
         } else {
             String genreName = BooksFrontCommand.decode(req.getParameter(UtilStrings.GENRE));
             books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
         }
 
-
-        resp.setContentType(UtilStrings.APPLICATION_JSON);
-        req.setCharacterEncoding(UtilStrings.UTF8);
         String jsonStrings = JSONWriter.getInstance().write(books);
-        resp.getWriter().write(jsonStrings);
+        writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
     }
 
 
+    private void writeResp(HttpServletResponse resp,  String contentType, String respMsg) throws IOException {
+        resp.setContentType(contentType);
+        resp.setCharacterEncoding(UtilStrings.UTF8);
+        resp.getWriter().write(respMsg);
+    }
+
+
+
     /**
-     * Counts serial number of page from
+     * Counts serial number of row from
      * where to start search in database
      *
      * @param req request to this servlet

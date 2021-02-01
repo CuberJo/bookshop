@@ -199,7 +199,7 @@ public class BookService implements EntityService<Book> {
 
 
     /**
-     * Creates image in database
+     * Creates image in database reading it from {@link InputStream}
      *
      * @param ISBN book's unique identifier
      * @param is stream with uploaded image
@@ -215,7 +215,7 @@ public class BookService implements EntityService<Book> {
 
 
     /**
-     * Updates image in database
+     * Updates image in database, reading it from {@link InputStream}
      *
      * @param ISBN book's unique identifier
      * @param is stream with uploaded image
@@ -232,7 +232,7 @@ public class BookService implements EntityService<Book> {
 
 
     /**
-     * Sets defaul image from system path
+     * Sets default image from system path
      *
      * @param book book needed to be set with default img
      */
@@ -303,6 +303,8 @@ public class BookService implements EntityService<Book> {
 
 
     /**
+     * Creates book file in database, by reading it in system path
+     *
      * @param ISBN book's unique identifier
      * @param filePath file system path of book
      */
@@ -317,6 +319,25 @@ public class BookService implements EntityService<Book> {
 
 
     /**
+     * Creates book file in database, reading it from {@link InputStream}
+     *
+     * @param ISBN book's unique identifier
+     * @param is stream with uploaded image
+     */
+    public void createBookFile(String ISBN, InputStream is) {
+        try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
+            BookDAO dao = (BookDAO) DAOFactory.INSTANCE.create(EntityType.BOOK, conn);
+            dao.createBookFile(ISBN, is);
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+
+    /**
+     * Finds book file in database by book ISBN
+     *
      * @param book {@link Book} needed to find file for
      * @return book file converted to byte array
      * @throws EntityNotFoundException if file not found

@@ -80,17 +80,12 @@ public class Validator {
      *
      * @param stringToValidate string to validate
      * @param regex regular expression for validation
-     * @param error string error message of probable error might occurred while validating
-     * @throws ValidatorException if string fails validation
      */
-    public void validate(String stringToValidate, String regex, String error) throws ValidatorException {
+    public boolean validate(String stringToValidate, String regex) {
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(stringToValidate);
 
-        if (!m.matches()) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(error);
-            throw new ValidatorException(errorMessage + UtilStrings.WHITESPACE + stringToValidate);
-        }
+        return m.matches();
     }
 
 

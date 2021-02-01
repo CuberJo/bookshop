@@ -101,24 +101,31 @@ public class AddIBANFrontCommand implements FrontCommand {
 
 
     /**
+     * Validates passed by client IBAN string
+     *
      * @param iban IBAN {@link String} to validate
      * @param session current {@link HttpSession} session used to set attributes
      * @param locale {@link String} language for error messages
      * @return true if and only if strings passed validation, otherwise - false
-     * @throws ValidatorException if iban argument failed validation
      */
-    private boolean validateIBAN(String iban, HttpSession session, String locale) throws ValidatorException {
+    private boolean validateIBAN(String iban, HttpSession session, String locale) {
 
         Validator validator = new Validator();
         validator.setLocale(locale);
 
+        String error;
+
         if (validator.empty(iban)) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INPUT_IBAN);
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INPUT_IBAN);
             session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE, error);
             return false;
         }
 
-        validator.validate(iban, RegexConstant.IBAN_REGEX, ErrorMessageConstants.IBAN_INCORRECT);
+        if(!validator.validate(iban, RegexConstant.IBAN_REGEX)) {
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_INCORRECT);
+            session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE, error);
+            return false;
+        }
 
         return true;
     }

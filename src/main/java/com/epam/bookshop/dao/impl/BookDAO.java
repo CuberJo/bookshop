@@ -236,7 +236,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
 
     /**
-     * Creates image in database
+     * Creates image in database by reading it in file system
      *
      * @param ISBN book's unique identifier
      * @param filePath file system path of image
@@ -256,7 +256,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
 
     /**
-     * Creates image in database
+     * Creates image in database reading it from {@link InputStream}
      *
      * @param ISBN book's unique identifier
      * @param is stream with uploaded image
@@ -275,7 +275,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
 
     /**
-     * Updates image in database
+     * Updates image in database, reading it from {@link InputStream}
      *
      * @param ISBN book's unique identifier
      * @param is stream with uploaded image
@@ -324,6 +324,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
 
     /**
+     * Creates book file in database, by reading it in system path
+     *
      * @param ISBN book's unique identifier
      * @param filePath file system path of book
      */
@@ -339,6 +341,27 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             logger.error(throwables.getMessage(), throwables);
         }
     }
+
+
+
+    /**
+     * Creates book file in database, reading it from {@link InputStream}
+     *
+     * @param ISBN book's unique identifier
+     * @param is stream with uploaded book file
+     */
+    public void createBookFile(String ISBN, InputStream is) {
+        try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_BOOK_FILE)) {
+
+            ps.setString(1, ISBN);
+            ps.setBlob(2, is);
+
+            ps.execute();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage(), throwables);
+        }
+    }
+
 
 
 

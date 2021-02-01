@@ -1,5 +1,7 @@
 package com.epam.bookshop.controller;
 
+import com.epam.bookshop.domain.impl.User;
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
@@ -13,6 +15,7 @@ import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,7 @@ import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -40,7 +44,7 @@ public class ReadBookController extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (checkBookPurchase(request)) {
+        if (checkBookPurchase(request) || (Objects.nonNull(request.getSession().getAttribute(UtilStrings.LOGIN)) && UtilStrings.ADMIN_ROLE.equals(request.getSession().getAttribute(UtilStrings.ROLE)))) {
             renderBook(request, response);
         } else {
             request.getRequestDispatcher(HOME_PAGE).forward(request, response);
@@ -64,8 +68,13 @@ public class ReadBookController extends HttpServlet {
                 .build();
         Book book = findBook(criteria, locale);
         try {
+            Criteria<User> userCriteria = UserCriteria.builder()
+                    .login((String) request.getSession().getAttribute(UtilStrings.LOGIN))
+                    .build();
+            User user = EntityFinder.getInstance().find(userCriteria, logger, locale);
             Criteria<Payment> paymentCriteria = PaymentCriteria.builder()
                     .bookId(book.getEntityId())
+                    .libraryUserId(user.getEntityId())
                     .build();
             Optional<Payment> optionalPayment = service.find(paymentCriteria);
             if (optionalPayment.isEmpty()) {

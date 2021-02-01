@@ -116,7 +116,7 @@ public class EntityFinder {
         GenreService service = (GenreService) ServiceFactory.getInstance().create(EntityType.GENRE);
         service.setLocale(locale);
 
-        Optional<Genre> optionalGenre = null;
+        Optional<Genre> optionalGenre;
         String error;
         try {
             optionalGenre = service.findLike(criteria);
