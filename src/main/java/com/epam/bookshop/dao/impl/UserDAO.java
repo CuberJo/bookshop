@@ -2,10 +2,9 @@ package com.epam.bookshop.dao.impl;
 
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
@@ -115,7 +114,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
     @Override
     public Collection<User> findAll(Criteria<User> criteria) {
         String query = SQL_SELECT_ALL_USERS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStrings.EQUALS);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
 
         List<User> users = new ArrayList<>();
 
@@ -135,7 +134,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
     @Override
     public Optional<User> find(Criteria<User> criteria) {
         String query = SQL_SELECT_ALL_USERS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStrings.EQUALS);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
 
         User user = null;
 
@@ -166,7 +165,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
             ps.setLong(1, id);
             int result = ps.executeUpdate();
 
-            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+            if (result == UtilStringConstants.ZERO_ROWS_AFFECTED) {
                 return false;
             }
         } catch (SQLException throwables) {
@@ -195,7 +194,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
             int result = ps.executeUpdate();
 
-            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+            if (result == UtilStringConstants.ZERO_ROWS_AFFECTED) {
                 String locale = "US";
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_USER_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
@@ -334,7 +333,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
             ps.setString(1, iban);
             int result = ps.executeUpdate();
 
-            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+            if (result == UtilStringConstants.ZERO_ROWS_AFFECTED) {
                 return false;
             }
         } catch (SQLException throwables) {

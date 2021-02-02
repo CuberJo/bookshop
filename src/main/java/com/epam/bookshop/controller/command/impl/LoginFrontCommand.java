@@ -3,18 +3,18 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.util.validator.impl.VerifyReCaptcha;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
+import com.epam.bookshop.util.validator.impl.VerifyReCaptcha;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +37,13 @@ public class LoginFrontCommand implements FrontCommand {
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-        final String login = requestContext.getParameter(UtilStrings.LOGIN);
-        final String password = requestContext.getParameter(UtilStrings.PASSWORD);
+        final String login = requestContext.getParameter(RequestConstants.LOGIN);
+        final String password = requestContext.getParameter(RequestConstants.PASSWORD);
 
         System.out.println(requestContext.getParameter(login));
 
         final HttpSession session = requestContext.getSession();
-        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
+        String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
         String errorMessage = "";
 
 
@@ -68,7 +68,7 @@ public class LoginFrontCommand implements FrontCommand {
             }
 
 
-            session.setAttribute(UtilStrings.LOGIN, login);
+            session.setAttribute(RequestConstants.LOGIN, login);
             authorize(login, password, session);
 
         } catch (ValidatorException e) {
@@ -78,8 +78,8 @@ public class LoginFrontCommand implements FrontCommand {
             return ACCOUNT_PAGE;
         }
 
-        if (Objects.nonNull(requestContext.getSession().getAttribute(UtilStrings.BACK_TO_CART))) {
-            requestContext.getSession().removeAttribute(UtilStrings.BACK_TO_CART);
+        if (Objects.nonNull(requestContext.getSession().getAttribute(RequestConstants.BACK_TO_CART))) {
+            requestContext.getSession().removeAttribute(RequestConstants.BACK_TO_CART);
             return CART_PAGE;
         }
 
@@ -128,9 +128,9 @@ public class LoginFrontCommand implements FrontCommand {
         final String adminPass = "admin";
 
         if (login.equals(admin) && password.equals(adminPass)) {
-            session.setAttribute(UtilStrings.ROLE, UtilStrings.ADMIN_ROLE);
+            session.setAttribute(RequestConstants.ROLE, RequestConstants.ADMIN_ROLE);
         } else {
-            session.setAttribute(UtilStrings.ROLE, UtilStrings.USER_ROLE);
+            session.setAttribute(RequestConstants.ROLE, RequestConstants.USER_ROLE);
         }
     }
 }

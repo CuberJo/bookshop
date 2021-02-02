@@ -627,6 +627,8 @@ let optionsBlock = '<select class="genres">' +
     '<option value="LITERARY_FICTION">Literaly fiction</option>'+
     '<option value="NON-FICTION">Non-fiction</option>'+
     '<option value="SCIENCE-FICTION">Sci-fiction</option>'+
+    '<option value="PSYCHOLOGY">Psychology</option>'+
+    '<option value="DETECTIVE">Detective</option>'+
     '</select>';
 
 
@@ -809,29 +811,43 @@ function validate(isbn, title, author, price, publisher, genre, errorDivId) {
     }
 
     // let genre_regex = /^[-a-zA-Z&_\s]{1,50}$/;
-    // if (genre_regex.test(genre)) {
+    // if (!genre_regex.test(genre)) {
     //     error = "Genre incorrect";
     // }
     // let publisher_regex = /^[-&a-zA-Zа-яА-Я\s]{1,50}$/;
-    // if (publisher_regex.test(publisher)) {
+    // if (!publisher_regex.test(publisher)) {
     //     error = "Publisher incorrect";
     // }
-    // let price_regex = /^[0-9]+(\.[0-9]+)?\$?$/;
-    // if (publisher_regex.test(price)) {
-    //     error = "Price incorrect";
-    // }
+    let price_regex = /^[0-9]+(\.[0-9]+)?\$?$/;
+    if (!price_regex.test(price)) {
+        error += "Price incorrect; ";
+    }
     // let author_regex = /^[-\s.a-zA-Zа-яА-Я]{1,50}$/
-    // if (author_regex.test(author)) {
+    // if (!author_regex.test(author)) {
     //     error = "Author incorrect";
     // }
     // let title_regex = /^[-()!\d\s.a-zA-Zа-яА-Я]{1,50}$/;
-    // if (title_regex.test(title)) {
+    // if (!title_regex.test(title)) {
     //     error = "Title incorrect";
     // }
-    // let isbn_regex = /^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$/;
-    // if (isbn_regex.test(isbn)) {
-    //     error = "ISBN incorrect";
-    // }
+    let isbn_regex = /^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$/;
+    if (!isbn_regex.test(isbn)) {
+        error += "ISBN incorrect; ";
+    }
+
+    if( document.getElementById("fileBookToAdd").files.length === 0 ){
+        error += "Book file not selected; ";
+    }
+    if( document.getElementById("imgBookToAdd").files.length === 0 ){
+        error += "Book image not selected; ";
+    }
+
+    var ddl = document.getElementById("addBookFormGenre");
+    var selectedValue = ddl.options[ddl.selectedIndex].value;
+    if (selectedValue === "CHOOSE_GENRE") {
+        error += "Genre not selected; ";
+    }
+
 
     if (error !== "" && error !== undefined) {
         $('#' + errorDivId).text(error);
@@ -927,7 +943,9 @@ $(function () {
         console.log('img added')
     })
 
-    $('#addBtn').click(function (event) {
+    $('#addBookForm').submit(function (event) {
+        event.preventDefault();
+
         let isbn = $('#addBookForm input[name=isbn]').val();
         let title = $('#addBookForm input[name=title]').val();
         let author = $('#addBookForm input[name=author]').val();
@@ -950,8 +968,6 @@ $(function () {
             return false;
         }
 
-        debugger;
-
         newBookForm.append('isbn', isbn);
         newBookForm.append('title', title);
         newBookForm.append('author', author);
@@ -968,6 +984,7 @@ $(function () {
             contentType: false,
             type: 'POST',
             success: function(erMes){
+                $('#erAddBookMesToLoad').load('http://localhost:8080/home?command=admin #erAddBookMesToLoad')
                 if (erMes !== undefined && erMes !== "") {
                     $('#er').text(erMes);
                     return;

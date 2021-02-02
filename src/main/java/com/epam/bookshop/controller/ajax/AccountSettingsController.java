@@ -1,16 +1,14 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.service.impl.UserService;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.EntityFinder;
+import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
 import org.mindrot.jbcrypt.BCrypt;
@@ -23,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Updates user account data
@@ -36,18 +33,18 @@ public class AccountSettingsController extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
-        final String login = request.getParameter(UtilStrings.LOGIN);
-        final String email = request.getParameter(UtilStrings.EMAIL);
-        final String password = request.getParameter(UtilStrings.PASSWORD);
-        final String verifyPassword = request.getParameter(UtilStrings.VERIFY_PASSWORD);
-        final String checkPass = request.getParameter(UtilStrings.CHECK_PASSWORD);
+        final String login = request.getParameter(RequestConstants.LOGIN);
+        final String email = request.getParameter(RequestConstants.EMAIL);
+        final String password = request.getParameter(RequestConstants.PASSWORD);
+        final String verifyPassword = request.getParameter(RequestConstants.VERIFY_PASSWORD);
+        final String checkPass = request.getParameter(RequestConstants.CHECK_PASSWORD);
 
         final HttpSession session = request.getSession();
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
 
         UserCriteria criteria = UserCriteria.builder()
-                .login((String) session.getAttribute(UtilStrings.LOGIN))
+                .login((String) session.getAttribute(RequestConstants.LOGIN))
                 .build();
         User userToUpdate = EntityFinder.getInstance().find(criteria, logger, locale);
 
@@ -116,7 +113,7 @@ public class AccountSettingsController extends HttpServlet {
 
         if (Objects.nonNull(login) && !login.isEmpty()) {
             userToUpdate.setLogin(login);
-            session.setAttribute(UtilStrings.LOGIN, login);
+            session.setAttribute(RequestConstants.LOGIN, login);
         }
         if (Objects.nonNull(email) && !email.isEmpty()) {
             userToUpdate.setEmail(email);

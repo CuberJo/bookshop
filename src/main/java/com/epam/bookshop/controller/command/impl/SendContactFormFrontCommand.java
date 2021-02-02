@@ -3,11 +3,11 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
+import com.epam.bookshop.util.constant.RequestConstants;
 import com.epam.bookshop.util.mail.MailSender;
-import com.epam.bookshop.util.constant.RegexConstant;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RegexConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.StringSanitizer;
 import com.epam.bookshop.util.validator.impl.Validator;
@@ -32,12 +32,12 @@ public class SendContactFormFrontCommand implements FrontCommand {
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-        final String name = requestContext.getParameter(UtilStrings.NAME);
-        final String email = requestContext.getParameter(UtilStrings.EMAIL);
+        final String name = requestContext.getParameter(RequestConstants.NAME);
+        final String email = requestContext.getParameter(RequestConstants.EMAIL);
         final String subject = requestContext.getParameter(SUBJECT);
 
         final HttpSession session = requestContext.getSession();
-        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
+        String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
         Validator validator = new Validator();
         StringSanitizer sanitizer = new StringSanitizer();
         String errorMessage = "";
@@ -49,7 +49,7 @@ public class SendContactFormFrontCommand implements FrontCommand {
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
                 return CONTACT_US_PAGE;
             }
-            if(!validator.validate(email, RegexConstant.EMAIL_REGEX)) {
+            if(!validator.validate(email, RegexConstants.EMAIL_REGEX)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT);
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
                 logger.error(errorMessage);
@@ -67,7 +67,7 @@ public class SendContactFormFrontCommand implements FrontCommand {
             //todo make stuff with sanitized data
 
         } catch (MessagingException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.COULD_NOT_REACH_EMAIL_ADDRESS) + UtilStrings.NEW_LINE + email;
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.COULD_NOT_REACH_EMAIL_ADDRESS) + UtilStringConstants.NEW_LINE + email;
             session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
             logger.error(errorMessage, e);
             return CONTACT_US_PAGE;

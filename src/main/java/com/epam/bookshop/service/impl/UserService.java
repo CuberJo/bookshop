@@ -1,18 +1,16 @@
 package com.epam.bookshop.service.impl;
 
 import com.epam.bookshop.dao.AbstractDAO;
-import com.epam.bookshop.dao.impl.BookDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
 import com.epam.bookshop.dao.impl.UserDAO;
 import com.epam.bookshop.db.ConnectionPool;
-import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
@@ -168,7 +166,7 @@ public class UserService implements EntityService<User> {
         }
 
         if (!isDeleted) {
-            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + UtilStrings.WHITESPACE + id;
+            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + UtilStringConstants.WHITESPACE + id;
             throw new EntityNotFoundException(userNotFound);
         }
 
@@ -191,7 +189,7 @@ public class UserService implements EntityService<User> {
         }
 
         if (!isDeleted) {
-            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + UtilStrings.WHITESPACE + user.getEntityId();
+            String userNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND) + UtilStringConstants.WHITESPACE + user.getEntityId();
             throw new EntityNotFoundException(userNotFound);
         }
 
@@ -267,7 +265,7 @@ public class UserService implements EntityService<User> {
         }
 
         if (!isDeleted) {
-            String IBANNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_NOT_FOUND) + UtilStrings.WHITESPACE + iban;
+            String IBANNotFound = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_NOT_FOUND) + UtilStringConstants.WHITESPACE + iban;
             throw new EntityNotFoundException(IBANNotFound);
         }
 

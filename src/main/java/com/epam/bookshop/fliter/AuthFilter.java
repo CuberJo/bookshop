@@ -1,6 +1,7 @@
 package com.epam.bookshop.fliter;
 
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -78,13 +79,13 @@ public class AuthFilter extends HttpFilter {
 
         final HttpSession session = req.getSession();
 
-        String login = (String) session.getAttribute(UtilStrings.LOGIN);
-        String role = (String) session.getAttribute(UtilStrings.ROLE);
+        String login = (String) session.getAttribute(RequestConstants.LOGIN);
+        String role = (String) session.getAttribute(RequestConstants.ROLE);
 
         if (Objects.isNull(login) || Objects.isNull(role)) {
 
             long equalCommands = COMMANDS_NEED_AUTHORIZATION.stream().
-                    filter(s -> s.equals(req.getParameter(UtilStrings.COMMAND)))
+                    filter(s -> s.equals(req.getParameter(RequestConstants.COMMAND)))
                     .count();
 
             if (equalCommands > 0) {
@@ -103,7 +104,7 @@ public class AuthFilter extends HttpFilter {
         }
 
         if (Objects.nonNull(login) && Objects.nonNull(role)
-                && role.equals(UtilStrings.ADMIN_ROLE) && PERSONAL_COMMAND.equals(req.getParameter(UtilStrings.COMMAND))) {
+                && role.equals(RequestConstants.ADMIN_ROLE) && PERSONAL_COMMAND.equals(req.getParameter(RequestConstants.COMMAND))) {
 
             res.sendRedirect(req.getContextPath() + HOME_PAGE);
             return;

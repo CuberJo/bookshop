@@ -9,7 +9,8 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
@@ -26,10 +27,10 @@ public class BookDetailsFrontCommand implements FrontCommand {
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-        final String ISBN = requestContext.getParameter(UtilStrings.ISBN);
+        final String ISBN = requestContext.getParameter(RequestConstants.ISBN);
 
         final HttpSession session = requestContext.getSession();
-        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
+        String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
         String errorMessage = "";
 
         try {
@@ -45,13 +46,13 @@ public class BookDetailsFrontCommand implements FrontCommand {
                 return NOT_FOUND_PAGE;
             }
 
-            session.setAttribute(UtilStrings.BOOK, optionalBook.get());
+            session.setAttribute(RequestConstants.BOOK, optionalBook.get());
 
             service.findImageForBook(optionalBook.get());
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ISBN_INCORRECT)
-                    + UtilStrings.WHITESPACE + ISBN;
+                    + UtilStringConstants.WHITESPACE + ISBN;
             session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
             logger.error(errorMessage, e);
             return NOT_FOUND_PAGE;

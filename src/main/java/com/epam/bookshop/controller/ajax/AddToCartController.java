@@ -1,7 +1,7 @@
 package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,7 +22,7 @@ public class AddToCartController extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         final HttpSession session = request.getSession();
 
-        add(session, (Book) session.getAttribute(UtilStrings.BOOK_TO_CART));
+        add(session, (Book) session.getAttribute(RequestConstants.BOOK_TO_CART));
     }
 
 
@@ -34,7 +34,7 @@ public class AddToCartController extends HttpServlet {
      * @return true if and only if book already exists in library, otherwise - false
      */
     private boolean bookExistsInLibrary(Book book, HttpSession session) {
-        List<Book> library = (List<Book>) session.getAttribute(UtilStrings.LIBRARY);
+        List<Book> library = (List<Book>) session.getAttribute(RequestConstants.LIBRARY);
 
         if (Objects.isNull(library)) {
             return false;
@@ -70,7 +70,7 @@ public class AddToCartController extends HttpServlet {
         }
 
         cart.add(book);
-        session.removeAttribute(UtilStrings.BOOK_TO_CART);
+        session.removeAttribute(RequestConstants.BOOK_TO_CART);
     }
 
 
@@ -82,10 +82,10 @@ public class AddToCartController extends HttpServlet {
      * @return {@link List<Book>} of books
      */
     private List<Book> getCart(HttpSession session) {
-        List<Book> cart = (List<Book>) session.getAttribute(UtilStrings.CART);
+        List<Book> cart = (List<Book>) session.getAttribute(RequestConstants.CART);
         if (Objects.isNull(cart)) {
             cart = new ArrayList<>();
-            session.setAttribute(UtilStrings.CART, cart);
+            session.setAttribute(RequestConstants.CART, cart);
         }
 
         return cart;

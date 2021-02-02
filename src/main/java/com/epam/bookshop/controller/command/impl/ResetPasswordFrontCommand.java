@@ -1,8 +1,9 @@
 package com.epam.bookshop.controller.command.impl;
 
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.RegexConstant;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RegexConstants;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
@@ -38,10 +39,10 @@ public class ResetPasswordFrontCommand implements FrontCommand {
 
     @Override
     public ResponseContext execute(RequestContext requestContext) {
-        final String email = requestContext.getParameter(UtilStrings.EMAIL);
+        final String email = requestContext.getParameter(RequestConstants.EMAIL);
 
         final HttpSession session = requestContext.getSession();
-        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
+        String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
         String errorMessage = "";
         Validator validator = new Validator();
 
@@ -51,7 +52,7 @@ public class ResetPasswordFrontCommand implements FrontCommand {
                 session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
                 return FORGOT_PASSWORD_PAGE;
             }
-            if(!validator.validate(email, RegexConstant.EMAIL_REGEX)) {
+            if(!validator.validate(email, RegexConstants.EMAIL_REGEX)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT);
                 session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
                 logger.error(errorMessage);
@@ -63,7 +64,7 @@ public class ResetPasswordFrontCommand implements FrontCommand {
 
             Optional<User> optionalUser = service.find(UserCriteria.builder().email(email).build());
             if (optionalUser.isEmpty()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_NOT_FOUND_IN_DATABASE) + UtilStrings.NEW_LINE + email;
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_NOT_FOUND_IN_DATABASE) + UtilStringConstants.NEW_LINE + email;
                 session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
                 return FORGOT_PASSWORD_PAGE;
             }
@@ -77,7 +78,7 @@ public class ResetPasswordFrontCommand implements FrontCommand {
             return FORGOT_PASSWORD_PAGE;
         } catch (MessagingException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_NOT_FOUND_IN_DATABASE)
-                    + UtilStrings.NEW_LINE + email;
+                    + UtilStringConstants.NEW_LINE + email;
             session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
             logger.error(e.getMessage(), e);
             return FORGOT_PASSWORD_PAGE;

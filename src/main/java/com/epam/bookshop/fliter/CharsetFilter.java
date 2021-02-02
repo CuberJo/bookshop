@@ -1,6 +1,6 @@
 package com.epam.bookshop.fliter;
 
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,9 +20,9 @@ public class CharsetFilter extends HttpFilter {
 
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        req.setCharacterEncoding(UtilStrings.UTF8);
+        req.setCharacterEncoding(UtilStringConstants.UTF8);
         res.setContentType(CONCRETE_CONTENT_TYPE);
-        res.setCharacterEncoding(UtilStrings.UTF8);
+        res.setCharacterEncoding(UtilStringConstants.UTF8);
         chain.doFilter(req, res);
     }
 }

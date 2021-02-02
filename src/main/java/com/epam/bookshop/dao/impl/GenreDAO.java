@@ -1,7 +1,6 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -84,7 +83,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     @Override
     public Collection<Genre> findAll(Criteria<Genre> criteria) {
         String query = SQL_SELECT_ALL_GENRES_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStrings.EQUALS);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStringConstants.EQUALS);
 
         List<Genre> genres = new ArrayList<>();
 
@@ -104,7 +103,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
     @Override
     public Optional<Genre> find(Criteria<Genre> criteria) {
         String query = SQL_SELECT_ALL_GENRES_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStrings.EQUALS);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStringConstants.EQUALS);
 
         Genre genre = null;
 
@@ -152,7 +151,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
      */
     public Optional<Genre> findLike(Criteria<Genre> criteria) {
         String query = SQL_SELECT_ALL_GENRES_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStrings.LIKE);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.GENRE).createQuery(criteria, UtilStringConstants.LIKE);
 
         Genre genre = null;
 

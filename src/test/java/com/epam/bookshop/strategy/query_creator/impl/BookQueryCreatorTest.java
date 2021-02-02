@@ -1,6 +1,6 @@
 package com.epam.bookshop.strategy.query_creator.impl;
 
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -22,7 +22,7 @@ public class BookQueryCreatorTest {
                 .build();
 
         EntityQueryCreator queryCreator = EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
-        String query = queryCreator.createQuery(criteria, UtilStrings.EQUALS);
+        String query = queryCreator.createQuery(criteria, UtilStringConstants.EQUALS);
         System.out.println(query);
     }
 }

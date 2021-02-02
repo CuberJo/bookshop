@@ -5,7 +5,7 @@ import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.util.query_creator.EntityQueryCreator;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
 
@@ -46,31 +46,31 @@ public class GenreQueryCreator implements EntityQueryCreator<Genre> {
         if (!(criteria instanceof GenreCriteria)) {
             String locale = "US";
             String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA)
-                    + UtilStrings.WHITESPACE + criteria;
+                    + UtilStringConstants.WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }
 
         if (criteria.getEntityId() != null) {
             condition.append(GENRE_ID_COLUMN)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(operator)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(criteria.getEntityId())
-                    .append(UtilStrings.WHITESPACE)
-                    .append(UtilStrings.AND)
-                    .append(UtilStrings.WHITESPACE);
+                    .append(UtilStringConstants.WHITESPACE)
+                    .append(UtilStringConstants.AND)
+                    .append(UtilStringConstants.WHITESPACE);
         }
         if (((GenreCriteria) criteria).getGenre() != null) {
             condition.append(GENRE_COLUMN)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(operator)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append("'")
                     .append(((GenreCriteria) criteria).getGenre())
                     .append("'")
-                    .append(UtilStrings.WHITESPACE)
-                    .append(UtilStrings.AND)
-                    .append(UtilStrings.WHITESPACE);
+                    .append(UtilStringConstants.WHITESPACE)
+                    .append(UtilStringConstants.AND)
+                    .append(UtilStringConstants.WHITESPACE);
         }
 
         return new Validator().validatedQuery(condition);

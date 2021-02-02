@@ -10,8 +10,9 @@ import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.JSONWriter;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.RegexConstant;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RegexConstants;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
@@ -46,19 +47,20 @@ public class AdminController extends HttpServlet {
     private static final String OLD_ISBN = "oldISBN";
     private static final String ADD_NEW_BOOK = "addNewBook";
     private static final String ERROR_MESSAGE= "erAddBookMes";
+    private static final String FILE_TYPE = "file";
+    private static final String FILE_IMG_TYPE = "file-img";
 
     private static final int ITEMS_PER_PAGE = 4;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         final HttpSession session = req.getSession();
-        final String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        final String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        if (Objects.nonNull(req.getParameter(COUNT_PAYMENTS)) ||
-            Objects.nonNull(req.getParameter(COUNT_USERS))) {
+        if (Objects.nonNull(req.getParameter(COUNT_PAYMENTS)) || Objects.nonNull(req.getParameter(COUNT_USERS))) {
             int rows = count(req, locale);
-            resp.setContentType(UtilStrings.TEXT_PLAIN);
-            req.setCharacterEncoding(UtilStrings.UTF8);
+            resp.setContentType(UtilStringConstants.TEXT_PLAIN);
+            req.setCharacterEncoding(UtilStringConstants.UTF8);
             resp.getWriter().write(String.valueOf(rows));
             return;
         }
@@ -66,8 +68,8 @@ public class AdminController extends HttpServlet {
         int start = BooksController.getStart(req, ITEMS_PER_PAGE);
 
         Collection<Entity> entities = findRecords(req, locale, start, ITEMS_PER_PAGE);
-        resp.setContentType(UtilStrings.APPLICATION_JSON);
-        req.setCharacterEncoding(UtilStrings.UTF8);
+        resp.setContentType(UtilStringConstants.APPLICATION_JSON);
+        req.setCharacterEncoding(UtilStringConstants.UTF8);
         String jsonStrings = JSONWriter.getInstance().write(entities);
         resp.getWriter().write(jsonStrings);
     }
@@ -76,29 +78,34 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final HttpSession session = req.getSession();
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         try {
             if (Objects.nonNull(req.getParameter(ADD_NEW_BOOK))) {
-                createNewBook(req, locale);
+                boolean created = createNewBook(req, locale);
+                if (!created) {
+                    String error = ErrorMessageConstants.BOOK_CREATION_FAILED;
+                    logger.error(error);
+                    resp.setContentType(UtilStringConstants.TEXT_PLAIN);
+                    req.setCharacterEncoding(UtilStringConstants.UTF8);
+                    resp.getWriter().write(error);
+                }
             } else {
-                updateBook(req, locale);
+                boolean updated = updateBook(req, locale);
+                if (!updated) {
+                    String error = ErrorMessageConstants.NO_BOOK_UPDATE_OCCURRED;
+                    logger.error(error);
+                    resp.setContentType(UtilStringConstants.TEXT_PLAIN);
+                    req.setCharacterEncoding(UtilStringConstants.UTF8);
+                    resp.getWriter().write(error);
+                }
             }
         } catch (ValidatorException e) {
             logger.error(e.getMessage(), e);
-            resp.setContentType("text/plain");
-            req.setCharacterEncoding(UtilStrings.UTF8);
+            resp.setContentType(UtilStringConstants.TEXT_PLAIN);
+            req.setCharacterEncoding(UtilStringConstants.UTF8);
             resp.getWriter().write(e.getMessage());
         }
-
-//        System.out.println(isbn);
-//        System.out.println(title);
-//        System.out.println(author);
-//        System.out.println(price);
-//        System.out.println(publisher);
-//        System.out.println(genre);
-//        System.out.println(base64Image);
-
     }
 
 
@@ -121,8 +128,8 @@ public class AdminController extends HttpServlet {
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         service.create(book);
 
-        createBookFile(req.getParameter(UtilStrings.ISBN), locale, req);
-        createBookImage(req.getParameter(UtilStrings.ISBN), locale, req);
+        createBookFile(req.getParameter(RequestConstants.ISBN), locale, req);
+        createBookImage(req.getParameter(RequestConstants.ISBN), locale, req);
 
         return true;
     }
@@ -140,7 +147,7 @@ public class AdminController extends HttpServlet {
      */
     private boolean updateBook(HttpServletRequest req, String locale) throws IOException, ServletException, ValidatorException {
         String oldISBN = req.getParameter(OLD_ISBN);
-        String isbn = req.getParameter(UtilStrings.ISBN);
+        String isbn = req.getParameter(RequestConstants.ISBN);
 
         Criteria<Book> criteria = BookCriteria.builder()
                 .ISBN(oldISBN)
@@ -149,7 +156,6 @@ public class AdminController extends HttpServlet {
         if(!fillBook(bookToUpdate, req, locale)) {
             return false;
         }
-//        установить атрибут isbnBookToUpdate в сессии и потом..
 
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         service.update(bookToUpdate);
@@ -175,9 +181,9 @@ public class AdminController extends HttpServlet {
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         service.setLocale(locale);
 
-        Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
+        Part filePart = req.getPart(FILE_TYPE);
         if (Objects.nonNull(filePart)) {
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             InputStream fileContent = filePart.getInputStream();
 
             if (Objects.nonNull(fileContent)) {
@@ -187,10 +193,10 @@ public class AdminController extends HttpServlet {
                     service.updateImage(oldISBN, fileContent);
                 }
             } else {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_FILE_DATA);
-                req.getSession().setAttribute(ERROR_MESSAGE, error);
-                logger.error(error);
+                writeEmptyFileDataError(locale, req);
             }
+        } else {
+            writeEmptyFileDataError(locale, req);
         }
     }
 
@@ -210,16 +216,18 @@ public class AdminController extends HttpServlet {
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         service.setLocale(locale);
 
-        Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
-        InputStream fileContent = filePart.getInputStream();
+        Part filePart = req.getPart(FILE_TYPE);
+        if (Objects.nonNull(filePart)) {
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            InputStream fileContent = filePart.getInputStream();
 
-        if (Objects.nonNull(fileContent)) {
-            service.createBookFile(isbn, fileContent);
+            if (Objects.nonNull(fileContent)) {
+                service.createBookFile(isbn, fileContent);
+            } else {
+                writeEmptyFileDataError(locale, req);
+            }
         } else {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_FILE_DATA);
-            req.getSession().setAttribute(ERROR_MESSAGE, error);
-            logger.error(error);
+            writeEmptyFileDataError(locale, req);
         }
     }
 
@@ -239,17 +247,32 @@ public class AdminController extends HttpServlet {
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         service.setLocale(locale);
 
-        Part filePart = req.getPart("file-img"); // Retrieves <input type="file" name="file">
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
-        InputStream fileContent = filePart.getInputStream();
+        Part filePart = req.getPart(FILE_IMG_TYPE);
+        if (Objects.nonNull(filePart)) {
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            InputStream fileContent = filePart.getInputStream();
 
-        if (Objects.nonNull(fileContent)) {
-            service.createImage(isbn, fileContent);
+            if (Objects.nonNull(fileContent)) {
+                service.createImage(isbn, fileContent);
+            } else {
+                writeEmptyFileDataError(locale, req);
+            }
         } else {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_FILE_DATA);
-            req.getSession().setAttribute(ERROR_MESSAGE, error);
-            logger.error(error);
+            writeEmptyFileDataError(locale, req);
         }
+    }
+
+
+    /**
+     * Writes errors to session attribute {@code erAddBookMes}
+     *
+     * @param locale language for error messages if ones will take place
+     * @param req current {@link HttpServletRequest} request
+     */
+    private void writeEmptyFileDataError(String locale, HttpServletRequest req) {
+        String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_FILE_DATA);
+        req.getSession().setAttribute(ERROR_MESSAGE, error);
+        logger.error(error);
     }
 
 
@@ -270,7 +293,7 @@ public class AdminController extends HttpServlet {
             optionalBook = service.find(criteria);
             if (optionalBook.isEmpty()) {
                 String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                        + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN();
+                        + UtilStringConstants.WHITESPACE + ((BookCriteria) criteria).getISBN();
                 logger.error(error);
                 throw new RuntimeException(error);
             }
@@ -283,6 +306,7 @@ public class AdminController extends HttpServlet {
     }
 
 
+
     /**
      * Fills book with new data
      *
@@ -290,16 +314,16 @@ public class AdminController extends HttpServlet {
      * @param req current {@link HttpServletRequest} request
      * @param locale language for error messages if ones will take place
      * @return true, if and only if books data passed the validation and book was filled
-     * by rhis data
+     * by this data
      */
     private boolean fillBook(Book book, HttpServletRequest req, String locale) {
-        String isbn = req.getParameter(UtilStrings.ISBN);
-        String title = req.getParameter(UtilStrings.TITLE);
-        String author = req.getParameter(UtilStrings.AUTHOR);
-        String price = req.getParameter(UtilStrings.PRICE);
-        String publisher = req.getParameter(UtilStrings.PUBLISHER);
-        String genre = req.getParameter(UtilStrings.GENRE);
-        String preview = req.getParameter(UtilStrings.PREVIEW);
+        String isbn = req.getParameter(RequestConstants.ISBN);
+        String title = req.getParameter(RequestConstants.TITLE);
+        String author = req.getParameter(RequestConstants.AUTHOR);
+        String price = req.getParameter(RequestConstants.PRICE);
+        String publisher = req.getParameter(RequestConstants.PUBLISHER);
+        String genre = req.getParameter(RequestConstants.GENRE);
+        String preview = req.getParameter(RequestConstants.PREVIEW);
 
         if (!validateInput(isbn, title, author, price, publisher, genre, preview, req.getSession())) {
             return false;
@@ -316,7 +340,7 @@ public class AdminController extends HttpServlet {
         }
         if (Objects.nonNull(price) && !price.isEmpty()) {
             if (price.contains("$")) {
-                price = price.replace("$", UtilStrings.EMPTY_STRING);
+                price = price.replace("$", UtilStringConstants.EMPTY_STRING);
             }
             book.setPrice(Double.parseDouble(price));
         }
@@ -333,7 +357,7 @@ public class AdminController extends HttpServlet {
                 optionalGenre = genreService.find(genreCriteria);
                 if (optionalGenre.isEmpty()) {
                     String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
-                            + UtilStrings.WHITESPACE + genre;
+                            + UtilStringConstants.WHITESPACE + genre;
                     logger.error(error);
                     throw new RuntimeException(error);
                 }
@@ -368,37 +392,37 @@ public class AdminController extends HttpServlet {
     private boolean validateInput(String isbn, String title, String author, String price, String publisher, String genre, String preview, HttpSession session) {
         Validator validator = new Validator();
 
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
         validator.setLocale(locale);
 
         String error = "";
 
-        if (validator.empty(isbn) || !validator.validate(isbn, RegexConstant.ISBN_REGEX)) {
+        if (validator.empty(isbn) || !validator.validate(isbn, RegexConstants.ISBN_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ISBN_INCORRECT)
-                    + UtilStrings.WHITESPACE + isbn + UtilStrings.SEMICOLON + UtilStrings.WHITESPACE;
+                    + UtilStringConstants.WHITESPACE + isbn + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
-        if (validator.empty(title) || !validator.validate(title, RegexConstant.TITLE_REGEX)) {
+        if (validator.empty(title) || !validator.validate(title, RegexConstants.TITLE_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.TITLE_INCORRECT)
-                    + UtilStrings.WHITESPACE + title + UtilStrings.SEMICOLON + UtilStrings.WHITESPACE;
+                    + UtilStringConstants.WHITESPACE + title + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
-        if (validator.empty(author) || !validator.validate(author, RegexConstant.AUTHOR_REGEX)) {
+        if (validator.empty(author) || !validator.validate(author, RegexConstants.AUTHOR_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.AUTHOR_INCORRECT)
-                    + UtilStrings.WHITESPACE + author + UtilStrings.SEMICOLON + UtilStrings.WHITESPACE;
+                    + UtilStringConstants.WHITESPACE + author + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
         if (price.contains("$")) {
-            price = price.replace("$", UtilStrings.EMPTY_STRING);
+            price = price.replace("$", UtilStringConstants.EMPTY_STRING);
         }
-        if (validator.empty(price) || !validator.validate(price, RegexConstant.PRICE_REGEX)) {
+        if (validator.empty(price) || !validator.validate(price, RegexConstants.PRICE_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PRICE_INCORRECT)
-                    + UtilStrings.WHITESPACE + price + UtilStrings.SEMICOLON + UtilStrings.WHITESPACE;
+                    + UtilStringConstants.WHITESPACE + price + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
-        if (validator.empty(publisher) || !validator.validate(publisher, RegexConstant.PUBLISHER_REGEX)) {
+        if (validator.empty(publisher) || !validator.validate(publisher, RegexConstants.PUBLISHER_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PUBLISHER_INCORRECT)
-                    + UtilStrings.WHITESPACE + publisher + UtilStrings.SEMICOLON + UtilStrings.WHITESPACE;
+                    + UtilStringConstants.WHITESPACE + publisher + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
-        if (validator.empty(genre) || !validator.validate(genre, RegexConstant.GENRE_REGEX)) {
+        if (validator.empty(genre) || !validator.validate(genre, RegexConstants.GENRE_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.GENRE_INCORRECT)
-                    + UtilStrings.WHITESPACE + genre + UtilStrings.SEMICOLON + UtilStrings.WHITESPACE;
+                    + UtilStringConstants.WHITESPACE + genre + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
         if (Objects.nonNull(preview)) {
             preview = new StringSanitizer().sanitize(preview);
@@ -424,7 +448,7 @@ public class AdminController extends HttpServlet {
         String countPayments = request.getParameter(COUNT_PAYMENTS);
         String countUsers = request.getParameter(COUNT_USERS);
 
-        EntityService service;
+        EntityService service = null;
         int rows;
         if (Objects.nonNull(countPayments)) {
             service = ServiceFactory.getInstance().create(EntityType.PAYMENT);
@@ -432,10 +456,8 @@ public class AdminController extends HttpServlet {
         } else if (Objects.nonNull(countUsers)) {
             service = ServiceFactory.getInstance().create(EntityType.USER);
             service.setLocale(locale);
-        } else {
-            logger.error(REQUEST_PARAM_NOT_FOUND);
-            throw new RuntimeException(REQUEST_PARAM_NOT_FOUND);
         }
+
         rows = service.count();
 
         return rows;
@@ -461,7 +483,7 @@ public class AdminController extends HttpServlet {
                 service = ServiceFactory.getInstance().create(EntityType.PAYMENT);
                 service.setLocale(locale);
                 break;
-            case "users":
+            case USERS:
                 service = ServiceFactory.getInstance().create(EntityType.USER);
                 service.setLocale(locale);
                 break;
@@ -482,7 +504,7 @@ public class AdminController extends HttpServlet {
     /**
      * Removes unnecessary data(like pass and IBAN list) from object to pass to client
      *
-     * @param entities
+     * @param entities user entities to find passwords and IBANs
      */
     private void convertToDTO(Collection<Entity> entities) {
         if (Objects.nonNull(entities) && !entities.isEmpty()) {

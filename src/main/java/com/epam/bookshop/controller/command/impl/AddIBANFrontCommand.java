@@ -4,6 +4,7 @@ import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.util.EntityFinder;
+import com.epam.bookshop.util.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -13,8 +14,8 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
-import com.epam.bookshop.util.constant.RegexConstant;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RegexConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class AddIBANFrontCommand implements FrontCommand {
     public ResponseContext execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
 
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         if (needToProcessGetRequest(requestContext)) {
             return ADD_IBAN_PAGE_FORWARD;
@@ -49,31 +50,31 @@ public class AddIBANFrontCommand implements FrontCommand {
         List<String> IBANs;
         try {
             UserCriteria criteria = UserCriteria.builder()
-                    .login((String) session.getAttribute(UtilStrings.LOGIN))
+                    .login((String) session.getAttribute(RequestConstants.LOGIN))
                     .build();
             IBANs = EntityFinder.getInstance().findIBANs(criteria, logger, locale);
-            if (Objects.isNull(session.getAttribute(UtilStrings.IBANs))) {
-                session.setAttribute(UtilStrings.IBANs, IBANs);
+            if (Objects.isNull(session.getAttribute(RequestConstants.IBANs))) {
+                session.setAttribute(RequestConstants.IBANs, IBANs);
             }
 
-            if (Objects.isNull(session.getAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN))) {
-                if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(UtilStrings.BACK_TO_CART))) {
-                    session.removeAttribute(UtilStrings.BACK_TO_CART);
+            if (Objects.isNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
+                if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CART))) {
+                    session.removeAttribute(RequestConstants.BACK_TO_CART);
                     return CHOOSE_IBAN_PAGE_FORWARD;
                 }
             }
 
             if ((IBANs.stream().findAny().isEmpty()
-                    || Objects.nonNull(session.getAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN)))) {
-                if (!validateIBAN(requestContext.getParameter(UtilStrings.IBAN), session, locale)) {
-                    session.setAttribute(UtilStrings.GET_ADD_IBAN_PAGE_ATTR, UtilStrings.GET_ADD_IBAN_PAGE_ATTR);
+                    || Objects.nonNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN)))) {
+                if (!validateIBAN(requestContext.getParameter(RequestConstants.IBAN), session, locale)) {
+                    session.setAttribute(RequestConstants.GET_ADD_IBAN_PAGE_ATTR, RequestConstants.GET_ADD_IBAN_PAGE_ATTR);
                     return ADD_IBAN_PAGE_REDIRECT;
                 }
                 String iban = createIBAN(requestContext, criteria, locale);
                 IBANs.add(iban);
 
-                if (Objects.nonNull(session.getAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN))) {
-                    session.removeAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN);
+                if (Objects.nonNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
+                    session.removeAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN);
                 }
             }
 
@@ -81,18 +82,18 @@ public class AddIBANFrontCommand implements FrontCommand {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_INCORRECT);
             session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE, error);
             logger.error(e.getMessage(), e);
-            session.setAttribute(UtilStrings.GET_ADD_IBAN_PAGE_ATTR, UtilStrings.GET_ADD_IBAN_PAGE_ATTR);
+            session.setAttribute(RequestConstants.GET_ADD_IBAN_PAGE_ATTR, RequestConstants.GET_ADD_IBAN_PAGE_ATTR);
             return ADD_IBAN_PAGE_REDIRECT;
         }
 
-        if (Objects.nonNull(session.getAttribute(UtilStrings.BACK_TO_CART))) {
-            session.removeAttribute(UtilStrings.BACK_TO_CART);
+        if (Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CART))) {
+            session.removeAttribute(RequestConstants.BACK_TO_CART);
             return CART_PAGE;
         }
 
-        if (Objects.nonNull(session.getAttribute(UtilStrings.BACK_TO_CHOOSE_IBAN))) {
-            session.removeAttribute(UtilStrings.BACK_TO_CHOOSE_IBAN);
-            session.setAttribute(UtilStrings.IBANs, IBANs);
+        if (Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CHOOSE_IBAN))) {
+            session.removeAttribute(RequestConstants.BACK_TO_CHOOSE_IBAN);
+            session.setAttribute(RequestConstants.IBANs, IBANs);
             return CHOOSE_IBAN_PAGE_SEND_REDIRECT;
         }
 
@@ -121,7 +122,7 @@ public class AddIBANFrontCommand implements FrontCommand {
             return false;
         }
 
-        if(!validator.validate(iban, RegexConstant.IBAN_REGEX)) {
+        if(!validator.validate(iban, RegexConstants.IBAN_REGEX)) {
             error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_INCORRECT);
             session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE, error);
             return false;
@@ -139,12 +140,12 @@ public class AddIBANFrontCommand implements FrontCommand {
     private boolean needToProcessGetRequest(RequestContext requestContext) {
         HttpSession session = requestContext.getSession();
 
-        if (Objects.nonNull(session.getAttribute(UtilStrings.GET_ADD_IBAN_PAGE_ATTR))
-                || Objects.nonNull(requestContext.getParameter(UtilStrings.GET_ADD_IBAN_PAGE_ATTR))) {
-            if (Objects.nonNull(requestContext.getParameter(UtilStrings.CREATE_ADDITIONAL_IBAN))) {
-                session.setAttribute(UtilStrings.CREATE_ADDITIONAL_IBAN, UtilStrings.CREATE_ADDITIONAL_IBAN);
+        if (Objects.nonNull(session.getAttribute(RequestConstants.GET_ADD_IBAN_PAGE_ATTR))
+                || Objects.nonNull(requestContext.getParameter(RequestConstants.GET_ADD_IBAN_PAGE_ATTR))) {
+            if (Objects.nonNull(requestContext.getParameter(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
+                session.setAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN, RequestConstants.CREATE_ADDITIONAL_IBAN);
             }
-            session.removeAttribute(UtilStrings.GET_ADD_IBAN_PAGE_ATTR);
+            session.removeAttribute(RequestConstants.GET_ADD_IBAN_PAGE_ATTR);
 
             return true;
         }
@@ -172,11 +173,11 @@ public class AddIBANFrontCommand implements FrontCommand {
             Optional<User> optionalUser = service.find(criteria);
             if (optionalUser.isEmpty()) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
-                        + UtilStrings.WHITESPACE + ((UserCriteria) criteria).getLogin();
+                        + UtilStringConstants.WHITESPACE + ((UserCriteria) criteria).getLogin();
                 throw new EntityNotFoundException(errorMessage);
             }
 
-            iban = requestContext.getParameter(UtilStrings.IBAN);
+            iban = requestContext.getParameter(RequestConstants.IBAN);
 
             service.createUserBankAccount(iban, optionalUser.get().getEntityId());
 
@@ -186,7 +187,7 @@ public class AddIBANFrontCommand implements FrontCommand {
             throw new RuntimeException(errorMessage, e);
         } catch (EntityNotFoundException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
-                    + UtilStrings.WHITESPACE + ((UserCriteria) criteria).getLogin();
+                    + UtilStringConstants.WHITESPACE + ((UserCriteria) criteria).getLogin();
             logger.error(errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         }

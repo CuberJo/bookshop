@@ -6,7 +6,7 @@ import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.util.query_creator.EntityQueryCreator;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
 
@@ -49,67 +49,67 @@ public class UserQueryCreator implements EntityQueryCreator<User> {
         if (!(criteria instanceof UserCriteria)) {
             String locale = "US";
             String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA)
-                    + UtilStrings.WHITESPACE + criteria;
+                    + UtilStringConstants.WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }
 
         if (criteria.getEntityId() != null) {
             condition.append(LIBRARY_USER_ID_COLUMN)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(operator)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(criteria.getEntityId())
-                    .append(UtilStrings.WHITESPACE)
-                    .append(UtilStrings.AND)
-                    .append(UtilStrings.WHITESPACE);
+                    .append(UtilStringConstants.WHITESPACE)
+                    .append(UtilStringConstants.AND)
+                    .append(UtilStringConstants.WHITESPACE);
         }
         if (((UserCriteria) criteria).getName() != null) {
             condition.append(NAME_COLUMN)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(operator)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append("'")
                     .append(((UserCriteria) criteria).getName())
                     .append("'")
-                    .append(UtilStrings.WHITESPACE)
-                    .append(UtilStrings.AND)
-                    .append(UtilStrings.WHITESPACE);
+                    .append(UtilStringConstants.WHITESPACE)
+                    .append(UtilStringConstants.AND)
+                    .append(UtilStringConstants.WHITESPACE);
         }
         if (((UserCriteria) criteria).getLogin() != null) {
             condition.append(LOGIN_COLUMN)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(operator)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append("'")
                     .append(((UserCriteria) criteria).getLogin())
                     .append("'")
-                    .append(UtilStrings.WHITESPACE)
-                    .append(UtilStrings.AND)
-                    .append(UtilStrings.WHITESPACE);
+                    .append(UtilStringConstants.WHITESPACE)
+                    .append(UtilStringConstants.AND)
+                    .append(UtilStringConstants.WHITESPACE);
         }
         if (((UserCriteria) criteria).getPassword() != null) {
             condition.append(PASSWORD_COLUMN)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(operator)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append("'")
                     .append(((UserCriteria) criteria).getPassword())
                     .append("'")
-                    .append(UtilStrings.WHITESPACE)
-                    .append(UtilStrings.AND)
-                    .append(UtilStrings.WHITESPACE);
+                    .append(UtilStringConstants.WHITESPACE)
+                    .append(UtilStringConstants.AND)
+                    .append(UtilStringConstants.WHITESPACE);
         }
         if (((UserCriteria) criteria).getEmail() != null) {
             condition.append(EMAIL_COLUMN)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append(operator)
-                    .append(UtilStrings.WHITESPACE)
+                    .append(UtilStringConstants.WHITESPACE)
                     .append("'")
                     .append(((UserCriteria) criteria).getEmail())
                     .append("'")
-                    .append(UtilStrings.WHITESPACE)
-                    .append(UtilStrings.AND)
-                    .append(UtilStrings.WHITESPACE);
+                    .append(UtilStringConstants.WHITESPACE)
+                    .append(UtilStringConstants.AND)
+                    .append(UtilStringConstants.WHITESPACE);
         }
 //        if (((UserCriteria) criteria).isAdmin() != null) {
 //            condition.append(ADMIN_COLUMN + " = '")

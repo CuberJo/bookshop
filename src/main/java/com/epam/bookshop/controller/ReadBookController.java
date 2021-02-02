@@ -1,7 +1,9 @@
 package com.epam.bookshop.controller;
 
+import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.util.EntityFinder;
+import com.epam.bookshop.util.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
@@ -14,7 +16,7 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
@@ -40,11 +42,13 @@ public class ReadBookController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(ReadBookController.class);
 
     private static final String HEADER_PARAM = "inline; filename=automatic_start.pdf";
+    public static final String APPLICATION_PDF_CONTENT_TYPE = "application/pdf";
+    public static final String CONTENT_DISPOSITION_HEADER = "Content-disposition";
     private static final String HOME_PAGE = "/home";
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (checkBookPurchase(request) || (Objects.nonNull(request.getSession().getAttribute(UtilStrings.LOGIN)) && UtilStrings.ADMIN_ROLE.equals(request.getSession().getAttribute(UtilStrings.ROLE)))) {
+        if (checkBookPurchase(request) || (Objects.nonNull(request.getSession().getAttribute(RequestConstants.LOGIN)) && RequestConstants.ADMIN_ROLE.equals(request.getSession().getAttribute(RequestConstants.ROLE)))) {
             renderBook(request, response);
         } else {
             request.getRequestDispatcher(HOME_PAGE).forward(request, response);
@@ -58,18 +62,18 @@ public class ReadBookController extends HttpServlet {
      * @return true if and only if requested book was purchased
      */
     private boolean checkBookPurchase(HttpServletRequest request) {
-        final String locale = (String) request.getSession().getAttribute(UtilStrings.LOCALE);
+        final String locale = (String) request.getSession().getAttribute(RequestConstants.LOCALE);
 
         EntityService<Payment> service = ServiceFactory.getInstance().create(EntityType.PAYMENT);
         service.setLocale(locale);
 
         Criteria<Book> criteria = BookCriteria.builder()
-                .ISBN(request.getParameter(UtilStrings.ISBN))
+                .ISBN(request.getParameter(RequestConstants.ISBN))
                 .build();
         Book book = findBook(criteria, locale);
         try {
             Criteria<User> userCriteria = UserCriteria.builder()
-                    .login((String) request.getSession().getAttribute(UtilStrings.LOGIN))
+                    .login((String) request.getSession().getAttribute(RequestConstants.LOGIN))
                     .build();
             User user = EntityFinder.getInstance().find(userCriteria, logger, locale);
             Criteria<Payment> paymentCriteria = PaymentCriteria.builder()
@@ -82,7 +86,7 @@ public class ReadBookController extends HttpServlet {
             }
         } catch (ValidatorException e) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA)
-                    + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN();
+                    + UtilStringConstants.WHITESPACE + ((BookCriteria) criteria).getISBN();
             logger.error(error, e);
             throw new RuntimeException(error, e);
         }
@@ -100,19 +104,19 @@ public class ReadBookController extends HttpServlet {
      */
     public void renderBook(HttpServletRequest request, HttpServletResponse response) {
         final HttpSession session = request.getSession();
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         ByteArrayOutputStream bos = null;
         try {
             Criteria<Book> criteria = BookCriteria.builder()
-                    .ISBN(request.getParameter(UtilStrings.ISBN))
+                    .ISBN(request.getParameter(RequestConstants.ISBN))
                     .build();
             Book book = findBook(criteria, locale);
 
             bos = getBookByteArrayStram(book, locale);
 
-            response.setContentType(UtilStrings.APPLICATION_PDF_CONTENT_TYPE);
-            response.setHeader(UtilStrings.CONTENT_DISPOSITION_HEADER, HEADER_PARAM);
+            response.setContentType(APPLICATION_PDF_CONTENT_TYPE);
+            response.setHeader(CONTENT_DISPOSITION_HEADER, HEADER_PARAM);
             response.setContentLength(bos.size());
             bos.writeTo(response.getOutputStream());
 
@@ -153,7 +157,7 @@ public class ReadBookController extends HttpServlet {
             optionalBook = service.find(criteria);
             if (optionalBook.isEmpty()) {
                 String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                        + UtilStrings.WHITESPACE + ((BookCriteria) criteria).getISBN();
+                        + UtilStringConstants.WHITESPACE + ((BookCriteria) criteria).getISBN();
                 logger.error(error);
                 throw new RuntimeException(error);
             }
@@ -202,11 +206,11 @@ public class ReadBookController extends HttpServlet {
     private void downloadFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final HttpSession session = request.getSession();
 
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
 
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        String isbn = request.getParameter(UtilStrings.ISBN);
+        String isbn = request.getParameter(RequestConstants.ISBN);
         Criteria<Book> criteria = BookCriteria.builder()
                 .ISBN(isbn)
                 .build();
@@ -214,7 +218,7 @@ public class ReadBookController extends HttpServlet {
             Optional<Book> optionalBook = service.find(criteria);
             if (optionalBook.isEmpty()) {
                 String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                        + UtilStrings.WHITESPACE + isbn;
+                        + UtilStringConstants.WHITESPACE + isbn;
                 logger.error(error);
                 throw new RuntimeException(error);
             }

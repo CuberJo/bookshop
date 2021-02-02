@@ -3,6 +3,7 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
+import com.epam.bookshop.util.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -11,7 +12,7 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class DeleteAccountFrontCommand implements FrontCommand {
     public ResponseContext execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
 
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         String error = "";
         try {
@@ -64,10 +65,10 @@ public class DeleteAccountFrontCommand implements FrontCommand {
         User user = getSessionUser(session, service, locale);
 
         service.delete(user);
-        session.removeAttribute(UtilStrings.LOGIN);
-        session.removeAttribute(UtilStrings.LIBRARY);
-        session.removeAttribute(UtilStrings.IBANs);
-        session.removeAttribute(UtilStrings.ROLE);
+        session.removeAttribute(RequestConstants.LOGIN);
+        session.removeAttribute(RequestConstants.LIBRARY);
+        session.removeAttribute(RequestConstants.IBANs);
+        session.removeAttribute(RequestConstants.ROLE);
     }
 
 
@@ -80,7 +81,7 @@ public class DeleteAccountFrontCommand implements FrontCommand {
      * @throws ValidatorException if user criteria fails fvalidation
      */
     private User getSessionUser(HttpSession session, EntityService<User> service, String locale) throws ValidatorException {
-        String login = (String) session.getAttribute(UtilStrings.LOGIN);
+        String login = (String) session.getAttribute(RequestConstants.LOGIN);
         UserCriteria criteria = UserCriteria.builder().login(login).build();
 
         Optional<User> optionalUser = service.find(criteria);

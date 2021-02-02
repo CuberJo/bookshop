@@ -58,4 +58,6 @@ public class ErrorMessageConstants {
     public static final String ERROR_CONTACT_US_MESSAGE = "error_contact_us_message";
 
     public static final String EMPTY_FILE_DATA = "empty_file_data";
+
+    public static final String BOOK_CREATION_FAILED = "book_creation_failed";
 }

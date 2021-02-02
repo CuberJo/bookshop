@@ -1,6 +1,5 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.util.ImgToBase64Converter;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
@@ -12,7 +11,7 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,8 +75,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, connection);
             Optional<Genre> optionalGenre = genreDAO.find(GenreCriteria.builder().genre(book.getGenre().getGenre()).build());
             if (optionalGenre.isEmpty()) {
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.NEW_LINE + book.getGenre();
-                throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + book.getGenre().getGenre());
+                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStringConstants.NEW_LINE + book.getGenre();
+                throw new RuntimeException(errorMessage + UtilStringConstants.WHITESPACE + book.getGenre().getGenre());
             }
             ps.setLong(6, optionalGenre.get().getEntityId());
 
@@ -137,7 +136,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     @Override
     public Collection<Book> findAll(Criteria<Book> criteria) {
         String query = SQL_SELECT_ALL_BOOKS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.EQUALS);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS);
 
         List<Book> books = new ArrayList<>();
 
@@ -157,7 +156,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
     @Override
     public Optional<Book> find(Criteria<Book> criteria) {
         String query = SQL_SELECT_ALL_BOOKS_WHERE +
-                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.EQUALS);
+                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS);
 
         Book book = null;
 
@@ -190,7 +189,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             ps.setLong(1, id);
             int result = ps.executeUpdate();
 
-            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+            if (result == UtilStringConstants.ZERO_ROWS_AFFECTED) {
                 return false;
             }
 
@@ -222,7 +221,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
             int result = ps.executeUpdate();
 
-            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+            if (result == UtilStringConstants.ZERO_ROWS_AFFECTED) {
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_BOOK_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
             }
@@ -456,8 +455,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         ResultSet rs = null;
 
         String query = SQL_SELECT_ALL_BOOKS_WHERE +
-                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.EQUALS)
-                        .replace(UtilStrings.SEMICOLON, UtilStrings.WHITESPACE) + "LIMIT ?, ?";
+                EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS)
+                        .replace(UtilStringConstants.SEMICOLON, UtilStringConstants.WHITESPACE) + "LIMIT ?, ?";
 
         try (PreparedStatement ps = getPrepareStatement(query)) {
             ps.setInt(1, start);
@@ -533,8 +532,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
      */
     public int count(Criteria<Book> criteria) {
         String query = ((BookCriteria) criteria).getGenreId() != null ?
-           SQL_SELECT_COUNT_ALL_WHERE + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.EQUALS) :
-                SQL_SELECT_COUNT_ALL_WHERE + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.LIKE);
+           SQL_SELECT_COUNT_ALL_WHERE + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS) :
+                SQL_SELECT_COUNT_ALL_WHERE + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE);
 
         int rows = 0;
 
@@ -591,7 +590,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
      */
     public Collection<Book> findAllLike(Criteria<Book> criteria) {
         String query = SQL_SELECT_ALL_BOOKS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.LIKE);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE);
 
         List<Book> books = new ArrayList<>();
 
@@ -625,11 +624,11 @@ public class BookDAO extends AbstractDAO<Long, Book> {
                 && ((BookCriteria) criteria).getTitle() != null
                 && ((BookCriteria) criteria).getPublisher() != null) {
             query = SQL_SELECT_ALL_BOOKS_WHERE_LIKE_OR
-                    .replace(UtilStrings.SEMICOLON, UtilStrings.WHITESPACE) + "LIMIT ?, ?";
+                    .replace(UtilStringConstants.SEMICOLON, UtilStringConstants.WHITESPACE) + "LIMIT ?, ?";
         } else {
             query = SQL_SELECT_ALL_BOOKS_WHERE
-                    + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStrings.LIKE)
-                    .replace(UtilStrings.SEMICOLON, UtilStrings.WHITESPACE) + "LIMIT ?, ?";
+                    + EntityQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE)
+                    .replace(UtilStringConstants.SEMICOLON, UtilStringConstants.WHITESPACE) + "LIMIT ?, ?";
         }
 
 
@@ -683,8 +682,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
                 Optional<Genre> optionalGenre = genreDAO.findById(rs.getLong(GENRE_ID_COLUMN));
                 if (optionalGenre.isEmpty()) {
-                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStrings.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
+                    String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStringConstants.WHITESPACE + rs.getLong(GENRE_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + ID_COLUMN + UtilStringConstants.WHITESPACE + rs.getLong(GENRE_ID_COLUMN));
                 }
                 book.setGenre(optionalGenre.get());
 

@@ -11,7 +11,8 @@ import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.JSONWriter;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
@@ -49,13 +50,13 @@ public class BooksController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         final HttpSession session = req.getSession();
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         String relatedBooks = req.getParameter(RELATED_BOOKS);
         if (Objects.nonNull(relatedBooks)) {
             Collection<Book> books = getBooks(23, 4, locale);
             String jsonStrings = JSONWriter.getInstance().write(books);
-            writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
+            writeResp(resp, UtilStringConstants.APPLICATION_JSON, jsonStrings);
             return;
         }
 
@@ -63,7 +64,7 @@ public class BooksController extends HttpServlet {
         if (Objects.nonNull(bestsellers)) {
             Collection<Book> books = getBooks(0, 12, locale);
             String jsonStrings = JSONWriter.getInstance().write(books);
-            writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
+            writeResp(resp, UtilStringConstants.APPLICATION_JSON, jsonStrings);
             return;
         }
 
@@ -71,7 +72,7 @@ public class BooksController extends HttpServlet {
         if (Objects.nonNull(exclusive)) {
             Book book = getRandomBook(locale);
             String jsonStrings = JSONWriter.getInstance().write(book);
-            writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
+            writeResp(resp, UtilStringConstants.APPLICATION_JSON, jsonStrings);
             return;
         }
 
@@ -79,14 +80,14 @@ public class BooksController extends HttpServlet {
         if (Objects.nonNull(latestProducts)) {
             Collection<Book> books = getBooks(8, 16, locale);
             String jsonStrings = JSONWriter.getInstance().write(books);
-            writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
+            writeResp(resp, UtilStringConstants.APPLICATION_JSON, jsonStrings);
             return;
         }
 
-        String count = req.getParameter(UtilStrings.COUNT);
+        String count = req.getParameter(RequestConstants.COUNT);
         if (Objects.nonNull(count) && !count.isEmpty()) {
             int rows = countBooks(req, locale);
-            writeResp(resp, UtilStrings.TEXT_PLAIN, String.valueOf(rows));
+            writeResp(resp, UtilStringConstants.TEXT_PLAIN, String.valueOf(rows));
             return;
         }
 
@@ -95,8 +96,8 @@ public class BooksController extends HttpServlet {
         Collection<Book> books;
 
 
-        if (Objects.nonNull(session.getAttribute(UtilStrings.NOT_ADVANCED_SEARCH))) {
-            String searchStr = (String) session.getAttribute(UtilStrings.SEARCH_STR);
+        if (Objects.nonNull(session.getAttribute(RequestConstants.NOT_ADVANCED_SEARCH))) {
+            String searchStr = (String) session.getAttribute(RequestConstants.SEARCH_STR);
 
             Criteria<Book> criteria = BookCriteria.builder()
                     .title(searchStr)
@@ -106,29 +107,29 @@ public class BooksController extends HttpServlet {
 
             books = getBooksLike(criteria, start, ITEMS_PER_PAGE, locale);
 
-            session.removeAttribute(UtilStrings.NOT_ADVANCED_SEARCH);
-            session.removeAttribute(UtilStrings.SEARCH_STR);
-        } else if (Objects.nonNull(session.getAttribute(UtilStrings.SEARCH_CRITERIA)) ) {
+            session.removeAttribute(RequestConstants.NOT_ADVANCED_SEARCH);
+            session.removeAttribute(RequestConstants.SEARCH_STR);
+        } else if (Objects.nonNull(session.getAttribute(RequestConstants.SEARCH_CRITERIA)) ) {
             Criteria<Book> criteria = buildCriteria(session, locale);
 
             books = getBooksLike(criteria, start, ITEMS_PER_PAGE, locale);
 
-            session.removeAttribute(UtilStrings.SEARCH_CRITERIA);
-            session.removeAttribute(UtilStrings.CUSTOMIZED_SEARCH);
-            session.removeAttribute(UtilStrings.SEARCH_STR);
+            session.removeAttribute(RequestConstants.SEARCH_CRITERIA);
+            session.removeAttribute(RequestConstants.CUSTOMIZED_SEARCH);
+            session.removeAttribute(RequestConstants.SEARCH_STR);
         } else {
-            String genreName = BooksFrontCommand.decode(req.getParameter(UtilStrings.GENRE));
+            String genreName = BooksFrontCommand.decode(req.getParameter(RequestConstants.GENRE));
             books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
         }
 
         String jsonStrings = JSONWriter.getInstance().write(books);
-        writeResp(resp, UtilStrings.APPLICATION_JSON, jsonStrings);
+        writeResp(resp, UtilStringConstants.APPLICATION_JSON, jsonStrings);
     }
 
 
     private void writeResp(HttpServletResponse resp,  String contentType, String respMsg) throws IOException {
         resp.setContentType(contentType);
-        resp.setCharacterEncoding(UtilStrings.UTF8);
+        resp.setCharacterEncoding(UtilStringConstants.UTF8);
         resp.getWriter().write(respMsg);
     }
 
@@ -143,7 +144,7 @@ public class BooksController extends HttpServlet {
      */
     public static int getStart(HttpServletRequest req, int itemsPerPage) {
         int start = 1;
-        String pageStr = req.getParameter(UtilStrings.PAGE);
+        String pageStr = req.getParameter(RequestConstants.PAGE);
         if (Objects.nonNull(pageStr) && !pageStr.isEmpty()) {
             start = Integer.parseInt(pageStr);
         }
@@ -167,12 +168,12 @@ public class BooksController extends HttpServlet {
         service.setLocale(locale);
 
         int rows = 0;
-        if (Objects.nonNull(session.getAttribute(UtilStrings.REQUEST_FROM_SEARCH_PAGE))) {
+        if (Objects.nonNull(session.getAttribute(RequestConstants.REQUEST_FROM_SEARCH_PAGE))) {
             rows = service.count(buildCriteria(session, locale));
-        } else if (Objects.nonNull(session.getAttribute(UtilStrings.REQUEST_FROM_SEARCH_INPUT))) {
-            rows = service.count((String) session.getAttribute(UtilStrings.SEARCH_STR));
-        } else if (Objects.nonNull(request.getParameter(UtilStrings.GENRE)) && !request.getParameter(UtilStrings.GENRE).isEmpty()) {
-            String genreName = BooksFrontCommand.decode(request.getParameter(UtilStrings.GENRE));
+        } else if (Objects.nonNull(session.getAttribute(RequestConstants.REQUEST_FROM_SEARCH_INPUT))) {
+            rows = service.count((String) session.getAttribute(RequestConstants.SEARCH_STR));
+        } else if (Objects.nonNull(request.getParameter(RequestConstants.GENRE)) && !request.getParameter(RequestConstants.GENRE).isEmpty()) {
+            String genreName = BooksFrontCommand.decode(request.getParameter(RequestConstants.GENRE));
             Criteria<Genre> genreCriteria = GenreCriteria.builder()
                     .genre(genreName)
                     .build();
@@ -183,7 +184,7 @@ public class BooksController extends HttpServlet {
                 genreId = genre.getEntityId();
             } catch (EntityNotFoundException e) {
                 String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
-                        + UtilStrings.WHITESPACE + genreName;
+                        + UtilStringConstants.WHITESPACE + genreName;
                 logger.error(error, e);
                 genreId = DEFAULT_GENRE_ID;
             }
@@ -199,8 +200,8 @@ public class BooksController extends HttpServlet {
 //        int rows = Objects.nonNull(session.getAttribute(UtilStrings.REQUEST_FROM_SEARCH_PAGE))
 //                ? service.count(buildCriteria(session, locale)) : service.count();
 
-        session.removeAttribute(UtilStrings.REQUEST_FROM_SEARCH_PAGE);
-        session.removeAttribute(UtilStrings.REQUEST_FROM_SEARCH_INPUT);
+        session.removeAttribute(RequestConstants.REQUEST_FROM_SEARCH_PAGE);
+        session.removeAttribute(RequestConstants.REQUEST_FROM_SEARCH_INPUT);
 
         return rows;
     }
@@ -329,11 +330,11 @@ public class BooksController extends HttpServlet {
      */
     private Criteria<Book> buildCriteria(HttpSession session, String locale) {
 
-        String searchStr = (String) session.getAttribute(UtilStrings.SEARCH_STR);
+        String searchStr = (String) session.getAttribute(RequestConstants.SEARCH_STR);
 
         Criteria<Book> criteria;
-        switch ((String) session.getAttribute(UtilStrings.SEARCH_CRITERIA)) {
-            case UtilStrings.GENRE:
+        switch ((String) session.getAttribute(RequestConstants.SEARCH_CRITERIA)) {
+            case RequestConstants.GENRE:
                 Criteria<Genre> genreCriteria = GenreCriteria.builder()
                         .genre(searchStr)
                         .build();
@@ -344,7 +345,7 @@ public class BooksController extends HttpServlet {
                     genreId = genre.getEntityId();
                 } catch (EntityNotFoundException e) {
                     String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
-                            + UtilStrings.WHITESPACE + searchStr;
+                            + UtilStringConstants.WHITESPACE + searchStr;
                     logger.error(error, e);
                     genreId = DEFAULT_GENRE_ID;
                 }
@@ -353,17 +354,17 @@ public class BooksController extends HttpServlet {
                         .genreId(genreId)
                         .build();
                 break;
-            case UtilStrings.PUBLISHER:
+            case RequestConstants.PUBLISHER:
                 criteria = BookCriteria.builder()
                         .publisher(searchStr)
                         .build();
                 break;
-            case UtilStrings.AUTHOR:
+            case RequestConstants.AUTHOR:
                 criteria = BookCriteria.builder()
                         .author(searchStr)
                         .build();
                 break;
-            case UtilStrings.BOOK:
+            case RequestConstants.BOOK:
             default:
                 criteria = BookCriteria.builder()
                         .title(searchStr)

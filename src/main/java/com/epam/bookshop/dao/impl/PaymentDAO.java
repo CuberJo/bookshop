@@ -6,7 +6,7 @@ import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +121,7 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
     @Override
     public Collection<Payment> findAll(Criteria<Payment> criteria) {
         String query = SQL_SELECT_ALL_PAYMENTS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStrings.EQUALS);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStringConstants.EQUALS);
 
         List<Payment> payments = new ArrayList<>();
 
@@ -144,7 +144,7 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
     @Override
     public Optional<Payment> find(Criteria<Payment> criteria) {
         String query = SQL_SELECT_ALL_PAYMENTS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStrings.EQUALS);
+                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStringConstants.EQUALS);
 
         Payment payment = null;
 
@@ -183,7 +183,7 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
             ps.setLong(1, id);
             int result = ps.executeUpdate();
 
-            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+            if (result == UtilStringConstants.ZERO_ROWS_AFFECTED) {
                 return false;
             }
         } catch (SQLException throwables) {
@@ -214,7 +214,7 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
 
             int result = ps.executeUpdate();
 
-            if (result == UtilStrings.ZERO_ROWS_AFFECTED) {
+            if (result == UtilStringConstants.ZERO_ROWS_AFFECTED) {
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_ORDER_UPDATE_OCCURRED);
                 throw new RuntimeException(errorMessage);
             }
@@ -335,15 +335,15 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
                 Optional<User> optionalUser = userDAO.findById(rs.getLong(LIBRARY_USER_ID_COLUMN));
                 if (optionalUser.isEmpty()) {
                     String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
-                            + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
-                    throw new RuntimeException(errorMessage + UtilStrings.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
+                            + UtilStringConstants.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN);
+                    throw new RuntimeException(errorMessage + UtilStringConstants.WHITESPACE + rs.getLong(LIBRARY_USER_ID_COLUMN));
                 }
                 payment.setUser(optionalUser.get());
 
                 Optional<Book> optionalBook = bookDAO.findById(rs.getLong(BOOK_ID_COLUMN));
                 if (optionalBook.isEmpty()) {
                     String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                            + UtilStrings.WHITESPACE + rs.getLong(BOOK_ID_COLUMN);
+                            + UtilStringConstants.WHITESPACE + rs.getLong(BOOK_ID_COLUMN);
                     throw new RuntimeException(errorMessage);
                 }
                 payment.setBook(optionalBook.get());

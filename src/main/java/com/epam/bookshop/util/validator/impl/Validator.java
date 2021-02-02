@@ -4,10 +4,9 @@ import com.epam.bookshop.context.annotation.Naming;
 import com.epam.bookshop.context.annotation.Size;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.util.constant.RegexConstant;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RegexConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;
@@ -99,10 +98,10 @@ public class Validator {
     public String validatedQuery(StringBuffer condition) {
 
         checkForLIKE(condition);
-        checkForSeq(condition, UtilStrings.AND);
-        checkForSeq(condition, UtilStrings.WHITESPACE);
+        checkForSeq(condition, UtilStringConstants.AND);
+        checkForSeq(condition, UtilStringConstants.WHITESPACE);
 
-        return condition + UtilStrings.SEMICOLON;
+        return condition + UtilStringConstants.SEMICOLON;
     }
 
 
@@ -151,7 +150,7 @@ public class Validator {
      */
     public boolean empty(String ... strings) {
         for (String string : strings) {
-            if (string.equals(UtilStrings.EMPTY_STRING) || string.matches(RegexConstant.EMPTY_STRING_REGEX)) {
+            if (string.equals(UtilStringConstants.EMPTY_STRING) || string.matches(RegexConstants.EMPTY_STRING_REGEX)) {
                 return true;
             }
         }

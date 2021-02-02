@@ -13,7 +13,8 @@ import com.epam.bookshop.service.impl.PaymentService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
@@ -44,7 +45,7 @@ public class PurchaseFrontCommand implements FrontCommand {
     @Override
     public ResponseContext execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
-        final String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        final String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         alreadyBought(session, locale);
         purchase();
@@ -66,7 +67,7 @@ public class PurchaseFrontCommand implements FrontCommand {
         PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);
         service.setLocale(locale);
 
-        List<Book> cart = (List<Book>) session.getAttribute(UtilStrings.CART);
+        List<Book> cart = (List<Book>) session.getAttribute(RequestConstants.CART);
         for (int i = 0; i < cart.size(); i++) {
             Criteria<Payment> criteria = PaymentCriteria.builder()
                     .bookId(cart.get(i).getEntityId())
@@ -97,7 +98,7 @@ public class PurchaseFrontCommand implements FrontCommand {
      * @param session current {@link HttpSession} session
      */
     private void clearCart(HttpSession session) {
-        List<Book> cart = (List<Book>) session.getAttribute(UtilStrings.CART);
+        List<Book> cart = (List<Book>) session.getAttribute(RequestConstants.CART);
         cart.clear();
     }
 
@@ -110,7 +111,7 @@ public class PurchaseFrontCommand implements FrontCommand {
      * @param locale language for error messages whether ones take place
      */
     private void addBooksToLibrary(HttpSession session, String locale) {
-        List<Book> cart = (List<Book>) session.getAttribute(UtilStrings.CART);
+        List<Book> cart = (List<Book>) session.getAttribute(RequestConstants.CART);
 
         PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);
         service.setLocale(locale);
@@ -118,7 +119,7 @@ public class PurchaseFrontCommand implements FrontCommand {
         User user;
         try {
             Criteria<User> criteria = UserCriteria.builder()
-                    .login((String) session.getAttribute(UtilStrings.LOGIN))
+                    .login((String) session.getAttribute(RequestConstants.LOGIN))
                     .build();
             user = EntityFinder.getInstance().find(session, logger, criteria);
 
@@ -126,16 +127,16 @@ public class PurchaseFrontCommand implements FrontCommand {
                 service.create(new Payment(user, book, LocalDateTime.now(), book.getPrice()));
             }
 
-            session.removeAttribute(UtilStrings.CHOSEN_IBAN);
+            session.removeAttribute(RequestConstants.CHOSEN_IBAN);
         } catch (ValidatorException e) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT)
-                    + UtilStrings.WHITESPACE + session.getAttribute(UtilStrings.LOGIN);
+                    + UtilStringConstants.WHITESPACE + session.getAttribute(RequestConstants.LOGIN);
             logger.error(error, e);
             throw new RuntimeException(error, e);
         }
 
 
-        List<Book> library = (List<Book>) session.getAttribute(UtilStrings.LIBRARY);
+        List<Book> library = (List<Book>) session.getAttribute(RequestConstants.LIBRARY);
 
         if (Objects.isNull(library)) {
             library = service.findAllBooksInPayment(user.getEntityId());
@@ -145,7 +146,7 @@ public class PurchaseFrontCommand implements FrontCommand {
 
             bookService.findImagesForBooks(library);
 
-            session.setAttribute(UtilStrings.LIBRARY, library);
+            session.setAttribute(RequestConstants.LIBRARY, library);
         } else {
             library.addAll(cart);
         }

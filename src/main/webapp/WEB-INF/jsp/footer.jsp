@@ -41,6 +41,8 @@
                     <li><a href="/home?command=books&genre=LITERARY_FICTION"><fmt:message key="label.literary_fiction" bundle="${lang}"/></a></li>
                     <li><a href="/home?command=books&genre=NON-FICTION"><fmt:message key="label.non-fiction" bundle="${lang}"/></a></li>
                     <li><a href="/home?command=books&genre=SCIENCE-FICTION"><fmt:message key="label.science-fiction" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=PSYCHOLOGY"><fmt:message key="label.psychology" bundle="${lang}"/></a></li>
+                    <li><a href="/home?command=books&genre=DETECTIVE"><fmt:message key="label.detective" bundle="${lang}"/></a></li>
                 </ul>
             </div>
             <div class="footer-col-4">

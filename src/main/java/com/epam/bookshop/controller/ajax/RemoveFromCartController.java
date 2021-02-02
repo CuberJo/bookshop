@@ -2,7 +2,8 @@ package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class RemoveFromCartController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         final HttpSession session = req.getSession();
 
-        remove(session, (String) session.getAttribute(UtilStrings.LOCALE), req.getParameter(UtilStrings.ISBN));
+        remove(session, (String) session.getAttribute(RequestConstants.LOCALE), req.getParameter(RequestConstants.ISBN));
     }
 
 
@@ -57,7 +58,7 @@ public class RemoveFromCartController extends HttpServlet {
             throw new RuntimeException(error);
         }
 
-        session.removeAttribute(UtilStrings.BOOK_TO_REMOVE);
+        session.removeAttribute(RequestConstants.BOOK_TO_REMOVE);
     }
 
 
@@ -69,7 +70,7 @@ public class RemoveFromCartController extends HttpServlet {
      * @return {@link ArrayList<Book>} cart associated with user in current session
      */
     private ArrayList<Book> getCart(HttpSession session, String locale) {
-        ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute(UtilStrings.CART);
+        ArrayList<Book> cart = (ArrayList<Book>) session.getAttribute(RequestConstants.CART);
         if (Objects.isNull(cart)) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_CART);
             logger.error(error);
@@ -92,7 +93,7 @@ public class RemoveFromCartController extends HttpServlet {
                 .findFirst();
         if (optionalBook.isEmpty()) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                    + UtilStrings.WHITESPACE + isbn;
+                    + UtilStringConstants.WHITESPACE + isbn;
             logger.error(error);
             throw new RuntimeException(error);
         }

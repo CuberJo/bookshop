@@ -1,7 +1,8 @@
 package com.epam.bookshop.controller.command.impl;
 
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
@@ -34,9 +35,9 @@ public class PersonalPageFrontCommand implements FrontCommand {
     @Override
     public ResponseContext execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        if (Objects.isNull(session.getAttribute(UtilStrings.LIBRARY))) {
+        if (Objects.isNull(session.getAttribute(RequestConstants.LIBRARY))) {
             try {
 
                 fillLibrary(session, locale);
@@ -63,7 +64,7 @@ public class PersonalPageFrontCommand implements FrontCommand {
      */
     private void fillLibrary(HttpSession session, String locale) throws ValidatorException {
         Criteria<User> criteria = UserCriteria.builder()
-                .login((String) session.getAttribute(UtilStrings.LOGIN))
+                .login((String) session.getAttribute(RequestConstants.LOGIN))
                 .build();
         User user = EntityFinder.getInstance().find(session, logger, criteria);
 
@@ -76,6 +77,6 @@ public class PersonalPageFrontCommand implements FrontCommand {
         bookService.setLocale(locale);
         bookService.findImagesForBooks(library);
 
-        session.setAttribute(UtilStrings.LIBRARY, library);
+        session.setAttribute(RequestConstants.LIBRARY, library);
     }
 }

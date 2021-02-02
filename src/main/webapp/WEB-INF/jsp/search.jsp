@@ -151,7 +151,7 @@
                         <input type="hidden" name="customizedSearch" value="true" />
                         <input type="hidden" name="searchCriteria" id="scr" />
                         <input type="hidden" name="str" id="str" />
-                        <button class="btn btn-default" type="submit" onclick="validateSearchInput(event)">
+                        <button id="searchBtn" class="btn btn-default" type="submit" onclick="validateSearchInput(event)">
                             <span class="glyphicon glyphicon-search"></span>
                         </button>
                     </form>

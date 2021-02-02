@@ -10,8 +10,9 @@ import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.JSONWriter;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.RegexConstant;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RegexConstants;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
@@ -27,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
 public class SearchBooksController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(SearchBooksController.class);
 
-    private static final String SEARCH_CRITERIA = "searchCriteria";
     private static final int DEFAULT_GENRE_ID = 1;
 
 
@@ -46,10 +45,10 @@ public class SearchBooksController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         final HttpSession session = req.getSession();
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
 
-        if (!isSearchInputCorrect(req.getParameter(UtilStrings.SEARCH_STR))) {
+        if (!isSearchInputCorrect(req.getParameter(RequestConstants.SEARCH_STR))) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
             session.setAttribute(ErrorMessageConstants.ERROR_SEARCH_MESSAGE, error);
             return;
@@ -73,7 +72,7 @@ public class SearchBooksController extends HttpServlet {
     private boolean isSearchInputCorrect(String searchStr) {
         Validator validator = new Validator();
 
-        Pattern p = Pattern.compile(RegexConstant.MALICIOUS_REGEX);
+        Pattern p = Pattern.compile(RegexConstants.MALICIOUS_REGEX);
         Matcher m = p.matcher(searchStr);
 
         return !validator.empty(searchStr) && !m.matches();
@@ -90,11 +89,11 @@ public class SearchBooksController extends HttpServlet {
      */
     private Criteria<Book> buildCriteria(HttpServletRequest request, String locale) {
 
-        String searchStr = request.getParameter(UtilStrings.SEARCH_STR);
+        String searchStr = request.getParameter(RequestConstants.SEARCH_STR);
 
         Criteria<Book> criteria;
-        switch (request.getParameter(SEARCH_CRITERIA)) {
-            case UtilStrings.GENRE:
+        switch (request.getParameter(RequestConstants.SEARCH_CRITERIA)) {
+            case RequestConstants.GENRE:
                 Criteria<Genre> genreCriteria = GenreCriteria.builder()
                         .genre(searchStr)
                         .build();
@@ -105,7 +104,7 @@ public class SearchBooksController extends HttpServlet {
                     genreId = genre.getEntityId();
                 } catch (EntityNotFoundException e) {
                     String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
-                            + UtilStrings.WHITESPACE + searchStr;
+                            + UtilStringConstants.WHITESPACE + searchStr;
                     logger.error(error, e);
                     genreId = DEFAULT_GENRE_ID;
                 }
@@ -114,17 +113,17 @@ public class SearchBooksController extends HttpServlet {
                         .genreId(genreId)
                         .build();
                 break;
-            case UtilStrings.PUBLISHER:
+            case RequestConstants.PUBLISHER:
                 criteria = BookCriteria.builder()
                         .publisher(searchStr)
                         .build();
                 break;
-            case UtilStrings.AUTHOR:
+            case RequestConstants.AUTHOR:
                 criteria = BookCriteria.builder()
                         .author(searchStr)
                         .build();
                 break;
-            case UtilStrings.BOOK:
+            case RequestConstants.BOOK:
             default:
                 criteria = BookCriteria.builder()
                         .title(searchStr)

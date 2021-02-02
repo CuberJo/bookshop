@@ -3,7 +3,8 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
@@ -16,21 +17,21 @@ public class ChangeLocaleFrontCommand implements FrontCommand {
     public ResponseContext execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
 
-        String localeParam = requestContext.getParameter(UtilStrings.LOCALE);
+        String localeParam = requestContext.getParameter(RequestConstants.LOCALE);
         if (Objects.isNull(localeParam) || localeParam.isEmpty()) {
             return resolvePage(requestContext);
         }
         switch (localeParam) {
-            case UtilStrings.RU:
-                session.setAttribute(UtilStrings.LOCALE, UtilStrings.RU);
+            case UtilStringConstants.RU:
+                session.setAttribute(RequestConstants.LOCALE, UtilStringConstants.RU);
 //                requestContext.getSession().setAttribute(LOCALE, new Locale("ru", "RU"));
                 break;
-            case UtilStrings.US:
-                session.setAttribute(UtilStrings.LOCALE, UtilStrings.US);
+            case UtilStringConstants.US:
+                session.setAttribute(RequestConstants.LOCALE, UtilStringConstants.US);
 //                requestContext.getSession().setAttribute(LOCALE, new Locale("en", "US"));
                 break;
             default:
-                session.setAttribute(UtilStrings.LOCALE, UtilStrings.US);
+                session.setAttribute(RequestConstants.LOCALE, UtilStringConstants.US);
 //                requestContext.getSession().setAttribute(LOCALE, new Locale("en", "US"));
         }
 
@@ -45,8 +46,8 @@ public class ChangeLocaleFrontCommand implements FrontCommand {
      */
     private ResponseContext resolvePage(RequestContext requestContext) {
 
-        String fromPage = requestContext.getParameter(UtilStrings.FROM);
-        String isbn = requestContext.getParameter(UtilStrings.ISBN);
+        String fromPage = requestContext.getParameter(UtilStringConstants.FROM);
+        String isbn = requestContext.getParameter(RequestConstants.ISBN);
 
         String page = "/home?command=%s";
         if (Objects.nonNull(fromPage) && !fromPage.isEmpty()) {

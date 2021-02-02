@@ -4,7 +4,7 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.util.query_creator.EntityQueryCreator;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 
 public class EntityQueryCreatorFactory {
@@ -39,7 +39,7 @@ public class EntityQueryCreatorFactory {
                 creatorToReturn = GenreQueryCreator.getInstance();
                 break;
             default:
-                String noSuchQueryType = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_SERVICE_TYPE) + UtilStrings.WHITESPACE + type;
+                String noSuchQueryType = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_SERVICE_TYPE) + UtilStringConstants.WHITESPACE + type;
                 throw new UnknownEntityException(noSuchQueryType);
         }
 

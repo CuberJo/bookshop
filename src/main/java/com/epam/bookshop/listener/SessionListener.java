@@ -1,6 +1,7 @@
 package com.epam.bookshop.listener;
 
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
@@ -19,6 +20,6 @@ public class SessionListener implements HttpSessionListener {
 //        se.getSession().setAttribute(LOCALE_ATTRIBUTE, new Locale("en", "US"));
 //    }
     public void sessionCreated(HttpSessionEvent se) {
-        se.getSession().setAttribute(UtilStrings.LOCALE, UtilStrings.US);
+        se.getSession().setAttribute(RequestConstants.LOCALE, UtilStringConstants.US);
     }
 }

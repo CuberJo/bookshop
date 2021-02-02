@@ -6,7 +6,8 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +32,15 @@ public class UnbindIBANController extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         final HttpSession session = request.getSession();
 
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        List<String> ibans = (List<String>) session.getAttribute(UtilStrings.IBANs);
+        List<String> ibans = (List<String>) session.getAttribute(RequestConstants.IBANs);
         if (Objects.isNull(ibans)) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBANs_NOT_FOUND);
             throw new RuntimeException(error);
         }
 
-        String ibanToDelete = request.getParameter(UtilStrings.IBAN_TO_DELETE);
+        String ibanToDelete = request.getParameter(RequestConstants.IBAN_TO_DELETE);
         deleteIBAN(ibanToDelete, locale);
         ibans.remove(ibanToDelete);
     }
@@ -58,7 +59,7 @@ public class UnbindIBANController extends HttpServlet {
         try {
             service.deleteUserBankAccount(iban);
         } catch (EntityNotFoundException e) {
-            logger.error(UtilStrings.EMPTY_STRING, e);
+            logger.error(UtilStringConstants.EMPTY_STRING, e);
         }
     }
 }

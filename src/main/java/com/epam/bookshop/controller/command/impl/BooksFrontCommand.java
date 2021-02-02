@@ -3,7 +3,7 @@ package com.epam.bookshop.controller.command.impl;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,28 +23,28 @@ public class BooksFrontCommand implements FrontCommand {
 
         final HttpSession session = requestContext.getSession();
 
-        if (Objects.nonNull(requestContext.getParameter(UtilStrings.NOT_ADVANCED_SEARCH))) {
-            session.setAttribute(UtilStrings.NOT_ADVANCED_SEARCH, requestContext.getParameter(UtilStrings.NOT_ADVANCED_SEARCH));
-            session.setAttribute(UtilStrings.SEARCH_STR, requestContext.getParameter(UtilStrings.SEARCH_STR));
-            session.setAttribute(UtilStrings.REQUEST_FROM_SEARCH_INPUT, true);
+        if (Objects.nonNull(requestContext.getParameter(RequestConstants.NOT_ADVANCED_SEARCH))) {
+            session.setAttribute(RequestConstants.NOT_ADVANCED_SEARCH, requestContext.getParameter(RequestConstants.NOT_ADVANCED_SEARCH));
+            session.setAttribute(RequestConstants.SEARCH_STR, requestContext.getParameter(RequestConstants.SEARCH_STR));
+            session.setAttribute(RequestConstants.REQUEST_FROM_SEARCH_INPUT, true);
 
             return BOOKS_PAGE_REDIRECT;
         }
 
-        if (Objects.nonNull(requestContext.getParameter(UtilStrings.SEARCH_CRITERIA))) {
-            session.setAttribute(UtilStrings.SEARCH_CRITERIA, requestContext.getParameter(UtilStrings.SEARCH_CRITERIA));
-            session.setAttribute(UtilStrings.CUSTOMIZED_SEARCH, "true");
-            session.setAttribute(UtilStrings.SEARCH_STR, requestContext.getParameter(UtilStrings.SEARCH_STR));
-            session.setAttribute(UtilStrings.REQUEST_FROM_SEARCH_PAGE, true);
+        if (Objects.nonNull(requestContext.getParameter(RequestConstants.SEARCH_CRITERIA))) {
+            session.setAttribute(RequestConstants.SEARCH_CRITERIA, requestContext.getParameter(RequestConstants.SEARCH_CRITERIA));
+            session.setAttribute(RequestConstants.CUSTOMIZED_SEARCH, "true");
+            session.setAttribute(RequestConstants.SEARCH_STR, requestContext.getParameter(RequestConstants.SEARCH_STR));
+            session.setAttribute(RequestConstants.REQUEST_FROM_SEARCH_PAGE, true);
 
             return BOOKS_PAGE_REDIRECT;
         }
 
-        String genreName = decode(requestContext.getParameter(UtilStrings.GENRE));
+        String genreName = decode(requestContext.getParameter(RequestConstants.GENRE));
         if (Objects.nonNull(genreName) && genreName.isEmpty()) {
-            requestContext.setAttribute(UtilStrings.GENRE, null);
+            requestContext.setAttribute(RequestConstants.GENRE, null);
         } else {
-            requestContext.setAttribute(UtilStrings.GENRE, genreName);
+            requestContext.setAttribute(RequestConstants.GENRE, genreName);
         }
 
         return BOOKS_PAGE_FORWARD;

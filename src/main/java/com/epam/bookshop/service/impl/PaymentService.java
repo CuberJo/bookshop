@@ -1,6 +1,5 @@
 package com.epam.bookshop.service.impl;
 
-import com.epam.bookshop.dao.impl.BookDAO;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
@@ -13,7 +12,7 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
 import org.slf4j.Logger;
@@ -150,8 +149,8 @@ public class PaymentService implements EntityService<Payment> {
         }
 
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ORDER_NOT_FOUND) + UtilStrings.WHITESPACE + id;
-            throw new EntityNotFoundException(errorMessage + UtilStrings.WHITESPACE + id);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ORDER_NOT_FOUND) + UtilStringConstants.WHITESPACE + id;
+            throw new EntityNotFoundException(errorMessage + UtilStringConstants.WHITESPACE + id);
         }
 
         return isDeleted;
@@ -173,8 +172,8 @@ public class PaymentService implements EntityService<Payment> {
         }
 
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ORDER_NOT_FOUND) + UtilStrings.WHITESPACE + payment.getEntityId();
-            throw new EntityNotFoundException(errorMessage + UtilStrings.WHITESPACE + payment.getEntityId());
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ORDER_NOT_FOUND) + UtilStringConstants.WHITESPACE + payment.getEntityId();
+            throw new EntityNotFoundException(errorMessage + UtilStringConstants.WHITESPACE + payment.getEntityId());
         }
 
         return isDeleted;

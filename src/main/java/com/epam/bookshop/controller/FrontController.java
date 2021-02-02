@@ -4,7 +4,8 @@ import com.epam.bookshop.controller.command.CommandFactory;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.ResponseContext;
 import com.epam.bookshop.controller.command.impl.CustomRequestContext;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -30,14 +31,14 @@ public class FrontController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        req.setCharacterEncoding(UtilStrings.UTF8);
+        req.setCharacterEncoding(UtilStringConstants.UTF8);
         final ResponseContext responseContext = processRequest(req, resp);
         resp.sendRedirect(req.getContextPath() + responseContext.getPage());
     }
 
 
     protected ResponseContext processRequest(HttpServletRequest req, HttpServletResponse resp) {
-        final String commandParam = req.getParameter(UtilStrings.COMMAND);
+        final String commandParam = req.getParameter(RequestConstants.COMMAND);
         FrontCommand frontCommand = CommandFactory.command(commandParam);
         return frontCommand.execute(new CustomRequestContext(req));
     }

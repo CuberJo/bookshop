@@ -28,6 +28,22 @@ $(document).ready(function(e) {
 });
 
 
+$(function () {
+    $('#searchBtn').click(function (event) {
+
+        let whitespace_regex = /^[\s]+$/;
+        if ($('#searchBtn').val() === "" || whitespace_regex.test($('#searchBtn').val())) {
+            event.preventDefault()
+        }
+        let malicious_regex = /[<>*;='#)+&("]+/;
+        if (malicious_regex.test($('.searchInput').val())) {
+            event.preventDefault()
+        }
+    });
+});
+
+
+
 /**
  * Calls another fun to fetch data from server
  * after some period if time and renders received data

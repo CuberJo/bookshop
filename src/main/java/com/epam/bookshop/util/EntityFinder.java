@@ -5,7 +5,8 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.UserService;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -55,7 +56,7 @@ public class EntityFinder {
      * @throws ValidatorException if {@link User} object data incorrect
      */
     public User find(HttpSession session, Logger logger, Criteria<User> criteria) throws ValidatorException {
-        String locale = (String) session.getAttribute(UtilStrings.LOCALE);
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         EntityService<User> userService = ServiceFactory.getInstance().create(EntityType.USER);
         userService.setLocale(locale);
@@ -63,7 +64,7 @@ public class EntityFinder {
         Optional<User> optionalUser = userService.find(criteria);
         if (optionalUser.isEmpty()) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
-                    + UtilStrings.WHITESPACE + session.getAttribute(UtilStrings.LOGIN);
+                    + UtilStringConstants.WHITESPACE + session.getAttribute(RequestConstants.LOGIN);
             logger.error(error);
             throw new RuntimeException(error);
         }
@@ -123,13 +124,13 @@ public class EntityFinder {
 
             if (optionalGenre.isEmpty()) {
                 error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)
-                        + UtilStrings.WHITESPACE + ((GenreCriteria) criteria).getGenre();
+                        + UtilStringConstants.WHITESPACE + ((GenreCriteria) criteria).getGenre();
                 logger.error(error);
                 throw new EntityNotFoundException(error);
             }
         } catch (ValidatorException e) {
             error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA)
-                    + UtilStrings.WHITESPACE + ((GenreCriteria) criteria).getGenre();
+                    + UtilStringConstants.WHITESPACE + ((GenreCriteria) criteria).getGenre();
             logger.error(error, e);
             throw new RuntimeException(error, e);
         }

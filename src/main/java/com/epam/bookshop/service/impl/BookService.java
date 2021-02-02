@@ -12,16 +12,13 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
-import com.epam.bookshop.util.criteria.impl.BookCriteria;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -152,8 +149,8 @@ public class BookService implements EntityService<Book> {
         }
 
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND) + UtilStrings.WHITESPACE + id;
-            throw new EntityNotFoundException(errorMessage + UtilStrings.WHITESPACE + id);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND) + UtilStringConstants.WHITESPACE + id;
+            throw new EntityNotFoundException(errorMessage + UtilStringConstants.WHITESPACE + id);
         }
 
         return isDeleted;
@@ -174,8 +171,8 @@ public class BookService implements EntityService<Book> {
         }
 
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND) + UtilStrings.WHITESPACE + book.getEntityId();
-            throw new EntityNotFoundException(errorMessage + UtilStrings.WHITESPACE + book.getEntityId());
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND) + UtilStringConstants.WHITESPACE + book.getEntityId();
+            throw new EntityNotFoundException(errorMessage + UtilStringConstants.WHITESPACE + book.getEntityId());
         }
 
         return isDeleted;
@@ -262,7 +259,7 @@ public class BookService implements EntityService<Book> {
 
             if (optionalImage.isEmpty()) {
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
-                        + UtilStrings.WHITESPACE + book.getISBN();
+                        + UtilStringConstants.WHITESPACE + book.getISBN();
                 logger.error(errorMessage);
                 setDefaultImg(book);
             }
@@ -289,7 +286,7 @@ public class BookService implements EntityService<Book> {
                 Optional<String> optionalImage = dao.findImageByISBN(book.getISBN());
                 if (optionalImage.isEmpty()) {
                     String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IMAGE_NOT_FOUND)
-                            + UtilStrings.WHITESPACE + book.getISBN();
+                            + UtilStringConstants.WHITESPACE + book.getISBN();
                     logger.error(errorMessage);
                     setDefaultImg(book);
                     continue;
@@ -350,7 +347,7 @@ public class BookService implements EntityService<Book> {
             bookFile = dao.findBookFileByISBN(book.getISBN());
             if (Objects.isNull(bookFile)) {
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_FILE_NOT_FOUND)
-                        + UtilStrings.WHITESPACE + book.getISBN();
+                        + UtilStringConstants.WHITESPACE + book.getISBN();
                 throw new EntityNotFoundException(errorMessage);
             }
         } catch (SQLException throwables) {

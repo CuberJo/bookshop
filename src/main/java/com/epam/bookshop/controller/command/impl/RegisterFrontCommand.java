@@ -1,7 +1,8 @@
 package com.epam.bookshop.controller.command.impl;
 
 import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStrings;
+import com.epam.bookshop.util.constant.RequestConstants;
+import com.epam.bookshop.util.constant.UtilStringConstants;
 import com.epam.bookshop.controller.command.FrontCommand;
 import com.epam.bookshop.controller.command.RequestContext;
 import com.epam.bookshop.controller.command.ResponseContext;
@@ -34,13 +35,13 @@ public class RegisterFrontCommand implements FrontCommand {
     @Override
     public ResponseContext execute(RequestContext requestContext) {
 
-        final String name = requestContext.getParameter(UtilStrings.NAME);
-        final String login = requestContext.getParameter(UtilStrings.LOGIN);
-        final String email = requestContext.getParameter(UtilStrings.EMAIL);
-        final String password = requestContext.getParameter(UtilStrings.PASSWORD);
+        final String name = requestContext.getParameter(RequestConstants.NAME);
+        final String login = requestContext.getParameter(RequestConstants.LOGIN);
+        final String email = requestContext.getParameter(RequestConstants.EMAIL);
+        final String password = requestContext.getParameter(RequestConstants.PASSWORD);
 
         final HttpSession session = requestContext.getSession();
-        String locale = (String) requestContext.getSession().getAttribute(UtilStrings.LOCALE);
+        String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
         String errorMessage = "";
 
         User user = null;
@@ -54,9 +55,9 @@ public class RegisterFrontCommand implements FrontCommand {
 
 //            MailSender.getInstance().send(email, REGISTER_USER_SUBJECT, REGISTER_RESPONSE);
 
-            session.setAttribute(UtilStrings.LOGIN, login);
-            session.setAttribute(UtilStrings.ROLE, UtilStrings.USER_ROLE);
-            session.setAttribute(UtilStrings.NEED_TO_LINK_BANK_ACCOUNT, true);
+            session.setAttribute(RequestConstants.LOGIN, login);
+            session.setAttribute(RequestConstants.ROLE, RequestConstants.USER_ROLE);
+            session.setAttribute(RequestConstants.NEED_TO_LINK_BANK_ACCOUNT, true);
 
         } catch (ValidatorException e) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
@@ -78,8 +79,8 @@ public class RegisterFrontCommand implements FrontCommand {
             return ACCOUNT_PAGE;
         }*/
 
-        if (Objects.nonNull(requestContext.getSession().getAttribute(UtilStrings.BACK_TO_CART))) {
-            requestContext.getSession().removeAttribute(UtilStrings.BACK_TO_CART);
+        if (Objects.nonNull(requestContext.getSession().getAttribute(RequestConstants.BACK_TO_CART))) {
+            requestContext.getSession().removeAttribute(RequestConstants.BACK_TO_CART);
             return CART_PAGE;
         }
 
