@@ -55,13 +55,13 @@
 
 <noscript>Need Javascript</noscript>
 
-<div class="mcontainer">
+<div class="container">
     <div class="navbar">
         <div class="logo">
             <img src="../../images/bookstore2.png" width="125px">
         </div>
         <nav>
-            <ul id="Menuitems">
+            <ul id="Menuitems" style="font-size: 16px">
                 <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>
                 <li><a href="/home?command=books"><fmt:message key="label.store" bundle="${lang}"/></a></li>
                 <li><a href="/home?command=contact_us"><fmt:message key="label.contact_us" bundle="${lang}"/></a></li>
@@ -130,7 +130,7 @@
             <div class="col-xs-8 col-xs-offset-2">
                 <div class="input-group">
                     <div class="input-group-btn search-panel">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <button id="allSearchCriteria" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <span id="search_concept"><fmt:message key="label.all" bundle="${lang}"/></span> <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu scrollable-dropdown" role="menu">

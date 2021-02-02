@@ -5,7 +5,7 @@ import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.util.query_creator.EntityQueryCreator;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.Validator;
 

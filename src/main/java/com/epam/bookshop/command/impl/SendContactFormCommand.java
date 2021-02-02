@@ -3,11 +3,11 @@ package com.epam.bookshop.command.impl;
 import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.command.ResponseContext;
-import constant.ErrorMessageConstants;
-import constant.RequestConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.mail.MailSender;
-import constant.RegexConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.RegexConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.StringSanitizer;
 import com.epam.bookshop.validator.impl.Validator;
@@ -50,7 +50,8 @@ public class SendContactFormCommand implements Command {
                 return CONTACT_US_PAGE;
             }
             if(!validator.validate(email, RegexConstants.EMAIL_REGEX)) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT);
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT)
+                        + UtilStringConstants.WHITESPACE + email;
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
                 logger.error(errorMessage);
                 return CONTACT_US_PAGE;

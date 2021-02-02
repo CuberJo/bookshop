@@ -1,9 +1,9 @@
 package com.epam.bookshop.validator.impl;
 
 import com.epam.bookshop.validator.Validatable;
-import constant.ErrorMessageConstants;
-import constant.RegexConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.RegexConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.annotation.Naming;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
@@ -157,7 +157,7 @@ public class NamingValidator implements Validatable<Naming> {
                 throw new ValidatorException(errorMessage);
             }
         }
-        if (annotation.login()) {
+        if (annotation.login() && ((UserCriteria) criteria).getLogin() != null) {
             p = Pattern.compile(RegexConstants.LOGIN_REGEX);
             m = p.matcher(((UserCriteria) criteria).getLogin());
 

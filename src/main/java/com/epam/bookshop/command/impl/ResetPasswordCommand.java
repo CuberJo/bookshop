@@ -1,9 +1,9 @@
 package com.epam.bookshop.command.impl;
 
-import constant.ErrorMessageConstants;
-import constant.RegexConstants;
-import constant.RequestConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.RegexConstants;
+import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.command.ResponseContext;

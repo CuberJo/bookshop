@@ -1,7 +1,7 @@
 package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.domain.impl.Book;
-import constant.RequestConstants;
+import com.epam.bookshop.constant.RequestConstants;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,7 +41,7 @@ public class AddToCartController extends HttpServlet {
         }
 
         for (Book b : library) {
-            if (book.equals(b)) {
+            if (Objects.nonNull(book) && book.equals(b)) {
                 return true;
             }
         }
@@ -60,7 +60,7 @@ public class AddToCartController extends HttpServlet {
         List<Book> cart = getCart(session);
 
         for (Book b : cart) {
-            if (book.equals(b)) {
+            if (Objects.nonNull(book) && book.equals(b)) {
                 return;
             }
         }

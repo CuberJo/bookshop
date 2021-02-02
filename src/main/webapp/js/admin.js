@@ -162,7 +162,7 @@ $(function () {
                     renderPayments(payments);
                     $('#paymentsPagination .page-num').text(' ' + paymentsPageNum);
 
-                    if ((paymentsPageNum * paymentsPerPage + 1) < paymentsQuantity) {
+                    if ((paymentsPageNum * paymentsPerPage + 1) <= paymentsQuantity) {
                         showNext('paymentsPagination');
                     }
                     if (paymentsPageNum - 1 === 0 ) {
@@ -331,7 +331,7 @@ $(function () {
                     renderUsers(users);
                     $('#usersPagination .page-num').text(' ' + usersPageNum);
 
-                    if ((usersPageNum * usersPerPage + 1) < usersQuantity) {
+                    if ((usersPageNum * usersPerPage + 1) <= usersQuantity) {
                         showNext('usersPagination');
                     }
                     if (usersPageNum - 1 === 0 ) {
@@ -533,7 +533,7 @@ $(function () {
                     renderBooks(books);
                     $('#booksPagination .page-num').text(' ' + booksPageNum);
 
-                    if ((booksPageNum * booksPerPage + 1) < booksQuantity) {
+                    if ((booksPageNum * booksPerPage + 1) <= booksQuantity) {
                         showNext('booksPagination');
                     }
                     if (booksPageNum - 1 === 0 ) {
@@ -963,8 +963,8 @@ $(function () {
 
         let whitespace_regex = /^[\s]+$/;
         if (preview === "" || whitespace_regex.test(preview)) {
-            $('#er').text("Empty preview input");
-            $(this).preventDefault();
+            $('#erAddBookMesToLoad').text("Empty preview input");
+            event.preventDefault();
             return false;
         }
 

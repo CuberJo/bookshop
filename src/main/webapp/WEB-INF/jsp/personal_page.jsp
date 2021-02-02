@@ -107,7 +107,7 @@
 
     <div class="col-sm-3"><!--left col--></div><!--/col-3-->
 
-    <div class="col-sm-9">
+    <div class="col-sm-9" style="min-height:550px;">
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#library"><fmt:message key="label.library" bundle="${lang}"/></a></li>
             <li><a data-toggle="tab" href="#settings"><fmt:message key="label.settings" bundle="${lang}"/></a></li>
@@ -204,7 +204,7 @@
 
             <div class="tab-pane" id="logout">
                 <hr>
-                <form class="mcontainer" style="box-shadow: none; border: none" align="center" method="post" action="/home?command=logout">
+                <form class="mcontainer" style="box-shadow: none; border: none; margin-top: 70px" align="center" method="post" action="/home?command=logout">
                     <h2><fmt:message key="label.log_out" bundle="${lang}"/></h2>
                     <br>
                     <p><fmt:message key="really_logout" bundle="${m}"/></p>
@@ -267,7 +267,7 @@
 
             <div class="tab-pane" id="deleteAcc">
                 <hr>
-                <form class="mcontainer" style="box-shadow: none; border: none" align="center" method="post" action="/home?command=delete_account">
+                <form class="mcontainer" style="box-shadow: none; border: none;  margin-top: 70px" align="center" method="post" action="/home?command=delete_account">
                     <h2><fmt:message key="label.delete_acc" bundle="${lang}"/></h2>
                     <br>
                     <p><fmt:message key="label.really_like_to_delete_acc" bundle="${lang}"/></p>

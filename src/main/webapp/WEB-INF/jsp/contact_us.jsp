@@ -82,7 +82,7 @@
 
         let error = "";
 
-        let email_regex = /[\w-]+@[\w-]+\.[a-z]{2,5}/;
+        let email_regex = /^[a-zA-Z0-9_.+-]{1,40}@[a-zA-Z0-9-]{2,5}.[a-zA-Z0-9-.]{2,5}$/;
         let malicious_regex = /[<>*;='#)+&("]+/;
         if (malicious_regex.test(subjField)) {
             event.preventDefault();
@@ -97,7 +97,7 @@
             error = "<fmt:message key="invalid_input_data" bundle="${err}"/>";
         }
 
-        let whitespace_regex = /[\s]+/;
+        let whitespace_regex = /^[\s]+$/;
         if (subjField == "" || whitespace_regex.test(subjField)) {
             event.preventDefault();
             error = "<fmt:message key="input_subj" bundle="${err}"/>";

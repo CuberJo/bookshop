@@ -167,15 +167,15 @@ function renderExclusiveBook(book) {
         // $.each(books, function (index, el) {
             if (book.base64Image != null && book.base64Image !== "") {
 
-                let block = '<div class="col-2"><a href="/home?command=book_details&isbn=' + book.isbn + '">' +
-                                '<img height="" src="data:image/jpg;base64,' + book.base64Image + '" class="offer-img">' +
+                let block = '<div class="col-2" style="margin-bottom: 80px;"><a href="/home?command=book_details&isbn=' + book.isbn + '">' +
+                                '<img height="500px" src="data:image/jpg;base64,' + book.base64Image + '" class="offer-img">' +
                             '</div>' +
                             '<div class="col-2">' +
                                 // '<p><fmt:message key="label.exclusive" bundle="${lang}"/></p>' +
-                                '<p>Exclusive</p>' +
+                                '<h3>Exclusive</h3>' +
                                 '<h1>' + book.title + '</h1>' +
                                 // '<small><fmt:message key="label.read_this_book" bundle="${lang}"/></small>' +
-                                '<small>Read</small>' +
+                                '<div style="margin-bottom: 30px">Available by special price only today!</div>' +
                                 // '<a href="/home?command=book_details&isbn=' + book.isbn + '" class="btn"><fmt:message key="label.buy_now" bundle="${lang}"/> &#8594;</a>' +
                                 '<a href="/home?command=book_details&isbn=' + book.isbn + '" class="btn">Buy now &#8594;</a>' +
                             '</div>'

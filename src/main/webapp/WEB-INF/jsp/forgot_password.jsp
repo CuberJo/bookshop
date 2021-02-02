@@ -11,6 +11,10 @@
     </c:when>
 </c:choose>
 <fmt:setBundle basename="jsp_text" var="lang" />
+<fmt:setBundle basename="message" var="msg" />
+
+
+
 <!DOCTYPE html>
 <html>
 
@@ -36,12 +40,12 @@
 <div class="small-container">
     <div class="row">
         <div id="sc-password">
-            <h1><fmt:message key="label.reset_pass" bundle="${lang}"/></h1>
+            <h1><fmt:message key="type_email_for_pass_reset" bundle="${msg}"/></h1>
             <form id="ResetPassForm"  class="sc-container" method="post" action="/home?command=reset_password">
                 <input type="email" placeholder="Email" name="email"/>
                 <pre id="errorResetPassMessage" style="color: #ff523b; text-align: center; margin: 10px"></pre>
                 <c:if test="${not empty error_message}">
-                    <pre style="color: #ff523b; height: 20px; text-align: center">${error_message}</pre>
+                    <pre style="color: #ff523b; height: 40px; text-align: center">${error_message}</pre>
                     <c:remove var="error_message" scope="session" />
                 </c:if>
 <%--                <input type="submit" onclick="validateResetPassForm(event)" value="Get New Password" />--%>

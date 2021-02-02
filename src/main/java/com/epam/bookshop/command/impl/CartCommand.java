@@ -3,7 +3,7 @@ package com.epam.bookshop.command.impl;
 import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.command.ResponseContext;
-import constant.RequestConstants;
+import com.epam.bookshop.constant.RequestConstants;
 
 import javax.servlet.http.HttpSession;
 import java.util.Objects;

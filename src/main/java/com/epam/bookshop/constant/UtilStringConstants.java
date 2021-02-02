@@ -1,4 +1,4 @@
-package constant;
+package com.epam.bookshop.constant;
 
 /**
  * Util string constants used in application

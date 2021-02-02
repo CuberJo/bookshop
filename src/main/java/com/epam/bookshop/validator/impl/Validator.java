@@ -4,8 +4,8 @@ import com.epam.bookshop.util.annotation.Naming;
 import com.epam.bookshop.util.annotation.Size;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.exception.ValidatorException;
-import constant.RegexConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.RegexConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 
 import java.lang.reflect.Field;

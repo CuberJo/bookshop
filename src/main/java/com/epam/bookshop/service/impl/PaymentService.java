@@ -13,8 +13,8 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.Validator;
-import constant.ErrorMessageConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

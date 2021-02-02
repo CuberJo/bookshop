@@ -25,7 +25,7 @@
                 <li>
                     <form id="headerSearchForm" method="post" action="/home?command=books">
                         <input type="hidden" name="notAdvancedSearch" value="true">
-                        <input type="search" name="str" style="outline: none" class="searchInput">
+                        <input type="search" name="str" style="outline: none" placeholder="<fmt:message key="label.search" bundle="${lang}"/>..." class="searchInput">
 <%--                        <i class="fa fa-search"></i>--%>
                     </form>
                 </li>

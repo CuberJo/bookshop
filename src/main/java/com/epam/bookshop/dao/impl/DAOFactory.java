@@ -3,8 +3,8 @@ package com.epam.bookshop.dao.impl;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.UnknownEntityException;
-import constant.ErrorMessageConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 
 import java.sql.Connection;

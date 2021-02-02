@@ -46,13 +46,19 @@
                 </ul>
             </div>
             <div class="footer-col-4">
-                <a href="/home?command=contact_us"><h3><fmt:message key="label.contact_us" bundle="${lang}"/></h3></a>
-                <!-- <ul>
+                <h3><fmt:message key="label.about_us" bundle="${lang}"/></h3>
+<%--                <ul>--%>
+<%--                    <li>+375 (29) 784-45-85</li>--%>
+<%--                    <li>+375 (44) 784-45-85</li>--%>
+<%--                    <li>+375 (35) 784-45-85</li>--%>
+<%--                </ul>--%>
+                <ul>
                     <li>Facebook</li>
                     <li>Twitter</li>
                     <li>Instagram</li>
                     <li>Youtube</li>
-                </ul> -->
+                    <li><a href="/home?command=contact_us"><fmt:message key="label.contact_us" bundle="${lang}"/></a></li>
+                </ul>
             </div>
         </div>
         <hr>

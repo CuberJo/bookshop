@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.fliter;
 
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

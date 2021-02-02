@@ -1,11 +1,11 @@
 package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.util.EntityFinder;
-import constant.RequestConstants;
+import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.exception.ValidatorException;
-import constant.ErrorMessageConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

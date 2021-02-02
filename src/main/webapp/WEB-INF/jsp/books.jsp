@@ -80,7 +80,7 @@
     </div>
 
     <div class="mrow">
-        <div id="toInsert" class="row">
+        <div id="toInsert" class="row" style="min-height: 900px">
 <%--            <c:forEach var="book" items="${sessionScope.books}">--%>
 <%--                <c:if test="${not empty book.base64Image}">--%>
 <%--                     <div class="col-4" style="flex-basis: 20%"><a href="/home?command=book_details&isbn=${book.ISBN}">--%>

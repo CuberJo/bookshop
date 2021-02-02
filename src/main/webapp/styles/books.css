@@ -74,3 +74,16 @@ select:focus {
     color:gray;
     pointer-events: none;
 }
+
+/************************* For books images same height *********************************/
+
+@media only screen and (min-width: 1180px) {
+
+   .col-4 img {
+       height: 350px;
+   }
+
+    #library img {
+        height: 290px;
+    }
+}

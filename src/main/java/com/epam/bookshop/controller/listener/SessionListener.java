@@ -1,7 +1,7 @@
 package com.epam.bookshop.controller.listener;
 
-import constant.RequestConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;

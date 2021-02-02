@@ -4,8 +4,8 @@ import com.epam.bookshop.command.CommandFactory;
 import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.command.impl.CustomRequestContext;
-import constant.RequestConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;

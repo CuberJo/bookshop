@@ -115,3 +115,7 @@
         width: 100%;
     }
 }
+
+.tab-content .btn:hover {
+    color: white;
+}

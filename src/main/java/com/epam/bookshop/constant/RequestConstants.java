@@ -1,4 +1,4 @@
-package constant;
+package com.epam.bookshop.constant;
 
 /**
  * Contant strings used in request parameters or attributes

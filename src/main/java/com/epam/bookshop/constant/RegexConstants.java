@@ -1,4 +1,4 @@
-package constant;
+package com.epam.bookshop.constant;
 
 /**
  * Regular expression strings

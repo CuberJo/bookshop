@@ -1,13 +1,11 @@
 package com.epam.bookshop.command;
 
 import com.epam.bookshop.command.impl.*;
-import com.epam.bookshop.controller.command.impl.*;
 
 import java.util.Objects;
 
-
 /**
- * Factory to create instance of {@link Command} by query parameter <b>command</b>
+ * Factory to create instance of {@link Command} by {@code command} query parameter
  */
 public class CommandFactory {
 

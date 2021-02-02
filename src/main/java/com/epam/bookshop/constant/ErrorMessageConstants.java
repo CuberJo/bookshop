@@ -1,4 +1,4 @@
-package constant;
+package com.epam.bookshop.constant;
 
 public class ErrorMessageConstants {
 

@@ -1,6 +1,6 @@
 package com.epam.bookshop.dao.impl;
 
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;

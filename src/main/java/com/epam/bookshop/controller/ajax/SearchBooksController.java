@@ -9,10 +9,10 @@ import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.JSONWriter;
-import constant.ErrorMessageConstants;
-import constant.RegexConstants;
-import constant.RequestConstants;
-import constant.UtilStringConstants;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.RegexConstants;
+import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
@@ -88,6 +88,9 @@ public class SearchBooksController extends HttpServlet {
     private Criteria<Book> buildCriteria(HttpServletRequest request, String locale) {
 
         String searchStr = request.getParameter(RequestConstants.SEARCH_STR);
+        searchStr = searchStr.replaceFirst("\\s++$", "");
+        searchStr = searchStr.replaceFirst("^\\s++", "");
+
 
         Criteria<Book> criteria;
         switch (request.getParameter(RequestConstants.SEARCH_CRITERIA)) {
