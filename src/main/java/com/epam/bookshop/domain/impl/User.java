@@ -1,12 +1,15 @@
 package com.epam.bookshop.domain.impl;
 
-import com.epam.bookshop.context.annotation.Naming;
+import com.epam.bookshop.util.annotation.Naming;
 import com.epam.bookshop.domain.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * User representation
+ */
 public class User extends Entity {
 
     @Naming(name = true)

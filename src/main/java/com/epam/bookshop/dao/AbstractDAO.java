@@ -1,9 +1,7 @@
 package com.epam.bookshop.dao;
 
-import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.util.criteria.Criteria;
 import org.slf4j.Logger;
 
 import java.sql.Connection;
@@ -14,6 +12,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Encapsulates common functionality interaction with database
+ */
 public abstract class AbstractDAO <K, T extends Entity> {
     private final Connection connection;
 
@@ -32,6 +33,12 @@ public abstract class AbstractDAO <K, T extends Entity> {
     public abstract int count();
     public abstract Optional<T> update(T entity);
 
+    /**
+     * Creates {@link PreparedStatement} from {@code sql} string
+     *
+     * @param sql sql query string used in {@link PreparedStatement} creation
+     * @return {@link PreparedStatement} instance
+     */
     protected PreparedStatement getPrepareStatement(String sql) {
         PreparedStatement ps = null;
         try {
@@ -43,6 +50,13 @@ public abstract class AbstractDAO <K, T extends Entity> {
         return ps;
     }
 
+    /**
+     * Closes {@link ResultSet}
+     *
+     * @param rs {@link ResultSet} to close
+     * @param logger {@link Logger} instance of class where
+     * prepare statement is closing
+     */
     protected void closeResultSet(ResultSet rs, Logger logger) {
         if (rs != null) {
             try {

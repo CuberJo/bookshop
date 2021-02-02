@@ -1,6 +1,5 @@
 package com.epam.bookshop.service.impl;
 
-import com.epam.bookshop.dao.impl.BookDAO;
 import com.epam.bookshop.dao.impl.GenreDAO;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.util.criteria.Criteria;
@@ -12,7 +11,7 @@ import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
-import com.epam.bookshop.util.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +19,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * Business logic for {@link Genre} instances
+ */
 public class GenreService implements EntityService<Genre> {
     private static final Logger logger = LoggerFactory.getLogger(GenreService.class);
 
-    GenreService() {
-
-    }
+    GenreService() {}
 
     private String locale = "US";
 

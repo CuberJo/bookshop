@@ -1,6 +1,6 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -18,6 +18,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class that interacts with the database and provides CRUD methods to do with {@link Genre} instance
+ */
 public class GenreDAO extends AbstractDAO<Long, Genre> {
     private static final Logger logger = LoggerFactory.getLogger(GenreDAO.class);
 

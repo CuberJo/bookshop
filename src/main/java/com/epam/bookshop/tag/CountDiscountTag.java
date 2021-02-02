@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * This tag counts discount for book
+ */
 public class CountDiscountTag extends SimpleTagSupport {
 
     private double discount;
@@ -32,6 +35,12 @@ public class CountDiscountTag extends SimpleTagSupport {
     }
 
 
+    /**
+     * Counts total price, subtracting {@code discount}
+     *
+     * @param cart user book cart
+     * @return counted price without discount
+     */
     private double countTotalPrice(ArrayList<Book> cart) {
         double total = 0;
 

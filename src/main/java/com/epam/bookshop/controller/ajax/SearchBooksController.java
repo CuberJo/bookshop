@@ -9,15 +9,15 @@ import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.JSONWriter;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.RegexConstants;
-import com.epam.bookshop.util.constant.RequestConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.RegexConstants;
+import constant.RequestConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.util.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,10 +43,8 @@ public class SearchBooksController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
-
 
         if (!isSearchInputCorrect(req.getParameter(RequestConstants.SEARCH_STR))) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);

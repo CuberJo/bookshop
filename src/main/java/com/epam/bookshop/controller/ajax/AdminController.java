@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.impl.AdminFrontCommand;
+import com.epam.bookshop.command.impl.AdminCommand;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.exception.ValidatorException;
@@ -9,16 +9,16 @@ import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.JSONWriter;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.RegexConstants;
-import com.epam.bookshop.util.constant.RequestConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.RegexConstants;
+import constant.RequestConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.util.validator.impl.StringSanitizer;
-import com.epam.bookshop.util.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.StringSanitizer;
+import com.epam.bookshop.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +33,13 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Processes admin requests
+ */
 @WebServlet("/admin")
 @MultipartConfig
 public class AdminController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(AdminFrontCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminCommand.class);
 
     private static final String REQUEST_PARAM_NOT_FOUND = "Request param not found";
     private static final String COUNT_PAYMENTS = "countPayments";

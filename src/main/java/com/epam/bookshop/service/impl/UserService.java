@@ -5,15 +5,16 @@ import com.epam.bookshop.dao.impl.DAOFactory;
 import com.epam.bookshop.dao.impl.UserDAO;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.EntityType;
+import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.util.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +22,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * Business logic for {@link User} instances
+ */
 public class UserService implements EntityService<User> {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private String locale = "US";
 
-    UserService() {
-
-    }
+    UserService() {}
 
     @Override
     public void setLocale(String locale) {

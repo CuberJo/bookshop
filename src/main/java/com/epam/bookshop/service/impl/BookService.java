@@ -11,10 +11,10 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.util.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,19 +23,16 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * Business logic for {@link Book} instances
+ */
 public class BookService implements EntityService<Book> {
-
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
     private String locale = "US";
 
-    BookService() {
+    BookService() {}
 
-    }
-
-    /**
-     * @param locale service language for error messages
-     */
     @Override
     public void setLocale(String locale) {
         this.locale = locale;

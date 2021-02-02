@@ -1,11 +1,11 @@
 package com.epam.bookshop.controller;
 
-import com.epam.bookshop.controller.command.CommandFactory;
-import com.epam.bookshop.controller.command.FrontCommand;
-import com.epam.bookshop.controller.command.ResponseContext;
-import com.epam.bookshop.controller.command.impl.CustomRequestContext;
-import com.epam.bookshop.util.constant.RequestConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import com.epam.bookshop.command.CommandFactory;
+import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.ResponseContext;
+import com.epam.bookshop.command.impl.CustomRequestContext;
+import constant.RequestConstants;
+import constant.UtilStringConstants;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -39,7 +39,7 @@ public class FrontController extends HttpServlet {
 
     protected ResponseContext processRequest(HttpServletRequest req, HttpServletResponse resp) {
         final String commandParam = req.getParameter(RequestConstants.COMMAND);
-        FrontCommand frontCommand = CommandFactory.command(commandParam);
-        return frontCommand.execute(new CustomRequestContext(req));
+        Command command = CommandFactory.command(commandParam);
+        return command.execute(new CustomRequestContext(req));
     }
 }

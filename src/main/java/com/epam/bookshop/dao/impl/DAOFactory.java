@@ -3,29 +3,21 @@ package com.epam.bookshop.dao.impl;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.UnknownEntityException;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 
 import java.sql.Connection;
 
 /**
- * creates DAO
+ * Creates DAO classes instances by incoming DAO entity type
  */
 public class DAOFactory {
 
-    /**
-     * {@value #INSTANCE} DAO instance
-     */
     public static final DAOFactory INSTANCE = new DAOFactory();
+    private static final String LOCALE = "US";
 
-    /**
-     * no-arg constructor
-     */
-    private DAOFactory() {
-
-    }
-
+    private DAOFactory() {}
 
     /**
      * Creates DAO by input parameters
@@ -38,7 +30,6 @@ public class DAOFactory {
 
         AbstractDAO daoToReturn;
 
-        String locale = "US";
         switch (type) {
             case BOOK:
                 daoToReturn = new BookDAO(connection);
@@ -53,7 +44,8 @@ public class DAOFactory {
                 daoToReturn = new GenreDAO(connection);
                 break;
          default:
-                String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_DAO_TYPE) + UtilStringConstants.WHITESPACE + type;
+                String errorMessage = ErrorMessageManager.valueOf(LOCALE).getMessage(ErrorMessageConstants.NO_SUCH_DAO_TYPE)
+                        + UtilStringConstants.WHITESPACE + type;
                 throw new UnknownEntityException(errorMessage);
         }
 

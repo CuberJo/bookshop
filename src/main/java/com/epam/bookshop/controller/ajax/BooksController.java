@@ -1,6 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.impl.BooksFrontCommand;
+import com.epam.bookshop.command.impl.BooksCommand;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
@@ -10,9 +10,9 @@ import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.JSONWriter;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.RequestConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.RequestConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
@@ -36,8 +36,6 @@ import java.util.Optional;
 @WebServlet("/books")
 public class BooksController extends HttpServlet {
     final static Logger logger = LoggerFactory.getLogger(BooksController.class);
-
-    private static final String BOOKS_PAGE = "/WEB-INF/jsp/books.jsp";
 
     private static final int ITEMS_PER_PAGE = 8;
     private static final int DEFAULT_GENRE_ID = 1;
@@ -118,7 +116,7 @@ public class BooksController extends HttpServlet {
             session.removeAttribute(RequestConstants.CUSTOMIZED_SEARCH);
             session.removeAttribute(RequestConstants.SEARCH_STR);
         } else {
-            String genreName = BooksFrontCommand.decode(req.getParameter(RequestConstants.GENRE));
+            String genreName = BooksCommand.decode(req.getParameter(RequestConstants.GENRE));
             books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
         }
 
@@ -127,7 +125,16 @@ public class BooksController extends HttpServlet {
     }
 
 
-    private void writeResp(HttpServletResponse resp,  String contentType, String respMsg) throws IOException {
+    /**
+     * Writes response message {@code respMsg} string of {@code contentType} and sends it
+     * in {@link HttpServletResponse} response
+     *
+     * @param resp
+     * @param contentType
+     * @param respMsg
+     * @throws IOException
+     */
+    private void writeResp(HttpServletResponse resp, String contentType, String respMsg) throws IOException {
         resp.setContentType(contentType);
         resp.setCharacterEncoding(UtilStringConstants.UTF8);
         resp.getWriter().write(respMsg);
@@ -173,7 +180,7 @@ public class BooksController extends HttpServlet {
         } else if (Objects.nonNull(session.getAttribute(RequestConstants.REQUEST_FROM_SEARCH_INPUT))) {
             rows = service.count((String) session.getAttribute(RequestConstants.SEARCH_STR));
         } else if (Objects.nonNull(request.getParameter(RequestConstants.GENRE)) && !request.getParameter(RequestConstants.GENRE).isEmpty()) {
-            String genreName = BooksFrontCommand.decode(request.getParameter(RequestConstants.GENRE));
+            String genreName = BooksCommand.decode(request.getParameter(RequestConstants.GENRE));
             Criteria<Genre> genreCriteria = GenreCriteria.builder()
                     .genre(genreName)
                     .build();

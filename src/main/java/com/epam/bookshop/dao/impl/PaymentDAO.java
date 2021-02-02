@@ -5,8 +5,8 @@ import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * DAO for {@link Payment} object
+ * Class that interacts with the database and provides CRUD methods to do with {@link Payment} instance.
+ * Implements DAO pattern
  */
 public class PaymentDAO extends AbstractDAO<Long, Payment> {
     private static final Logger logger = LoggerFactory.getLogger(PaymentDAO.class);

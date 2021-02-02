@@ -1,6 +1,10 @@
 package com.epam.bookshop.exception;
 
+/**
+ * The exception will be thrown when entity fails validation
+ */
 public class ValidatorException extends Exception {
+
     public ValidatorException() {
         super();
     }

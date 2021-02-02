@@ -4,6 +4,10 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Responsible for reading database settings from properties and making it available
+ * for connection pool
+ */
 public class DatabaseConfigurator {
 
     private String url;

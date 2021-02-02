@@ -1,5 +1,8 @@
 package com.epam.bookshop.exception;
 
+/**
+ * The exception will be thrown when passed antity is not correcpond to existing ones
+ */
 public class UnknownEntityException extends RuntimeException {
     private final String entityName;
     private final Object[] args;

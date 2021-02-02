@@ -5,6 +5,9 @@ import com.epam.bookshop.domain.Entity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Book payment representation
+ */
 public class Payment extends Entity {
     private User user;
     private Book book;

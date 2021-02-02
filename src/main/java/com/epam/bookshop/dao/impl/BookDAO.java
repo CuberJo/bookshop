@@ -1,25 +1,35 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.util.ImgToBase64Converter;
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.BookCriteria;
-import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
-import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import com.epam.bookshop.util.ImgToBase64Converter;
+import constant.ErrorMessageConstants;
+import constant.UtilStringConstants;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.BookCriteria;
+import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
+/**
+ * Class that interacts with the database and provides CRUD methods to do with {@link Book} instance.
+ * Implements DAO pattern
+ */
 public class BookDAO extends AbstractDAO<Long, Book> {
     private static final Logger logger = LoggerFactory.getLogger(BookDAO.class);
 
@@ -389,6 +399,8 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
 
     /**
+     * Searches for book with {@code ISBN} in database
+     *
      * @param ISBN book's unique identifier
      * @return book file converted to byte array
      */

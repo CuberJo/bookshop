@@ -9,6 +9,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Pool of connections which can be used to interact with database
+ */
 public class ConnectionPool {
 
     private static ConnectionPool instance;
@@ -39,6 +42,10 @@ public class ConnectionPool {
     public void setLocale(String locale) {
     }
 
+    /**
+     * Makes {@code ConnectionPool} initialization with
+     * created {@link Connection} instances
+     */
     public void init() {
         int poolSize = DatabaseConfigurator.getInstance().getPoolSize();
 
@@ -51,7 +58,11 @@ public class ConnectionPool {
     }
 
 
-
+    /**
+     * Creates {@link ConnectionProxy} instance and returns it
+     *
+     * @return {@link ConnectionProxy} instance
+     */
     private ConnectionProxy getConnection() {
         ConnectionProxy conn;
 
@@ -70,7 +81,12 @@ public class ConnectionPool {
     }
 
 
-
+    /**
+     * Gets available {@link Connection} which is actually
+     * wrapper on {@link ConnectionProxy}
+     *
+     * @return available {@link Connection}
+     */
     public Connection getAvailableConnection() {
         lock2.lock();
 
@@ -93,7 +109,10 @@ public class ConnectionPool {
     }
 
 
-
+    /**
+     * Used to make real close of all created connections on
+     * server shutdown
+     */
     public void shutdown() {
 
         availableConnections.forEach(connection -> {

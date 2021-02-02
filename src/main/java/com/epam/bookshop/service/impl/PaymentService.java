@@ -1,6 +1,5 @@
 package com.epam.bookshop.service.impl;
 
-import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.dao.impl.DAOFactory;
 import com.epam.bookshop.dao.impl.PaymentDAO;
@@ -11,10 +10,11 @@ import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.util.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.Validator;
+import constant.ErrorMessageConstants;
+import constant.UtilStringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,14 +25,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Business logic for {@link Payment} instances
+ */
 public class PaymentService implements EntityService<Payment> {
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
     private String locale = "US";
 
-    PaymentService() {
-
-    }
+    PaymentService() {}
 
     @Override
     public void setLocale(String locale) {

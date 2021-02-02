@@ -41,7 +41,7 @@
 
     <tag>
         <name>checkBookPresence</name>
-        <tag-class>com.epam.bookshop.tag.CheckBookPresence</tag-class>
+        <tag-class>com.epam.bookshop.tag.CheckBookPresenceTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
             <name>library</name>

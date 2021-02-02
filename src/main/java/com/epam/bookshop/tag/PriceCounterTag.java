@@ -10,9 +10,10 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * This tag counts total book price in cart
+ */
 public class PriceCounterTag extends SimpleTagSupport {
-
-    private static final StringWriter sw = new StringWriter();
 
     private ArrayList<Book> cart;
 
@@ -25,17 +26,14 @@ public class PriceCounterTag extends SimpleTagSupport {
         JspWriter out = getJspContext().getOut();
 
         if (Objects.nonNull(cart)) {
-            /* Use message from attribute */
             out.println(countTotalPrice(cart));
-        } /*else {
-            *//* use message from the body *//*
-            getJspBody().invoke(sw);
-            out.println(sw.toString());
-        }*/
+        }
     }
 
 
-
+    /**
+     * Counts total price
+     */
     private double countTotalPrice(ArrayList<Book> cart) {
         double total = 0;
 

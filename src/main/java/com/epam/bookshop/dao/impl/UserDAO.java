@@ -3,8 +3,8 @@ package com.epam.bookshop.dao.impl;
 import com.epam.bookshop.dao.AbstractDAO;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
@@ -18,6 +18,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * Class that interacts with the database and provides CRUD methods to do with {@link User} instance.
+ * Implements DAO pattern
+ */
 public class UserDAO extends AbstractDAO<Long, User> {
     private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
@@ -255,8 +259,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
     /**
      * Created user bank account by IBAN and user id
      *
-     * @param IBAN
-     * @param libraryUserId
+     * @param IBAN to create in database
+     * @param libraryUserId  to whom IBAN is created
      */
     public void createUserBankAccount(String IBAN, Long libraryUserId) {
         try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_USER_BANK_ACCOUNT)) {
@@ -271,9 +275,9 @@ public class UserDAO extends AbstractDAO<Long, User> {
 
 
     /**
-     * Looks for user IBAN
+     * Fetches all IBANs of all users
      *
-     * @return
+     * @return all founded IBANs in database
      */
     public Map<String, Long> findUsersBankAccounts() {
         Map<String, Long> userIBANs = new HashMap<>();
@@ -297,8 +301,8 @@ public class UserDAO extends AbstractDAO<Long, User> {
     /**
      * Look for user IBANs
      *
-     * @param id
-     * @return
+     * @param id finds all IBANs that belong to user with {@code id}
+     * @return list of founded IBANs
      */
     public List<String> findUserBankAccounts(long id) {
         List<String> userIBANs = new ArrayList<>();
@@ -325,8 +329,9 @@ public class UserDAO extends AbstractDAO<Long, User> {
     /**
      * Deletes user bank account
      *
-     * @param iban
-     * @return
+     * @param iban user IBAN to delete
+     * @return true, if and only if, IBAN was deleted successfully
+     * from database
      */
     public boolean deleteUserBankAccount(String iban) {
         try (PreparedStatement ps = getPrepareStatement(SQL_DELETE_USER_IBAN_BY_IBAN)) {

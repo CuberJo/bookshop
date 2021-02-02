@@ -1,6 +1,6 @@
 package com.epam.bookshop.util.criteria.impl;
 
-import com.epam.bookshop.context.annotation.Naming;
+import com.epam.bookshop.util.annotation.Naming;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.util.criteria.Criteria;
 

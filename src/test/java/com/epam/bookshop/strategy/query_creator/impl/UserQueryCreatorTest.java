@@ -1,6 +1,6 @@
 package com.epam.bookshop.strategy.query_creator.impl;
 
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;

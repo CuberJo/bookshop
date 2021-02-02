@@ -1,10 +1,13 @@
 package com.epam.bookshop.domain.impl;
 
-import com.epam.bookshop.context.annotation.Naming;
+import com.epam.bookshop.util.annotation.Naming;
 import com.epam.bookshop.domain.Entity;
 
 import java.util.Objects;
 
+/**
+ * Book genre representation
+ */
 public class Genre extends Entity {
 
     @Naming(genre = true)

@@ -1,13 +1,13 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.controller.command.FrontCommand;
+import com.epam.bookshop.command.Command;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
-import com.epam.bookshop.util.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.constant.RequestConstants;
-import com.epam.bookshop.util.constant.UtilStringConstants;
+import constant.ErrorMessageConstants;
+import constant.RequestConstants;
+import constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 @WebServlet("/unbind_iban")
 public class UnbindIBANController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(FrontCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(Command.class);
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {

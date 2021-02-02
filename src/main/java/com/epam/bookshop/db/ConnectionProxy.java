@@ -1,6 +1,9 @@
 package com.epam.bookshop.db;
 
+import constant.ErrorMessageConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.Map;
@@ -8,9 +11,7 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 public class ConnectionProxy implements Connection {
-//    private static final Logger logger = LoggerFactory.getLogger(ConnectionProxy.class);
-
-    private static final String CONNECTION_HAS_NOT_BEEN_INITIALIZED = "connection_initialization_error";
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionProxy.class);
 
     private String locale = "US";
 
@@ -64,6 +65,10 @@ public class ConnectionProxy implements Connection {
         connection.rollback();
     }
 
+    /**
+     * Method that replaces actioal method of
+     * {@link Connection} class
+     */
     @Override
     public void close() {
         if (connection != null) {
@@ -75,12 +80,17 @@ public class ConnectionProxy implements Connection {
             }
             System.out.println("Connection " + this + " is returned into pool");
         } else {
-//            logger.error("Connection has not been initialize");
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(CONNECTION_HAS_NOT_BEEN_INITIALIZED);
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.CONNECTION_HAS_NOT_BEEN_INITIALIZED);
+            logger.error(errorMessage);
             throw new RuntimeException(errorMessage);
         }
     }
 
+    /**
+     * Real close of {@code Connection}
+     *
+     * @throws SQLException
+     */
     void realClose() throws SQLException {
         connection.close();
         System.out.println("Connection " + connection + " is closed");;
