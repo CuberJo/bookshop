@@ -57,7 +57,7 @@ public class PurchaseCommand implements Command {
     }
 
     /**
-     * Removes book from  <b>cart</b> object of type of {@link List<Book>},
+     * Removes book from  {@code cart} object of type of {@link List<Book>},
      * stored in session, if it has already been bought.
      *
      * @param session current {@link HttpSession} object
@@ -118,10 +118,7 @@ public class PurchaseCommand implements Command {
 
         User user;
         try {
-            Criteria<User> criteria = UserCriteria.builder()
-                    .login((String) session.getAttribute(RequestConstants.LOGIN))
-                    .build();
-            user = EntityFinder.getInstance().find(session, logger, criteria);
+            user = EntityFinder.getInstance().findUserInSession(session, logger);
 
             for (Book book : cart) {
                 service.create(new Payment(user, book, LocalDateTime.now(), book.getPrice()));
@@ -129,15 +126,13 @@ public class PurchaseCommand implements Command {
 
             session.removeAttribute(RequestConstants.CHOSEN_IBAN);
         } catch (ValidatorException e) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT)
-                    + UtilStringConstants.WHITESPACE + session.getAttribute(RequestConstants.LOGIN);
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PAYMENT_CREATION_FAILED);
             logger.error(error, e);
             throw new RuntimeException(error, e);
         }
 
 
         List<Book> library = (List<Book>) session.getAttribute(RequestConstants.LIBRARY);
-
         if (Objects.isNull(library)) {
             library = service.findAllBooksInPayment(user.getEntityId());
 

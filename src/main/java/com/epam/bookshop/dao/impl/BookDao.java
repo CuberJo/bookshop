@@ -1,6 +1,6 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.dao.AbstractDAO;
+import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -30,8 +30,8 @@ import java.util.Optional;
  * Class that interacts with the database and provides CRUD methods to do with {@link Book} instance.
  * Implements DAO pattern
  */
-public class BookDAO extends AbstractDAO<Long, Book> {
-    private static final Logger logger = LoggerFactory.getLogger(BookDAO.class);
+public class BookDao extends AbstractDao<Long, Book> {
+    private static final Logger logger = LoggerFactory.getLogger(BookDao.class);
 
     private static final String SQL_SELECT_ALL_BOOKS_WHERE =  "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK WHERE ";
     private static final String SQL_SELECT_ALL_BOOKS_WHERE_LIKE_OR = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK " +
@@ -67,7 +67,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
 
     private final String locale = "US";
 
-    BookDAO(Connection connection) {
+    BookDao(Connection connection) {
         super(connection);
     }
 
@@ -82,7 +82,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
             ps.setDouble(4, book.getPrice());
             ps.setString(5, book.getPublisher());
 
-            AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, connection);
+            AbstractDao<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, connection);
             Optional<Genre> optionalGenre = genreDAO.find(GenreCriteria.builder().genre(book.getGenre().getGenre()).build());
             if (optionalGenre.isEmpty()) {
                 String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND) + UtilStringConstants.NEW_LINE + book.getGenre();
@@ -683,7 +683,7 @@ public class BookDAO extends AbstractDAO<Long, Book> {
         List<Book> books = new ArrayList<>();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
+            AbstractDao<Long, Genre> genreDAO = DAOFactory.INSTANCE.create(EntityType.GENRE, conn);
 
             while (rs.next()) {
                 Book book = new Book();

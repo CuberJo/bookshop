@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ConnectionPool {
 
     private static ConnectionPool instance;
-    private static final ReentrantLock lock = new ReentrantLock();
+    private static final ReentrantLock LOCK = new ReentrantLock();
     private final ReentrantLock lock2 = new ReentrantLock();
 
     private ConnectionPool() {
@@ -23,13 +23,13 @@ public class ConnectionPool {
     }
 
     public static ConnectionPool getInstance() {
-        lock.lock();
+        LOCK.lock();
         try {
             if (instance == null) {
                 instance = new ConnectionPool();
             }
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
 
         return instance;

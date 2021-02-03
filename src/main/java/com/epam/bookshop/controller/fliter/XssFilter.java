@@ -12,10 +12,10 @@ import java.io.IOException;
  * This filter is used to prevent XSS attacks
  */
 @WebFilter("/*")
-public class  XSSFilter extends HttpFilter {
+public class  XssFilter extends HttpFilter {
 
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(new XSSRequestWrapper(req), res);
+        chain.doFilter(new XssRequestWrapper(req), res);
     }
 }

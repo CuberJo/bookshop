@@ -1,8 +1,9 @@
 package com.epam.bookshop.service.impl;
 
-import com.epam.bookshop.dao.AbstractDAO;
+import com.epam.bookshop.constant.RegexConstants;
+import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.dao.impl.DAOFactory;
-import com.epam.bookshop.dao.impl.UserDAO;
+import com.epam.bookshop.dao.impl.UserDao;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -13,7 +14,10 @@ import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.CriteriaValidator;
+import com.epam.bookshop.validator.impl.EntityValidator;
+import com.epam.bookshop.validator.impl.IbanValidator;
+import com.epam.bookshop.validator.impl.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +42,12 @@ public class UserService implements EntityService<User> {
 
     @Override
     public User create(User user) throws ValidatorException {
-        Validator validator = new Validator();
-        validator.setLocale(locale);
-        validator.validate(user);
+        EntityValidator entityValidator = new EntityValidator();
+        entityValidator.setLocale(locale);
+        entityValidator.validate(user);
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             dao.create(user);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -57,7 +61,7 @@ public class UserService implements EntityService<User> {
         List<User> users = new ArrayList<>();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             users = dao.findAll();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -68,14 +72,14 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Collection<User> findAll(Criteria<User> criteria) throws ValidatorException {
-        Validator validator = new Validator();
+        CriteriaValidator validator = new CriteriaValidator();
         validator.setLocale(locale);
         validator.validate(criteria);
 
         Collection<User> users = new ArrayList<>();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             users = dao.findAll(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -95,7 +99,7 @@ public class UserService implements EntityService<User> {
         Collection<User> books = new ArrayList<>();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             books = dao.findAll(start, total);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -110,7 +114,7 @@ public class UserService implements EntityService<User> {
         Optional<User> optionalUser = Optional.empty();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             optionalUser = dao.findById(id);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -121,14 +125,14 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Optional<User> find(Criteria<User> criteria) throws ValidatorException {
-        Validator validator = new Validator();
+        CriteriaValidator validator = new CriteriaValidator();
         validator.setLocale(locale);
         validator.validate(criteria);
 
         Optional<User> optionalUser = Optional.empty();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             optionalUser = dao.find(criteria);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -139,14 +143,14 @@ public class UserService implements EntityService<User> {
 
     @Override
     public Optional<User> update(User user) throws ValidatorException {
-        Validator validator = new Validator();
-        validator.setLocale(locale);
-        validator.validate(user);
+        EntityValidator entityValidator = new EntityValidator();
+        entityValidator.setLocale(locale);
+        entityValidator.validate(user);
 
         Optional<User> optionalUser = Optional.empty();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             optionalUser = dao.update(user);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -160,7 +164,7 @@ public class UserService implements EntityService<User> {
         boolean isDeleted = false;
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             isDeleted = dao.delete(id);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -176,14 +180,14 @@ public class UserService implements EntityService<User> {
 
     @Override
     public boolean delete(User user) throws EntityNotFoundException, ValidatorException {
-        Validator validator = new Validator();
-        validator.setLocale(locale);
-        validator.validate(user);
+        EntityValidator entityValidator = new EntityValidator();
+        entityValidator.setLocale(locale);
+        entityValidator.validate(user);
 
         boolean isDeleted = false;
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            AbstractDao<Long, User> dao = DAOFactory.INSTANCE.create(EntityType.USER, conn);
             isDeleted = dao.delete(user.getEntityId());
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -208,7 +212,7 @@ public class UserService implements EntityService<User> {
         int rows = 0;
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            UserDAO dao = (UserDAO) DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            UserDao dao = (UserDao) DAOFactory.INSTANCE.create(EntityType.USER, conn);
             rows = dao.count();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -218,9 +222,13 @@ public class UserService implements EntityService<User> {
     }
 
 
-    public Map<String, Long> createUserBankAccount(String IBAN, Long library_User_Id) {
+    public Map<String, Long> createUserBankAccount(String IBAN, Long library_User_Id) throws ValidatorException {
+        IbanValidator validator = new IbanValidator();
+        validator.setLocale(locale);
+        validator.validate(IBAN);
+
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            UserDAO dao = (UserDAO) DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            UserDao dao = (UserDao) DAOFactory.INSTANCE.create(EntityType.USER, conn);
             dao.createUserBankAccount(IBAN, library_User_Id);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -233,7 +241,7 @@ public class UserService implements EntityService<User> {
         Map<String, Long> userIBANs = new HashMap<>();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            UserDAO dao = (UserDAO) DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            UserDao dao = (UserDao) DAOFactory.INSTANCE.create(EntityType.USER, conn);
             userIBANs = dao.findUsersBankAccounts();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -246,7 +254,7 @@ public class UserService implements EntityService<User> {
         List<String> userIBANs = new ArrayList<>();
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            UserDAO dao = (UserDAO) DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            UserDao dao = (UserDao) DAOFactory.INSTANCE.create(EntityType.USER, conn);
             userIBANs = dao.findUserBankAccounts(id);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
@@ -259,7 +267,7 @@ public class UserService implements EntityService<User> {
         boolean isDeleted = false;
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
-            UserDAO dao = (UserDAO) DAOFactory.INSTANCE.create(EntityType.USER, conn);
+            UserDao dao = (UserDao) DAOFactory.INSTANCE.create(EntityType.USER, conn);
             isDeleted = dao.deleteUserBankAccount(iban);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);

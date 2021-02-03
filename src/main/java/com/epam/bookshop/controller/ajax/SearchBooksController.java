@@ -1,5 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
+import com.epam.bookshop.controller.ajax.query_processor.SearchBooksQueryProcessor;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
@@ -8,7 +9,7 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.util.JSONWriter;
+import com.epam.bookshop.util.JsonWriter;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.RequestConstants;
@@ -17,7 +18,7 @@ import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ import java.util.regex.Pattern;
 public class SearchBooksController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(SearchBooksController.class);
 
+    private static final int START_POINT = 0;
     private static final int DEFAULT_GENRE_ID = 1;
 
 
@@ -53,9 +55,9 @@ public class SearchBooksController extends HttpServlet {
         }
 
         Criteria<Book> criteria = buildCriteria(req, locale);
-        Collection<Book> books = findBooksLike(criteria, locale);
+        Collection<Book> books = SearchBooksQueryProcessor.findBooksLike(criteria, START_POINT, BooksController.ITEMS_PER_PAGE, locale);
 
-        String jsonStrings = JSONWriter.getInstance().write(books);
+        String jsonStrings = JsonWriter.getInstance().write(books);
         resp.getWriter().write(jsonStrings);
     }
 
@@ -68,12 +70,11 @@ public class SearchBooksController extends HttpServlet {
      * string corresponds to correct input, otherwise - <b>false</b>
      */
     private boolean isSearchInputCorrect(String searchStr) {
-        Validator validator = new Validator();
 
         Pattern p = Pattern.compile(RegexConstants.MALICIOUS_REGEX);
         Matcher m = p.matcher(searchStr);
 
-        return !validator.empty(searchStr) && !m.matches();
+        return !StringValidator.getInstance().empty(searchStr) && !m.matches();
     }
 
 
@@ -132,30 +133,5 @@ public class SearchBooksController extends HttpServlet {
         }
 
         return criteria;
-    }
-
-
-    /**
-     * Finds books by criteria
-     *
-     * @param criteria {@link Criteria<Book>} criteria used to find books
-     * @return found collection
-     */
-    private Collection<Book> findBooksLike(Criteria<Book> criteria, String locale) {
-        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        service.setLocale(locale);
-
-        Collection<Book> books;
-        String error;
-        try {
-            books = service.findAllLike(criteria);
-            service.findImagesForBooks(books);
-        } catch (ValidatorException e) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
-            logger.error(error);
-            throw new RuntimeException(error, e);
-        }
-
-        return books;
     }
 }

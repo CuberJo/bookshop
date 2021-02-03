@@ -10,21 +10,21 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class JSONWriter {
-    private static final Logger logger = LoggerFactory.getLogger(JSONWriter.class);
+public class JsonWriter {
+    private static final Logger logger = LoggerFactory.getLogger(JsonWriter.class);
 
-    private static JSONWriter instance;
+    private static JsonWriter instance;
     private static final ReentrantLock lock = new ReentrantLock();
 
     /**
      * Thread-safe singleton creation
-     * @return instance of {@link JSONWriter} class
+     * @return instance of {@link JsonWriter} class
      */
-    public static JSONWriter getInstance() {
+    public static JsonWriter getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new JSONWriter();
+                instance = new JsonWriter();
             }
         } finally {
             lock.unlock();

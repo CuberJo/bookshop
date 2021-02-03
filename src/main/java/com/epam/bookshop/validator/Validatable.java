@@ -7,8 +7,15 @@ import com.epam.bookshop.exception.ValidatorException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+/**
+ * Interface for validation
+ *
+ * @param <T> annotation type
+ */
 public interface Validatable<T extends Annotation>  {
+
     void validateEntity(Field field, T annotation, Entity entity) throws ValidatorException;
     void validateCriteria(Field field, T annotation, Criteria<? extends Entity> criteria) throws ValidatorException;
+
     void setLocale(String locale);
 }

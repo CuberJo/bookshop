@@ -15,6 +15,7 @@ public class UtilStringConstants {
     public static final String FROM = "from";
     public static final String RU = "RU";
     public static final String US = "US";
+    public static final String TRUE = "true";
     public static final String EQUALS = "=";
     public static final String LIKE = "LIKE";
     public static final String UTF8 = "UTF-8";

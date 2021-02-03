@@ -23,23 +23,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Facade for commonly meet operations of entities search
+ */
 public class EntityFinder {
     
     private static EntityFinder instance;
-    private static final ReentrantLock lock = new ReentrantLock();
+    private static final ReentrantLock LOCK = new ReentrantLock();
 
     private EntityFinder() {
         
     }
 
     public static EntityFinder getInstance() {
-        lock.lock();
+        LOCK.lock();
         try {
             if (instance == null) {
                 instance = new EntityFinder();
             }
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
 
         return instance;
@@ -47,23 +50,34 @@ public class EntityFinder {
 
 
     /**
-     * Finds user  of current session.
+     * Finds user of current session.
      *
      * @param session current {@link HttpSession} session
      * @param logger logger which is used to log error if ones would take place
-     * @param criteria search criteria
      * @return {@link User} object if found}
-     * @throws ValidatorException if {@link User} object data incorrect
      */
-    public User find(HttpSession session, Logger logger, Criteria<User> criteria) throws ValidatorException {
+    public User findUserInSession(HttpSession session, Logger logger) {
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         EntityService<User> userService = ServiceFactory.getInstance().create(EntityType.USER);
         userService.setLocale(locale);
 
-        Optional<User> optionalUser = userService.find(criteria);
+        Criteria<User> criteria = UserCriteria.builder()
+                .login((String) session.getAttribute(RequestConstants.LOGIN))
+                .build();
+
+        Optional<User> optionalUser;
+        String error;
+        try {
+            optionalUser = userService.find(criteria);
+        } catch (ValidatorException e) {
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT);
+            logger.error(error, e);
+            throw new RuntimeException(error, e);
+        }
+
         if (optionalUser.isEmpty()) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
                     + UtilStringConstants.WHITESPACE + session.getAttribute(RequestConstants.LOGIN);
             logger.error(error);
             throw new RuntimeException(error);
@@ -76,7 +90,7 @@ public class EntityFinder {
     /**
      * Looks for {@link User} by certain {@link Criteria<User>} criteria
      *
-     * @param criteria {@link Criteria <User>} criteria by which user is found
+     * @param criteria {@link Criteria<User>} criteria by which user is found
      * @param logger logger which is used to log error if ones would take place
      * @param locale language for error messages
      * @return {@link User} object if it is found
@@ -109,7 +123,7 @@ public class EntityFinder {
      *
      * @param locale {@link String} language for error messages
      * @param logger logger which is used to log error if ones would take place
-     * @param criteria {@link Criteria <Genre>} criteria by which genre is found
+     * @param criteria {@link Criteria<Genre>} criteria by which genre is found
      * @return {@link Genre} object if found
      * @throws EntityNotFoundException if no such genre found
      */
@@ -141,24 +155,16 @@ public class EntityFinder {
 
     /**
      * Find all {@link String} IBANs, associated with the user
-     * @param criteria {@link Criteria<User>} criteria by which user is found
-     * @param logger logger which is used to log error if ones would take place
+     *
+     * @param user user for who's IBANs are looking for
      * @param locale {@link String} language for error messages
      * @return all {@link String} IBANs, associated with the user
-     * @throws ValidatorException if criteria argument failed validation
      */
-    public List<String> findIBANs(Criteria<User> criteria, Logger logger, String locale) throws ValidatorException {
+    public List<String> findIBANs(User user, String locale) {
 
         UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 
-        Optional<User> optionalUser = service.find(criteria);
-        if (optionalUser.isEmpty()) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
-            logger.error(error);
-            throw new RuntimeException(error);
-        }
-
-        return service.findUserBankAccounts(optionalUser.get().getEntityId());
+        return service.findUserBankAccounts(user.getEntityId());
     }
 }

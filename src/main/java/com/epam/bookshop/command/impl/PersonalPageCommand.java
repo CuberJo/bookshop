@@ -37,40 +37,30 @@ public class PersonalPageCommand implements Command {
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         if (Objects.isNull(session.getAttribute(RequestConstants.LIBRARY))) {
-            try {
-
-                fillLibrary(session, locale);
-
-            } catch (ValidatorException e) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
-                logger.error(error, e);
-                throw new RuntimeException(error, e);
-            }
+            fillLibrary(session, locale);
         }
+
+        User user = EntityFinder.getInstance().findUserInSession(session, logger);
+        session.setAttribute(RequestConstants.EMAIL, user.getEmail());
 
         return PERSONAL_PAGE;
     }
 
 
     /**
-     * Fills <b>library</b> object of type of {@code List<Book>}
+     * Fills {@code library} object of type of {@code List<Book>}
      * that is stored in session with books, that user has already
      * bought
      *
      * @param session current {@link HttpSession} object
      * @param locale language of error messages whether ones taka place
-     * @throws ValidatorException if criteria {@link Criteria<User>} composed
      */
-    private void fillLibrary(HttpSession session, String locale) throws ValidatorException {
-        Criteria<User> criteria = UserCriteria.builder()
-                .login((String) session.getAttribute(RequestConstants.LOGIN))
-                .build();
-        User user = EntityFinder.getInstance().find(session, logger, criteria);
+    private void fillLibrary(HttpSession session, String locale) {
+        User user = EntityFinder.getInstance().findUserInSession(session, logger);
 
         PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);
         service.setLocale(locale);
         Collection<Book> library = service.findAllBooksInPayment(user.getEntityId());
-
 
         BookService bookService = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
         bookService.setLocale(locale);

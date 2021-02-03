@@ -63,7 +63,7 @@ public class ImgToBase64Converter {
                 try {
                     if (!((bytesRead = is.read(buffer)) != -1)) break;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
                 outputStream.write(buffer, 0, bytesRead);
             }

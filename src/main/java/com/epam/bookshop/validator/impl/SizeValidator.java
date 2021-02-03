@@ -11,12 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
+/**
+ * Validates {@link String} name fields of entities and criteria
+ */
 public class SizeValidator implements Validatable<Size> {
-
     private static final Logger logger = LoggerFactory.getLogger(SizeValidator.class);
 
-    private static final String VALIDATION_FAILED = "validation_fail";
-
+    private static final String SIZE_VALIDATION_FAILED = "size_validation_failed";
     private String locale = "US";
 
     @Override
@@ -31,12 +32,18 @@ public class SizeValidator implements Validatable<Size> {
         String errorMessage = "";
 
         try {
-            if (annotation.size() != Integer.MAX_VALUE && field.getType().equals(String.class) && field.get(entity) != null && ((String) field.get(entity)).length() != annotation.size()) {
-                errorMessage = String.format(ErrorMessageManager.valueOf(locale).getMessage(VALIDATION_FAILED), field.get(entity), annotation.size());
+            if (annotation.size() != Integer.MAX_VALUE
+                    && field.getType().equals(String.class)
+                    && field.get(entity) != null
+                    && ((String) field.get(entity)).length() != annotation.size()) {
+                errorMessage = String.format(ErrorMessageManager.valueOf(locale).getMessage(SIZE_VALIDATION_FAILED), field.get(entity), annotation.size());
                 throw new ValidatorException(errorMessage);
             }
-            if (annotation.max() != Integer.MAX_VALUE && field.getType().equals(String.class) && field.get(entity) != null && ((String) field.get(entity)).length() > annotation.size()) {
-                errorMessage = String.format(ErrorMessageManager.valueOf(locale).getMessage(VALIDATION_FAILED), field.get(entity), annotation.size());
+            if (annotation.max() != Integer.MAX_VALUE
+                    && field.getType().equals(String.class)
+                    && field.get(entity) != null
+                    && ((String) field.get(entity)).length() > annotation.size()) {
+                errorMessage = String.format(ErrorMessageManager.valueOf(locale).getMessage(SIZE_VALIDATION_FAILED), field.get(entity), annotation.size());
                 throw new ValidatorException(errorMessage);
             }
 
@@ -53,12 +60,18 @@ public class SizeValidator implements Validatable<Size> {
         String errorMessage = "";
 
         try {
-            if (annotation.size() != Integer.MAX_VALUE && field.getType().equals(String.class) && field.get(criteria) != null && ((String) field.get(criteria)).length() != annotation.size()) {
-                errorMessage = String.format(ErrorMessageManager.valueOf(locale).getMessage(VALIDATION_FAILED), field.get(criteria), annotation.size());
+            if (annotation.size() != Integer.MAX_VALUE
+                    && field.getType().equals(String.class)
+                    && field.get(criteria) != null
+                    && ((String) field.get(criteria)).length() != annotation.size()) {
+                errorMessage = String.format(ErrorMessageManager.valueOf(locale).getMessage(SIZE_VALIDATION_FAILED), field.get(criteria), annotation.size());
                 throw new ValidatorException(errorMessage);
             }
-            if (annotation.max() != Integer.MAX_VALUE && field.getType().equals(String.class) && field.get(criteria) != null && ((String) field.get(criteria)).length() > annotation.size()) {
-                errorMessage = String.format(ErrorMessageManager.valueOf(locale).getMessage(VALIDATION_FAILED), field.get(criteria), annotation.size());
+            if (annotation.max() != Integer.MAX_VALUE
+                    && field.getType().equals(String.class)
+                    && field.get(criteria) != null
+                    && ((String) field.get(criteria)).length() > annotation.size()) {
+                errorMessage = String.format(ErrorMessageManager.valueOf(locale).getMessage(SIZE_VALIDATION_FAILED), field.get(criteria), annotation.size());
                 throw new ValidatorException(errorMessage);
             }
         } catch (IllegalAccessException e) {

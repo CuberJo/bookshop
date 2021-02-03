@@ -31,7 +31,6 @@ public class BookDetailsCommand implements Command {
 
         final HttpSession session = requestContext.getSession();
         String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
-        String errorMessage = "";
 
         try {
 
@@ -51,7 +50,7 @@ public class BookDetailsCommand implements Command {
             service.findImageForBook(optionalBook.get());
 
         } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ISBN_INCORRECT)
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ISBN_INCORRECT)
                     + UtilStringConstants.WHITESPACE + ISBN;
             session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
             logger.error(errorMessage, e);

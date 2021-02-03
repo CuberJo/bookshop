@@ -71,10 +71,7 @@ public class ReadBookController extends HttpServlet {
                 .build();
         Book book = findBook(criteria, locale);
         try {
-            Criteria<User> userCriteria = UserCriteria.builder()
-                    .login((String) request.getSession().getAttribute(RequestConstants.LOGIN))
-                    .build();
-            User user = EntityFinder.getInstance().find(userCriteria, logger, locale);
+            User user = EntityFinder.getInstance().findUserInSession(request.getSession(), logger);
             Criteria<Payment> paymentCriteria = PaymentCriteria.builder()
                     .bookId(book.getEntityId())
                     .libraryUserId(user.getEntityId())

@@ -4,6 +4,8 @@ import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -37,11 +39,13 @@ public class DeleteAccountCommand implements Command {
         try {
             delete(locale, session);
         } catch (ValidatorException e) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT);
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT)
+                    + UtilStringConstants.WHITESPACE + session.getAttribute(RequestConstants.LOGIN);
             logger.error(error, e);
             throw new RuntimeException(e);
         } catch (EntityNotFoundException e) {
-            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
+            error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND)
+                    + UtilStringConstants.WHITESPACE + session.getAttribute(RequestConstants.LOGIN);
             logger.error(error, e);
             throw new RuntimeException(e);
         }
@@ -52,6 +56,7 @@ public class DeleteAccountCommand implements Command {
 
     /**
      * Deletes user in current session.
+     *
      * @param locale {@link String} language for error messages
      * @param session current {@link HttpSession} session
      * @throws ValidatorException if user data fails fvalidation
@@ -61,34 +66,12 @@ public class DeleteAccountCommand implements Command {
         EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 
-        User user = getSessionUser(session, service, locale);
+        User user = EntityFinder.getInstance().findUserInSession(session, logger);
 
         service.delete(user);
         session.removeAttribute(RequestConstants.LOGIN);
         session.removeAttribute(RequestConstants.LIBRARY);
         session.removeAttribute(RequestConstants.IBANs);
         session.removeAttribute(RequestConstants.ROLE);
-    }
-
-
-    /**
-     * Returns user from current session.
-     * @param session current {@link HttpSession} session
-     * @param service {@link EntityService<User>} object used to find user in database
-     * @param locale {@link String} language for error messages
-     * @return {@link User} user if found
-     * @throws ValidatorException if user criteria fails fvalidation
-     */
-    private User getSessionUser(HttpSession session, EntityService<User> service, String locale) throws ValidatorException {
-        String login = (String) session.getAttribute(RequestConstants.LOGIN);
-        UserCriteria criteria = UserCriteria.builder().login(login).build();
-
-        Optional<User> optionalUser = service.find(criteria);
-        if (optionalUser.isEmpty()) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.USER_NOT_FOUND);
-            throw new RuntimeException(error);
-        }
-
-        return optionalUser.get();
     }
 }

@@ -1,5 +1,6 @@
 package com.epam.bookshop.controller.ajax;
 
+import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
@@ -33,19 +34,8 @@ public class LoadIBANsController extends HttpServlet {
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-
-        UserCriteria criteria = UserCriteria.builder()
-                .login((String) session.getAttribute(RequestConstants.LOGIN))
-                .build();
-
-        List<String> IBANs;
-        try {
-            IBANs = EntityFinder.getInstance().findIBANs(criteria, logger, locale);
-        } catch (ValidatorException e) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
-            logger.error(UtilStringConstants.EMPTY_STRING, e);
-            throw new RuntimeException(error, e);
-        }
+        User user = EntityFinder.getInstance().findUserInSession(session, logger);
+        List<String> IBANs = EntityFinder.getInstance().findIBANs(user, locale);
 
         addIBANs(session, IBANs);
     }

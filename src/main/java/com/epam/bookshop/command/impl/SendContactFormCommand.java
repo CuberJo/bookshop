@@ -10,7 +10,7 @@ import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.StringSanitizer;
-import com.epam.bookshop.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,18 +38,17 @@ public class SendContactFormCommand implements Command {
 
         final HttpSession session = requestContext.getSession();
         String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
-        Validator validator = new Validator();
         StringSanitizer sanitizer = new StringSanitizer();
         String errorMessage = "";
 
 
         try {
-            if (validator.empty(name, email, subject)) {
+            if (StringValidator.getInstance().empty(name, email, subject)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
                 return CONTACT_US_PAGE;
             }
-            if(!validator.validate(email, RegexConstants.EMAIL_REGEX)) {
+            if(!StringValidator.getInstance().validate(email, RegexConstants.EMAIL_REGEX)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT)
                         + UtilStringConstants.WHITESPACE + email;
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);

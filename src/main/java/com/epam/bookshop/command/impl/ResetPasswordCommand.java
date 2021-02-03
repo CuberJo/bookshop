@@ -1,12 +1,12 @@
 package com.epam.bookshop.command.impl;
 
 import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.command.ResponseContext;
+import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
@@ -17,7 +17,7 @@ import com.epam.bookshop.util.*;
 import com.epam.bookshop.mail.MailSender;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.util.locale_manager.MessageManager;
-import com.epam.bookshop.validator.impl.Validator;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,25 +44,15 @@ public class ResetPasswordCommand implements Command {
         final HttpSession session = requestContext.getSession();
         String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
         String errorMessage = "";
-        Validator validator = new Validator();
 
         try {
-            if (validator.empty(email)) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
-                session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
-                return FORGOT_PASSWORD_PAGE;
-            }
-            if(!validator.validate(email, RegexConstants.EMAIL_REGEX)) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT);
-                session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
-                logger.error(errorMessage);
-                return FORGOT_PASSWORD_PAGE;
-            }
-
             EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
             service.setLocale(locale);
 
-            Optional<User> optionalUser = service.find(UserCriteria.builder().email(email).build());
+            Criteria<User> criteria = UserCriteria.builder()
+                    .email(email)
+                    .build();
+            Optional<User> optionalUser = service.find(criteria);
             if (optionalUser.isEmpty()) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_NOT_FOUND_IN_DATABASE) + UtilStringConstants.NEW_LINE + email;
                 session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
@@ -72,7 +62,7 @@ public class ResetPasswordCommand implements Command {
             reset(locale, optionalUser.get(), email);
 
         } catch (ValidatorException e) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
+            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT);
             session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE, errorMessage);
             logger.error(errorMessage, e);
             return FORGOT_PASSWORD_PAGE;
@@ -101,10 +91,12 @@ public class ResetPasswordCommand implements Command {
         final int len = 30;
         final int randNumOrigin = 48, randNumBound = 122;
 
-        String newPassword = PasswordCreator.getInstance().generateRandomPassword(len, randNumOrigin, randNumBound);
-        String response = String.format(MessageManager.valueOf(locale).getMessage(EMAIL_RESPONSE), newPassword);
+        String newPlainPassword = PasswordCreator.getInstance().generateRandomPassword(len, randNumOrigin, randNumBound);
+        String newHashedPassword = BCrypt.hashpw(newPlainPassword, BCrypt.gensalt());
 
-        user.setPassword(newPassword);
+        String response = String.format(MessageManager.valueOf(locale).getMessage(EMAIL_RESPONSE), newPlainPassword);
+
+        user.setPassword(newHashedPassword);
         EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 

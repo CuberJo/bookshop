@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Encapsulates common functionality interaction with database
+ * Encapsulates common functionality interaction with database.
  */
-public abstract class AbstractDAO <K, T extends Entity> {
+public abstract class AbstractDao<K, T extends Entity> {
     private final Connection connection;
 
-    public AbstractDAO(Connection connection) {
+    public AbstractDao(Connection connection) {
         this.connection = connection;
     }
 
@@ -34,7 +34,7 @@ public abstract class AbstractDAO <K, T extends Entity> {
     public abstract Optional<T> update(T entity);
 
     /**
-     * Creates {@link PreparedStatement} from {@code sql} string
+     * Creates {@link PreparedStatement} from {@code sql} string.
      *
      * @param sql sql query string used in {@link PreparedStatement} creation
      * @return {@link PreparedStatement} instance
@@ -51,7 +51,7 @@ public abstract class AbstractDAO <K, T extends Entity> {
     }
 
     /**
-     * Closes {@link ResultSet}
+     * Closes {@link ResultSet} instance.
      *
      * @param rs {@link ResultSet} to close
      * @param logger {@link Logger} instance of class where

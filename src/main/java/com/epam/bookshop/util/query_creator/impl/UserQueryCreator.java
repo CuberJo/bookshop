@@ -8,7 +8,7 @@ import com.epam.bookshop.util.query_creator.EntityQueryCreator;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.SqlQueryValidator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -120,6 +120,6 @@ public class UserQueryCreator implements EntityQueryCreator<User> {
 //                    .append(UtilStrings.WHITESPACE);
 //        }
 
-        return new Validator().validatedQuery(condition);
+        return SqlQueryValidator.getInstance().validatedQuery(condition);
     }
 }

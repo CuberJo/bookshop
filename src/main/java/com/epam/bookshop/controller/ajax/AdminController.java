@@ -8,7 +8,7 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.JSONWriter;
+import com.epam.bookshop.util.JsonWriter;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.RequestConstants;
@@ -18,7 +18,7 @@ import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.StringSanitizer;
-import com.epam.bookshop.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,12 +68,12 @@ public class AdminController extends HttpServlet {
             return;
         }
 
-        int start = BooksController.getStart(req, ITEMS_PER_PAGE);
+        int start = BooksController.getStartPoint(req, ITEMS_PER_PAGE);
 
         Collection<Entity> entities = findRecords(req, locale, start, ITEMS_PER_PAGE);
         resp.setContentType(UtilStringConstants.APPLICATION_JSON);
         req.setCharacterEncoding(UtilStringConstants.UTF8);
-        String jsonStrings = JSONWriter.getInstance().write(entities);
+        String jsonStrings = JsonWriter.getInstance().write(entities);
         resp.getWriter().write(jsonStrings);
     }
 
@@ -393,10 +393,9 @@ public class AdminController extends HttpServlet {
      * @return true if and only if strings passed validation, otherwise - false
      */
     private boolean validateInput(String isbn, String title, String author, String price, String publisher, String genre, String preview, HttpSession session) {
-        Validator validator = new Validator();
 
+        StringValidator validator = StringValidator.getInstance();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
-        validator.setLocale(locale);
 
         String error = "";
 

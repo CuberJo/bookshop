@@ -4,6 +4,7 @@ import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class BooksCommand implements Command {
-    private static final Logger logger = LoggerFactory.getLogger(BooksCommand.class);
 
     private static final ResponseContext BOOKS_PAGE_FORWARD = () -> "/WEB-INF/jsp/books.jsp";
     private static final ResponseContext BOOKS_PAGE_REDIRECT = () -> "/home?command=books";
@@ -33,7 +33,7 @@ public class BooksCommand implements Command {
 
         if (Objects.nonNull(requestContext.getParameter(RequestConstants.SEARCH_CRITERIA))) {
             session.setAttribute(RequestConstants.SEARCH_CRITERIA, requestContext.getParameter(RequestConstants.SEARCH_CRITERIA));
-            session.setAttribute(RequestConstants.CUSTOMIZED_SEARCH, "true");
+            session.setAttribute(RequestConstants.CUSTOMIZED_SEARCH, UtilStringConstants.TRUE);
             session.setAttribute(RequestConstants.SEARCH_STR, requestContext.getParameter(RequestConstants.SEARCH_STR));
             session.setAttribute(RequestConstants.REQUEST_FROM_SEARCH_PAGE, true);
 
@@ -41,11 +41,7 @@ public class BooksCommand implements Command {
         }
 
         String genreName = decode(requestContext.getParameter(RequestConstants.GENRE));
-        if (Objects.nonNull(genreName) && genreName.isEmpty()) {
-            requestContext.setAttribute(RequestConstants.GENRE, null);
-        } else {
-            requestContext.setAttribute(RequestConstants.GENRE, genreName);
-        }
+        requestContext.setAttribute(RequestConstants.GENRE, genreName);
 
         return BOOKS_PAGE_FORWARD;
     }

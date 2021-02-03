@@ -1,6 +1,6 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.dao.AbstractDAO;
+import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.constant.ErrorMessageConstants;
@@ -22,8 +22,8 @@ import java.util.*;
  * Class that interacts with the database and provides CRUD methods to do with {@link User} instance.
  * Implements DAO pattern
  */
-public class UserDAO extends AbstractDAO<Long, User> {
-    private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
+public class UserDao extends AbstractDao<Long, User> {
+    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
     private static final String SQL_SELECT_ALL_USERS_WHERE =  "SELECT Id, Name, Login, Password, Email, Admin FROM TEST_LIBRARY.LIBRARY_USER WHERE ";
     private static final String SQL_INSERT_USER = "INSERT INTO TEST_LIBRARY.LIBRARY_USER (Name, Login, Password, Email, Admin) VALUES(?, ?, ?, ?, ?);";
@@ -48,7 +48,7 @@ public class UserDAO extends AbstractDAO<Long, User> {
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
     private static final String IBAN_COLUMN = "IBAN";
 
-    UserDAO(Connection connection) { super(connection); }
+    UserDao(Connection connection) { super(connection); }
 
 
     @Override

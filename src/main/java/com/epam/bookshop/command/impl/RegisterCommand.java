@@ -12,10 +12,11 @@ import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.mail.MailSender;
-import com.epam.bookshop.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,9 +52,6 @@ public class RegisterCommand implements Command {
         User user = null;
 
         try {
-            if (!validateEmptyInput(name, login, email, password, locale, session)) {
-                return ACCOUNT_PAGE;
-            }
 
             user = register(name, login, email, password, locale);
 
@@ -92,30 +90,6 @@ public class RegisterCommand implements Command {
         }
 
         return HOME_PAGE;
-    }
-
-
-    /**
-     * Validates passed name, login, email, password for emptiness
-     *
-     * @param name {@link String} user name
-     * @param login {@link String} user login
-     * @param email {@link String} user email
-     * @param password {@link String} user password
-     * @param locale {@link String} language for error messages
-     * @param session current {@link HttpSession} session
-     * @return true if and only if strings passed validation, otherwise - false
-     */
-    private boolean validateEmptyInput(String name, String login, String email, String password,
-                                       String locale, HttpSession session) {
-
-        if (new Validator().empty(name, login, email, password)) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
-            session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE, errorMessage);
-            return false;
-        }
-
-        return true;
     }
 
 

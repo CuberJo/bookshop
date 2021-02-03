@@ -55,6 +55,13 @@
 
 <!---------- popup --------------->
 
+<div id="popup1" class="overlay">
+    <div class="popup">
+        <h2><fmt:message key="label.changes_saved" bundle="${lang}"/></h2>
+        <a class="close" href="#" <%--onclick="cls()"--%>>&times;</a>
+    </div>
+</div>
+
 <div id="popup2" class="overlay">
     <div class="popup">
         <h2><fmt:message key="label.unbind_cart" bundle="${lang}"/></h2>
@@ -80,7 +87,7 @@
             </div>
         </div>
         <form class="content" method="post" action="#">
-            <fmt:message key="label.enter_pass_to_save" bundle="${lang}"/>
+            <fmt:message key="label.enter_old_pass_to_save" bundle="${lang}"/>
             <br/>
             <br/>
             <br/>
@@ -163,22 +170,23 @@
                         <div id="errorAccMessage"<%-- style="color: #ff523b; height: 30px"--%>></div>
                     </div>
                 </div>
-                <div id="rowToReload2"><c:if test="${not empty error_acc_settings}">
+                <div id="rowToReload2"><c:if test="${not empty sessionScope.error_acc_settings}">
                     <div style="background: #EACCCC; padding: 10px 15px">
-                        ${error_acc_settings}
+                        ${sessionScope.error_acc_settings}
                         <c:remove var="error_acc_settings" scope="session" />
                     </div>
                 </c:if></div>
                 <div class="form-group">
                     <div class="col-xs-6">
                         <label for="login"><h4><fmt:message key="label.login" bundle="${lang}"/></h4></label>
-                        <input type="text" class="form-control" name="login" id="login" placeholder="<fmt:message key="label.login" bundle="${lang}"/>">
+                        <input type="text" class="form-control" name="login" id="login" placeholder="<fmt:message key="label.login" bundle="${lang}"/>" value="${login}">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-xs-6">
                         <label for="email"><h4><fmt:message key="label.email" bundle="${lang}"/></h4></label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" value="${email}">
+                        <c:remove var="email" scope="session"/>
                     </div>
                 </div>
                 <div class="form-group">
@@ -382,8 +390,9 @@
                 verifyPassword: inputVerifyPass,
                 checkPassword: inputCheckPass}),
             success: function () {
-                $('#rowToReload').load(' #rowToReload');
                 $('#rowToReload2').load(' #rowToReload2');
+                $('#rowToReload').load(' #rowToReload');
+                $('#popup1.overlay').css({'visibility': 'visible', 'opacity': '1'});
                 // $('.small-container').load(' .small-container');
             }
         });
@@ -438,7 +447,7 @@
             error = "<fmt:message key="incorrect_login" bundle="${mes}"/>";
         }
 
-        let whitespace_regex = /[\s]+/;
+        let whitespace_regex = /^[\s]+$/;
         <%--if (checkPassField === "" || whitespace_regex.test(checkPassField)) {--%>
         <%--    event.preventDefault();--%>
         <%--    error = "<fmt:message key="input_pass" bundle="${mes}"/>";--%>
@@ -489,6 +498,9 @@
     function validateInput2() {
         let checkPassField = $("#checkPassword").val();
 
+        let error = "";
+
+        let malicious_regex = /[<>*;='#)+&("]+/;
         if (checkPassField !== "" && malicious_regex.test(checkPassField)) {
             event.preventDefault();
             error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";

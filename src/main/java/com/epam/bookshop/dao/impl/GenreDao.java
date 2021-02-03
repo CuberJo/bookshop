@@ -2,7 +2,7 @@ package com.epam.bookshop.dao.impl;
 
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.dao.AbstractDAO;
+import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
@@ -21,8 +21,8 @@ import java.util.Optional;
 /**
  * Class that interacts with the database and provides CRUD methods to do with {@link Genre} instance
  */
-public class GenreDAO extends AbstractDAO<Long, Genre> {
-    private static final Logger logger = LoggerFactory.getLogger(GenreDAO.class);
+public class GenreDao extends AbstractDao<Long, Genre> {
+    private static final Logger logger = LoggerFactory.getLogger(GenreDao.class);
 
     private static final String SQL_SELECT_ALL_GENRES_WHERE =  "SELECT Id, Genre FROM TEST_LIBRARY.GENRE WHERE ";
     private static final String SQL_SELECT_ALL_GENRES = "SELECT Id, Genre FROM TEST_LIBRARY.GENRE;";
@@ -33,7 +33,7 @@ public class GenreDAO extends AbstractDAO<Long, Genre> {
 
     private final String locale = "US";
 
-    GenreDAO(Connection connection) {
+    GenreDao(Connection connection) {
         super(connection);
     }
 

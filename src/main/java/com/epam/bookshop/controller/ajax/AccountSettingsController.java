@@ -10,7 +10,7 @@ import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.StringValidator;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +49,9 @@ public class AccountSettingsController extends HttpServlet {
         User userToUpdate = EntityFinder.getInstance().find(criteria, logger, locale);
 
 
-        if (!validateEmptyInput(login, email, password, verifyPassword, checkPass, session, locale) ||
-            !passesEqual(password, verifyPassword, session, locale) ||
-            !checkPassCorrect(checkPass, userToUpdate.getPassword(), session, locale)) {
+        if (!validateEmptyInput(login, email, password, verifyPassword, checkPass, session, locale)
+                || !passesEqual(password, verifyPassword, session, locale)
+                || !checkPassCorrect(checkPass, userToUpdate.getPassword(), session, locale)) {
             return;
         }
 
@@ -71,10 +71,10 @@ public class AccountSettingsController extends HttpServlet {
      * @param locale {@link String} language for error messages
      * @return true if and only if strings passed validation, otherwise - false
      */
-    private boolean validateEmptyInput(String login, String email, String password, String verifyPassword,
-                                       String checkPassword, HttpSession session, String locale) {
+    private boolean validateEmptyInput(String login, String email, String password,
+                                       String verifyPassword, String checkPassword, HttpSession session, String locale) {
 
-        Validator validator = new Validator();
+        StringValidator validator = StringValidator.getInstance();
         String errorMessage = "";
 
         if (validator.empty(checkPassword)) {
@@ -83,10 +83,10 @@ public class AccountSettingsController extends HttpServlet {
             return false;
         }
 
-        if (validator.empty(login) &&
-                validator.empty(email) &&
-                validator.empty(password) &&
-                validator.empty(verifyPassword)) {
+        if (validator.empty(login)
+                && validator.empty(email)
+                && validator.empty(password)
+                && validator.empty(verifyPassword)) {
             errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
             session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS, errorMessage);
             return false;
@@ -113,7 +113,6 @@ public class AccountSettingsController extends HttpServlet {
 
         if (Objects.nonNull(login) && !login.isEmpty()) {
             userToUpdate.setLogin(login);
-            session.setAttribute(RequestConstants.LOGIN, login);
         }
         if (Objects.nonNull(email) && !email.isEmpty()) {
             userToUpdate.setEmail(email);
@@ -125,6 +124,9 @@ public class AccountSettingsController extends HttpServlet {
 
         try {
             service.update(userToUpdate);
+            if (Objects.nonNull(login) && !login.isEmpty()) {
+                session.setAttribute(RequestConstants.LOGIN, login);
+            }
         } catch (ValidatorException e) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
             session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS, error);
@@ -145,7 +147,7 @@ public class AccountSettingsController extends HttpServlet {
     private boolean checkPassCorrect(String checkPass, String userPass, HttpSession session, String locale) {
         if (!BCrypt.checkpw(checkPass, userPass)) {
             session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS,
-                    ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PASSWORDS_NOT_EQUAL));
+                    ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ACCOUNT_PASSWORD_INCORRECT));
             return false;
         }
 

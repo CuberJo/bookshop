@@ -1,13 +1,13 @@
 package com.epam.bookshop.controller.ajax;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.RequestConstants;
-import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,10 @@ public class UnbindIBANController extends HttpServlet {
         try {
             service.deleteUserBankAccount(iban);
         } catch (EntityNotFoundException e) {
-            logger.error(UtilStringConstants.EMPTY_STRING, e);
+            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_NOT_FOUND)
+                    + UtilStringConstants.WHITESPACE + iban;
+            logger.error(error, e);
+            throw new RuntimeException(error, e);
         }
     }
 }

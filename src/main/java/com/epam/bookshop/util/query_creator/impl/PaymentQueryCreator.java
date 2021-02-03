@@ -8,7 +8,7 @@ import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.util.query_creator.EntityQueryCreator;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.Validator;
+import com.epam.bookshop.validator.impl.SqlQueryValidator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -111,6 +111,6 @@ public class PaymentQueryCreator implements EntityQueryCreator<Payment> {
                     .append(UtilStringConstants.WHITESPACE);
         }
 
-        return new Validator().validatedQuery(condition);
+        return SqlQueryValidator.getInstance().validatedQuery(condition);
     }
 }

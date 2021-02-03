@@ -1,6 +1,6 @@
 package com.epam.bookshop.dao.impl;
 
-import com.epam.bookshop.dao.AbstractDAO;
+import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.constant.ErrorMessageConstants;
@@ -26,22 +26,22 @@ public class DAOFactory {
      * @param connection param for DAO constructor
      * @return new DAO
      */
-    public AbstractDAO create(EntityType type, Connection connection) {
+    public AbstractDao create(EntityType type, Connection connection) {
 
-        AbstractDAO daoToReturn;
+        AbstractDao daoToReturn;
 
         switch (type) {
             case BOOK:
-                daoToReturn = new BookDAO(connection);
+                daoToReturn = new BookDao(connection);
                 break;
             case USER:
-                daoToReturn = new UserDAO(connection);
+                daoToReturn = new UserDao(connection);
                 break;
             case PAYMENT:
-                daoToReturn = new PaymentDAO(connection);
+                daoToReturn = new PaymentDao(connection);
                 break;
             case GENRE:
-                daoToReturn = new GenreDAO(connection);
+                daoToReturn = new GenreDao(connection);
                 break;
          default:
                 String errorMessage = ErrorMessageManager.valueOf(LOCALE).getMessage(ErrorMessageConstants.NO_SUCH_DAO_TYPE)

@@ -5,7 +5,7 @@ import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.command.ResponseContext;
 
 /**
- * returns admin page
+ * Returns admin page
  */
 public class AdminCommand implements Command {
 

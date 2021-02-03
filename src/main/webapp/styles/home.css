@@ -284,6 +284,7 @@ li form {
     text-decoration: none;
     background-color: transparent;
     cursor: pointer;
+    font-weight: bold;
 }
 .localeBtn:hover {
     color: #ff523b;
@@ -296,7 +297,7 @@ li form {
     /*.row.bestsellers.col-4 img {*/
     /*    height: 270px;*/
     /*}*/
-    #bestsellersToInsert,
+    #bestsellersToInsert img,
     #bestsellersToInsert2 img,
     #latestBooks img,
     #latestBooks2 img,

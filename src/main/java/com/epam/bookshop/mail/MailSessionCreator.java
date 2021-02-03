@@ -30,7 +30,7 @@ public class MailSessionCreator {
      * Creates mail session
      *
      * @param sessionProperties priperties needed to configure
-     * @return
+     * @return created session
      */
     public Session createSession(Properties sessionProperties) {
 

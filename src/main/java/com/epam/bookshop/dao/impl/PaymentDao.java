@@ -1,7 +1,7 @@
 package com.epam.bookshop.dao.impl;
 
 import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.dao.AbstractDAO;
+import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
@@ -21,8 +21,8 @@ import java.util.Optional;
  * Class that interacts with the database and provides CRUD methods to do with {@link Payment} instance.
  * Implements DAO pattern
  */
-public class PaymentDAO extends AbstractDAO<Long, Payment> {
-    private static final Logger logger = LoggerFactory.getLogger(PaymentDAO.class);
+public class PaymentDao extends AbstractDao<Long, Payment> {
+    private static final Logger logger = LoggerFactory.getLogger(PaymentDao.class);
 
     private static final String SQL_SELECT_ALL_PAYMENTS_WHERE =  "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price FROM TEST_LIBRARY.PAYMENT WHERE ";
     private static final String SQL_SELECT_PAYMENT_BY_ID = "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price FROM TEST_LIBRARY.PAYMENT WHERE Id = ?";
@@ -43,7 +43,7 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
 
     private final String locale = "US";
 
-    PaymentDAO(Connection connection) {
+    PaymentDao(Connection connection) {
         super(connection);
     }
 
@@ -250,7 +250,7 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
 
         List<Book> books = new ArrayList<>();
         try(Connection connection =  ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, connection);
+            AbstractDao<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, connection);
             for (Long bookId : bookIds) {
                 Optional<Book> optionalBook = bookDAO.findById(bookId);
                 optionalBook.ifPresent(books::add);
@@ -326,8 +326,8 @@ public class PaymentDAO extends AbstractDAO<Long, Payment> {
 
         try (Connection connection1 =  ConnectionPool.getInstance().getAvailableConnection();
              Connection connection2 =  ConnectionPool.getInstance().getAvailableConnection()) {
-            AbstractDAO<Long, User> userDAO = DAOFactory.INSTANCE.create(EntityType.USER, connection1);
-            AbstractDAO<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, connection2);
+            AbstractDao<Long, User> userDAO = DAOFactory.INSTANCE.create(EntityType.USER, connection1);
+            AbstractDao<Long, Book> bookDAO = DAOFactory.INSTANCE.create(EntityType.BOOK, connection2);
 
             while (rs.next()) {
                 Payment payment = new Payment();

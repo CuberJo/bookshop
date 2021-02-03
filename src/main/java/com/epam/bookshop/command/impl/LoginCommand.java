@@ -13,8 +13,8 @@ import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.Validator;
-import com.epam.bookshop.validator.impl.VerifyReCaptcha;
+import com.epam.bookshop.validator.impl.StringValidator;
+import com.epam.bookshop.util.VerifyReCaptcha;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,15 +40,13 @@ public class LoginCommand implements Command {
         final String login = requestContext.getParameter(RequestConstants.LOGIN);
         final String password = requestContext.getParameter(RequestConstants.PASSWORD);
 
-        System.out.println(requestContext.getParameter(login));
-
         final HttpSession session = requestContext.getSession();
         String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
         String errorMessage = "";
 
 
         try {
-            if (new Validator().empty(login, password)) {
+            if (StringValidator.getInstance().empty(login, password)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;

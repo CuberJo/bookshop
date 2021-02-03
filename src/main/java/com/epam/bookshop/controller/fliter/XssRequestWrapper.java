@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * Wrapper class for request used to strip parameters if xss attack detected
  */
-public class XSSRequestWrapper extends HttpServletRequestWrapper {
+public class XssRequestWrapper extends HttpServletRequestWrapper {
 
     private static final String AVOID_SCRIPT_FRAGMENTS_PATTERN = "<script>(.*?)</script>";
     private static final String AVOID_SCRIPT_TAG_PATTERN = "</script>";
@@ -35,7 +35,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
             Pattern.compile(AVOID_ONLOAD_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
     };
 
-    XSSRequestWrapper(HttpServletRequest servletRequest) {
+    XssRequestWrapper(HttpServletRequest servletRequest) {
         super(servletRequest);
     }
 

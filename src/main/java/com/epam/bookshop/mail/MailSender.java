@@ -1,7 +1,5 @@
 package com.epam.bookshop.mail;
 
-import com.epam.bookshop.util.PropertiesLoader;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -36,7 +34,7 @@ public class MailSender {
      * @throws MessagingException
      */
     public void send(String recipient, String subject, String response) throws MessagingException {
-        Properties sessionProperties = PropertiesLoader.getInstance().initSessionProperties();
+        Properties sessionProperties = MailPropertiesLoader.getInstance().initSessionProperties();
 
         Session mailSession = MailSessionCreator.getInstance().createSession(sessionProperties);
 
@@ -46,5 +44,3 @@ public class MailSender {
         Transport.send(message);
     }
 }
-//        final String accountEmail = "xxxxxx@xxxx.com";
-//        final String pass = "xxxxx";

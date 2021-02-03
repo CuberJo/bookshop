@@ -26,7 +26,6 @@ public class CartCommand implements Command {
         if (Objects.nonNull(chosenIBAN)) {
             session.setAttribute(RequestConstants.CHOSEN_IBAN, chosenIBAN);
             cartPage = CART_PAGE_REDIRECT;
-
         }
 
         String backToChooseIBAN = requestContext.getParameter(RequestConstants.BACK_TO_CHOOSE_IBAN);

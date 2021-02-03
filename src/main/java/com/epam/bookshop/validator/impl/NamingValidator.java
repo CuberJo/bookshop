@@ -20,6 +20,10 @@ import java.lang.reflect.Field;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Validates {@link String} name fields of entities and criteria
+ * for accordance to regular expression pattern
+ */
 public class NamingValidator implements Validatable<Naming> {
 
     private String locale = "US";
