@@ -131,7 +131,7 @@
                 <div class="input-group">
                     <div class="input-group-btn search-panel">
                         <button id="allSearchCriteria" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <span id="search_concept"><fmt:message key="label.all" bundle="${lang}"/></span> <span class="caret"></span>
+                            <span id="search_concept"><fmt:message key="label.all" bundle="${lang}"/></span><span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu scrollable-dropdown" role="menu">
                             <li><a class="book" href="#"><fmt:message key="label.book" bundle="${lang}"/></a></li>
@@ -147,11 +147,19 @@
 <%--                            <span class="glyphicon glyphicon-search"></span>--%>
 <%--                        </button>--%>
 <%--                    </span>--%>
-                    <form class="input-group-btn" method="post" action="/home?command=books">
-                        <input type="hidden" name="customizedSearch" value="true" />
+<%--                    <form class="input-group-btn" method="post" action="/home?command=books">--%>
+<%--                        <input type="hidden" name="customizedSearch" value="true" />--%>
+<%--                        <input type="hidden" name="searchCriteria" id="scr" />--%>
+<%--                        <input type="hidden" name="str" id="str" />--%>
+<%--                        <button id="searchBtn" class="btn btn-default" type="submit" &lt;%&ndash;onclick="validateSearchInput(event)"&ndash;%&gt;>--%>
+<%--                            <span class="glyphicon glyphicon-search"></span>--%>
+<%--                        </button>--%>
+<%--                    </form>--%>
+                    <form class="input-group-btn" method="post" action="/command=book_search_results">
+                        <input type="hidden" name="advanced_book_search" value="true" />
                         <input type="hidden" name="searchCriteria" id="scr" />
                         <input type="hidden" name="str" id="str" />
-                        <button id="searchBtn" class="btn btn-default" type="submit" onclick="validateSearchInput(event)">
+                        <button id="searchBtn" class="btn btn-default" type="submit">
                             <span class="glyphicon glyphicon-search"></span>
                         </button>
                     </form>

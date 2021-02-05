@@ -33,14 +33,15 @@ public class RequestConstants {
     public static final String PAGE = "page";
     public static final String COUNT = "count";
 
-    public static final String CUSTOMIZED_SEARCH = "customizedSearch";
     public static final String SEARCH_CRITERIA = "searchCriteria";
     public static final String SEARCH_STR = "str";
     public static final String REQUEST_FROM_SEARCH_PAGE = "requestFromSearchPage";
     public static final String REQUEST_FROM_SEARCH_INPUT = "requestFromSearchInput";
 
 
-    public static final String NOT_ADVANCED_SEARCH = "notAdvancedSearch";
+    public static final String NOT_ADVANCED_BOOK_SEARCH = "not_advanced_book_search";
+    public static final String ADVANCED_BOOK_SEARCH = "advanced_book_search";
+
     public static final String AUTHOR = "author";
     public static final String TITLE = "title";
     public static final String PRICE = "price";

@@ -7,7 +7,7 @@ import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
+import com.epam.bookshop.util.query_creator.impl.EntitySqlQueryCreatorFactory;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +118,7 @@ public class UserDao extends AbstractDao<Long, User> {
     @Override
     public Collection<User> findAll(Criteria<User> criteria) {
         String query = SQL_SELECT_ALL_USERS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
+                + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
 
         List<User> users = new ArrayList<>();
 
@@ -138,7 +138,7 @@ public class UserDao extends AbstractDao<Long, User> {
     @Override
     public Optional<User> find(Criteria<User> criteria) {
         String query = SQL_SELECT_ALL_USERS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
+                + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
 
         User user = null;
 

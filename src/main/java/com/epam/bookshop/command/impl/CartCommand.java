@@ -33,6 +33,8 @@ public class CartCommand implements Command {
             session.removeAttribute(RequestConstants.BACK_TO_CHOOSE_IBAN);
         }
 
+        session.removeAttribute(RequestConstants.BOOK_TO_CART);
+
         return cartPage;
     }
 }

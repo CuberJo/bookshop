@@ -1,6 +1,11 @@
 package com.epam.bookshop.controller.ajax;
 
+import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandFactory;
+import com.epam.bookshop.command.RequestContext;
+import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.command.impl.BooksCommand;
+import com.epam.bookshop.command.impl.CustomRequestContext;
 import com.epam.bookshop.controller.ajax.query_processor.CountBooksQueryProcessor;
 import com.epam.bookshop.controller.ajax.query_processor.HomepageBooksQueryProcessor;
 import com.epam.bookshop.controller.ajax.query_processor.SearchBooksQueryProcessor;
@@ -12,7 +17,7 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.util.JsonWriter;
+import com.epam.bookshop.util.JsonConverter;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
@@ -31,7 +36,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Fetches books from database
@@ -48,7 +52,18 @@ public class BooksController extends HttpServlet {
         final HttpSession session = req.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        int start, total;
+        final String commandParam = req.getParameter(RequestConstants.COMMAND);
+        Command command = CommandFactory.command(commandParam);
+
+        ResponseContext execute = command.execute(new CustomRequestContext(req));
+
+
+        if (Objects.nonNull(execute) && !execute.getPage().isEmpty()) {
+            writeResp(resp, UtilStringConstants.APPLICATION_JSON, execute.getPage());
+            return;
+        }
+
+
         Collection<Book> books;
 
         if (HomepageBooksQueryProcessor.getInstance().process(req, resp)
@@ -58,11 +73,11 @@ public class BooksController extends HttpServlet {
             return;
         }
 
-        start = getStartPoint(req, ITEMS_PER_PAGE);
+        int start = getStartPoint(req, ITEMS_PER_PAGE);
         String genreName = BooksCommand.decode(req.getParameter(RequestConstants.GENRE));
         books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
 
-        String jsonStrings = JsonWriter.getInstance().write(books);
+        String jsonStrings = JsonConverter.getInstance().write(books);
         writeResp(resp, UtilStringConstants.APPLICATION_JSON, jsonStrings);
     }
 
@@ -101,6 +116,27 @@ public class BooksController extends HttpServlet {
 
         return start;
     }
+
+
+
+    /**
+     * Counts serial number of row from
+     * where to start search in database
+     *
+     * @param requestContext request to this servlet
+     * @return counted start page number
+     */
+    public static int getStartPoint(RequestContext requestContext, int itemsPerPage) {
+        int start = 1;
+        String pageStr = requestContext.getParameter(RequestConstants.PAGE);
+        if (Objects.nonNull(pageStr) && !pageStr.isEmpty()) {
+            start = Integer.parseInt(pageStr);
+        }
+        start = --start * itemsPerPage;
+
+        return start;
+    }
+
 
 
     /**

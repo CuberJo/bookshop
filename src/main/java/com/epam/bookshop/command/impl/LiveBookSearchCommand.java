@@ -1,64 +1,52 @@
-package com.epam.bookshop.controller.ajax;
+package com.epam.bookshop.command.impl;
 
-import com.epam.bookshop.controller.ajax.query_processor.SearchBooksQueryProcessor;
-import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.domain.impl.Genre;
-import com.epam.bookshop.exception.EntityNotFoundException;
-import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.service.impl.BookService;
-import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.util.JsonWriter;
+import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.RequestContext;
+import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.controller.ajax.BooksController;
+import com.epam.bookshop.domain.impl.Book;
+import com.epam.bookshop.domain.impl.Genre;
+import com.epam.bookshop.exception.EntityNotFoundException;
+import com.epam.bookshop.util.EntityFinder;
+import com.epam.bookshop.util.JsonConverter;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.StringValidator;
+import com.epam.bookshop.validator.impl.EmptyStringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Live book search
- */
-@WebServlet("/search_books")
-public class SearchBooksController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(SearchBooksController.class);
+public class LiveBookSearchCommand implements Command {
+    private static final Logger logger = LoggerFactory.getLogger(LiveBookSearchCommand.class);
 
     private static final int START_POINT = 0;
     private static final int DEFAULT_GENRE_ID = 1;
 
-
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        final HttpSession session = req.getSession();
+    public ResponseContext execute(RequestContext requestContext) {
+        final HttpSession session = requestContext.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        if (!isSearchInputCorrect(req.getParameter(RequestConstants.SEARCH_STR))) {
+        if (!isSearchInputCorrect(requestContext.getParameter(RequestConstants.SEARCH_STR))) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
             session.setAttribute(ErrorMessageConstants.ERROR_SEARCH_MESSAGE, error);
-            return;
+            return () -> UtilStringConstants.EMPTY_STRING;
         }
 
-        Criteria<Book> criteria = buildCriteria(req, locale);
-        Collection<Book> books = SearchBooksQueryProcessor.findBooksLike(criteria, START_POINT, BooksController.ITEMS_PER_PAGE, locale);
+        Criteria<Book> criteria = buildCriteria(requestContext, locale);
+        Collection<Book> books = EntityFinder.getInstance().findBooksLike(criteria, START_POINT, BooksController.ITEMS_PER_PAGE, locale, logger);
 
-        String jsonStrings = JsonWriter.getInstance().write(books);
-        resp.getWriter().write(jsonStrings);
+        return () -> JsonConverter.getInstance().write(books);
     }
 
 
@@ -70,31 +58,29 @@ public class SearchBooksController extends HttpServlet {
      * string corresponds to correct input, otherwise - <b>false</b>
      */
     private boolean isSearchInputCorrect(String searchStr) {
-
         Pattern p = Pattern.compile(RegexConstants.MALICIOUS_REGEX);
         Matcher m = p.matcher(searchStr);
 
-        return !StringValidator.getInstance().empty(searchStr) && !m.matches();
+        return !EmptyStringValidator.getInstance().empty(searchStr) && !m.matches();
     }
-
 
 
     /**
      * Builds criteria by request params
      *
-     * @param request instance of {@link HttpServletRequest} class
+     * @param requestContext instance of {@link RequestContext} implementor class
      * @param locale language of error messages
-     * @return built {@link Criteria<Book>} instance
+     * @return built {@link Criteria < Book >} instance
      */
-    private Criteria<Book> buildCriteria(HttpServletRequest request, String locale) {
+    private Criteria<Book> buildCriteria(RequestContext requestContext, String locale) {
 
-        String searchStr = request.getParameter(RequestConstants.SEARCH_STR);
+        String searchStr = requestContext.getParameter(RequestConstants.SEARCH_STR);
         searchStr = searchStr.replaceFirst("\\s++$", "");
         searchStr = searchStr.replaceFirst("^\\s++", "");
 
 
         Criteria<Book> criteria;
-        switch (request.getParameter(RequestConstants.SEARCH_CRITERIA)) {
+        switch (requestContext.getParameter(RequestConstants.SEARCH_CRITERIA)) {
             case RequestConstants.GENRE:
                 Criteria<Genre> genreCriteria = GenreCriteria.builder()
                         .genre(searchStr)

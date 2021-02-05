@@ -3,7 +3,7 @@ package com.epam.bookshop.validator.impl;
 import com.epam.bookshop.util.annotation.Size;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
-import com.epam.bookshop.validator.Validatable;
+import com.epam.bookshop.validator.AnnotationValidator;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import org.slf4j.Logger;
@@ -14,13 +14,12 @@ import java.lang.reflect.Field;
 /**
  * Validates {@link String} name fields of entities and criteria
  */
-public class SizeValidator implements Validatable<Size> {
+public class SizeValidator implements AnnotationValidator<Size> {
     private static final Logger logger = LoggerFactory.getLogger(SizeValidator.class);
 
     private static final String SIZE_VALIDATION_FAILED = "size_validation_failed";
     private String locale = "US";
 
-    @Override
     public void setLocale(String locale) {
         this.locale = locale;
     }

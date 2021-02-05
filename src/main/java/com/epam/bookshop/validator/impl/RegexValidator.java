@@ -8,19 +8,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Validates strings for emptiness and regular
- * expression accordance
+ * Validates strings for regular expression accordance
  */
-public class StringValidator {
+public class RegexValidator {
 
     private static final ReentrantLock LOCK = new ReentrantLock();
-    private static StringValidator instance;
+    private static RegexValidator instance;
 
-    public static StringValidator getInstance() {
+    public static RegexValidator getInstance() {
         LOCK.lock();
         try {
             if (instance == null) {
-                instance = new StringValidator();
+                instance = new RegexValidator();
             }
         } finally {
             LOCK.unlock();
@@ -40,22 +39,5 @@ public class StringValidator {
         Matcher m = p.matcher(stringToValidate);
 
         return m.matches();
-    }
-
-
-    /**
-     * Checks strings for not being empty
-     *
-     * @param strings - Strings to be validated
-     * @return <b>true</b> if, and only if, passed strings are empty
-     */
-    public boolean empty(String ... strings) {
-        for (String string : strings) {
-            if (string.equals(UtilStringConstants.EMPTY_STRING) || string.matches(RegexConstants.EMPTY_STRING_REGEX)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

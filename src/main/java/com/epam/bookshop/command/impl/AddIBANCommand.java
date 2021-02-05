@@ -6,30 +6,26 @@ import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
-import com.epam.bookshop.constant.RegexConstants;
-import com.epam.bookshop.constant.UtilStringConstants;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
+/**
+ * Adds IBAN to {@link User} or returns page
+ */
 public class AddIBANCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(AddIBANCommand.class);
 
-    private static final ResponseContext ADD_IBAN_PAGE_FORWARD = () -> "/WEB-INF/jsp/add_iban.jsp";
+//    private static final ResponseContext ADD_IBAN_PAGE_FORWARD = () -> "/WEB-INF/jsp/add_iban.jsp";
     private static final ResponseContext ADD_IBAN_PAGE_REDIRECT = () -> "/home?command=add_iban";
     private static final ResponseContext CHOOSE_IBAN_PAGE_FORWARD = () -> "/WEB-INF/jsp/choose_iban.jsp";
     private static final ResponseContext PERSONAL_PAGE_PAGE = () -> "/home?command=personal_page";
@@ -42,9 +38,9 @@ public class AddIBANCommand implements Command {
         final HttpSession session = requestContext.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        if (needToReturnPage(requestContext)) {
-            return ADD_IBAN_PAGE_FORWARD;
-        }
+//        if (needToReturnPage(requestContext)) {
+//            return ADD_IBAN_PAGE_FORWARD;
+//        }
 
         User user = EntityFinder.getInstance().findUserInSession(session, logger);
         List<String> IBANs = EntityFinder.getInstance().findIBANs(user, locale);
@@ -52,16 +48,15 @@ public class AddIBANCommand implements Command {
             session.setAttribute(RequestConstants.IBANs, IBANs);
         }
 
-        if (Objects.isNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
-            if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CART))) {
-                session.removeAttribute(RequestConstants.BACK_TO_CART);
-                return CHOOSE_IBAN_PAGE_FORWARD;
-            }
-        }
-
-        if ((IBANs.stream().findAny().isEmpty()
-                || Objects.nonNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN)))) {
-
+//        if (Objects.isNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
+//            if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CART))) {
+//                session.removeAttribute(RequestConstants.BACK_TO_CART);
+//                return CHOOSE_IBAN_PAGE_FORWARD;
+//            }
+//        }
+//
+//        if ((IBANs.stream().findAny().isEmpty()
+//                /*|| Objects.nonNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))*/)) {
             try {
                 String iban = createIBAN(requestContext, user, locale);
                 IBANs.add(iban);
@@ -71,10 +66,10 @@ public class AddIBANCommand implements Command {
                 return ADD_IBAN_PAGE_REDIRECT;
             }
 
-            if (Objects.nonNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
-                session.removeAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN);
-            }
-        }
+//            if (Objects.nonNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
+//                session.removeAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN);
+//            }
+//        }
 
         if (Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CART))) {
             session.removeAttribute(RequestConstants.BACK_TO_CART);

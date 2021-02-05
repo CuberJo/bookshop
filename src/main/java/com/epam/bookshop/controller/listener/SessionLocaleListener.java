@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSessionListener;
  * Sets default locale when session is created
  */
 @WebListener
-public class SessionListener implements HttpSessionListener {
+public class SessionLocaleListener implements HttpSessionListener {
 
 //    private static final String RU = "RU";
 

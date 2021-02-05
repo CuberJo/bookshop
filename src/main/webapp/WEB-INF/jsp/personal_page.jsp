@@ -171,7 +171,7 @@
                     </div>
                 </div>
                 <div id="rowToReload2"><c:if test="${not empty sessionScope.error_acc_settings}">
-                    <div style="background: #EACCCC; padding: 10px 15px">
+                    <div id="serverError" style="background: #EACCCC; padding: 10px 15px">
                         ${sessionScope.error_acc_settings}
                         <c:remove var="error_acc_settings" scope="session" />
                     </div>
@@ -268,7 +268,8 @@
                         </div>
                     </section>
                     <div style="height: 50px"></div>
-                    <a href="/home?command=add_iban&getAddIBANPage=getAddIBANPage&additional_iban=additional_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>
+<%--                    <a href="/home?command=add_iban&getAddIBANPage=getAddIBANPage&additional_iban=additional_iban" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>--%>
+                    <a href="/home?command=add_iban_page" class="btn"><fmt:message key="label.add_bank_acc" bundle="${lang}"/></a>
                     <div style="height: 100px"></div>
                 </div>
             </div>
@@ -392,7 +393,9 @@
             success: function () {
                 $('#rowToReload2').load(' #rowToReload2');
                 $('#rowToReload').load(' #rowToReload');
-                $('#popup1.overlay').css({'visibility': 'visible', 'opacity': '1'});
+                if (/*$('#serverError').text() !== undefined &&*/ $('#serverError').text() === "") {
+                    $('#popup1.overlay').css({'visibility': 'visible', 'opacity': '1'});
+                }
                 // $('.small-container').load(' .small-container');
             }
         });

@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+/**
+ * Proxy class for {@link Connection}
+ */
 public class ConnectionProxy implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionProxy.class);
 
@@ -66,8 +69,7 @@ public class ConnectionProxy implements Connection {
     }
 
     /**
-     * Method that replaces actioal method of
-     * {@link Connection} class
+     * Method that replaces actual method of {@link Connection} class
      */
     @Override
     public void close() {

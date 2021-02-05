@@ -14,10 +14,7 @@ import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.CriteriaValidator;
-import com.epam.bookshop.validator.impl.EntityValidator;
-import com.epam.bookshop.validator.impl.IbanValidator;
-import com.epam.bookshop.validator.impl.StringValidator;
+import com.epam.bookshop.validator.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -223,9 +220,12 @@ public class UserService implements EntityService<User> {
 
 
     public Map<String, Long> createUserBankAccount(String IBAN, Long library_User_Id) throws ValidatorException {
-        IbanValidator validator = new IbanValidator();
-        validator.setLocale(locale);
-        validator.validate(IBAN);
+        if (EmptyStringValidator.getInstance().empty(IBAN)) {
+            throw new ValidatorException(ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_IBAN));
+        }
+        if (!RegexValidator.getInstance().validate(IBAN, RegexConstants.IBAN_REGEX)) {
+            throw new ValidatorException(ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBAN_INCORRECT));
+        }
 
         try(Connection conn = ConnectionPool.getInstance().getAvailableConnection()) {
             UserDao dao = (UserDao) DAOFactory.INSTANCE.create(EntityType.USER, conn);

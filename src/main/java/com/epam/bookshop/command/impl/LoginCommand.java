@@ -13,7 +13,8 @@ import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.StringValidator;
+import com.epam.bookshop.validator.impl.EmptyStringValidator;
+import com.epam.bookshop.validator.impl.RegexValidator;
 import com.epam.bookshop.util.VerifyReCaptcha;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ public class LoginCommand implements Command {
 
 
         try {
-            if (StringValidator.getInstance().empty(login, password)) {
+            if (EmptyStringValidator.getInstance().empty(login, password)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
                 return ACCOUNT_PAGE;

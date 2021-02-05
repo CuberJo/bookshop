@@ -12,11 +12,9 @@ import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.mail.MailSender;
-import com.epam.bookshop.validator.impl.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

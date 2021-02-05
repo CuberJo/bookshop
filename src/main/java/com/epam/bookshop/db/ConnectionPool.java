@@ -1,5 +1,6 @@
 package com.epam.bookshop.db;
 
+import com.epam.bookshop.db.config.DatabaseConfigurator;
 import com.mysql.cj.jdbc.Driver;
 
 import java.sql.Connection;
@@ -35,16 +36,11 @@ public class ConnectionPool {
         return instance;
     }
 
-    // чтобы избежать дкиких соединений
     private BlockingQueue<ConnectionProxy> availableConnections;
     private BlockingQueue<ConnectionProxy> notAvailableConnections;
 
-    public void setLocale(String locale) {
-    }
-
     /**
-     * Makes {@code ConnectionPool} initialization with
-     * created {@link Connection} instances
+     * Makes {@code ConnectionPool} initialization with created {@link Connection} instances
      */
     public void init() {
         int poolSize = DatabaseConfigurator.getInstance().getPoolSize();
@@ -130,8 +126,6 @@ public class ConnectionPool {
             }
         });
     }
-
-
 
     BlockingQueue<ConnectionProxy> getAvailableConnections() {
         return availableConnections;

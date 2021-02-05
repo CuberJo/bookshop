@@ -6,13 +6,13 @@ import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.exception.UnknownEntityException;
-import com.epam.bookshop.util.query_creator.EntityQueryCreator;
+import com.epam.bookshop.util.query_creator.SqlQueryCreator;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.SqlQueryValidator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class PaymentQueryCreator implements EntityQueryCreator<Payment> {
+public class PaymentSqlQueryCreator implements SqlQueryCreator<Payment> {
 
     private static final String PAYMENT_ID_COLUMN = "Id";
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
@@ -21,14 +21,13 @@ public class PaymentQueryCreator implements EntityQueryCreator<Payment> {
     private static final String PRICE_COLUMN = "Price";
 
     private static final ReentrantLock lock = new ReentrantLock();
+    private static PaymentSqlQueryCreator instance;
 
-    private static PaymentQueryCreator instance;
-
-    public static PaymentQueryCreator getInstance() {
+    public static PaymentSqlQueryCreator getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new PaymentQueryCreator();
+                instance = new PaymentSqlQueryCreator();
             }
         } finally {
             lock.unlock();
@@ -37,7 +36,7 @@ public class PaymentQueryCreator implements EntityQueryCreator<Payment> {
         return instance;
     }
 
-    private PaymentQueryCreator() {
+    private PaymentSqlQueryCreator() {
 
     }
 

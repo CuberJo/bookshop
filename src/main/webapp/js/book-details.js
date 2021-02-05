@@ -10,7 +10,8 @@ function fetchRelatedBooks() {
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
-            relatedBooks: 'fetch'
+            // relatedBooks: 'fetch'
+            command: 'relatedBooks'
         }),
         success: function (jsonStr) {
             relatedBooks = jsonStr;

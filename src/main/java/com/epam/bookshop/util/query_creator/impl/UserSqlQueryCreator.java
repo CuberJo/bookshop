@@ -4,7 +4,7 @@ import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.UnknownEntityException;
-import com.epam.bookshop.util.query_creator.EntityQueryCreator;
+import com.epam.bookshop.util.query_creator.SqlQueryCreator;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
@@ -12,7 +12,7 @@ import com.epam.bookshop.validator.impl.SqlQueryValidator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class UserQueryCreator implements EntityQueryCreator<User> {
+public class UserSqlQueryCreator implements SqlQueryCreator<User> {
 
     private static final String LIBRARY_USER_ID_COLUMN = "Id";
     private static final String NAME_COLUMN = "Name";
@@ -23,13 +23,13 @@ public class UserQueryCreator implements EntityQueryCreator<User> {
 
     private static final ReentrantLock lock = new ReentrantLock();
 
-    private static UserQueryCreator instance;
+    private static UserSqlQueryCreator instance;
 
-    public static UserQueryCreator getInstance() {
+    public static UserSqlQueryCreator getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new UserQueryCreator();
+                instance = new UserSqlQueryCreator();
             }
         } finally {
             lock.unlock();
@@ -38,7 +38,7 @@ public class UserQueryCreator implements EntityQueryCreator<User> {
         return instance;
     }
 
-    private UserQueryCreator() {
+    private UserSqlQueryCreator() {
 
     }
 

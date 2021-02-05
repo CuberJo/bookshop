@@ -9,8 +9,9 @@ import com.epam.bookshop.mail.MailSender;
 import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.validator.impl.EmptyStringValidator;
 import com.epam.bookshop.validator.impl.StringSanitizer;
-import com.epam.bookshop.validator.impl.StringValidator;
+import com.epam.bookshop.validator.impl.RegexValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +44,12 @@ public class SendContactFormCommand implements Command {
 
 
         try {
-            if (StringValidator.getInstance().empty(name, email, subject)) {
+            if (EmptyStringValidator.getInstance().empty(name, email, subject)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
                 return CONTACT_US_PAGE;
             }
-            if(!StringValidator.getInstance().validate(email, RegexConstants.EMAIL_REGEX)) {
+            if(!RegexValidator.getInstance().validate(email, RegexConstants.EMAIL_REGEX)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT)
                         + UtilStringConstants.WHITESPACE + email;
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);

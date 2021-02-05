@@ -61,6 +61,7 @@ public class AddToCartController extends HttpServlet {
 
         for (Book b : cart) {
             if (Objects.nonNull(book) && book.equals(b)) {
+//                session.removeAttribute(RequestConstants.BOOK_TO_CART);
                 return;
             }
         }
@@ -70,7 +71,7 @@ public class AddToCartController extends HttpServlet {
         }
 
         cart.add(book);
-        session.removeAttribute(RequestConstants.BOOK_TO_CART);
+//        session.removeAttribute(RequestConstants.BOOK_TO_CART);
     }
 
 

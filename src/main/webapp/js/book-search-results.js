@@ -4,6 +4,8 @@ const booksPerPage = 8;
 let booksQuantity;
 $('.page-num').text(' ' + pageNum);
 
+let command = $('#searchType').text();
+
 hidePrev();
 
 let books;
@@ -18,17 +20,12 @@ function fetchData(pageNumber) {
         pageNumber = 1
     }
 
-    let genreName = $('#genre').text();
-    if (genreName === "") {
-        genreName = undefined;
-    }
-
     $.ajax({
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
             page: pageNumber,
-            genre: genreName
+            command: command
         }),
         success: function (jsonStr) {
             books = jsonStr;
@@ -46,17 +43,12 @@ function fetchData(pageNumber) {
 function fetchBooksQuantity() {
     let needCount = 1;
 
-    let genreName = $('#genre').text();
-    if (genreName === "") {
-        genreName = undefined;
-    }
 
     $.ajax({
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
             count: needCount,
-            genre: genreName
         }),
         success: function (rows) {
             booksQuantity = rows;
@@ -96,17 +88,17 @@ function render(books) {
         $.each(books, function (index, el) {
             if (el.base64Image != null && el.base64Image !== "") {
                 let block = '<div class="col-4" style="flex-basis: 25%"><a href="/home?command=book_details&isbn=' + el.isbn + '">' +
-                            '<img height="" src="data:image/jpg;base64,' + el.base64Image + '">' +
-                            '<h4>' + el.title + '</h4>' +
-                            '<div class="rating">' +
-                                '<i class="fa fa-star"></i>' +
-                                '<i class="fa fa-star"></i>' +
-                                '<i class="fa fa-star"></i>' +
-                                '<i class="fa fa-star"></i>' +
-                                '<i class="fa fa-star-o"></i>' +
-                            '</div>' +
-                            '<p>' + el.price + '&#36;</p>' +
-                            '</a></div>';
+                    '<img height="" src="data:image/jpg;base64,' + el.base64Image + '">' +
+                    '<h4>' + el.title + '</h4>' +
+                    '<div class="rating">' +
+                    '<i class="fa fa-star"></i>' +
+                    '<i class="fa fa-star"></i>' +
+                    '<i class="fa fa-star"></i>' +
+                    '<i class="fa fa-star"></i>' +
+                    '<i class="fa fa-star-o"></i>' +
+                    '</div>' +
+                    '<p>' + el.price + '&#36;</p>' +
+                    '</a></div>';
                 $('#toInsert').append(block);
             }
         })
@@ -157,11 +149,6 @@ function render(books) {
  */
 $(document).ready(function () {
 
-    let genreName = $('#genre').text();
-    if (genreName === "") {
-        genreName = undefined;
-    }
-
     /**
      * on prev click
      */
@@ -172,7 +159,7 @@ $(document).ready(function () {
                 type: 'GET',
                 data: ({
                     page: pageNum,
-                    genre: genreName
+                    command: command
                 }),
                 success: function (jsonStr) {
                     books = jsonStr;
@@ -204,7 +191,7 @@ $(document).ready(function () {
                 type: 'GET',
                 data: ({
                     page: ++pageNum,
-                    genre: $('#genre').text()
+                    command: command
                 }),
                 success: function (jsonStr) {
                     books = jsonStr;

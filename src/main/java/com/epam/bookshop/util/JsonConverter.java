@@ -10,21 +10,24 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class JsonWriter {
-    private static final Logger logger = LoggerFactory.getLogger(JsonWriter.class);
+/**
+ * Converts instances to JSON
+ */
+public class JsonConverter {
+    private static final Logger logger = LoggerFactory.getLogger(JsonConverter.class);
 
-    private static JsonWriter instance;
+    private static JsonConverter instance;
     private static final ReentrantLock lock = new ReentrantLock();
 
     /**
      * Thread-safe singleton creation
-     * @return instance of {@link JsonWriter} class
+     * @return instance of {@link JsonConverter} class
      */
-    public static JsonWriter getInstance() {
+    public static JsonConverter getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new JsonWriter();
+                instance = new JsonConverter();
             }
         } finally {
             lock.unlock();
@@ -52,9 +55,6 @@ public class JsonWriter {
      * @param entities {@link Collection} entities to serialize into JSON
      */
     public String write(Collection<? extends Entity> entities) {
-//        Collection<String> jsonStrings = new ArrayList<>();
-//        entities.forEach(entity -> jsonStrings.add(write(entity)));
-//        return jsonStrings;
         ObjectMapper mapper = new ObjectMapper();
         String jsonStr = "";
         try {

@@ -69,7 +69,7 @@ public class ReadBookController extends HttpServlet {
         Criteria<Book> criteria = BookCriteria.builder()
                 .ISBN(request.getParameter(RequestConstants.ISBN))
                 .build();
-        Book book = findBook(criteria, locale);
+        Book book = EntityFinder.getInstance().find(criteria, locale, logger);
         try {
             User user = EntityFinder.getInstance().findUserInSession(request.getSession(), logger);
             Criteria<Payment> paymentCriteria = PaymentCriteria.builder()
@@ -107,7 +107,7 @@ public class ReadBookController extends HttpServlet {
             Criteria<Book> criteria = BookCriteria.builder()
                     .ISBN(request.getParameter(RequestConstants.ISBN))
                     .build();
-            Book book = findBook(criteria, locale);
+            Book book = EntityFinder.getInstance().find(criteria, locale, logger);
 
             bos = getBookByteArrayStram(book, locale);
 
@@ -115,10 +115,6 @@ public class ReadBookController extends HttpServlet {
             response.setHeader(CONTENT_DISPOSITION_HEADER, HEADER_PARAM);
             response.setContentLength(bos.size());
             bos.writeTo(response.getOutputStream());
-
-//                httpResponse.setHeader("Content-Disposition", "\"" + getContentDisposition() + "\"" + ((getFileName() != null && !getFileName().isEmpty()) ? "; filename=\"" + getFileName() + "\"": ""));
-//            response.addHeader("Content-Disposition", "attachment; filename=" + pdfFileName);
-
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -134,35 +130,6 @@ public class ReadBookController extends HttpServlet {
                 logger.error(e.getMessage(), e);
             }
         }
-    }
-
-
-    /**
-     * Finds book in database by criteria
-     *
-     * @param criteria {@link Criteria<Book>} criterai of book search
-     * @param locale language of error messages
-     * @return book if it was found, otherwise {@link Optional} empty
-     */
-    private Book findBook(Criteria<Book> criteria, String locale) {
-        EntityService<Book> service = ServiceFactory.getInstance().create(EntityType.BOOK);
-        service.setLocale(locale);
-
-        Optional<Book> optionalBook;
-        try {
-            optionalBook = service.find(criteria);
-            if (optionalBook.isEmpty()) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                        + UtilStringConstants.WHITESPACE + ((BookCriteria) criteria).getISBN();
-                logger.error(error);
-                throw new RuntimeException(error);
-            }
-        } catch (ValidatorException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
-
-        return optionalBook.get();
     }
 
 
@@ -189,57 +156,5 @@ public class ReadBookController extends HttpServlet {
         bos.write(file, 0, file.length);
 
         return bos;
-    }
-
-
-    /**
-     * for download
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
-     */
-    private void downloadFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final HttpSession session = request.getSession();
-
-        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
-
-
-        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        String isbn = request.getParameter(RequestConstants.ISBN);
-        Criteria<Book> criteria = BookCriteria.builder()
-                .ISBN(isbn)
-                .build();
-        try {
-            Optional<Book> optionalBook = service.find(criteria);
-            if (optionalBook.isEmpty()) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                        + UtilStringConstants.WHITESPACE + isbn;
-                logger.error(error);
-                throw new RuntimeException(error);
-            }
-
-            byte[] file = service.findBookFile(optionalBook.get());
-
-            String pdfFileName = "pdf-test.pdf";
-            response.setContentType("application/pdf");
-            response.addHeader("Content-Disposition", "attachment; filename=" + pdfFileName);
-            response.setContentLength(file.length);
-
-
-//            session.setAttribute("file", file.getBytes(1, (int) file.length()));
-            OutputStream responseOutputStream = response.getOutputStream();
-//            int bytes;
-            for (byte b : file) {
-                responseOutputStream.write(b);
-            }
-//            while ((bytes = file.read()) != -1) {
-//                responseOutputStream.write(bytes);
-//            }
-            System.out.println("hi");
-        } catch (ValidatorException | EntityNotFoundException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
     }
 }

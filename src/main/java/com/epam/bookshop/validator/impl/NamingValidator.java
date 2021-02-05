@@ -1,6 +1,6 @@
 package com.epam.bookshop.validator.impl;
 
-import com.epam.bookshop.validator.Validatable;
+import com.epam.bookshop.validator.AnnotationValidator;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
@@ -24,11 +24,10 @@ import java.util.regex.Pattern;
  * Validates {@link String} name fields of entities and criteria
  * for accordance to regular expression pattern
  */
-public class NamingValidator implements Validatable<Naming> {
+public class NamingValidator implements AnnotationValidator<Naming> {
 
     private String locale = "US";
 
-    @Override
     public void setLocale(String locale) {
         this.locale = locale;
     }

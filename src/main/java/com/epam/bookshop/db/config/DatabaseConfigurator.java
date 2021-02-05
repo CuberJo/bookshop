@@ -1,4 +1,4 @@
-package com.epam.bookshop.db;
+package com.epam.bookshop.db.config;
 
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -26,10 +26,13 @@ public class DatabaseConfigurator {
     private static final String DB_SERVER_TIMEZONE = "db.serverTimezone";
     private static final String SERVER_TIMEZONE_PARAM = "?serverTimezone=";
 
-
     private static DatabaseConfigurator instance;
 
-    private static ReentrantLock lock = new ReentrantLock();
+    private static final ReentrantLock lock = new ReentrantLock();
+
+    private DatabaseConfigurator() {
+        configure();
+    }
 
     public static DatabaseConfigurator getInstance() {
         lock.lock();
@@ -44,8 +47,7 @@ public class DatabaseConfigurator {
         return instance;
     }
 
-
-    public void configure() {
+    private void configure() {
         ResourceBundle resourceBundle = ResourceBundle.getBundle(DATABASE_PROPERTIES_FILEPATH);
         url = resourceBundle.getString(DB_URL);
         dbName = resourceBundle.getString(DB_NAME);

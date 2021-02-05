@@ -23,9 +23,9 @@
         <nav>
             <ul id="Menuitems">
                 <li>
-                    <form id="headerSearchForm" method="post" action="/home?command=books">
-                        <input type="hidden" name="notAdvancedSearch" value="true">
-                        <input type="search" name="str" style="outline: none" placeholder="<fmt:message key="label.search" bundle="${lang}"/>..." class="searchInput">
+                    <form id="headerSearchForm" method="post" action="/home?command=book_search_results">
+                        <input type="hidden" name="not_advanced_book_search" value="true">
+                        <input type="search" name="str" style="outline: none; margin: 10px 0; padding: 0 10px; height: 30px;" placeholder="<fmt:message key="label.search" bundle="${lang}"/>..." class="searchInput">
 <%--                        <i class="fa fa-search"></i>--%>
                     </form>
                 </li>

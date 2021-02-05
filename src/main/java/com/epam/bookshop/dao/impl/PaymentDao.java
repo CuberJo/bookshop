@@ -4,7 +4,7 @@ import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.*;
-import com.epam.bookshop.util.query_creator.impl.EntityQueryCreatorFactory;
+import com.epam.bookshop.util.query_creator.impl.EntitySqlQueryCreatorFactory;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
@@ -122,7 +122,7 @@ public class PaymentDao extends AbstractDao<Long, Payment> {
     @Override
     public Collection<Payment> findAll(Criteria<Payment> criteria) {
         String query = SQL_SELECT_ALL_PAYMENTS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStringConstants.EQUALS);
+                + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStringConstants.EQUALS);
 
         List<Payment> payments = new ArrayList<>();
 
@@ -145,7 +145,7 @@ public class PaymentDao extends AbstractDao<Long, Payment> {
     @Override
     public Optional<Payment> find(Criteria<Payment> criteria) {
         String query = SQL_SELECT_ALL_PAYMENTS_WHERE
-                + EntityQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStringConstants.EQUALS);
+                + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.PAYMENT).createQuery(criteria, UtilStringConstants.EQUALS);
 
         Payment payment = null;
 

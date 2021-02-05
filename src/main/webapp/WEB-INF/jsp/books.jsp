@@ -35,24 +35,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
-
-
-
-
-
-
-
-
-
-
-
-
-<%--                  UNCOMMENT ONLOAD ATTR IF THERE WILL BE CYCLING OF PROGA             --%>
 <body <%--onload="fetchBooksQuantity()"--%>>
 
 <div id="genre" style="display: none">${requestScope.genre}</div>
 <div id="locale" style="display: none">${sessionScope.locale}</div>
-<%--<img src="data:image/jpg;base64,${img}" width="240" height="300"/>--%>
+
 <!---------- header --------------->
 
 <jsp:include page="header.jsp" />
@@ -73,10 +60,6 @@
 <%--            <option><fmt:message key="label.short_by_rating" bundle="${lang}"/></option>--%>
 <%--            <option><fmt:message key="label.short_by_sale" bundle="${lang}"/></option>--%>
         </select>
-    </div>
-
-    <div id="mydiv">
-
     </div>
 
     <div class="mrow">
@@ -113,7 +96,7 @@
 
 <jsp:include page="footer.jsp" />
 
-<!---------- js for pagination --------------->
+<!---------- js --------------->
 
 <script src="../../js/books.js" charset="UTF-8"></script>
 

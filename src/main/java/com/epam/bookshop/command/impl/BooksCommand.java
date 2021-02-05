@@ -23,22 +23,22 @@ public class BooksCommand implements Command {
 
         final HttpSession session = requestContext.getSession();
 
-        if (Objects.nonNull(requestContext.getParameter(RequestConstants.NOT_ADVANCED_SEARCH))) {
-            session.setAttribute(RequestConstants.NOT_ADVANCED_SEARCH, requestContext.getParameter(RequestConstants.NOT_ADVANCED_SEARCH));
-            session.setAttribute(RequestConstants.SEARCH_STR, requestContext.getParameter(RequestConstants.SEARCH_STR));
-            session.setAttribute(RequestConstants.REQUEST_FROM_SEARCH_INPUT, true);
-
-            return BOOKS_PAGE_REDIRECT;
-        }
-
-        if (Objects.nonNull(requestContext.getParameter(RequestConstants.SEARCH_CRITERIA))) {
-            session.setAttribute(RequestConstants.SEARCH_CRITERIA, requestContext.getParameter(RequestConstants.SEARCH_CRITERIA));
-            session.setAttribute(RequestConstants.CUSTOMIZED_SEARCH, UtilStringConstants.TRUE);
-            session.setAttribute(RequestConstants.SEARCH_STR, requestContext.getParameter(RequestConstants.SEARCH_STR));
-            session.setAttribute(RequestConstants.REQUEST_FROM_SEARCH_PAGE, true);
-
-            return BOOKS_PAGE_REDIRECT;
-        }
+//        if (Objects.nonNull(requestContext.getParameter(RequestConstants.NOT_ADVANCED_SEARCH))) {
+//            session.setAttribute(RequestConstants.NOT_ADVANCED_SEARCH, requestContext.getParameter(RequestConstants.NOT_ADVANCED_SEARCH));
+//            session.setAttribute(RequestConstants.SEARCH_STR, requestContext.getParameter(RequestConstants.SEARCH_STR));
+//            session.setAttribute(RequestConstants.REQUEST_FROM_SEARCH_INPUT, true);
+//
+//            return BOOKS_PAGE_REDIRECT;
+//        }
+//
+//        if (Objects.nonNull(requestContext.getParameter(RequestConstants.SEARCH_CRITERIA))) {
+//            session.setAttribute(RequestConstants.SEARCH_CRITERIA, requestContext.getParameter(RequestConstants.SEARCH_CRITERIA));
+//            session.setAttribute(RequestConstants.CUSTOMIZED_SEARCH, UtilStringConstants.TRUE);
+//            session.setAttribute(RequestConstants.SEARCH_STR, requestContext.getParameter(RequestConstants.SEARCH_STR));
+//            session.setAttribute(RequestConstants.REQUEST_FROM_SEARCH_PAGE, true);
+//
+//            return BOOKS_PAGE_REDIRECT;
+//        }
 
         String genreName = decode(requestContext.getParameter(RequestConstants.GENRE));
         requestContext.setAttribute(RequestConstants.GENRE, genreName);

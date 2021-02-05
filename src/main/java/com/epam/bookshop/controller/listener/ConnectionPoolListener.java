@@ -1,7 +1,7 @@
 package com.epam.bookshop.controller.listener;
 
 import com.epam.bookshop.db.ConnectionPool;
-import com.epam.bookshop.db.DatabaseConfigurator;
+import com.epam.bookshop.db.config.DatabaseConfigurator;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -11,11 +11,10 @@ import javax.servlet.annotation.WebListener;
  * Configures database properties for this application
  */
 @WebListener
-public class ContextListener implements ServletContextListener {
+public class ConnectionPoolListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        DatabaseConfigurator.getInstance().configure();
         ConnectionPool.getInstance().init();
     }
 

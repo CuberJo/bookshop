@@ -8,7 +8,8 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.JsonWriter;
+import com.epam.bookshop.util.EntityFinder;
+import com.epam.bookshop.util.JsonConverter;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.RequestConstants;
@@ -17,8 +18,9 @@ import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.validator.impl.EmptyStringValidator;
 import com.epam.bookshop.validator.impl.StringSanitizer;
-import com.epam.bookshop.validator.impl.StringValidator;
+import com.epam.bookshop.validator.impl.RegexValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +75,7 @@ public class AdminController extends HttpServlet {
         Collection<Entity> entities = findRecords(req, locale, start, ITEMS_PER_PAGE);
         resp.setContentType(UtilStringConstants.APPLICATION_JSON);
         req.setCharacterEncoding(UtilStringConstants.UTF8);
-        String jsonStrings = JsonWriter.getInstance().write(entities);
+        String jsonStrings = JsonConverter.getInstance().write(entities);
         resp.getWriter().write(jsonStrings);
     }
 
@@ -155,7 +157,7 @@ public class AdminController extends HttpServlet {
         Criteria<Book> criteria = BookCriteria.builder()
                 .ISBN(oldISBN)
                 .build();
-        Book bookToUpdate = findBook(criteria, locale);
+        Book bookToUpdate = EntityFinder.getInstance().find(criteria, locale, logger);
         if(!fillBook(bookToUpdate, req, locale)) {
             return false;
         }
@@ -279,37 +281,6 @@ public class AdminController extends HttpServlet {
     }
 
 
-
-
-    /**
-     * Finds book in database by passed criteria
-     *
-     * @param criteria {@link Criteria<Book>} criteria used to search book
-     * @param locale language for error messages if ones will take place
-     * @return founded book
-     */
-    private Book findBook(Criteria<Book> criteria, String locale) {
-        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        service.setLocale(locale);
-        Optional<Book> optionalBook;
-        try {
-            optionalBook = service.find(criteria);
-            if (optionalBook.isEmpty()) {
-                String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)
-                        + UtilStringConstants.WHITESPACE + ((BookCriteria) criteria).getISBN();
-                logger.error(error);
-                throw new RuntimeException(error);
-            }
-        } catch (ValidatorException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
-        }
-
-        return optionalBook.get();
-    }
-
-
-
     /**
      * Fills book with new data
      *
@@ -394,35 +365,36 @@ public class AdminController extends HttpServlet {
      */
     private boolean validateInput(String isbn, String title, String author, String price, String publisher, String genre, String preview, HttpSession session) {
 
-        StringValidator validator = StringValidator.getInstance();
+        RegexValidator validator = RegexValidator.getInstance();
+        EmptyStringValidator emptyStringValidator = EmptyStringValidator.getInstance();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         String error = "";
 
-        if (validator.empty(isbn) || !validator.validate(isbn, RegexConstants.ISBN_REGEX)) {
+        if (emptyStringValidator.empty(isbn) || !validator.validate(isbn, RegexConstants.ISBN_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.ISBN_INCORRECT)
                     + UtilStringConstants.WHITESPACE + isbn + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
-        if (validator.empty(title) || !validator.validate(title, RegexConstants.TITLE_REGEX)) {
+        if (emptyStringValidator.empty(title) || !validator.validate(title, RegexConstants.TITLE_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.TITLE_INCORRECT)
                     + UtilStringConstants.WHITESPACE + title + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
-        if (validator.empty(author) || !validator.validate(author, RegexConstants.AUTHOR_REGEX)) {
+        if (emptyStringValidator.empty(author) || !validator.validate(author, RegexConstants.AUTHOR_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.AUTHOR_INCORRECT)
                     + UtilStringConstants.WHITESPACE + author + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
         if (price.contains("$")) {
             price = price.replace("$", UtilStringConstants.EMPTY_STRING);
         }
-        if (validator.empty(price) || !validator.validate(price, RegexConstants.PRICE_REGEX)) {
+        if (emptyStringValidator.empty(price) || !validator.validate(price, RegexConstants.PRICE_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PRICE_INCORRECT)
                     + UtilStringConstants.WHITESPACE + price + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
-        if (validator.empty(publisher) || !validator.validate(publisher, RegexConstants.PUBLISHER_REGEX)) {
+        if (emptyStringValidator.empty(publisher) || !validator.validate(publisher, RegexConstants.PUBLISHER_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PUBLISHER_INCORRECT)
                     + UtilStringConstants.WHITESPACE + publisher + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
-        if (validator.empty(genre) || !validator.validate(genre, RegexConstants.GENRE_REGEX)) {
+        if (emptyStringValidator.empty(genre) || !validator.validate(genre, RegexConstants.GENRE_REGEX)) {
             error += ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.GENRE_INCORRECT)
                     + UtilStringConstants.WHITESPACE + genre + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }

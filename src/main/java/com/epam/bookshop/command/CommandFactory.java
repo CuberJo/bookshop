@@ -1,6 +1,7 @@
 package com.epam.bookshop.command;
 
 import com.epam.bookshop.command.impl.*;
+import com.epam.bookshop.command.impl.AdvancedBookSearchCommand;
 
 import java.util.Objects;
 
@@ -34,7 +35,19 @@ public class CommandFactory {
     private static final String UNBIND_IBAN = "unbind_iban";
     private static final String DELETE_ACCOUNT = "delete_account";
     private static final String READ_BOOK = "read_book";
+    private static final String ADD_IBAN_PAGE = "add_iban_page";
+    private static final String BOOK_SEARCH_RESULTS = "book_search_results";
 
+
+
+    private static final String RELATED_BOOKS = "relatedBooks";
+    private static final String BESTSELLERS = "bestsellers";
+    private static final String EXCLUSIVE_BOOK = "exclusive";
+    private static final String LATEST_PRODUCTS = "latestProducts";
+
+    private static final String ADVANCED_BOOK_SEARCH = "advanced_book_search";
+    private static final String LIVE_BOOK_SEARCH = "live_book_search";
+    private static final String NOT_ADVANCED_BOOK_SEARCH = "not_advanced_book_search";
 
     public static Command command(String command) {
 
@@ -85,6 +98,26 @@ public class CommandFactory {
                 return new PersonalPageCommand();
             case DELETE_ACCOUNT:
                 return new DeleteAccountCommand();
+            case ADD_IBAN_PAGE:
+                return new AddIbanPageCommand();
+            case BOOK_SEARCH_RESULTS:
+                return new BookSearchResultsCommand();
+
+            case RELATED_BOOKS:
+                return new RelatedBooksCommand();
+            case BESTSELLERS:
+                return new BestsellersCommand();
+            case EXCLUSIVE_BOOK:
+                return new ExclusiveBookCommand();
+            case LATEST_PRODUCTS:
+                return new LatestBookProductsCommand();
+
+            case ADVANCED_BOOK_SEARCH:
+                return new AdvancedBookSearchCommand();
+            case NOT_ADVANCED_BOOK_SEARCH:
+                return new NotAdvancedBookSearchCommand();
+            case LIVE_BOOK_SEARCH:
+                return new LiveBookSearchCommand();
 //            case READ_BOOK:
 //                return new ReadBookController();
 //            case LOAD_IBANs:

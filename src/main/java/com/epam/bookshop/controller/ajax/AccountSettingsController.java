@@ -10,7 +10,8 @@ import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
-import com.epam.bookshop.validator.impl.StringValidator;
+import com.epam.bookshop.validator.impl.EmptyStringValidator;
+import com.epam.bookshop.validator.impl.RegexValidator;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class AccountSettingsController extends HttpServlet {
     private boolean validateEmptyInput(String login, String email, String password,
                                        String verifyPassword, String checkPassword, HttpSession session, String locale) {
 
-        StringValidator validator = StringValidator.getInstance();
+        EmptyStringValidator validator = EmptyStringValidator.getInstance();
         String errorMessage = "";
 
         if (validator.empty(checkPassword)) {

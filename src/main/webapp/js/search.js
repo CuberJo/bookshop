@@ -31,14 +31,8 @@ $(document).ready(function(e) {
 
 $(function () {
     $('#searchBtn').click(function (event) {
-
-        let whitespace_regex = /^[\s]+$/;
-        if ($('#searchBtn').val() === "" || whitespace_regex.test($('#searchBtn').val())) {
-            event.preventDefault()
-        }
-        let malicious_regex = /[<>*;='#)+&("]+/;
-        if (malicious_regex.test($('.searchInput').val())) {
-            event.preventDefault()
+        if (!validateSearchInput(event)) {
+            return false;
         }
     });
 });
@@ -123,13 +117,12 @@ function load() {
 
     /**
      * Preparing URL object and adding params
-     *
-     * @type {string}
      */
     const SEARCH_CRITERIA_PARAM = 'searchCriteria';
     const STR_PARAM = 'str';
 
-    let url = new URL('http://localhost:8080/search_books');
+    // let url = new URL('http://localhost:8080/search_books');
+    let url = new URL('http://localhost:8080/books?command=live_book_search');
     url.searchParams.set(SEARCH_CRITERIA_PARAM, searchCriteria);
     url.searchParams.set(STR_PARAM, searchStr);
 

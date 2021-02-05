@@ -12,7 +12,8 @@ function fetchBestsellers() {
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
-            bestsellers: 'fetch'
+            // bestsellers: 'fetch'
+            command: 'bestsellers'
         }),
         success: function (jsonStr) {
             bestsellersBooks = jsonStr;
@@ -32,7 +33,8 @@ function fetchExclusiveBook() {
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
-            exclusive: 'fetch'
+            // exclusive: 'fetch'
+            command: 'exclusive'
         }),
         success: function (jsonStr) {
             exclusiveBook = jsonStr;
@@ -52,7 +54,8 @@ function fetchLatestProducts() {
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
-            latestProducts: 'fetch'
+            // latestProducts: 'fetch'
+            command: 'latestProducts'
         }),
         success: function (jsonStr) {
             latestProductsBooks = jsonStr;

@@ -93,6 +93,12 @@ p {
 /*    height: 19px;*/
 /*    width: 173px;*/
 /*}*/
+input[type=search] {
+    outline: none;
+    margin: 10px 0;
+    padding: 0 10px;
+    height: 30px;
+}
 /*******************************************************************************************************/
 .header {
     background: radial-gradient(#fff, #ffd6d6);
