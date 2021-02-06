@@ -39,7 +39,12 @@
 <body>
 
 <div id="locale" style="display: none">${sessionScope.locale}</div>
-<div id="searchType" style="display: none">${requestScope.searchType}</div>
+<div id="searchType" style="display: none">${sessionScope.searchType}</div>
+<c:remove var="searchType" scope="session"/>
+<%--<div id="schStr" style="display: none">${sessionScope.str}</div>--%>
+<%--<c:remove var="schStr" scope="session"/>--%>
+<%--<div id="schCr" style="display: none">${sessionScope.searchCriteria}</div>--%>
+<%--<c:remove var="schStr" scope="session"/>--%>
 
 <!---------- header --------------->
 

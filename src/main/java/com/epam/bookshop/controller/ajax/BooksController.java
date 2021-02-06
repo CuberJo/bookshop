@@ -4,81 +4,56 @@ import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.CommandFactory;
 import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.command.ResponseContext;
-import com.epam.bookshop.command.impl.BooksCommand;
 import com.epam.bookshop.command.impl.CustomRequestContext;
-import com.epam.bookshop.controller.ajax.query_processor.CountBooksQueryProcessor;
-import com.epam.bookshop.controller.ajax.query_processor.HomepageBooksQueryProcessor;
-import com.epam.bookshop.controller.ajax.query_processor.SearchBooksQueryProcessor;
-import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.domain.impl.Genre;
-import com.epam.bookshop.exception.EntityNotFoundException;
-import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.service.impl.BookService;
-import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.util.JsonConverter;
 import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.domain.impl.Book;
+import com.epam.bookshop.domain.impl.Genre;
+import com.epam.bookshop.exception.EntityNotFoundException;
+import com.epam.bookshop.util.EntityFinder;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Objects;
 
 /**
- * Fetches books from database
+ * Entry point for handling all requests coming to /books servlet url.
+ * Fetches books from database by given parameters and returns
+ * response in JSON format
  */
 @WebServlet("/books")
 public class BooksController extends HttpServlet {
     final static Logger logger = LoggerFactory.getLogger(BooksController.class);
 
-    public static final int ITEMS_PER_PAGE = 8;
-    public static final int DEFAULT_GENRE_ID = 1;
+    private static final int DEFAULT_GENRE_ID = 1;
+    private static final String GET_bOOKS_COMMAND = "get_books";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        final HttpSession session = req.getSession();
-        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        final String commandParam = req.getParameter(RequestConstants.COMMAND);
+        String commandParam = req.getParameter(RequestConstants.COMMAND);
+        if (Objects.isNull(commandParam)) {
+            commandParam = GET_bOOKS_COMMAND;
+        }
         Command command = CommandFactory.command(commandParam);
 
         ResponseContext execute = command.execute(new CustomRequestContext(req));
-
-
-        if (Objects.nonNull(execute) && !execute.getPage().isEmpty()) {
-            writeResp(resp, UtilStringConstants.APPLICATION_JSON, execute.getPage());
-            return;
+        if (Objects.nonNull(execute) && !execute.getResp().isEmpty()) {
+            writeResp(resp, UtilStringConstants.APPLICATION_JSON, execute.getResp());
         }
-
-
-        Collection<Book> books;
-
-        if (HomepageBooksQueryProcessor.getInstance().process(req, resp)
-            || CountBooksQueryProcessor.getInstance().process(req, resp)
-            || SearchBooksQueryProcessor.getInstance().process(req, resp)) {
-
-            return;
-        }
-
-        int start = getStartPoint(req, ITEMS_PER_PAGE);
-        String genreName = BooksCommand.decode(req.getParameter(RequestConstants.GENRE));
-        books = getBooksByGenre(genreName, start, ITEMS_PER_PAGE, locale);
-
-        String jsonStrings = JsonConverter.getInstance().write(books);
-        writeResp(resp, UtilStringConstants.APPLICATION_JSON, jsonStrings);
     }
 
 
@@ -135,48 +110,6 @@ public class BooksController extends HttpServlet {
         start = --start * itemsPerPage;
 
         return start;
-    }
-
-
-
-    /**
-     * Finds books by given genre name.
-     *
-     * @param genreName {@link String} name of book to be found
-     * @param locale {@link String} language for error messages
-     * @return {@link Collection<Book>} books genre
-     */
-    private Collection<Book> getBooksByGenre(String genreName, int start, int total, String locale) {
-
-        BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
-        service.setLocale(locale);
-
-        Collection<Book> books = null;
-
-        if (Objects.nonNull(genreName) && !genreName.isEmpty()) {
-            try {
-                GenreCriteria genreCriteria = GenreCriteria.builder()
-                        .genre(genreName)
-                        .build();
-                Genre genre = EntityFinder.getInstance().find(locale, logger, genreCriteria);
-
-                BookCriteria bookCriteria = BookCriteria.builder()
-                        .genreId(genre.getEntityId())
-                        .build();
-                books = service.findAll(bookCriteria, start, total);
-
-            } catch (EntityNotFoundException | ValidatorException e) {
-                logger.error(e.getMessage(), e);
-            }
-        } else {
-            books = service.findAll(start, total);
-        }
-
-        if (Objects.nonNull(books)) {
-            service.findImagesForBooks(books);
-        }
-
-        return books;
     }
 
 

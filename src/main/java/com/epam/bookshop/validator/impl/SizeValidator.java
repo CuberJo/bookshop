@@ -5,7 +5,7 @@ import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.validator.AnnotationValidator;
 import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

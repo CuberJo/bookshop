@@ -5,6 +5,9 @@ let booksQuantity;
 $('.page-num').text(' ' + pageNum);
 
 let command = $('#searchType').text();
+// let schStr = $('#schStr').text();
+// let schCr = $('#schCr').text();
+
 
 hidePrev();
 
@@ -41,14 +44,15 @@ function fetchData(pageNumber) {
  * Fetches books quantity
  */
 function fetchBooksQuantity() {
-    let needCount = 1;
-
+    // let needCount = 1;
+    let countCommand = 'count_' + command;
 
     $.ajax({
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
-            count: needCount,
+            // count: needCount,
+            command: countCommand
         }),
         success: function (rows) {
             booksQuantity = rows;
@@ -159,7 +163,8 @@ $(document).ready(function () {
                 type: 'GET',
                 data: ({
                     page: pageNum,
-                    command: command
+                    command: command,
+                    // schStr: schStr
                 }),
                 success: function (jsonStr) {
                     books = jsonStr;
@@ -167,7 +172,7 @@ $(document).ready(function () {
                     render(books);
                     $('.page-num').text(' ' + pageNum);
 
-                    if ((pageNum * booksPerPage + 1) < booksQuantity) {
+                    if ((pageNum * booksPerPage + 1) <= booksQuantity) {
                         showNext();
                     }
                     if (pageNum - 1 === 0 ) {
@@ -191,7 +196,8 @@ $(document).ready(function () {
                 type: 'GET',
                 data: ({
                     page: ++pageNum,
-                    command: command
+                    command: command,
+                    // schStr: schStr
                 }),
                 success: function (jsonStr) {
                     books = jsonStr;

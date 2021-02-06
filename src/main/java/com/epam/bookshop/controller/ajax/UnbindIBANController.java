@@ -8,7 +8,7 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,14 +30,12 @@ public class UnbindIBANController extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
-        final HttpSession session = request.getSession();
-
+        HttpSession session = request.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         List<String> ibans = (List<String>) session.getAttribute(RequestConstants.IBANs);
         if (Objects.isNull(ibans)) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBANs_NOT_FOUND);
-            throw new RuntimeException(error);
+            throw new RuntimeException(ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBANs_NOT_FOUND));
         }
 
         String ibanToDelete = request.getParameter(RequestConstants.IBAN_TO_DELETE);

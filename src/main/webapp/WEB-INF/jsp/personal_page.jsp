@@ -508,7 +508,7 @@
             event.preventDefault();
             error = "<fmt:message key="incorrect_pass" bundle="${mes}"/>";
         }
-        let whitespace_regex = /[\s]+/;
+        let whitespace_regex = /^[\s]+$/;
         if (checkPassField === "" || whitespace_regex.test(checkPassField)) {
             event.preventDefault();
             error = "<fmt:message key="input_pass" bundle="${mes}"/>";

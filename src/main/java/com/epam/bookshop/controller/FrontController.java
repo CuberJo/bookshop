@@ -24,20 +24,20 @@ public class FrontController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final ResponseContext responseContext = processRequest(req, resp);
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher(responseContext.getPage());
+        final ResponseContext responseContext = processRequest(req);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher(responseContext.getResp());
         requestDispatcher.forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding(UtilStringConstants.UTF8);
-        final ResponseContext responseContext = processRequest(req, resp);
-        resp.sendRedirect(req.getContextPath() + responseContext.getPage());
+        final ResponseContext responseContext = processRequest(req);
+        resp.sendRedirect(req.getContextPath() + responseContext.getResp());
     }
 
 
-    protected ResponseContext processRequest(HttpServletRequest req, HttpServletResponse resp) {
+    protected ResponseContext processRequest(HttpServletRequest req) {
         final String commandParam = req.getParameter(RequestConstants.COMMAND);
         Command command = CommandFactory.command(commandParam);
         return command.execute(new CustomRequestContext(req));

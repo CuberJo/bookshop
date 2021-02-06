@@ -36,6 +36,23 @@ public class JsonConverter {
         return instance;
     }
 
+
+    /**
+     * @param rows number of rows of entity in database
+     */
+    public String write(int rows) {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonStr = "";
+        try {
+            jsonStr = mapper.writeValueAsString(rows);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return jsonStr;
+    }
+
+
     /**
      * @param entity entity to serialize into JSON
      */

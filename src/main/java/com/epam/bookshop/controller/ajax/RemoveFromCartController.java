@@ -4,7 +4,7 @@ import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +26,11 @@ public class RemoveFromCartController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        final HttpSession session = req.getSession();
+        HttpSession session = req.getSession();
+        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
+        String isbn = req.getParameter(RequestConstants.ISBN);
 
-        remove(session, (String) session.getAttribute(RequestConstants.LOCALE), req.getParameter(RequestConstants.ISBN));
+        remove(session, locale, isbn);
     }
 
 

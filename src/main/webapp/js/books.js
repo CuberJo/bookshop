@@ -44,7 +44,8 @@ function fetchData(pageNumber) {
  * Fetches books quantity
  */
 function fetchBooksQuantity() {
-    let needCount = 1;
+    // let needCount = 1;
+    let command = 'count_books';
 
     let genreName = $('#genre').text();
     if (genreName === "") {
@@ -55,7 +56,8 @@ function fetchBooksQuantity() {
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
-            count: needCount,
+            // count: needCount,
+            command: command,
             genre: genreName
         }),
         success: function (rows) {
@@ -180,7 +182,7 @@ $(document).ready(function () {
                     render(books);
                     $('.page-num').text(' ' + pageNum);
 
-                    if ((pageNum * booksPerPage + 1) < booksQuantity) {
+                    if ((pageNum * booksPerPage + 1) <= booksQuantity) {
                         showNext();
                     }
                     if (pageNum - 1 === 0 ) {

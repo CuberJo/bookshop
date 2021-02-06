@@ -196,7 +196,7 @@
             error = "<fmt:message key="incorrect_login" bundle="${err}"/>";
         }
 
-        let whitespace_regex = /[\s]+/;
+        let whitespace_regex = /^[\s]+$/;
         if (passField === "" || whitespace_regex.test(passField)) {
             event.preventDefault();
             error = "<fmt:message key="input_pass" bundle="${err}"/>";
@@ -268,7 +268,7 @@
             error = "<fmt:message key="incorrect_name" bundle="${err}"/>";
         }
 
-        let whitespace_regex = /[\s]+/;
+        let whitespace_regex = /^[\s]+$/;
         if (passField === "" || whitespace_regex.test(passField)) {
             event.preventDefault();
             error = "<fmt:message key="input_pass" bundle="${err}"/>";

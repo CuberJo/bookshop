@@ -32,7 +32,7 @@ $(document).ready(function(e) {
 $(function () {
     $('#searchBtn').click(function (event) {
         if (!validateSearchInput(event)) {
-            return false;
+            event.preventDefault();
         }
     });
 });

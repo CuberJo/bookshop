@@ -18,7 +18,7 @@ import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 
 import javax.servlet.http.HttpSession;

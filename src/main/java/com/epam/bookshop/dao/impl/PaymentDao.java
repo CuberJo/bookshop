@@ -7,7 +7,7 @@ import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.util.query_creator.impl.EntitySqlQueryCreatorFactory;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

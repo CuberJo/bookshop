@@ -14,7 +14,7 @@ import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;

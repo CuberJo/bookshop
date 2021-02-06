@@ -6,7 +6,7 @@ import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.util.query_creator.impl.EntitySqlQueryCreatorFactory;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;

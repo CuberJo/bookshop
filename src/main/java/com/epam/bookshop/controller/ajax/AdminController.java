@@ -1,6 +1,10 @@
 package com.epam.bookshop.controller.ajax;
 
-import com.epam.bookshop.command.impl.AdminCommand;
+import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandFactory;
+import com.epam.bookshop.command.ResponseContext;
+import com.epam.bookshop.command.impl.CustomRequestContext;
+import com.epam.bookshop.command.impl.page.AdminPageCommand;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.domain.impl.*;
 import com.epam.bookshop.exception.ValidatorException;
@@ -17,7 +21,7 @@ import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.EmptyStringValidator;
 import com.epam.bookshop.validator.impl.StringSanitizer;
 import com.epam.bookshop.validator.impl.RegexValidator;
@@ -41,7 +45,7 @@ import java.util.Optional;
 @WebServlet("/admin")
 @MultipartConfig
 public class AdminController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(AdminCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminPageCommand.class);
 
     private static final String REQUEST_PARAM_NOT_FOUND = "Request param not found";
     private static final String COUNT_PAYMENTS = "countPayments";
@@ -62,13 +66,23 @@ public class AdminController extends HttpServlet {
         final HttpSession session = req.getSession();
         final String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        if (Objects.nonNull(req.getParameter(COUNT_PAYMENTS)) || Objects.nonNull(req.getParameter(COUNT_USERS))) {
-            int rows = count(req, locale);
-            resp.setContentType(UtilStringConstants.TEXT_PLAIN);
-            req.setCharacterEncoding(UtilStringConstants.UTF8);
-            resp.getWriter().write(String.valueOf(rows));
-            return;
+
+        String commandParam = req.getParameter(RequestConstants.COMMAND);
+        Command command = CommandFactory.command(commandParam);
+
+        ResponseContext execute = command.execute(new CustomRequestContext(req));
+        if (Objects.nonNull(execute) && !execute.getResp().isEmpty()) {
+            BooksController.writeResp(resp, UtilStringConstants.APPLICATION_JSON, execute.getResp());
         }
+
+
+//        if (Objects.nonNull(req.getParameter(COUNT_PAYMENTS)) || Objects.nonNull(req.getParameter(COUNT_USERS))) {
+//            int rows = count(req, locale);
+//            resp.setContentType(UtilStringConstants.TEXT_PLAIN);
+//            req.setCharacterEncoding(UtilStringConstants.UTF8);
+//            resp.getWriter().write(String.valueOf(rows));
+//            return;
+//        }
 
         int start = BooksController.getStartPoint(req, ITEMS_PER_PAGE);
 
@@ -411,31 +425,31 @@ public class AdminController extends HttpServlet {
     }
 
 
-    /**
-     * Counts total number of books in database
-     *
-     * @param request {@link HttpServletRequest} instance
-     * @param locale language for error messages
-     * @return total number of books in database
-     */
-    private int count(HttpServletRequest request, String locale) {
-        String countPayments = request.getParameter(COUNT_PAYMENTS);
-        String countUsers = request.getParameter(COUNT_USERS);
-
-        EntityService service = null;
-        int rows;
-        if (Objects.nonNull(countPayments)) {
-            service = ServiceFactory.getInstance().create(EntityType.PAYMENT);
-            service.setLocale(locale);
-        } else if (Objects.nonNull(countUsers)) {
-            service = ServiceFactory.getInstance().create(EntityType.USER);
-            service.setLocale(locale);
-        }
-
-        rows = service.count();
-
-        return rows;
-    }
+//    /**
+//     * Counts total number of books in database
+//     *
+//     * @param request {@link HttpServletRequest} instance
+//     * @param locale language for error messages
+//     * @return total number of books in database
+//     */
+//    private int count(HttpServletRequest request, String locale) {
+//        String countPayments = request.getParameter(COUNT_PAYMENTS);
+//        String countUsers = request.getParameter(COUNT_USERS);
+//
+//        EntityService service = null;
+//        int rows;
+//        if (Objects.nonNull(countPayments)) {
+//            service = ServiceFactory.getInstance().create(EntityType.PAYMENT);
+//            service.setLocale(locale);
+//        } else if (Objects.nonNull(countUsers)) {
+//            service = ServiceFactory.getInstance().create(EntityType.USER);
+//            service.setLocale(locale);
+//        }
+//
+//        rows = service.count();
+//
+//        return rows;
+//    }
 
 
     /**

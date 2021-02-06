@@ -76,7 +76,7 @@
             console.log("Incorrect email")
         }
 
-        let whitespace_regex = /[\s]+/;
+        let whitespace_regex = /^[\s]+$/;
         if (emailField == "" || whitespace_regex.test(emailField)) {
             event.preventDefault();
             error = "Please input your email";

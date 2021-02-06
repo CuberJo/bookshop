@@ -11,7 +11,7 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.CriteriaValidator;
 import com.epam.bookshop.validator.impl.EntityValidator;
 import com.epam.bookshop.constant.ErrorMessageConstants;

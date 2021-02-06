@@ -1,7 +1,7 @@
 package com.epam.bookshop.db;
 
 import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

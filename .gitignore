@@ -6,10 +6,9 @@ mail.properties
 *.iml
 AppTest.java
 VerifyReCaptcha.java
-SearchBooksController.java
 FlywayListener.java
 FlywayConfigurator.java
 target/
 git
-db/migration
+db/
 

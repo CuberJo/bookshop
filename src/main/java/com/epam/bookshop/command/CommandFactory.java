@@ -1,7 +1,8 @@
 package com.epam.bookshop.command;
 
-import com.epam.bookshop.command.impl.*;
-import com.epam.bookshop.command.impl.AdvancedBookSearchCommand;
+import com.epam.bookshop.command.impl.action.*;
+import com.epam.bookshop.command.impl.page.*;
+import com.epam.bookshop.command.impl.page_and_action.*;
 
 import java.util.Objects;
 
@@ -49,25 +50,35 @@ public class CommandFactory {
     private static final String LIVE_BOOK_SEARCH = "live_book_search";
     private static final String NOT_ADVANCED_BOOK_SEARCH = "not_advanced_book_search";
 
+    private static final String COUNT_BOOKS = "count_books";
+    private static final String COUNT_ADVANCED_BOOK_SEARCH = "count_advanced_book_search";
+    private static final String COUNT_NOT_ADVANCED_BOOK_SEARCH = "count_not_advanced_book_search";
+
+    private static final String GET_BOOKS = "get_books";
+
+
+    private static final String COUNT_USERS = "countUsers";
+    private static final String COUNT_PAYMENTS = "countPayments";
+
     public static Command command(String command) {
 
         if (Objects.isNull(command)) {
-            return new HomeCommand();
+            return new HomePageCommand();
         }
 
         switch (command) {
             case ACCOUNT:
-                return new AccountCommand();
+                return new AccountPageCommand();
             case ADMIN:
-                return new AdminCommand();
+                return new AdminPageCommand();
             case BOOKS:
-                return new BooksCommand();
+                return new BooksPageCommand();
             case CART:
-                return new CartCommand();
+                return new CartPageCommand();
             case BOOK_DETAILS:
-                return new BookDetailsCommand();
+                return new BookDetailsPageCommand();
             case SEARCH:
-                return new SearchCommand();
+                return new SearchPageCommand();
             case LOGIN:
                 return new LoginCommand();
             case LOGOUT:
@@ -75,11 +86,11 @@ public class CommandFactory {
             case REGISTER:
                 return new RegisterCommand();
             case FORGOT_PASSWORD:
-                return new ForgotPasswordCommand();
+                return new ForgotPasswordPageCommand();
             case RESET_PASSWORD:
                 return new ResetPasswordCommand();
             case CONTACT_US:
-                return new ContactUsCommand();
+                return new ContactUsPageCommand();
             case CHANGE_LOCALE:
                 return new ChangeLocaleCommand();
             case SEND_CONTACT_FORM:
@@ -89,11 +100,11 @@ public class CommandFactory {
             case PURCHASE:
                 return new PurchaseCommand();
             case CHOOSE_IBAN:
-                return new ChooseIBAN();
+                return new ChooseIbanPageCommand();
             case ADD_IBAN:
-                return new AddIBANCommand();
+                return new com.epam.bookshop.command.impl.page_and_action.AddIbanCommand();
             case FINISHED_PURCHASE:
-                return new FinishedPurchaseCommand();
+                return new FinishedPurchasePageCommand();
             case PERSONAL_PAGE:
                 return new PersonalPageCommand();
             case DELETE_ACCOUNT:
@@ -101,7 +112,7 @@ public class CommandFactory {
             case ADD_IBAN_PAGE:
                 return new AddIbanPageCommand();
             case BOOK_SEARCH_RESULTS:
-                return new BookSearchResultsCommand();
+                return new BookSearchResultsPageCommand();
 
             case RELATED_BOOKS:
                 return new RelatedBooksCommand();
@@ -118,12 +129,27 @@ public class CommandFactory {
                 return new NotAdvancedBookSearchCommand();
             case LIVE_BOOK_SEARCH:
                 return new LiveBookSearchCommand();
+
+            case COUNT_BOOKS:
+                return new CountBooksCommand();
+            case COUNT_ADVANCED_BOOK_SEARCH:
+                return new CountAdvancedBookSearchCommand();
+            case COUNT_NOT_ADVANCED_BOOK_SEARCH:
+                return new CountNotAdvancedBookSearchCommand();
+
+            case GET_BOOKS:
+                return new BooksCommand();
+
+            case COUNT_USERS:
+                return new CountUsersCommand();
+            case COUNT_PAYMENTS:
+                return new CountPaymentsCommand();
 //            case READ_BOOK:
 //                return new ReadBookController();
 //            case LOAD_IBANs:
 //                return new LoadIBANsController();
             default:
-                return new HomeCommand();
+                return new HomePageCommand();
         }
     }
 }

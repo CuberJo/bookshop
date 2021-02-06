@@ -155,7 +155,7 @@
 <%--                            <span class="glyphicon glyphicon-search"></span>--%>
 <%--                        </button>--%>
 <%--                    </form>--%>
-                    <form class="input-group-btn" method="post" action="/command=book_search_results">
+                    <form class="input-group-btn" method="post" action="/home?command=book_search_results">
                         <input type="hidden" name="advanced_book_search" value="true" />
                         <input type="hidden" name="searchCriteria" id="scr" />
                         <input type="hidden" name="str" id="str" />

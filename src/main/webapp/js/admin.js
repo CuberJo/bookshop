@@ -86,13 +86,15 @@ function fetchPayments(paymentsPageNum) {
  * Fetches payments quantity
  */
 function fetchPaymentsQuantity() {
-    let needCountPayments = 1;
+    // let needCountPayments = 1;
+    let command = 'countPayments';
 
     $.ajax({
         url: 'http://localhost:8080/admin',
         type: 'GET',
         data: ({
-            countPayments: needCountPayments,
+            // countPayments: needCountPayments,
+            command: command
         }),
         success: function (quntity) {
             paymentsQuantity = quntity;
@@ -260,13 +262,15 @@ function fetchUsers(usersPageNum) {
  * Fetches users quantity
  */
 function fetchUsersQuantity() {
-    let needCountUsers = 1;
+    // let needCountUsers = 1;
+    let command = 'countUsers';
 
     $.ajax({
         url: 'http://localhost:8080/admin',
         type: 'GET',
         data: ({
-            countUsers: needCountUsers,
+            // countUsers: needCountUsers,
+            command: command
         }),
         success: function (quntity) {
             usersQuantity = quntity;
@@ -432,13 +436,13 @@ function fetchBooks(bookPageNum) {
  * Fetches users quantity
  */
 function fetchBooksQuantity() {
-    let needCount = 1;
+    let command = 'count_books';
 
     $.ajax({
         url: 'http://localhost:8080/books',
         type: 'GET',
         data: ({
-            count: needCount,
+            command: command,
         }),
         success: function (quntity) {
             booksQuantity = quntity;

@@ -5,7 +5,7 @@ import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.util.query_creator.SqlQueryCreator;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
-import com.epam.bookshop.util.locale_manager.ErrorMessageManager;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 
 public class EntitySqlQueryCreatorFactory {
 
