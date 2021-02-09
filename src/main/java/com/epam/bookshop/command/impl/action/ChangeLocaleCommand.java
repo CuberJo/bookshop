@@ -1,9 +1,10 @@
 package com.epam.bookshop.command.impl.action;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.RouteConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 
 import javax.servlet.http.HttpSession;
@@ -14,10 +15,8 @@ import java.util.Objects;
  */
 public class ChangeLocaleCommand implements Command {
 
-    private static final String HOME_PAGE = "/home";
-
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
 
         String locale = requestContext.getParameter(RequestConstants.LOCALE);
@@ -42,9 +41,9 @@ public class ChangeLocaleCommand implements Command {
      * Resolves page where to get back
      *
      * @param requestContext {@link RequestContext} object, which is request wrapper
-     * @return resolved by "from" parameter {@link ResponseContext} object
+     * @return resolved by "from" parameter {@link CommandResult} object
      */
-    private ResponseContext resolvePage(RequestContext requestContext) {
+    private CommandResult resolvePage(RequestContext requestContext) {
 
         String fromPage = requestContext.getParameter(UtilStringConstants.FROM);
         String isbn = requestContext.getParameter(RequestConstants.ISBN);
@@ -56,10 +55,9 @@ public class ChangeLocaleCommand implements Command {
                 page += "&isbn=" + isbn;
             }
         } else {
-            page = HOME_PAGE;
+            page = RouteConstants.HOME.getRoute();
         }
 
-        String pageToReturn = page;
-        return  () -> pageToReturn;
+        return new CommandResult(CommandResult.ResponseType.REDIRECT, page);
     }
 }

@@ -45,6 +45,8 @@
 <div class="small-container cart-page">
     <c:choose>
     <c:when test="${not empty cart}">
+        <pre style="color: red; margin: 10px">${errCartMsg}</pre>
+        <c:remove var="errCartMsg" scope="session"/>
         <table  style="margin: 40px auto">
             <tr>
                 <th><fmt:message key="label.book" bundle="${lang}"/></th>
@@ -145,9 +147,13 @@
         <c:forEach var="book" items="${cart}">
         $('#${book.ISBN}').bind('click', function () {
             $.ajax({
-               url: 'http://localhost:8080/remove_from_cart',
+               // url: 'http://localhost:8080/remove_from_cart',
+                url: 'http://localhost:8080/home',
                type: 'POST',
-                data: ({isbn: '${book.ISBN}'}),
+                data: ({
+                    isbn: '${book.ISBN}',
+                    command: 'remove_from_cart'
+                }),
                 success: function () {
                    $('.small-container').load(' .small-container');
                     $('#s').load('#s');
@@ -161,7 +167,11 @@
 <script>
     $(document).ready(function getIBANs() {
         $.ajax({
-            url: 'http://localhost:8080/load_ibans',
+            // url: 'http://localhost:8080/load_ibans',
+            url: 'http://localhost:8080/home',
+            data: ({
+                command: 'load_ibans'
+            }),
             type: 'GET',
             success: function () {
                 $('.total-price').load(' .total-price');

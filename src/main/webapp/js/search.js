@@ -122,7 +122,8 @@ function load() {
     const STR_PARAM = 'str';
 
     // let url = new URL('http://localhost:8080/search_books');
-    let url = new URL('http://localhost:8080/books?command=live_book_search');
+    // let url = new URL('http://localhost:8080/books?command=live_book_search');
+    let url = new URL('http://localhost:8080/home?command=live_book_search');
     url.searchParams.set(SEARCH_CRITERIA_PARAM, searchCriteria);
     url.searchParams.set(STR_PARAM, searchStr);
 

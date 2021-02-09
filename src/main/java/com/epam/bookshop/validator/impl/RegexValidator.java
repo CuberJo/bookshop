@@ -1,8 +1,5 @@
 package com.epam.bookshop.validator.impl;
 
-import com.epam.bookshop.constant.RegexConstants;
-import com.epam.bookshop.constant.UtilStringConstants;
-
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

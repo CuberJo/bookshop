@@ -1,17 +1,20 @@
 package com.epam.bookshop.command.impl.page_and_action;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
-import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.constant.RequestConstants;
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.RouteConstants;
+import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
+import com.epam.bookshop.util.EntityFinderFacade;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.validator.impl.DqlExceptionMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,88 +28,44 @@ import java.util.Objects;
 public class AddIbanCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(AddIbanCommand.class);
 
-//    private static final ResponseContext ADD_IBAN_PAGE_FORWARD = () -> "/WEB-INF/jsp/add_iban.jsp";
-    private static final ResponseContext ADD_IBAN_PAGE_REDIRECT = () -> "/home?command=add_iban";
-    private static final ResponseContext CHOOSE_IBAN_PAGE_FORWARD = () -> "/WEB-INF/jsp/choose_iban.jsp";
-    private static final ResponseContext PERSONAL_PAGE_PAGE = () -> "/home?command=personal_page";
-    private static final ResponseContext CHOOSE_IBAN_PAGE_SEND_REDIRECT = () -> "/home?command=choose_iban";
-    private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
-
-
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-//        if (needToReturnPage(requestContext)) {
-//            return ADD_IBAN_PAGE_FORWARD;
-//        }
-
-        User user = EntityFinder.getInstance().findUserInSession(session, logger);
-        List<String> IBANs = EntityFinder.getInstance().findIBANs(user, locale);
+        User user = EntityFinderFacade.getInstance().findUserInSession(session, logger);
+        List<String> IBANs = EntityFinderFacade.getInstance().findIBANs(user, locale);
         if (Objects.isNull(session.getAttribute(RequestConstants.IBANs))) {
             session.setAttribute(RequestConstants.IBANs, IBANs);
         }
 
-//        if (Objects.isNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
-//            if (IBANs.stream().findAny().isPresent() && Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CART))) {
-//                session.removeAttribute(RequestConstants.BACK_TO_CART);
-//                return CHOOSE_IBAN_PAGE_FORWARD;
-//            }
-//        }
-//
-//        if ((IBANs.stream().findAny().isEmpty()
-//                /*|| Objects.nonNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))*/)) {
         try {
             String iban = createIBAN(requestContext, user, locale);
             IBANs.add(iban);
         } catch (ValidatorException e) {
+            logger.error(e.getMessage(), e);
             session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE, e.getMessage());
-            session.setAttribute(RequestConstants.GET_ADD_IBAN_PAGE_ATTR, RequestConstants.GET_ADD_IBAN_PAGE_ATTR);
-            return ADD_IBAN_PAGE_REDIRECT;
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ADD_IBAN.getRoute());
+        } catch (DqlException e) {
+            logger.error(e.getMessage(), e);
+            session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE,
+                    DqlExceptionMessageProcessor.getInstance().process(e));
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ADD_IBAN.getRoute());
         }
-
-//            if (Objects.nonNull(session.getAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
-//                session.removeAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN);
-//            }
-//        }
 
         if (Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CART))) {
             session.removeAttribute(RequestConstants.BACK_TO_CART);
-            return CART_PAGE;
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CART.getRoute());
         }
 
         if (Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CHOOSE_IBAN))) {
             session.removeAttribute(RequestConstants.BACK_TO_CHOOSE_IBAN);
             session.setAttribute(RequestConstants.IBANs, IBANs);
-            return CHOOSE_IBAN_PAGE_SEND_REDIRECT;
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CHOOSE_IBAN.getRoute());
         }
 
-        return PERSONAL_PAGE_PAGE;
+        return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.PERSONAL_PAGE.getRoute());
     }
-
-
-//    /**
-//     * Checks whether it is request for getting page
-//     *
-//     * @param requestContext {@link RequestContext} object, which is request wrapper
-//     * @return true if and only if it is need to return page, otherwise - false
-//     */
-//    private boolean needToReturnPage(RequestContext requestContext) {
-//        HttpSession session = requestContext.getSession();
-//
-//        if (Objects.nonNull(session.getAttribute(RequestConstants.GET_ADD_IBAN_PAGE_ATTR))
-//                || Objects.nonNull(requestContext.getParameter(RequestConstants.GET_ADD_IBAN_PAGE_ATTR))) {
-//            if (Objects.nonNull(requestContext.getParameter(RequestConstants.CREATE_ADDITIONAL_IBAN))) {
-//                session.setAttribute(RequestConstants.CREATE_ADDITIONAL_IBAN, RequestConstants.CREATE_ADDITIONAL_IBAN);
-//            }
-//            session.removeAttribute(RequestConstants.GET_ADD_IBAN_PAGE_ATTR);
-//
-//            return true;
-//        }
-//
-//        return false;
-//    }
 
 
     /**
@@ -117,7 +76,7 @@ public class AddIbanCommand implements Command {
      * @param locale {@link String} language for error messages
      * @return {@link String} object of created IBAN
      */
-    private String createIBAN(RequestContext requestContext, User user, String locale) throws ValidatorException {
+    private String createIBAN(RequestContext requestContext, User user, String locale) throws ValidatorException, DqlException {
         UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 

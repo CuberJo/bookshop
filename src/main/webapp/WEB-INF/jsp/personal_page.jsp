@@ -307,7 +307,11 @@
 <script>
     $(document).ready(function getIBANs() {
         $.ajax({
-            url: 'http://localhost:8080/load_ibans',
+            // url: 'http://localhost:8080/load_ibans',
+            url: 'http://localhost:8080/home',
+            data: ({
+                command: 'load_ibans'
+            }),
             type: 'GET',
             success: function () {
                 $('#mchlist').load(' #mchlist');
@@ -331,9 +335,13 @@
         console.log(i);
 
         $.ajax({
-            url: 'http://localhost:8080/unbind_iban',
+            // url: 'http://localhost:8080/unbind_iban',
+            url: 'http://localhost:8080/home',
             type: 'POST',
-            data: ({iban_to_delete: i}),
+            data: ({
+                iban_to_delete: i,
+                command: 'unbind_iban'
+            }),
             success: function () {
                 $('#mchlist').load(' #mchlist');
                 // $('#s').load('#s');
@@ -383,19 +391,26 @@
         $("#checkPassword").val('');
 
         $.ajax({
-            url: 'http://localhost:8080/account_settings',
+            // url: 'http://localhost:8080/account_settings',
+            url: 'http://localhost:8080/home',
             type: 'POST',
-            data: ({login: inputLogin,
+            data: ({
+                login: inputLogin,
                 email: inputEmail,
                 password: inputPass,
                 verifyPassword: inputVerifyPass,
-                checkPassword: inputCheckPass}),
-            success: function () {
-                $('#rowToReload2').load(' #rowToReload2');
-                $('#rowToReload').load(' #rowToReload');
-                if (/*$('#serverError').text() !== undefined &&*/ $('#serverError').text() === "") {
-                    $('#popup1.overlay').css({'visibility': 'visible', 'opacity': '1'});
-                }
+                checkPassword: inputCheckPass,
+                command: 'account_settings'
+            }),
+            success: function (errMes) {
+                $('#rowToReload2').load(' #rowToReload2', function () {
+                    $('#rowToReload').load(' #rowToReload', function () {
+                        if (/*$('#serverError').text() !== undefined &&*/ $('#serverError').text() === "") {
+                            $('#popup1.overlay').css({'visibility': 'visible', 'opacity': '1'});
+                        }
+                    });
+                });
+
                 // $('.small-container').load(' .small-container');
             }
         });

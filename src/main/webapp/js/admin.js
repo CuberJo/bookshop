@@ -66,12 +66,16 @@ function fetchPayments(paymentsPageNum) {
         paymentsPageNum = 1
     }
 
+    let command = 'payments';
+
     $.ajax({
-        url: 'http://localhost:8080/admin',
+        // url: 'http://localhost:8080/admin',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             page: paymentsPageNum,
-            fetch: 'payments'
+            // fetch: 'payments'
+            command: command
         }),
         success: function (jsonStr) {
             $('#payments tr td').remove();
@@ -90,7 +94,8 @@ function fetchPaymentsQuantity() {
     let command = 'countPayments';
 
     $.ajax({
-        url: 'http://localhost:8080/admin',
+        // url: 'http://localhost:8080/admin',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             // countPayments: needCountPayments,
@@ -145,6 +150,7 @@ $(function () {
         fetchPaymentsQuantity();
     });
 
+    let command = 'payments';
 
     /**
      * on prev click
@@ -152,11 +158,13 @@ $(function () {
     $('#paymentsPagination .prev').bind('click', function () {
         if (--paymentsPageNum > 0) {
             $.ajax({
-                url: 'http://localhost:8080/admin',
+                // url: 'http://localhost:8080/admin',
+                url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
                     page: paymentsPageNum,
-                    fetch: 'payments'
+                    // fetch: 'payments'
+                    command: command
                 }),
                 success: function (jsonStr) {
                     $('#payments tr td').remove();
@@ -184,11 +192,13 @@ $(function () {
     $('#paymentsPagination .next').bind('click', function () {
         if ((paymentsPageNum * paymentsPerPage + 1) <= paymentsQuantity) {
             $.ajax({
-                url: 'http://localhost:8080/admin',
+                // url: 'http://localhost:8080/admin',
+                url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
                     page: ++paymentsPageNum,
-                    fetch: 'payments'
+                    // fetch: 'payments'
+                    command: command
                 }),
                 success: function (jsonStr) {
                     payments = jsonStr;
@@ -242,12 +252,17 @@ function fetchUsers(usersPageNum) {
         usersPageNum = 1
     }
 
+    let command = 'users';
+
     $.ajax({
-        url: 'http://localhost:8080/admin',
+        // url: 'http://localhost:8080/admin',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             page: usersPageNum,
-            fetch: 'users'
+            // fetch: 'users'
+            command: command
+
         }),
         success: function (jsonStr) {
             $('#users_ tr td').remove();
@@ -266,7 +281,8 @@ function fetchUsersQuantity() {
     let command = 'countUsers';
 
     $.ajax({
-        url: 'http://localhost:8080/admin',
+        // url: 'http://localhost:8080/admin',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             // countUsers: needCountUsers,
@@ -317,17 +333,21 @@ $(function () {
         fetchUsersQuantity();
     })
 
+    let command = 'users';
+
     /**
      * on prev click
      */
     $('#usersPagination .prev').bind('click', function () {
         if (--usersPageNum > 0) {
             $.ajax({
-                url: 'http://localhost:8080/admin',
+                // url: 'http://localhost:8080/admin',
+                url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
                     page: usersPageNum,
-                    fetch: 'users'
+                    // fetch: 'users'
+                    command: command
                 }),
                 success: function (jsonStr) {
                     users = jsonStr;
@@ -355,11 +375,13 @@ $(function () {
     $('#usersPagination .next').bind('click', function () {
         if ((usersPageNum * usersPerPage + 1) <= usersQuantity) {
             $.ajax({
-                url: 'http://localhost:8080/admin',
+                // url: 'http://localhost:8080/admin',
+                url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
                     page: ++usersPageNum,
-                    fetch: 'users'
+                    // fetch: 'users'
+                    command: command
                 }),
                 success: function (jsonStr) {
                     users = jsonStr;
@@ -417,11 +439,15 @@ function fetchBooks(bookPageNum) {
         booksPageNum = 1
     }
 
+    let command = 'get_books';
+
     $.ajax({
-        url: 'http://localhost:8080/books',
+        // url: 'http://localhost:8080/books',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             page: booksPageNum,
+            command: command
         }),
         success: function (jsonStr) {
             $('#books tr td').remove();
@@ -439,7 +465,8 @@ function fetchBooksQuantity() {
     let command = 'count_books';
 
     $.ajax({
-        url: 'http://localhost:8080/books',
+        // url: 'http://localhost:8080/books',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             command: command,
@@ -519,6 +546,7 @@ $(function () {
         fetchBooksQuantity();
     })
 
+    let command = 'get_books';
 
     /**
      * on prev click
@@ -526,10 +554,12 @@ $(function () {
     $('#booksPagination .prev').bind('click', function () {
         if (--booksPageNum > 0) {
             $.ajax({
-                url: 'http://localhost:8080/books',
+                // url: 'http://localhost:8080/books',
+                url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
                     page: booksPageNum,
+                    command: command
                 }),
                 success: function (jsonStr) {
                     books = jsonStr;
@@ -557,10 +587,12 @@ $(function () {
     $('#booksPagination .next').bind('click', function () {
         if ((booksPageNum * booksPerPage + 1) <= booksQuantity) {
             $.ajax({
-                url: 'http://localhost:8080/books',
+                // url: 'http://localhost:8080/books',
+                url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
-                    page: ++booksPageNum
+                    page: ++booksPageNum,
+                    command: command
                 }),
                 success: function (jsonStr) {
                     books = jsonStr;
@@ -730,6 +762,7 @@ function sendData(rowNum) {
     fd.append('publisher', publisher);
     fd.append('genre', genre);
 
+    fd.append('command', 'updateBook');
 
     $.ajax({
         url: 'http://localhost:8080/admin',
@@ -948,6 +981,7 @@ $(function () {
     })
 
     $('#addBookForm').submit(function (event) {
+        console.log('addBookForm')
         event.preventDefault();
 
         let isbn = $('#addBookForm input[name=isbn]').val();
@@ -979,10 +1013,12 @@ $(function () {
         newBookForm.append('publisher', publisher);
         newBookForm.append('genre', genre);
         newBookForm.append('preview', preview);
-        newBookForm.append('addNewBook', 'add');
+        // newBookForm.append('addNewBook', 'add');
+        newBookForm.append('command', 'addNewBook');
 
         $.ajax({
-            url: 'http://localhost:8080/admin',
+            // url: 'http://localhost:8080/admin',
+            url: 'http://localhost:8080/home',
             data: newBookForm,
             processData: false,
             contentType: false,

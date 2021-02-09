@@ -13,21 +13,21 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Converts instances to JSON
  */
-public class JsonConverter {
-    private static final Logger logger = LoggerFactory.getLogger(JsonConverter.class);
+public class ToJsonConverter {
+    private static final Logger logger = LoggerFactory.getLogger(ToJsonConverter.class);
 
-    private static JsonConverter instance;
+    private static ToJsonConverter instance;
     private static final ReentrantLock lock = new ReentrantLock();
 
     /**
      * Thread-safe singleton creation
-     * @return instance of {@link JsonConverter} class
+     * @return instance of {@link ToJsonConverter} class
      */
-    public static JsonConverter getInstance() {
+    public static ToJsonConverter getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new JsonConverter();
+                instance = new ToJsonConverter();
             }
         } finally {
             lock.unlock();

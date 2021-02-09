@@ -7,6 +7,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -34,15 +35,15 @@ public class PriceCounterTag extends SimpleTagSupport {
     /**
      * Counts total price
      */
-    private double countTotalPrice(ArrayList<Book> cart) {
-        double total = 0;
+    public static double countTotalPrice(ArrayList<Book> cart) {
+        BigDecimal total = new BigDecimal(0.0);
 
         if (Objects.nonNull(cart) && cart.stream().anyMatch(Objects::nonNull)) {
             for (int i = 0; i < cart.size(); i++) {
-                total += cart.get(i).getPrice();
+                total = total.add(new BigDecimal(String.valueOf(cart.get(i).getPrice())));
             }
         }
 
-        return total;
+        return total.doubleValue();
     }
 }

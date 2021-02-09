@@ -1,7 +1,6 @@
 package com.epam.bookshop.controller.listener;
 
 import com.epam.bookshop.db.ConnectionPool;
-import com.epam.bookshop.db.config.DatabaseConfigurator;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

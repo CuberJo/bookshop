@@ -1,6 +1,8 @@
-package com.epam.bookshop.controller.ajax;
+package com.epam.bookshop.command.impl.action;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
+import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
@@ -12,25 +14,19 @@ import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Objects;
 
-
 /**
  * Deletes selected IBAN for user
  */
-@WebServlet("/unbind_iban")
-public class UnbindIBANController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(Command.class);
+public class UnbindIbanCommand implements Command {
+    private static final Logger logger = LoggerFactory.getLogger(UnbindIbanCommand.class);
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
+    public CommandResult execute(RequestContext requestContext) {
+        HttpSession session = requestContext.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         List<String> ibans = (List<String>) session.getAttribute(RequestConstants.IBANs);
@@ -38,11 +34,16 @@ public class UnbindIBANController extends HttpServlet {
             throw new RuntimeException(ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.IBANs_NOT_FOUND));
         }
 
-        String ibanToDelete = request.getParameter(RequestConstants.IBAN_TO_DELETE);
+        String ibanToDelete = requestContext.getParameter(RequestConstants.IBAN_TO_DELETE);
         deleteIBAN(ibanToDelete, locale);
         ibans.remove(ibanToDelete);
-    }
 
+        if (session.getAttribute(RequestConstants.CHOSEN_IBAN).equals(ibanToDelete)) {
+            session.removeAttribute(RequestConstants.CHOSEN_IBAN);
+        }
+
+        return new CommandResult(CommandResult.ResponseType.NO_ACTION, UtilStringConstants.EMPTY_STRING);
+    }
 
     /**
      * Deletes user IBAN from database

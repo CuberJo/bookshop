@@ -1,18 +1,21 @@
 package com.epam.bookshop.util.query_creator.impl;
 
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.UserCriteria;
-import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.exception.UnknownEntityException;
-import com.epam.bookshop.util.query_creator.SqlQueryCreator;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.domain.impl.User;
+import com.epam.bookshop.exception.UnknownEntityException;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
+import com.epam.bookshop.util.query_creator.SqlConditionQueryCreator;
 import com.epam.bookshop.validator.impl.SqlQueryValidator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class UserSqlQueryCreator implements SqlQueryCreator<User> {
+/**
+ * Creates sql query condition for {@link User} by incoming {@link Criteria}
+ */
+public class UserSqlConditionQueryCreator implements SqlConditionQueryCreator<User> {
 
     private static final String LIBRARY_USER_ID_COLUMN = "Id";
     private static final String NAME_COLUMN = "Name";
@@ -23,13 +26,13 @@ public class UserSqlQueryCreator implements SqlQueryCreator<User> {
 
     private static final ReentrantLock lock = new ReentrantLock();
 
-    private static UserSqlQueryCreator instance;
+    private static UserSqlConditionQueryCreator instance;
 
-    public static UserSqlQueryCreator getInstance() {
+    public static UserSqlConditionQueryCreator getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new UserSqlQueryCreator();
+                instance = new UserSqlConditionQueryCreator();
             }
         } finally {
             lock.unlock();
@@ -38,7 +41,7 @@ public class UserSqlQueryCreator implements SqlQueryCreator<User> {
         return instance;
     }
 
-    private UserSqlQueryCreator() {
+    private UserSqlConditionQueryCreator() {
 
     }
 

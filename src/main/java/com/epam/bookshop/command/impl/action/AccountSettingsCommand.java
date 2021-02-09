@@ -1,61 +1,53 @@
-package com.epam.bookshop.controller.ajax;
+package com.epam.bookshop.command.impl.action;
 
+import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
+import com.epam.bookshop.command.RequestContext;
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.RequestConstants;
-import com.epam.bookshop.util.criteria.impl.UserCriteria;
+import com.epam.bookshop.util.EntityFinderFacade;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.EmptyStringValidator;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
 /**
  * Updates user account data
  */
-@WebServlet("/account_settings")
-public class AccountSettingsController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(AccountSettingsController.class);
-
+public class AccountSettingsCommand implements Command {
+    private static final Logger logger = LoggerFactory.getLogger(AccountSettingsCommand.class);
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    public CommandResult execute(RequestContext requestContext) {
+        final String login = requestContext.getParameter(RequestConstants.LOGIN);
+        final String email = requestContext.getParameter(RequestConstants.EMAIL);
+        final String password = requestContext.getParameter(RequestConstants.PASSWORD);
+        final String verifyPassword = requestContext.getParameter(RequestConstants.VERIFY_PASSWORD);
+        final String checkPass = requestContext.getParameter(RequestConstants.CHECK_PASSWORD);
 
-        final String login = request.getParameter(RequestConstants.LOGIN);
-        final String email = request.getParameter(RequestConstants.EMAIL);
-        final String password = request.getParameter(RequestConstants.PASSWORD);
-        final String verifyPassword = request.getParameter(RequestConstants.VERIFY_PASSWORD);
-        final String checkPass = request.getParameter(RequestConstants.CHECK_PASSWORD);
+        final HttpSession session = requestContext.getSession();
+        final String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
-        final HttpSession session = request.getSession();
-        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
-
-
-        UserCriteria criteria = UserCriteria.builder()
-                .login((String) session.getAttribute(RequestConstants.LOGIN))
-                .build();
-        User userToUpdate = EntityFinder.getInstance().find(criteria, logger, locale);
-
+        User userToUpdate = EntityFinderFacade.getInstance().findUserInSession(session, logger);
 
         if (!validateEmptyInput(login, email, password, verifyPassword, checkPass, session, locale)
                 || !passesEqual(password, verifyPassword, session, locale)
                 || !checkPassCorrect(checkPass, userToUpdate.getPassword(), session, locale)) {
-            return;
+            return new CommandResult(CommandResult.ResponseType.TEXT_PLAIN, ErrorMessageConstants.INVALID_INPUT_DATA);
         }
-
         update(login, email, password, userToUpdate, session, locale);
+
+        return new CommandResult(CommandResult.ResponseType.NO_ACTION, UtilStringConstants.EMPTY_STRING);
     }
 
 
@@ -75,11 +67,10 @@ public class AccountSettingsController extends HttpServlet {
                                        String verifyPassword, String checkPassword, HttpSession session, String locale) {
 
         EmptyStringValidator validator = EmptyStringValidator.getInstance();
-        String errorMessage = "";
 
         if (validator.empty(checkPassword)) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_CHECK_PASS);
-            session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS, errorMessage);
+            session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS,
+                    ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_CHECK_PASS));
             return false;
         }
 
@@ -87,8 +78,8 @@ public class AccountSettingsController extends HttpServlet {
                 && validator.empty(email)
                 && validator.empty(password)
                 && validator.empty(verifyPassword)) {
-            errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY);
-            session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS, errorMessage);
+            session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS,
+                    ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY));
             return false;
         }
 
@@ -128,9 +119,8 @@ public class AccountSettingsController extends HttpServlet {
                 session.setAttribute(RequestConstants.LOGIN, login);
             }
         } catch (ValidatorException e) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA);
-            session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS, error);
-            logger.error(error);
+            session.setAttribute(ErrorMessageConstants.ERROR_ACC_SETTINGS, e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 

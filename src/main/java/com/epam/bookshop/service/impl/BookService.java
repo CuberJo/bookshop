@@ -1,5 +1,6 @@
 package com.epam.bookshop.service.impl;
 
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.ImgToBase64Converter;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDao;
@@ -40,7 +41,7 @@ public class BookService implements EntityService<Book> {
     }
 
     @Override
-    public Book create(Book book) throws ValidatorException {
+    public Book create(Book book) throws ValidatorException, DqlException {
         EntityValidator entityValidator = new EntityValidator();
         entityValidator.setLocale(locale);
         entityValidator.validate(book);

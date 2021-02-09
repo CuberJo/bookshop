@@ -1,7 +1,9 @@
 package com.epam.bookshop.db;
 
-import com.epam.bookshop.db.config.DatabaseConfigurator;
+import com.epam.bookshop.config.DatabaseConfigurator;
 import com.mysql.cj.jdbc.Driver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Pool of connections which can be used to interact with database
  */
 public class ConnectionPool {
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionPool.class);
 
     private static ConnectionPool instance;
     private static final ReentrantLock LOCK = new ReentrantLock();
@@ -92,7 +95,7 @@ public class ConnectionPool {
             try {
                 connectionToReturn = availableConnections.take();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             notAvailableConnections.add(connectionToReturn);
         } finally {
@@ -115,14 +118,14 @@ public class ConnectionPool {
             try {
                 connection.realClose();
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                logger.error(throwables.getMessage(), throwables);
             }
         });
         notAvailableConnections.forEach(connection -> {
             try {
                 connection.realClose();
             } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                logger.error(throwables.getMessage(), throwables);
             }
         });
     }

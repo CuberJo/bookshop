@@ -5,9 +5,10 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
-import com.epam.bookshop.util.query_creator.impl.EntitySqlQueryCreatorFactory;
+import com.epam.bookshop.util.query_creator.impl.SqlConditionQueryCreatorFactory;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class UserDao extends AbstractDao<Long, User> {
 
 
     @Override
-    public User create(User user) {
+    public User create(User user) throws DqlException {
         try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_USER)) {
             ps.setString(1, user.getName());
             ps.setString(2, user.getLogin());
@@ -67,6 +68,7 @@ public class UserDao extends AbstractDao<Long, User> {
 
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
+            throw new DqlException(throwables.getMessage(), throwables);
         }
 
         return user;
@@ -118,7 +120,7 @@ public class UserDao extends AbstractDao<Long, User> {
     @Override
     public Collection<User> findAll(Criteria<User> criteria) {
         String query = SQL_SELECT_ALL_USERS_WHERE
-                + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
+                + SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
 
         List<User> users = new ArrayList<>();
 
@@ -138,7 +140,7 @@ public class UserDao extends AbstractDao<Long, User> {
     @Override
     public Optional<User> find(Criteria<User> criteria) {
         String query = SQL_SELECT_ALL_USERS_WHERE
-                + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
+                + SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.USER).createQuery(criteria, UtilStringConstants.EQUALS);
 
         User user = null;
 
@@ -262,7 +264,7 @@ public class UserDao extends AbstractDao<Long, User> {
      * @param IBAN to create in database
      * @param libraryUserId  to whom IBAN is created
      */
-    public void createUserBankAccount(String IBAN, Long libraryUserId) {
+    public void createUserBankAccount(String IBAN, Long libraryUserId) throws DqlException {
         try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_USER_BANK_ACCOUNT)) {
             ps.setLong(1, libraryUserId);
             ps.setString(2, IBAN);
@@ -270,6 +272,7 @@ public class UserDao extends AbstractDao<Long, User> {
             ps.executeUpdate();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage(), throwables);
+            throw new DqlException(throwables.getMessage(), throwables);
         }
     }
 

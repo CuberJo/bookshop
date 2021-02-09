@@ -5,11 +5,11 @@ import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.util.query_creator.SqlQueryCreator;
-import com.epam.bookshop.util.query_creator.impl.EntitySqlQueryCreatorFactory;
+import com.epam.bookshop.util.query_creator.SqlConditionQueryCreator;
+import com.epam.bookshop.util.query_creator.impl.SqlConditionQueryCreatorFactory;
 import org.testng.annotations.Test;
 
-public class UserSqlQueryCreatorTest {
+public class UserSqlConditionQueryCreatorTest {
 
     @Test
     public void testCreateQuery() {
@@ -18,7 +18,7 @@ public class UserSqlQueryCreatorTest {
                 .name("John")
                 .email("john@gmail.com")
                 .build();
-        SqlQueryCreator queryCreator = EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
+        SqlConditionQueryCreator queryCreator = SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.BOOK);
         String query = queryCreator.createQuery(criteria, UtilStringConstants.EQUALS);
         System.out.println(query);
     }

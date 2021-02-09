@@ -1,5 +1,6 @@
 package com.epam.bookshop.service.impl;
 
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.domain.impl.EntityType;
@@ -29,7 +30,7 @@ public class UserServiceTest {
         User user = new User("Solomon", "solomon", "123", "solomon@gmail.com", false);//, Arrays.asList("214-2523"));
         try {
             service.create(user);
-        } catch (ValidatorException e) {
+        } catch (ValidatorException | DqlException e) {
             e.printStackTrace();
         }
     }
@@ -38,7 +39,7 @@ public class UserServiceTest {
     public void testCreateWithRussianLang() {
         try {
             service.create(new User("Ирина", "ирина", "123", " irina@gmail.com", false));//, Arrays.asList("214-2523")));
-        } catch (ValidatorException e) {
+        } catch (ValidatorException | DqlException e) {
             e.printStackTrace();
         }
     }

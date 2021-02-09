@@ -12,7 +12,7 @@ import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
-import com.epam.bookshop.util.query_creator.impl.EntitySqlQueryCreatorFactory;
+import com.epam.bookshop.util.query_creator.impl.SqlConditionQueryCreatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +146,7 @@ public class BookDao extends AbstractDao<Long, Book> {
     @Override
     public Collection<Book> findAll(Criteria<Book> criteria) {
         String query = SQL_SELECT_ALL_BOOKS_WHERE
-                + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS);
+                + SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS);
 
         List<Book> books = new ArrayList<>();
 
@@ -166,7 +166,7 @@ public class BookDao extends AbstractDao<Long, Book> {
     @Override
     public Optional<Book> find(Criteria<Book> criteria) {
         String query = SQL_SELECT_ALL_BOOKS_WHERE +
-                EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS);
+                SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS);
 
         Book book = null;
 
@@ -467,7 +467,7 @@ public class BookDao extends AbstractDao<Long, Book> {
         ResultSet rs = null;
 
         String query = SQL_SELECT_ALL_BOOKS_WHERE +
-                EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS)
+                SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS)
                         .replace(UtilStringConstants.SEMICOLON, UtilStringConstants.WHITESPACE) + "LIMIT ?, ?";
 
         try (PreparedStatement ps = getPrepareStatement(query)) {
@@ -544,8 +544,8 @@ public class BookDao extends AbstractDao<Long, Book> {
      */
     public int count(Criteria<Book> criteria) {
         String query = ((BookCriteria) criteria).getGenreId() != null ?
-           SQL_SELECT_COUNT_ALL_WHERE + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS) :
-                SQL_SELECT_COUNT_ALL_WHERE + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE);
+           SQL_SELECT_COUNT_ALL_WHERE + SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.EQUALS) :
+                SQL_SELECT_COUNT_ALL_WHERE + SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE);
 
         int rows = 0;
 
@@ -602,7 +602,7 @@ public class BookDao extends AbstractDao<Long, Book> {
      */
     public Collection<Book> findAllLike(Criteria<Book> criteria) {
         String query = SQL_SELECT_ALL_BOOKS_WHERE
-                + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE);
+                + SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE);
 
         List<Book> books = new ArrayList<>();
 
@@ -639,7 +639,7 @@ public class BookDao extends AbstractDao<Long, Book> {
                     .replace(UtilStringConstants.SEMICOLON, UtilStringConstants.WHITESPACE) + "LIMIT ?, ?";
         } else {
             query = SQL_SELECT_ALL_BOOKS_WHERE
-                    + EntitySqlQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE)
+                    + SqlConditionQueryCreatorFactory.INSTANCE.create(EntityType.BOOK).createQuery(criteria, UtilStringConstants.LIKE)
                     .replace(UtilStringConstants.SEMICOLON, UtilStringConstants.WHITESPACE) + "LIMIT ?, ?";
         }
 

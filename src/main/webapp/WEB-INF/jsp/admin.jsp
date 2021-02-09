@@ -329,7 +329,8 @@
         <article id="add-book">
             <h2><fmt:message key="label.add_book" bundle="${lang}"/></h2><div id="erAddBookMesToLoad" style="color: red">${sessionScope.erAddBookMes}</div><c:remove var="erAddBookMes" scope="session"/><div id="er2" style="color: red"></div>
 
-            <form id="addBookForm" action="admin" method="post">
+<%--            <form id="addBookForm" action="admin" method="post">--%>
+            <form id="addBookForm" action="home" method="post">
             <label class="inp">
                 <input name="isbn" pattern="^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$" type="text" size="17" placeholder="<fmt:message key="label.isbn" bundle="${lang}"/>"/>
                 <input name="title" pattern="^[-(),!\d\s.\p{L}]{1,70}$" type="text" placeholder="<fmt:message key="label.title" bundle="${lang}"/>"/>

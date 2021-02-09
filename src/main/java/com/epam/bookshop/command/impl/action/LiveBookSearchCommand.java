@@ -1,8 +1,8 @@
 package com.epam.bookshop.command.impl.action;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RegexConstants;
 import com.epam.bookshop.constant.RequestConstants;
@@ -10,8 +10,8 @@ import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.EntityNotFoundException;
-import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.util.JsonConverter;
+import com.epam.bookshop.util.EntityFinderFacade;
+import com.epam.bookshop.util.ToJsonConverter;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
@@ -36,20 +36,22 @@ public class LiveBookSearchCommand implements Command {
     private static final int DEFAULT_GENRE_ID = 1;
 
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
         String locale = (String) session.getAttribute(RequestConstants.LOCALE);
 
         if (!isSearchInputCorrect(requestContext.getParameter(RequestConstants.SEARCH_STR))) {
             session.setAttribute(ErrorMessageConstants.ERROR_SEARCH_MESSAGE,
                     ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INVALID_INPUT_DATA));
-            return () -> UtilStringConstants.EMPTY_STRING;
+            return new CommandResult(CommandResult.ResponseType.JSON,
+                    UtilStringConstants.EMPTY_STRING);
         }
 
         Criteria<Book> criteria = buildCriteria(requestContext, locale);
-        Collection<Book> books = EntityFinder.getInstance().findBooksLike(criteria, START_POINT, TOTAL_ITEMS_PER_PAGE, locale, logger);
+        Collection<Book> books = EntityFinderFacade.getInstance().findBooksLike(criteria, START_POINT, TOTAL_ITEMS_PER_PAGE, locale, logger);
 
-        return () -> JsonConverter.getInstance().write(books);
+        return new CommandResult(CommandResult.ResponseType.JSON,
+                ToJsonConverter.getInstance().write(books));
     }
 
 
@@ -86,7 +88,7 @@ public class LiveBookSearchCommand implements Command {
             case RequestConstants.GENRE:
                 long genreId;
                 try {
-                    Genre genre = EntityFinder.getInstance().find(locale, logger, GenreCriteria.builder().genre(searchStr).build());
+                    Genre genre = EntityFinderFacade.getInstance().find(locale, logger, GenreCriteria.builder().genre(searchStr).build());
                     genreId = genre.getEntityId();
                 } catch (EntityNotFoundException e) {
                     String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_GENRE_FOUND)

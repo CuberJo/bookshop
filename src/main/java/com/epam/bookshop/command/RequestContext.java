@@ -1,7 +1,10 @@
 package com.epam.bookshop.command;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,4 +28,6 @@ public interface RequestContext {
     String getContextPath();
 
     void removeAttribute(String s);
+
+    Part getPart(String var1) throws IOException, ServletException;
 }

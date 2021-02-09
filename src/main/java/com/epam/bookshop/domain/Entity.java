@@ -2,7 +2,12 @@ package com.epam.bookshop.domain;
 
 import java.util.Objects;
 
+/**
+ * Abstract class, that is parent class for all
+ * entities used in application
+ */
 public abstract class Entity {
+
     protected Long entityId;
 
     public Entity() {

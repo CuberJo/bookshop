@@ -7,7 +7,8 @@ let relatedBooks;
 function fetchRelatedBooks() {
 
     $.ajax({
-        url: 'http://localhost:8080/books',
+        // url: 'http://localhost:8080/books',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             // relatedBooks: 'fetch'

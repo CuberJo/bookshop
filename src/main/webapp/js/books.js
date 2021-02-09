@@ -24,9 +24,11 @@ function fetchData(pageNumber) {
     }
 
     $.ajax({
-        url: 'http://localhost:8080/books',
+        // url: 'http://localhost:8080/books',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
+            command: 'get_books',
             page: pageNumber,
             genre: genreName
         }),
@@ -53,7 +55,8 @@ function fetchBooksQuantity() {
     }
 
     $.ajax({
-        url: 'http://localhost:8080/books',
+        // url: 'http://localhost:8080/books',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             // count: needCount,
@@ -170,9 +173,11 @@ $(document).ready(function () {
     $('.prev').bind('click', function () {
         if (--pageNum > 0) {
             $.ajax({
-                url: 'http://localhost:8080/books',
+                // url: 'http://localhost:8080/books',
+                url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
+                    commad: 'get_books',
                     page: pageNum,
                     genre: genreName
                 }),
@@ -202,9 +207,11 @@ $(document).ready(function () {
     $('.next').bind('click', function () {
         if ((pageNum * booksPerPage + 1) <= booksQuantity) {
             $.ajax({
-                url: 'http://localhost:8080/books',
+                // url: 'http://localhost:8080/books',
+                url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
+                    command: 'get_books',
                     page: ++pageNum,
                     genre: $('#genre').text()
                 }),

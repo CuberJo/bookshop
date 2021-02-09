@@ -1,19 +1,22 @@
 package com.epam.bookshop.util.query_creator.impl;
 
-import com.epam.bookshop.domain.impl.EntityType;
-import com.epam.bookshop.exception.UnknownEntityException;
-import com.epam.bookshop.util.query_creator.SqlQueryCreator;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.domain.impl.EntityType;
+import com.epam.bookshop.exception.UnknownEntityException;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
+import com.epam.bookshop.util.query_creator.SqlConditionQueryCreator;
 
-public class EntitySqlQueryCreatorFactory {
+/**
+ * Factory that produces {@link SqlConditionQueryCreator}
+ */
+public class SqlConditionQueryCreatorFactory {
 
     private String locale = "US";
 
-    public static final EntitySqlQueryCreatorFactory INSTANCE = new EntitySqlQueryCreatorFactory();
+    public static final SqlConditionQueryCreatorFactory INSTANCE = new SqlConditionQueryCreatorFactory();
 
-    private EntitySqlQueryCreatorFactory() {
+    private SqlConditionQueryCreatorFactory() {
 
     }
 
@@ -21,22 +24,22 @@ public class EntitySqlQueryCreatorFactory {
         this.locale = locale;
     }
 
-    public SqlQueryCreator create(EntityType type) {
+    public SqlConditionQueryCreator create(EntityType type) {
 
-        SqlQueryCreator creatorToReturn;
+        SqlConditionQueryCreator creatorToReturn;
 
         switch (type) {
             case BOOK:
-                creatorToReturn = BookSqlQueryCreator.getInstance();
+                creatorToReturn = BookSqlConditionQueryCreator.getInstance();
                 break;
             case PAYMENT:
-                creatorToReturn = PaymentSqlQueryCreator.getInstance();
+                creatorToReturn = PaymentSqlConditionQueryCreator.getInstance();
                 break;
             case USER:
-                creatorToReturn = UserSqlQueryCreator.getInstance();
+                creatorToReturn = UserSqlConditionQueryCreator.getInstance();
                 break;
             case GENRE:
-                creatorToReturn = GenreSqlQueryCreator.getInstance();
+                creatorToReturn = GenreSqlConditionQueryCreator.getInstance();
                 break;
             default:
                 String noSuchQueryType = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.NO_SUCH_SERVICE_TYPE)

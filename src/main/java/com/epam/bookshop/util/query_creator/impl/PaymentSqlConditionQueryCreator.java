@@ -2,17 +2,21 @@ package com.epam.bookshop.util.query_creator.impl;
 
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.exception.UnknownEntityException;
-import com.epam.bookshop.util.query_creator.SqlQueryCreator;
+import com.epam.bookshop.util.query_creator.SqlConditionQueryCreator;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.SqlQueryValidator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class PaymentSqlQueryCreator implements SqlQueryCreator<Payment> {
+/**
+ * Creates sql query condition for {@link Payment} by incoming {@link Criteria}
+ */
+public class PaymentSqlConditionQueryCreator implements SqlConditionQueryCreator<Payment> {
 
     private static final String PAYMENT_ID_COLUMN = "Id";
     private static final String LIBRARY_USER_ID_COLUMN = "Library_User_Id";
@@ -21,13 +25,13 @@ public class PaymentSqlQueryCreator implements SqlQueryCreator<Payment> {
     private static final String PRICE_COLUMN = "Price";
 
     private static final ReentrantLock lock = new ReentrantLock();
-    private static PaymentSqlQueryCreator instance;
+    private static PaymentSqlConditionQueryCreator instance;
 
-    public static PaymentSqlQueryCreator getInstance() {
+    public static PaymentSqlConditionQueryCreator getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new PaymentSqlQueryCreator();
+                instance = new PaymentSqlConditionQueryCreator();
             }
         } finally {
             lock.unlock();
@@ -36,7 +40,7 @@ public class PaymentSqlQueryCreator implements SqlQueryCreator<Payment> {
         return instance;
     }
 
-    private PaymentSqlQueryCreator() {
+    private PaymentSqlConditionQueryCreator() {
 
     }
 

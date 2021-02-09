@@ -1,17 +1,14 @@
 package com.epam.bookshop.command.impl.page_and_action;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.*;
 import com.epam.bookshop.mail.MailSender;
-import com.epam.bookshop.constant.RegexConstants;
-import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.validator.impl.EmptyStringValidator;
-import com.epam.bookshop.validator.impl.StringSanitizer;
 import com.epam.bookshop.validator.impl.RegexValidator;
+import com.epam.bookshop.validator.impl.StringSanitizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,15 +23,12 @@ import javax.servlet.http.HttpSession;
 public class SendContactFormCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(SendContactFormCommand.class);
 
-    private static final ResponseContext HOME_PAGE = () -> "/home";
-    private static final ResponseContext CONTACT_US_PAGE = () -> "/home?command=contact_us";
-
     private static final String SUBJECT = "subject";
     private static final String AUTO_REPLY_SUBJECT = "Auto reply";
     private static final String RESPONSE = "We have received your message. Our stuff will process it as soon as possible";
 
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         final String name = requestContext.getParameter(RequestConstants.NAME);
         final String email = requestContext.getParameter(RequestConstants.EMAIL);
         final String subject = requestContext.getParameter(SUBJECT);
@@ -47,14 +41,14 @@ public class SendContactFormCommand implements Command {
             if (EmptyStringValidator.getInstance().empty(name, email, subject)) {
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE,
                         ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY));
-                return CONTACT_US_PAGE;
+                return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CONTACT_US.getRoute());
             }
             if(!RegexValidator.getInstance().validate(email, RegexConstants.EMAIL_REGEX)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT)
                         + UtilStringConstants.WHITESPACE + email;
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
                 logger.error(errorMessage);
-                return CONTACT_US_PAGE;
+                return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CONTACT_US.getRoute());
             }
 
             StringSanitizer sanitizer = new StringSanitizer();
@@ -71,9 +65,9 @@ public class SendContactFormCommand implements Command {
                     + UtilStringConstants.NEW_LINE + email;
             session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
             logger.error(errorMessage, e);
-            return CONTACT_US_PAGE;
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CONTACT_US.getRoute());
         }
 
-        return HOME_PAGE;
+        return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.HOME.getRoute());
     }
 }

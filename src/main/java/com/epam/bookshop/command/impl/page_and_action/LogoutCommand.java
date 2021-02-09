@@ -1,9 +1,10 @@
 package com.epam.bookshop.command.impl.page_and_action;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.RouteConstants;
 
 import javax.servlet.http.HttpSession;
 
@@ -12,10 +13,8 @@ import javax.servlet.http.HttpSession;
  */
 public class LogoutCommand implements Command {
 
-    private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
-
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
 
         session.removeAttribute(RequestConstants.LOGIN);
@@ -26,7 +25,8 @@ public class LogoutCommand implements Command {
 
         session.removeAttribute(RequestConstants.BACK_TO_CHOOSE_IBAN);
         session.removeAttribute(RequestConstants.FROM_CART_PAGE);
+        session.removeAttribute(RequestConstants.BACK_TO_CART);
 
-        return ACCOUNT_PAGE;
+        return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ACCOUNT.getRoute());
     }
 }

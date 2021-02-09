@@ -91,7 +91,7 @@
                 </li>
             </ul>
         </nav>
-        <c:if test="${not empty sessionScope.login}">
+        <c:if test="${not empty sessionScope.login and sessionScope.login != 'admin'}">
             <a href="home?command=cart"><img src="images/cart.png" width="30px" height="30px"></a>
         </c:if>
         <img src="images/menu-icon.png" class="menu-icon" onclick="menutoggle()">
@@ -352,9 +352,12 @@
     $(document).ready(function () {
         $('#add').bind('click', function () {
             $.ajax({
-                // url: 'http://localhost:8080/home?command=add_to_cart',
-                url: 'http://localhost:8080/add_to_cart',
+                url: 'http://localhost:8080/home',
+                // url: 'http://localhost:8080/add_to_cart',
                 type: 'POST',
+                data: ({
+                    command: 'add_to_cart'
+                }),
 <%--                <c:if test= "${empty sessionScope.role}">--%>
 <%--                    data: ({back_to_cart: "back_to_cart"}),--%>
 <%--                </c:if>--%>

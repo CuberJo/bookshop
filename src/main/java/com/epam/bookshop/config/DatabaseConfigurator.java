@@ -1,4 +1,4 @@
-package com.epam.bookshop.db.config;
+package com.epam.bookshop.config;
 
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -27,7 +27,6 @@ public class DatabaseConfigurator {
     private static final String SERVER_TIMEZONE_PARAM = "?serverTimezone=";
 
     private static DatabaseConfigurator instance;
-
     private static final ReentrantLock lock = new ReentrantLock();
 
     private DatabaseConfigurator() {

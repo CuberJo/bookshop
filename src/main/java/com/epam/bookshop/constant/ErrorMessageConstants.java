@@ -1,5 +1,8 @@
 package com.epam.bookshop.constant;
 
+/**
+ * Constants that match to names of keys in error messages file
+ */
 public class ErrorMessageConstants {
 
     private ErrorMessageConstants() {}
@@ -17,6 +20,7 @@ public class ErrorMessageConstants {
     public static final String NO_SUCH_GENRE_FOUND = "no_such_genre_found";
     public static final String NO_SUCH_SERVICE_TYPE = "no_such_service_type";
     public static final String NO_SUCH_DAO_TYPE = "no_such_DAO_type";
+    public static final String NO_SUCH_COMMAND_RESULT = "no_such_command_result";
 
     public static final String NO_ORDER_UPDATE_OCCURRED = "no_order_update_occurred";
     public static final String NO_USER_UPDATE_OCCURRED = "no_user_update_occurred";
@@ -45,6 +49,7 @@ public class ErrorMessageConstants {
     public static final String IBAN_INCORRECT = "iban_incorrect";
     public static final String PRICE_INCORRECT = "price_incorrect";
     public static final String FAILED_RECAPTCHA = "failed_recaptcha";
+    public static final String FAILED_GOOGLE_SIGN_IN = "failed_google_sign_in";
     public static final String ACCOUNT_PASSWORD_INCORRECT = "acc_pass_incorrect";
 
     public static final String ERROR_ADD_IBAN_MESSAGE = "error_add_iban_message";
@@ -58,6 +63,8 @@ public class ErrorMessageConstants {
 
     public static final String BOOK_CREATION_FAILED = "book_creation_failed";
     public static final String PAYMENT_CREATION_FAILED = "book_creation_failed";
+
+    public static final String BOOK_ALREADY_BOUGHT = "book_already_bought";
 
     public static final String CONNECTION_HAS_NOT_BEEN_INITIALIZED = "connection_initialization_error";
 }

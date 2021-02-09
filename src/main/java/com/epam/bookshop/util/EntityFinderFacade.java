@@ -30,20 +30,20 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Facade for commonly met operations of entities search
  */
-public class EntityFinder {
+public class EntityFinderFacade {
     
-    private static EntityFinder instance;
+    private static EntityFinderFacade instance;
     private static final ReentrantLock LOCK = new ReentrantLock();
 
-    private EntityFinder() {
+    private EntityFinderFacade() {
         
     }
 
-    public static EntityFinder getInstance() {
+    public static EntityFinderFacade getInstance() {
         LOCK.lock();
         try {
             if (instance == null) {
-                instance = new EntityFinder();
+                instance = new EntityFinderFacade();
             }
         } finally {
             LOCK.unlock();

@@ -1,6 +1,7 @@
 package com.epam.bookshop.dao;
 
 import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.criteria.Criteria;
 import org.slf4j.Logger;
 
@@ -22,7 +23,7 @@ public abstract class AbstractDao<K, T extends Entity> {
         this.connection = connection;
     }
 
-    public abstract T create(T entity);
+    public abstract T create(T entity) throws DqlException;
     public abstract List<T> findAll();
     public abstract Optional<T> findById(K id);
     public abstract Collection<T> findAll(Criteria<T> criteria);

@@ -102,7 +102,7 @@
                 </li>
             </ul>
         </nav>
-        <c:if test="${not empty sessionScope.login}">
+        <c:if test="${not empty sessionScope.login and sessionScope.login != 'admin'}">
             <a href="home?command=cart"><img src="../../images/cart.png" width="30px" height="30px"></a>
         </c:if>
         <img src="../../images/menu-icon.png" class="menu-icon" onclick="menutoggle()">

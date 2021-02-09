@@ -1,18 +1,21 @@
 package com.epam.bookshop.util.query_creator.impl;
 
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.BookCriteria;
-import com.epam.bookshop.domain.impl.Book;
-import com.epam.bookshop.exception.UnknownEntityException;
-import com.epam.bookshop.util.query_creator.SqlQueryCreator;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.domain.impl.Book;
+import com.epam.bookshop.exception.UnknownEntityException;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
+import com.epam.bookshop.util.query_creator.SqlConditionQueryCreator;
 import com.epam.bookshop.validator.impl.SqlQueryValidator;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class BookSqlQueryCreator implements SqlQueryCreator<Book> {
+/**
+ * Creates sql query condition for {@link Book} by incoming {@link Criteria}
+ */
+public class BookSqlConditionQueryCreator implements SqlConditionQueryCreator<Book> {
 
     private static final String BOOK_ID_COLUMN = "Id";
     private static final String ISBN_COLUMN = "ISBN";
@@ -23,14 +26,13 @@ public class BookSqlQueryCreator implements SqlQueryCreator<Book> {
     private static final String GENRE_ID_COLUMN = "Genre_Id";
 
     private static final ReentrantLock lock = new ReentrantLock();
+    private static BookSqlConditionQueryCreator instance;
 
-    private static BookSqlQueryCreator instance;
-
-    public static BookSqlQueryCreator getInstance() {
+    public static BookSqlConditionQueryCreator getInstance() {
         lock.lock();
         try {
             if (instance == null) {
-                instance = new BookSqlQueryCreator();
+                instance = new BookSqlConditionQueryCreator();
             }
         } finally {
             lock.unlock();
@@ -39,7 +41,7 @@ public class BookSqlQueryCreator implements SqlQueryCreator<Book> {
         return instance;
     }
 
-    private BookSqlQueryCreator() {
+    private BookSqlConditionQueryCreator() {
 
     }
 

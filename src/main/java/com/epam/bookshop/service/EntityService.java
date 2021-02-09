@@ -1,6 +1,7 @@
 package com.epam.bookshop.service;
 
 import com.epam.bookshop.domain.Entity;
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
@@ -13,7 +14,7 @@ import java.util.Optional;
  */
 public interface EntityService<T extends Entity> {
 
-    T create(T entity) throws ValidatorException;
+    T create(T entity) throws ValidatorException, DqlException;
     Collection<T> findAll();
     Collection<T> findAll(Criteria<T> criteria) throws ValidatorException;
     Collection<T> findAll(int start, int total);

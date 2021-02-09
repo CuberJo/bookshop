@@ -68,3 +68,32 @@ form a {
     transform: translateX(100px);
     transition: transform 1s;
 }
+
+/*********************************** Google SignIn **********************************************/
+
+#googleSignIn {
+    color:#888;
+    width:260px;
+    height:40px;
+    border-radius:3%;
+    margin-top: 25px;
+    border: thin solid #888;
+    box-shadow: 1px 1px 1px grey;
+}
+#googleSignIn:hover {
+    box-shadow: 2px 2px 2px grey;
+    cursor: pointer;
+}
+#googleSignInImg {
+    width:30px;
+    background:white;
+    border-radius:50%;
+    padding:revert;
+    position:relative;
+    top:13%
+}
+#googleSignInText {
+    top: -10px;
+    left: 5px;
+    position: relative
+}

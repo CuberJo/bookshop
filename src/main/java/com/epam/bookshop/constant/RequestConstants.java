@@ -1,7 +1,7 @@
 package com.epam.bookshop.constant;
 
 /**
- * Contant strings used in request parameters or attributes
+ * Constant strings used in request parameters or attributes
  */
 public class RequestConstants {
 
@@ -23,21 +23,16 @@ public class RequestConstants {
     public static final String BOOK = "book";
     public static final String GENRE = "genre";
     public static final String PUBLISHER = "publisher";
-
     public static final String CHOSEN_IBAN = "chosen_iban";
     public static final String LIBRARY = "library";
     public static final String COMMAND = "command";
     public static final String USER_ROLE = "USER";
     public static final String ADMIN_ROLE = "ADMIN";
-
     public static final String PAGE = "page";
     public static final String COUNT = "count";
 
     public static final String SEARCH_CRITERIA = "searchCriteria";
     public static final String SEARCH_STR = "str";
-    public static final String REQUEST_FROM_SEARCH_PAGE = "requestFromSearchPage";
-    public static final String REQUEST_FROM_SEARCH_INPUT = "requestFromSearchInput";
-
 
     public static final String NOT_ADVANCED_BOOK_SEARCH = "not_advanced_book_search";
     public static final String ADVANCED_BOOK_SEARCH = "advanced_book_search";
@@ -50,10 +45,8 @@ public class RequestConstants {
 
     public static final String IBAN_TO_DELETE = "iban_to_delete";
     public static final String BOOK_TO_CART = "book_to_cart";
-    public static final String GET_ADD_IBAN_PAGE_ATTR = "getAddIBANPage";
     public static final String BACK_TO_CART = "back_to_cart";
     public static final String FROM_CART_PAGE = "fromCartPage";
-    public static final String CREATE_ADDITIONAL_IBAN = "additional_iban";
     public static final String BACK_TO_CHOOSE_IBAN = "back_to_choose_iban";
     public static final String NEED_TO_LINK_BANK_ACCOUNT = "need_to_link_bank_account";
     public static final String BOOK_TO_REMOVE = "book_to_remove";

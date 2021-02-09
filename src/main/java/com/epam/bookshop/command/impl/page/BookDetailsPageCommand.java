@@ -1,9 +1,10 @@
 package com.epam.bookshop.command.impl.page;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.PageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.domain.impl.Book;
@@ -26,11 +27,8 @@ import java.util.Optional;
 public class BookDetailsPageCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(BookDetailsPageCommand.class);
 
-    private static final ResponseContext NOT_FOUND_PAGE = () -> "/404error.jsp";
-    private static final ResponseContext BOOK_DETAILS_PAGE = () -> "/WEB-INF/jsp/book_details.jsp";
-
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         final String ISBN = requestContext.getParameter(RequestConstants.ISBN);
         final HttpSession session = requestContext.getSession();
         final String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
@@ -41,7 +39,7 @@ public class BookDetailsPageCommand implements Command {
             Optional<Book> optionalBook = service.find(BookCriteria.builder().ISBN(ISBN).build());
 
             if (optionalBook.isEmpty()) {
-                return NOT_FOUND_PAGE;
+                return new CommandResult(CommandResult.ResponseType.FORWARD, PageConstants.NOT_FOUND.getPage());
             }
             session.setAttribute(RequestConstants.BOOK, optionalBook.get());
             service.findImageForBook(optionalBook.get());
@@ -51,9 +49,9 @@ public class BookDetailsPageCommand implements Command {
                     + UtilStringConstants.WHITESPACE + ISBN;
             session.setAttribute(ErrorMessageConstants.ERROR_LOG_MESSAGE, errorMessage);
             logger.error(errorMessage, e);
-            return NOT_FOUND_PAGE;
+            return new CommandResult(CommandResult.ResponseType.FORWARD, PageConstants.NOT_FOUND.getPage());
         }
 
-        return BOOK_DETAILS_PAGE;
+        return new CommandResult(CommandResult.ResponseType.FORWARD, PageConstants.BOOK_DETAILS.getPage());
     }
 }

@@ -1,54 +1,30 @@
-package com.epam.bookshop.controller.ajax;
+package com.epam.bookshop.command.impl.action;
 
-import com.epam.bookshop.domain.impl.Book;
+import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
+import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.domain.impl.Book;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Adds selected book to cart
+ * Adds selected {@link Book} to cart
  */
-@WebServlet("/add_to_cart")
-public class AddToCartController extends HttpServlet {
+public class AddToCartCommand implements Command {
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
-        final HttpSession session = request.getSession();
+    public CommandResult execute(RequestContext requestContext) {
+        final HttpSession session = requestContext.getSession();
 
         add(session, (Book) session.getAttribute(RequestConstants.BOOK_TO_CART));
+
+        return new CommandResult(CommandResult.ResponseType.NO_ACTION, UtilStringConstants.EMPTY_STRING);
     }
-
-
-    /**
-     * Checks whether we have already bought the book
-     *
-     * @param book {@link Book} book to be checked
-     * @param session current {@link HttpSession} session used to set attributes
-     * @return true if and only if book already exists in library, otherwise - false
-     */
-    private boolean bookExistsInLibrary(Book book, HttpSession session) {
-        List<Book> library = (List<Book>) session.getAttribute(RequestConstants.LIBRARY);
-
-        if (Objects.isNull(library)) {
-            return false;
-        }
-
-        for (Book b : library) {
-            if (Objects.nonNull(book) && book.equals(b)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 
     /**
      * Adds {@link Book} to {@link List<Book>} cart object in {@link HttpSession}
@@ -72,6 +48,28 @@ public class AddToCartController extends HttpServlet {
         cart.add(book);
     }
 
+    /**
+     * Checks whether we have already bought the book
+     *
+     * @param book {@link Book} book to be checked
+     * @param session current {@link HttpSession} session used to set attributes
+     * @return true if and only if book already exists in library, otherwise - false
+     */
+    private boolean bookExistsInLibrary(Book book, HttpSession session) {
+        List<Book> library = (List<Book>) session.getAttribute(RequestConstants.LIBRARY);
+
+        if (Objects.isNull(library)) {
+            return false;
+        }
+
+        for (Book b : library) {
+            if (Objects.nonNull(book) && book.equals(b)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Fetches {@link List<Book>} cart object from {@link HttpSession}.

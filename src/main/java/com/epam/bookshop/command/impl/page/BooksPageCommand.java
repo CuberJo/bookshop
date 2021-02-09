@@ -1,11 +1,11 @@
 package com.epam.bookshop.command.impl.page;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
+import com.epam.bookshop.constant.PageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 
-import javax.servlet.http.HttpSession;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -15,13 +15,11 @@ import java.util.Objects;
  */
 public class BooksPageCommand implements Command {
 
-    private static final ResponseContext BOOKS_PAGE_FORWARD = () -> "/WEB-INF/jsp/books.jsp";
-
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         requestContext.setAttribute(RequestConstants.GENRE,  decode(requestContext.getParameter(RequestConstants.GENRE)));
 
-        return BOOKS_PAGE_FORWARD;
+        return new CommandResult(CommandResult.ResponseType.FORWARD, PageConstants.BOOKS.getPage());
     }
 
 

@@ -1,9 +1,11 @@
 package com.epam.bookshop.command.impl.page;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
+import com.epam.bookshop.constant.PageConstants;
 import com.epam.bookshop.constant.RequestConstants;
+import com.epam.bookshop.constant.RouteConstants;
 
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
@@ -13,19 +15,16 @@ import java.util.Objects;
  */
 public class CartPageCommand implements Command {
 
-    private static final ResponseContext CART_PAGE_FORWARD = () -> "/WEB-INF/jsp/cart.jsp";
-    private static final ResponseContext CART_PAGE_REDIRECT = () -> "/home?command=cart";
-
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         final HttpSession session = requestContext.getSession();
 
-        ResponseContext cartPage = CART_PAGE_FORWARD;
+        CommandResult cartPage = new CommandResult(CommandResult.ResponseType.FORWARD, PageConstants.CART.getPage());
 
         String chosenIBAN = requestContext.getParameter(RequestConstants.CHOSEN_IBAN);
         if (Objects.nonNull(chosenIBAN)) {
             session.setAttribute(RequestConstants.CHOSEN_IBAN, chosenIBAN);
-            cartPage = CART_PAGE_REDIRECT;
+            cartPage = new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CART.getRoute());
         }
 
         String backToChooseIBAN = requestContext.getParameter(RequestConstants.BACK_TO_CHOOSE_IBAN);

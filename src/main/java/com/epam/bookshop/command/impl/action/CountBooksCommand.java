@@ -1,20 +1,19 @@
 package com.epam.bookshop.command.impl.action;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.command.impl.page.BooksPageCommand;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
-import com.epam.bookshop.controller.ajax.BooksController;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.util.JsonConverter;
+import com.epam.bookshop.util.EntityFinderFacade;
+import com.epam.bookshop.util.ToJsonConverter;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
@@ -34,7 +33,7 @@ public class CountBooksCommand implements Command {
     private static final int DEFAULT_GENRE_ID = 1;
 
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
         final String locale = (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE);
 
         BookService service = (BookService) ServiceFactory.getInstance().create(EntityType.BOOK);
@@ -46,7 +45,7 @@ public class CountBooksCommand implements Command {
             String genreName = BooksPageCommand.decode(encodedGenre);
             long genreId;
             try {
-                genreId = EntityFinder.getInstance()
+                genreId = EntityFinderFacade.getInstance()
                         .find(locale, logger, GenreCriteria.builder().genre(genreName).build())
                         .getEntityId();
             } catch (EntityNotFoundException e) {
@@ -59,6 +58,7 @@ public class CountBooksCommand implements Command {
             rows = service.count();
         }
 
-        return () -> JsonConverter.getInstance().write(rows);
+        return new CommandResult(CommandResult.ResponseType.JSON,
+                ToJsonConverter.getInstance().write(rows));
     }
 }

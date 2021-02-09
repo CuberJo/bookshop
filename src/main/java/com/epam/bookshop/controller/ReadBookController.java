@@ -1,21 +1,22 @@
 package com.epam.bookshop.controller;
 
-import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.util.EntityFinder;
+import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
-import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.criteria.impl.BookCriteria;
-import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
+import com.epam.bookshop.constant.RouteConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Payment;
+import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.util.EntityFinderFacade;
+import com.epam.bookshop.util.criteria.Criteria;
+import com.epam.bookshop.util.criteria.impl.BookCriteria;
+import com.epam.bookshop.util.criteria.impl.PaymentCriteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,14 +42,13 @@ public class ReadBookController extends HttpServlet {
     private static final String HEADER_PARAM = "inline; filename=automatic_start.pdf";
     public static final String APPLICATION_PDF_CONTENT_TYPE = "application/pdf";
     public static final String CONTENT_DISPOSITION_HEADER = "Content-disposition";
-    private static final String HOME_PAGE = "/home";
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (checkBookPurchase(request) || (Objects.nonNull(request.getSession().getAttribute(RequestConstants.LOGIN)) && RequestConstants.ADMIN_ROLE.equals(request.getSession().getAttribute(RequestConstants.ROLE)))) {
             renderBook(request, response);
         } else {
-            request.getRequestDispatcher(HOME_PAGE).forward(request, response);
+            request.getRequestDispatcher(RouteConstants.HOME.getRoute()).forward(request, response);
         }
     }
 
@@ -67,14 +67,13 @@ public class ReadBookController extends HttpServlet {
         Criteria<Book> criteria = BookCriteria.builder()
                 .ISBN(request.getParameter(RequestConstants.ISBN))
                 .build();
-        Book book = EntityFinder.getInstance().find(criteria, locale, logger);
+        Book book = EntityFinderFacade.getInstance().find(criteria, locale, logger);
         try {
-            User user = EntityFinder.getInstance().findUserInSession(request.getSession(), logger);
-            Criteria<Payment> paymentCriteria = PaymentCriteria.builder()
+            User user = EntityFinderFacade.getInstance().findUserInSession(request.getSession(), logger);
+            Optional<Payment> optionalPayment = service.find(PaymentCriteria.builder()
                     .bookId(book.getEntityId())
                     .libraryUserId(user.getEntityId())
-                    .build();
-            Optional<Payment> optionalPayment = service.find(paymentCriteria);
+                    .build());
             if (optionalPayment.isEmpty()) {
                 return false;
             }
@@ -102,10 +101,8 @@ public class ReadBookController extends HttpServlet {
 
         ByteArrayOutputStream bos = null;
         try {
-            Criteria<Book> criteria = BookCriteria.builder()
-                    .ISBN(request.getParameter(RequestConstants.ISBN))
-                    .build();
-            Book book = EntityFinder.getInstance().find(criteria, locale, logger);
+            Book book = EntityFinderFacade.getInstance().find(BookCriteria.builder().ISBN(request.getParameter(RequestConstants.ISBN)).build(),
+                    locale, logger);
 
             bos = getBookByteArrayStram(book, locale);
 

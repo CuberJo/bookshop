@@ -1,5 +1,6 @@
 package com.epam.bookshop.service.impl;
 
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.domain.impl.Book;
@@ -24,7 +25,7 @@ public class BookServiceTest {
     public void testCreate() {
         try {
             service.create(new Book("99-12-321-5", "The book", "Hopwaa", 12, "H&H", new Genre(1L, "FANTASY"), "One day at in one city ..."));
-        } catch (ValidatorException e) {
+        } catch (ValidatorException | DqlException e) {
             e.printStackTrace();
         }
 
@@ -35,7 +36,7 @@ public class BookServiceTest {
     public void testCreateWithId() {
         try {
             service.create(new Book(3l, "98-65621-5", "The book", "Hopwaa", 12, "H&H", new Genre("FANTASY"), "One day at in one city ..."));
-        } catch (ValidatorException e) {
+        } catch (ValidatorException | DqlException e) {
             e.printStackTrace();
         }
     }
@@ -44,7 +45,7 @@ public class BookServiceTest {
     public void testCreateWithIntegerPtice() {
         try {
             service.create(new Book("978-6-389-1", "War and peace", "Tolstoy", 12, "F&F", new Genre("FANTASY"), "One day at in one city ..."));
-        } catch (ValidatorException e) {
+        } catch (ValidatorException | DqlException e) {
             e.printStackTrace();
         }
     }
@@ -53,7 +54,7 @@ public class BookServiceTest {
     public void testCreateWithDuplicateISBN() {
         try {
             service.create(new Book("978-6-389-1", "War and peace", "Tolstoy", 12, "F&F", new Genre("FANTASY"), "One day at in one city ..."));
-        } catch (ValidatorException e) {
+        } catch (ValidatorException | DqlException e) {
             e.printStackTrace();
         }
     }

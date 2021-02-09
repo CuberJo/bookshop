@@ -2,8 +2,11 @@ package com.epam.bookshop.command.impl;
 
 import com.epam.bookshop.command.RequestContext;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -60,5 +63,10 @@ public class CustomRequestContext implements RequestContext {
     @Override
     public void removeAttribute(String s) {
         httpServletRequest.removeAttribute(s);
+    }
+
+    @Override
+    public Part getPart(String var1) throws IOException, ServletException {
+        return httpServletRequest.getPart(var1);
     }
 }

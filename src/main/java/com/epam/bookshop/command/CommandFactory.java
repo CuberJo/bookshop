@@ -38,27 +38,25 @@ public class CommandFactory {
     private static final String READ_BOOK = "read_book";
     private static final String ADD_IBAN_PAGE = "add_iban_page";
     private static final String BOOK_SEARCH_RESULTS = "book_search_results";
-
-
-
     private static final String RELATED_BOOKS = "relatedBooks";
     private static final String BESTSELLERS = "bestsellers";
     private static final String EXCLUSIVE_BOOK = "exclusive";
     private static final String LATEST_PRODUCTS = "latestProducts";
-
     private static final String ADVANCED_BOOK_SEARCH = "advanced_book_search";
     private static final String LIVE_BOOK_SEARCH = "live_book_search";
     private static final String NOT_ADVANCED_BOOK_SEARCH = "not_advanced_book_search";
-
     private static final String COUNT_BOOKS = "count_books";
     private static final String COUNT_ADVANCED_BOOK_SEARCH = "count_advanced_book_search";
     private static final String COUNT_NOT_ADVANCED_BOOK_SEARCH = "count_not_advanced_book_search";
-
     private static final String GET_BOOKS = "get_books";
-
-
     private static final String COUNT_USERS = "countUsers";
     private static final String COUNT_PAYMENTS = "countPayments";
+    private static final String PAYMENTS = "payments";
+    private static final String USERS = "users";
+    private static final String ADD_NEW_BOOK = "addNewBook";
+    private static final String UPDATE_BOOK = "updateBook";
+    private static final String ACCOUNT_SETTINGS = "account_settings";
+    private static final String GOOGLE_LOGIN = "google_login";
 
     public static Command command(String command) {
 
@@ -95,14 +93,12 @@ public class CommandFactory {
                 return new ChangeLocaleCommand();
             case SEND_CONTACT_FORM:
                 return new SendContactFormCommand();
-//            case REMOVE_FROM_CART:
-//                return new RemoveFromCartController();
             case PURCHASE:
                 return new PurchaseCommand();
             case CHOOSE_IBAN:
                 return new ChooseIbanPageCommand();
             case ADD_IBAN:
-                return new com.epam.bookshop.command.impl.page_and_action.AddIbanCommand();
+                return new AddIbanCommand();
             case FINISHED_PURCHASE:
                 return new FinishedPurchasePageCommand();
             case PERSONAL_PAGE:
@@ -113,7 +109,6 @@ public class CommandFactory {
                 return new AddIbanPageCommand();
             case BOOK_SEARCH_RESULTS:
                 return new BookSearchResultsPageCommand();
-
             case RELATED_BOOKS:
                 return new RelatedBooksCommand();
             case BESTSELLERS:
@@ -122,32 +117,46 @@ public class CommandFactory {
                 return new ExclusiveBookCommand();
             case LATEST_PRODUCTS:
                 return new LatestBookProductsCommand();
-
             case ADVANCED_BOOK_SEARCH:
                 return new AdvancedBookSearchCommand();
             case NOT_ADVANCED_BOOK_SEARCH:
                 return new NotAdvancedBookSearchCommand();
             case LIVE_BOOK_SEARCH:
                 return new LiveBookSearchCommand();
-
             case COUNT_BOOKS:
                 return new CountBooksCommand();
             case COUNT_ADVANCED_BOOK_SEARCH:
                 return new CountAdvancedBookSearchCommand();
             case COUNT_NOT_ADVANCED_BOOK_SEARCH:
                 return new CountNotAdvancedBookSearchCommand();
-
             case GET_BOOKS:
                 return new BooksCommand();
-
             case COUNT_USERS:
                 return new CountUsersCommand();
             case COUNT_PAYMENTS:
                 return new CountPaymentsCommand();
-//            case READ_BOOK:
-//                return new ReadBookController();
-//            case LOAD_IBANs:
-//                return new LoadIBANsController();
+            case PAYMENTS:
+                return new PaymentsCommand();
+            case USERS:
+                return new UsersCommand();
+            case ADD_NEW_BOOK:
+                return new AddNewBookCommand();
+            case UPDATE_BOOK:
+                return new UpdateBookCommand();
+            case LOAD_IBANs:
+                return new LoadIbansCommand();
+            case REMOVE_FROM_CART:
+                return new RemoveFromCartCommand();
+            case UNBIND_IBAN:
+                return new UnbindIbanCommand();
+            case ADD_TO_CART:
+                return new AddToCartCommand();
+            case ACCOUNT_SETTINGS:
+                return new AccountSettingsCommand();
+
+
+            case GOOGLE_LOGIN:
+                return new GoogleLoginCommand();
             default:
                 return new HomePageCommand();
         }

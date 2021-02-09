@@ -2,6 +2,11 @@ package com.epam.bookshop.util.criteria;
 
 import com.epam.bookshop.domain.Entity;
 
+/**
+ * Utility class that is used in different situations :)
+ *
+ * @param <T>
+ */
 public abstract class Criteria<T extends Entity> {
     protected Long entityId;
 

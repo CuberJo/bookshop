@@ -30,26 +30,8 @@ public class CountDiscountTag extends SimpleTagSupport {
         JspWriter out = getJspContext().getOut();
 
         if (Objects.nonNull(discount)) {
-            out.println(new BigDecimal(String.valueOf(countTotalPrice(cart))).subtract(new BigDecimal(String.valueOf(discount))));
+            double totalPrice = PriceCounterTag.countTotalPrice(cart);
+            out.println(new BigDecimal(String.valueOf(totalPrice)).subtract(new BigDecimal(String.valueOf(discount))));
         }
-    }
-
-
-    /**
-     * Counts total price, subtracting {@code discount}
-     *
-     * @param cart user book cart
-     * @return counted price without discount
-     */
-    private double countTotalPrice(ArrayList<Book> cart) {
-        double total = 0;
-
-        if (Objects.nonNull(cart) && cart.stream().anyMatch(Objects::nonNull)) {
-            for (int i = 0; i < cart.size(); i++) {
-                total += cart.get(i).getPrice();
-            }
-        }
-
-        return total;
     }
 }

@@ -50,7 +50,7 @@
                 </c:if>
 <%--                <input type="submit" onclick="validateResetPassForm(event)" value="Get New Password" />--%>
 <%--                <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=register">Register</button>--%>
-                <button type="submit" onclick="return validateResetPassForm(event)"><fmt:message key="label,get_new_pass" bundle="${lang}"/></button>
+                <button type="submit" onclick="return validateResetPassForm(event)"><fmt:message key="label.get_new_pass" bundle="${lang}"/></button>
             </form>
         </div>
     </div>

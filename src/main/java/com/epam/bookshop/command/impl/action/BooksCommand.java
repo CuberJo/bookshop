@@ -1,11 +1,10 @@
 package com.epam.bookshop.command.impl.action;
 
 import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.command.impl.page.BooksPageCommand;
 import com.epam.bookshop.constant.RequestConstants;
-import com.epam.bookshop.controller.ajax.BooksController;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
@@ -13,8 +12,9 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.EntityFinder;
-import com.epam.bookshop.util.JsonConverter;
+import com.epam.bookshop.util.BookDataProcessor;
+import com.epam.bookshop.util.EntityFinderFacade;
+import com.epam.bookshop.util.ToJsonConverter;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;
 import org.slf4j.Logger;
@@ -33,13 +33,16 @@ public class BooksCommand implements Command {
     private static final int TOTAL_ITEMS_PER_PAGE = 8;
 
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
+        String genreName = BooksPageCommand.decode(requestContext.getParameter(RequestConstants.GENRE));
 
-        Collection<Book> books = getBooksByGenre(BooksPageCommand.decode(requestContext.getParameter(RequestConstants.GENRE)),
-                BooksController.getStartPoint(requestContext, TOTAL_ITEMS_PER_PAGE), TOTAL_ITEMS_PER_PAGE,
+        Collection<Book> books = getBooksByGenre(genreName,
+                BookDataProcessor.getInstance().getStartPoint(requestContext, TOTAL_ITEMS_PER_PAGE), TOTAL_ITEMS_PER_PAGE,
                 (String) requestContext.getSession().getAttribute(RequestConstants.LOCALE));
 
-        return () -> JsonConverter.getInstance().write(books);
+        requestContext.setAttribute(RequestConstants.GENRE, genreName);
+
+        return new CommandResult(CommandResult.ResponseType.JSON, ToJsonConverter.getInstance().write(books));
     }
 
 
@@ -57,7 +60,7 @@ public class BooksCommand implements Command {
         Collection<Book> books = null;
         if (Objects.nonNull(genreName) && !genreName.isEmpty()) {
             try {
-                Genre genre = EntityFinder.getInstance().find(locale, logger, GenreCriteria.builder().genre(genreName).build());
+                Genre genre = EntityFinderFacade.getInstance().find(locale, logger, GenreCriteria.builder().genre(genreName).build());
                 books = service.findAll(BookCriteria.builder().genreId(genre.getEntityId()).build(), start, total);
 
             } catch (EntityNotFoundException | ValidatorException e) {

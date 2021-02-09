@@ -3,6 +3,9 @@ package com.epam.bookshop.util.manager.language;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Enum responsible for bundling with {@code message} file
+ */
 public enum MessageManager {
     US(ResourceBundle.getBundle(("message"), new Locale("en", "US"))),
     RU(ResourceBundle.getBundle(("message"), new Locale("ru", "RU")));

@@ -1,38 +1,36 @@
-package com.epam.bookshop.controller.ajax;
+package com.epam.bookshop.command.impl.action;
 
-import com.epam.bookshop.domain.impl.Book;
+import com.epam.bookshop.command.Command;
+import com.epam.bookshop.command.CommandResult;
+import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
+import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Removes book from cart
+ * Removes {@link Book} from cart
  */
-@WebServlet("/remove_from_cart")
-public class RemoveFromCartController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(RemoveFromCartController.class);
+public class RemoveFromCartCommand implements Command {
+    private static final Logger logger = LoggerFactory.getLogger(RemoveFromCartCommand.class);
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        HttpSession session = req.getSession();
-        String locale = (String) session.getAttribute(RequestConstants.LOCALE);
-        String isbn = req.getParameter(RequestConstants.ISBN);
+    public CommandResult execute(RequestContext requestContext) {
+        HttpSession session = requestContext.getSession();
 
-        remove(session, locale, isbn);
+        remove(session, (String) session.getAttribute(RequestConstants.LOCALE),
+                requestContext.getParameter(RequestConstants.ISBN));
+
+        return new CommandResult(CommandResult.ResponseType.NO_ACTION, UtilStringConstants.EMPTY_STRING);
     }
-
 
     /**
      * Removes {@link Book} from {@link ArrayList<Book>} cart

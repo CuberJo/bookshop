@@ -9,7 +9,8 @@ let exclusiveBook;
 function fetchBestsellers() {
 
     $.ajax({
-        url: 'http://localhost:8080/books',
+        // url: 'http://localhost:8080/books',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             // bestsellers: 'fetch'
@@ -30,7 +31,8 @@ function fetchBestsellers() {
 function fetchExclusiveBook() {
 
     $.ajax({
-        url: 'http://localhost:8080/books',
+        // url: 'http://localhost:8080/books',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             // exclusive: 'fetch'
@@ -51,7 +53,8 @@ function fetchExclusiveBook() {
 function fetchLatestProducts() {
 
     $.ajax({
-        url: 'http://localhost:8080/books',
+        // url: 'http://localhost:8080/books',
+        url: 'http://localhost:8080/home',
         type: 'GET',
         data: ({
             // latestProducts: 'fetch'

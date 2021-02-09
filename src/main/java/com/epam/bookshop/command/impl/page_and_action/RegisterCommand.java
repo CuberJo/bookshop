@@ -1,20 +1,22 @@
 package com.epam.bookshop.command.impl.page_and_action;
 
+import com.epam.bookshop.command.CommandResult;
+import com.epam.bookshop.constant.RouteConstants;
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.command.Command;
 import com.epam.bookshop.command.RequestContext;
-import com.epam.bookshop.command.ResponseContext;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.mail.MailSender;
+import com.epam.bookshop.validator.impl.DqlExceptionMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,15 +30,11 @@ import java.util.Objects;
 public class RegisterCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(RegisterCommand.class);
 
-    private static final ResponseContext HOME_PAGE = () -> "/home";
-    private static final ResponseContext ACCOUNT_PAGE = () -> "/home?command=account";
-    private static final ResponseContext CART_PAGE = () -> "/home?command=cart";
-
     private static final String REGISTER_USER_SUBJECT = "Registration completed";
     private static final String REGISTER_RESPONSE = "You have successfully registered!";
 
     @Override
-    public ResponseContext execute(RequestContext requestContext) {
+    public CommandResult execute(RequestContext requestContext) {
 
         final String name = requestContext.getParameter(RequestConstants.NAME);
         final String login = requestContext.getParameter(RequestConstants.LOGIN);
@@ -59,7 +57,7 @@ public class RegisterCommand implements Command {
         } catch (ValidatorException e) {
             session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE, e.getMessage());
             logger.error(e.getMessage(), e);
-            return ACCOUNT_PAGE;
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ACCOUNT.getRoute());
         } catch (MessagingException e) {
             session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE,
                     ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.COULD_NOT_REACH_EMAIL_ADDRESS)
@@ -72,15 +70,20 @@ public class RegisterCommand implements Command {
                 logger.error(e1.getMessage(), e1);
             }
             logger.error(e.getMessage(), e);
-            return ACCOUNT_PAGE;
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ACCOUNT.getRoute());
+        } catch (DqlException e) {
+            session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE,
+                    DqlExceptionMessageProcessor.getInstance().process(e));
+            logger.error(e.getMessage(), e);
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ACCOUNT.getRoute());
         }
 
         if (Objects.nonNull(session.getAttribute(RequestConstants.BACK_TO_CART))) {
             session.removeAttribute(RequestConstants.BACK_TO_CART);
-            return CART_PAGE;
+            return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CART.getRoute());
         }
 
-        return HOME_PAGE;
+        return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.HOME.getRoute());
     }
 
 
@@ -96,7 +99,7 @@ public class RegisterCommand implements Command {
      * @return user if he/she was found in database
      * @throws ValidatorException if {@link User} object's data fails validation
      */
-    private User register(String name, String login, String email, String password, String locale) throws ValidatorException {
+    public static User register(String name, String login, String email, String password, String locale) throws ValidatorException, DqlException {
         EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
         service.setLocale(locale);
 

@@ -5,5 +5,5 @@ package com.epam.bookshop.command;
  * implementation of Command design pattern
  */
 public interface Command {
-    ResponseContext execute(RequestContext requestContext);
+    CommandResult execute(RequestContext requestContext);
 }

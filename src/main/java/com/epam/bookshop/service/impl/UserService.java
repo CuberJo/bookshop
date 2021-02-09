@@ -7,6 +7,7 @@ import com.epam.bookshop.dao.impl.UserDao;
 import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
@@ -38,7 +39,7 @@ public class UserService implements EntityService<User> {
     }
 
     @Override
-    public User create(User user) throws ValidatorException {
+    public User create(User user) throws ValidatorException, DqlException {
         EntityValidator entityValidator = new EntityValidator();
         entityValidator.setLocale(locale);
         entityValidator.validate(user);
@@ -219,7 +220,7 @@ public class UserService implements EntityService<User> {
     }
 
 
-    public Map<String, Long> createUserBankAccount(String IBAN, Long library_User_Id) throws ValidatorException {
+    public Map<String, Long> createUserBankAccount(String IBAN, Long library_User_Id) throws ValidatorException, DqlException {
         if (EmptyStringValidator.getInstance().empty(IBAN)) {
             throw new ValidatorException(ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMPTY_IBAN));
         }

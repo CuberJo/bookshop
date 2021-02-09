@@ -7,6 +7,7 @@ import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Payment;
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.EntityService;
@@ -42,7 +43,7 @@ public class PaymentService implements EntityService<Payment> {
     }
 
     @Override
-    public Payment create(Payment payment) throws ValidatorException {
+    public Payment create(Payment payment) throws ValidatorException, DqlException {
         EntityValidator entityValidator = new EntityValidator();
         entityValidator.setLocale(locale);
         entityValidator.validate(payment);
