@@ -117,7 +117,7 @@
     <div class="col-sm-9" style="min-height:550px;">
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#library"><fmt:message key="label.library" bundle="${lang}"/></a></li>
-            <li><a data-toggle="tab" href="#settings"><fmt:message key="label.settings" bundle="${lang}"/></a></li>
+            <c:if test="${empty g_sign_in}"><li><a data-toggle="tab" href="#settings"><fmt:message key="label.settings" bundle="${lang}"/></a></li></c:if>
             <li><a data-toggle="tab" href="#logout"><fmt:message key="label.log_out" bundle="${lang}"/></a></li>
             <li><a data-toggle="tab" href="#BankAccs"><fmt:message key="label.bank_accounts" bundle="${lang}"/></a></li>
             <li><a data-toggle="tab" href="#deleteAcc"><fmt:message key="label.delete_acc" bundle="${lang}"/></a></li>
@@ -161,7 +161,7 @@
                 <hr>
             </div>
 
-            <div class="tab-pane" id="settings">
+            <c:if test="${empty g_sign_in}"><div class="tab-pane" id="settings">
                 <h2></h2>
                 <hr>
 <%--                <div id="errorAccMessage" style="color: #ff523b; height: 30px"></div>--%>
@@ -208,7 +208,7 @@
                         <button class="btn" onclick="rst()" type="reset"><fmt:message key="label.reset" bundle="${lang}"/></button>
                     </div>
                 </div>
-            </div>
+            </div></c:if>
 
             <div class="tab-pane" id="logout">
                 <hr>
@@ -429,6 +429,9 @@
         $("#password").val('');
         $("#verifyPassword").val('');
         $("#checkPassword").val('');
+
+        $('#rowToReload2').text('');
+        $('#errorAccMessage').text('')
     }
 </script>
 

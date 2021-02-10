@@ -46,7 +46,6 @@ public class RequestConstants {
     public static final String IBAN_TO_DELETE = "iban_to_delete";
     public static final String BOOK_TO_CART = "book_to_cart";
     public static final String BACK_TO_CART = "back_to_cart";
-    public static final String FROM_CART_PAGE = "fromCartPage";
     public static final String BACK_TO_CHOOSE_IBAN = "back_to_choose_iban";
     public static final String NEED_TO_LINK_BANK_ACCOUNT = "need_to_link_bank_account";
     public static final String BOOK_TO_REMOVE = "book_to_remove";

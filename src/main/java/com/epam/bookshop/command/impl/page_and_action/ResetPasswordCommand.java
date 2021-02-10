@@ -13,6 +13,7 @@ import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.mail.MailSender;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
+import com.epam.bookshop.util.EntityFinderFacade;
 import com.epam.bookshop.util.PasswordCreator;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
@@ -41,10 +42,8 @@ public class ResetPasswordCommand implements Command {
         final String email = requestContext.getParameter(RequestConstants.EMAIL);
 
         try {
-            EntityService<User> service = ServiceFactory.getInstance().create(EntityType.USER);
-            service.setLocale(locale);
-
-            Optional<User> optionalUser = service.find(UserCriteria.builder().email(email).build());
+            Optional<User> optionalUser =
+                    EntityFinderFacade.getInstance().findOptional(UserCriteria.builder().email(email).build(), logger, locale);
             if (optionalUser.isEmpty()) {
                 session.setAttribute(ErrorMessageConstants.ERROR_MESSAGE,
                         ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_NOT_FOUND_IN_DATABASE)

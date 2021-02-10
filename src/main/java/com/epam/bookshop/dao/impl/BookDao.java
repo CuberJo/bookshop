@@ -429,7 +429,7 @@ public class BookDao extends AbstractDao<Long, Book> {
      * Finds limited by <b>start</b> and <b>end</b> portion of books
      *
      * @param start from where to start search
-     * @param total how many row to find
+     * @param total how many rows to find
      * @return found {@link List<Book>}
      */
     @Override

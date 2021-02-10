@@ -22,4 +22,5 @@ public class UtilStringConstants {
     public static final String APPLICATION_JSON = "application/json";
     public static final String TEXT_PLAIN = "text/plain";
     public static final Integer ZERO_ROWS_AFFECTED = 0;
+    public static final String GOOGLE_SIGN_IN = "g_sign_in";
 }

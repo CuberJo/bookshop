@@ -122,6 +122,31 @@ public class EntityFinderFacade {
     }
 
 
+
+    /**
+     * Looks for {@link User} by certain {@link Criteria<User>} criteria
+     *
+     * @param criteria {@link Criteria<User>} criteria by which user is found
+     * @param logger logger which is used to log error if ones would take place
+     * @param locale language for error messages
+     * @return optional object
+     */
+    public Optional<User> findOptional(Criteria<User> criteria, Logger logger, String locale) {
+        UserService service = (UserService) ServiceFactory.getInstance().create(EntityType.USER);
+        service.setLocale(locale);
+
+        Optional<User> optionalUser = Optional.empty();
+        try {
+            optionalUser = service.find(criteria);
+        } catch (ValidatorException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return optionalUser;
+    }
+
+
+
     /**
      * Finds genre by criteria
      *

@@ -38,7 +38,8 @@ public class UnbindIbanCommand implements Command {
         deleteIBAN(ibanToDelete, locale);
         ibans.remove(ibanToDelete);
 
-        if (session.getAttribute(RequestConstants.CHOSEN_IBAN).equals(ibanToDelete)) {
+        if (Objects.nonNull(session.getAttribute(RequestConstants.CHOSEN_IBAN)) &&
+                session.getAttribute(RequestConstants.CHOSEN_IBAN).equals(ibanToDelete)) {
             session.removeAttribute(RequestConstants.CHOSEN_IBAN);
         }
 

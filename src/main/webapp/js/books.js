@@ -97,7 +97,6 @@ function render(books) {
     console.log(books);
 
     if (books != null) {
-
         $.each(books, function (index, el) {
             if (el.base64Image != null && el.base64Image !== "") {
                 let block = '<div class="col-4" style="flex-basis: 25%"><a href="/home?command=book_details&isbn=' + el.isbn + '">' +
@@ -177,7 +176,7 @@ $(document).ready(function () {
                 url: 'http://localhost:8080/home',
                 type: 'GET',
                 data: ({
-                    commad: 'get_books',
+                    command: 'get_books',
                     page: pageNum,
                     genre: genreName
                 }),

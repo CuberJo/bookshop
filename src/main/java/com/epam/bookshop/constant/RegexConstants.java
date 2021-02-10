@@ -23,4 +23,5 @@ public class RegexConstants {
     public static final String MALICIOUS_REGEX = "[<>*;='#)+&(\"]+";
     public static final String SPACES_BEFORE_STR = "^\\s++";
     public static final String SPACES_AFTER_STR = "\\s++$";
+    public static final String CYRILLIC = "[а-яА-ЯёЁ]+";
 }

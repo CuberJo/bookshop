@@ -28,15 +28,7 @@ public class DeleteAccountCommand implements Command {
         final HttpSession session = requestContext.getSession();
 
         delete(session);
-
-        session.removeAttribute(RequestConstants.LOGIN);
-        session.removeAttribute(RequestConstants.LIBRARY);
-        session.removeAttribute(RequestConstants.IBANs);
-        session.removeAttribute(RequestConstants.ROLE);
-        session.removeAttribute(RequestConstants.CART);
-
-        session.removeAttribute(RequestConstants.BACK_TO_CHOOSE_IBAN);
-        session.removeAttribute(RequestConstants.FROM_CART_PAGE);
+        LogoutCommand.rmSessionAttr(session);
 
         return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ACCOUNT.getRoute());
     }
