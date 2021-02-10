@@ -18,7 +18,6 @@
       <param-value>UTF-8</param-value>
     </init-param>
   </filter>
-
   <filter-mapping>
     <filter-name>CharsetFilter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -51,7 +50,6 @@
     <exception-type>com.epam.bookshop.exception.EntityNotFoundException</exception-type>
     <location>/error404.jsp</location>
     </error-page>
-
   <error-page>
     <exception-type>java.lang.Exception</exception-type>
     <location>/error500.jsp</location>

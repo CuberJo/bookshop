@@ -431,7 +431,7 @@
         $("#checkPassword").val('');
 
         $('#rowToReload2').text('');
-        $('#errorAccMessage').text('')
+        $('#merr').text('')
     }
 </script>
 

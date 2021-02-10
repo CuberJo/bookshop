@@ -15,7 +15,7 @@ import javax.mail.internet.MimeMessage;
 public class MimeMessagePreparer {
     private static final Logger logger = LoggerFactory.getLogger(MimeMessagePreparer.class);
 
-    private static final String CONTENT_TYPE = "text/html";
+    private static final String CONTENT_TYPE = "text/html;charset=UTF-8";
 
     private static MimeMessagePreparer instance;
 

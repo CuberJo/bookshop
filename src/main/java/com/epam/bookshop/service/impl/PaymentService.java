@@ -152,7 +152,8 @@ public class PaymentService implements EntityService<Payment> {
         }
 
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PAYMENT_NOT_FOUND) + UtilStringConstants.WHITESPACE + id;
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PAYMENT_NOT_FOUND)
+                    + UtilStringConstants.WHITESPACE + id;
             throw new EntityNotFoundException(errorMessage + UtilStringConstants.WHITESPACE + id);
         }
 
@@ -175,7 +176,8 @@ public class PaymentService implements EntityService<Payment> {
         }
 
         if (!isDeleted) {
-            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PAYMENT_NOT_FOUND) + UtilStringConstants.WHITESPACE + payment.getEntityId();
+            String errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.PAYMENT_NOT_FOUND)
+                    + UtilStringConstants.WHITESPACE + payment.getEntityId();
             throw new EntityNotFoundException(errorMessage + UtilStringConstants.WHITESPACE + payment.getEntityId());
         }
 

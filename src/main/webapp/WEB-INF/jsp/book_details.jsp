@@ -46,7 +46,7 @@
                 <li>
                     <form id="bookDetailsSearchForm" method="post" action="/home?command=book_search_results">
                         <input type="hidden" name="not_advanced_book_search" value="true">
-                        <input type="search" name="str" placeholder="<fmt:message key="label.search" bundle="${lang}"/>..." class="searchInput">
+                        <input type="search" name="str" placeholder="<fmt:message key="label.search" bundle="${lang}"/>" class="searchInput">
                     </form>
                 </li>
                 <li><a href="/home"><fmt:message key="label.home" bundle="${lang}"/></a></li>

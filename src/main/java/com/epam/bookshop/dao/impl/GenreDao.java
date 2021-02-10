@@ -26,14 +26,14 @@ import java.util.Optional;
 public class GenreDao extends AbstractDao<Long, Genre> {
     private static final Logger logger = LoggerFactory.getLogger(GenreDao.class);
 
-    private static final String SQL_INSERT_GENRE = "INSERT INTO TEST_LIBRARY.GENRE (Genre) VALUES (?);";
-    private static final String SQL_DELETE_GENRE_BY_ID = "DELETE FROM TEST_LIBRARY.GENRE WHERE Id = ?;";
-    private static final String SQL_UPDATE_GENRE_BY_ID = "UPDATE TEST_LIBRARY.GENRE SET Genre = ? WHERE Id = ?;";
-    private static final String SQL_SELECT_COUNT_ALL = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.GENRE;";
-    private static final String SQL_SELECT_ALL_GENRES_BY_LIMIT = "SELECT Id, Genre FROM TEST_LIBRARY.GENRE LIMIT ?, ?";
-    private static final String SQL_SELECT_ALL_GENRES_WHERE =  "SELECT Id, Genre FROM TEST_LIBRARY.GENRE WHERE ";
-    private static final String SQL_SELECT_ALL_GENRES = "SELECT Id, Genre FROM TEST_LIBRARY.GENRE;";
-    private static final String SQL_SELECT_GENRE_BY_ID = "SELECT Id, Genre FROM TEST_LIBRARY.GENRE WHERE Id = ?;";
+    private static final String SQL_INSERT_GENRE = "INSERT INTO BOOKSHOP.GENRE (Genre) VALUES (?);";
+    private static final String SQL_DELETE_GENRE_BY_ID = "DELETE FROM BOOKSHOP.GENRE WHERE Id = ?;";
+    private static final String SQL_UPDATE_GENRE_BY_ID = "UPDATE BOOKSHOP.GENRE SET Genre = ? WHERE Id = ?;";
+    private static final String SQL_SELECT_COUNT_ALL = "SELECT COUNT(*) as Num FROM BOOKSHOP.GENRE;";
+    private static final String SQL_SELECT_ALL_GENRES_BY_LIMIT = "SELECT Id, Genre FROM BOOKSHOP.GENRE LIMIT ?, ?";
+    private static final String SQL_SELECT_ALL_GENRES_WHERE =  "SELECT Id, Genre FROM BOOKSHOP.GENRE WHERE ";
+    private static final String SQL_SELECT_ALL_GENRES = "SELECT Id, Genre FROM BOOKSHOP.GENRE;";
+    private static final String SQL_SELECT_GENRE_BY_ID = "SELECT Id, Genre FROM BOOKSHOP.GENRE WHERE Id = ?;";
 
     private static final String ID_COLUMN = "Id";
     private static final String GENRE_COLUMN = "Genre";
