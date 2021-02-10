@@ -4,7 +4,7 @@ logs/
 *.iml
 target/
 git
-application.propesties
+application.properties
 database.properties
 mail.properties
 db/
