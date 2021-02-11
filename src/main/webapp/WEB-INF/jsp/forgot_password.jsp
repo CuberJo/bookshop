@@ -42,6 +42,7 @@
         <div id="sc-password">
             <h1><fmt:message key="type_email_for_pass_reset" bundle="${msg}"/></h1>
             <form id="ResetPassForm"  class="sc-container" method="post" action="/home?command=reset_password">
+<%--                <input type="hidden" name="command" value="reset_password">--%>
                 <input type="email" placeholder="Email" name="email"/>
                 <pre id="errorResetPassMessage" style="color: #ff523b; text-align: center; margin: 10px"></pre>
                 <c:if test="${not empty error_message}">
@@ -50,7 +51,7 @@
                 </c:if>
 <%--                <input type="submit" onclick="validateResetPassForm(event)" value="Get New Password" />--%>
 <%--                <button type="submit" onclick="return validateRegisterForm(event)" class="btn" formmethod="post" formaction="/home?command=register">Register</button>--%>
-                <button type="submit" onclick="return validateResetPassForm(event)"><fmt:message key="label.get_new_pass" bundle="${lang}"/></button>
+                <button id="btnSubmit" type="submit" onclick="return validateResetPassForm(event)"><fmt:message key="label.get_new_pass" bundle="${lang}"/></button>
             </form>
         </div>
     </div>
@@ -90,6 +91,13 @@
 
         return true;
     }
+
+    $(function () {
+        $('#ResetPassForm').submit(function (e) {
+            $(this).click();
+            $("#btnSubmit").attr("disabled", true);
+        })
+    })
 </script>
 
 </body>

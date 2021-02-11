@@ -765,7 +765,7 @@ function sendData(rowNum) {
     fd.append('command', 'updateBook');
 
     $.ajax({
-        url: 'http://localhost:8080/admin',
+        url: 'http://localhost:8080/home',
         data: fd,
         processData: false,
         contentType: false,
@@ -776,6 +776,8 @@ function sendData(rowNum) {
                 return;
             }
             console.log('sending done...');
+            fd = undefined;
+            fd = new FormData();
         }
     });
 
@@ -809,8 +811,7 @@ function sendData(rowNum) {
 }
 
 
-
-function validate(isbn, title, author, price, publisher, genre, errorDivId) {
+function validateNewBookData(isbn, title, author, price, publisher, genre, errorDivId) {
     let error = "";
 
     let malicious_regex = /[<>*;='#)+("]+/;
@@ -885,6 +886,90 @@ function validate(isbn, title, author, price, publisher, genre, errorDivId) {
         error += "Genre not selected; ";
     }
 
+    if (error !== "" && error !== undefined) {
+        $('#' + errorDivId).text(error);
+        return false;
+    }
+
+    return true;
+}
+
+
+
+function validate(isbn, title, author, price, publisher, genre, errorDivId) {
+    let error = "";
+
+    let malicious_regex = /[<>*;='#)+("]+/;
+    if (malicious_regex.test(isbn)) {
+        error = "Invalid isbn input; ";
+    }
+    if (malicious_regex.test(title)) {
+        error += "Invalid title input; ";
+    }
+    if (malicious_regex.test(author)) {
+        error += "Invalid author input; ";
+    }
+    if (malicious_regex.test(price)) {
+        error += "Invalid price input; ";
+    }
+    if (malicious_regex.test(publisher)) {
+        error += "Invalid publisher input; ";
+    }
+
+    let whitespace_regex = /^[\s]+$/;
+    if (isbn === "" || whitespace_regex.test(isbn)) {
+        error += "Empty isbn input; ";
+    }
+    if (title === "" || whitespace_regex.test(title)) {
+        error += "Empty title input; ";
+    }
+    if (author === "" || whitespace_regex.test(author)) {
+        error += "Empty author input; ";
+    }
+    if (price === "" || whitespace_regex.test(price)) {
+        error += "Empty price input; ";
+    }
+    if (publisher === "" || whitespace_regex.test(publisher)) {
+        error += "Empty publisher input; ";
+    }
+
+    // let genre_regex = /^[-a-zA-Z&_\s]{1,50}$/;
+    // if (!genre_regex.test(genre)) {
+    //     error = "Genre incorrect";
+    // }
+    // let publisher_regex = /^[-&a-zA-Zа-яА-Я\s]{1,50}$/;
+    // if (!publisher_regex.test(publisher)) {
+    //     error = "Publisher incorrect";
+    // }
+    let price_regex = /^[0-9]+(\.[0-9]+)?\$?$/;
+    if (!price_regex.test(price)) {
+        error += "Price incorrect; ";
+    }
+    // let author_regex = /^[-\s.a-zA-Zа-яА-Я]{1,50}$/
+    // if (!author_regex.test(author)) {
+    //     error = "Author incorrect";
+    // }
+    // let title_regex = /^[-()!\d\s.a-zA-Zа-яА-Я]{1,50}$/;
+    // if (!title_regex.test(title)) {
+    //     error = "Title incorrect";
+    // }
+    let isbn_regex = /^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$/;
+    if (!isbn_regex.test(isbn)) {
+        error += "ISBN incorrect; ";
+    }
+
+    // if( document.getElementById("fileBookToAdd").files.length === 0 ){
+    //     error += "Book file not selected; ";
+    // }
+    // if( document.getElementById("imgBookToAdd").files.length === 0 ){
+    //     error += "Book image not selected; ";
+    // }
+    //
+    // var ddl = document.getElementById("addBookFormGenre");
+    // var selectedValue = ddl.options[ddl.selectedIndex].value;
+    // if (selectedValue === "CHOOSE_GENRE") {
+    //     error += "Genre not selected; ";
+    // }
 
     if (error !== "" && error !== undefined) {
         $('#' + errorDivId).text(error);
@@ -994,7 +1079,7 @@ $(function () {
         let preview = $('#addBookForm input[name=preview]').val();
 
         let erDivId2 = "er2";
-        if(!validate(isbn, title, author, price, publisher, genre, erDivId2)) {
+        if(!validateNewBookData(isbn, title, author, price, publisher, genre, erDivId2)) {
             event.preventDefault();
             return false;
         }
@@ -1029,6 +1114,14 @@ $(function () {
                     $('#er').text(erMes);
                     return;
                 }
+
+                $('#addBookForm input[name=isbn]').val('')
+                $('#addBookForm input[name=title]').val('');
+                $('#addBookForm input[name=author]').val('');
+                $('#addBookForm input[name=price]').val('');
+                $('#addBookForm input[name=publisher]').val('');
+                $('#addBookForm input[name=preview]').val('');
+
                 console.log('sending done...');
             }
         });

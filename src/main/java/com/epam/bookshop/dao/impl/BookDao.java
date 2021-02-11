@@ -5,6 +5,7 @@ import com.epam.bookshop.db.ConnectionPool;
 import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.ImgToBase64Converter;
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
@@ -32,6 +33,26 @@ import java.util.Optional;
  */
 public class BookDao extends AbstractDao<Long, Book> {
     private static final Logger logger = LoggerFactory.getLogger(BookDao.class);
+
+//    private static final String SQL_SELECT_ALL_BOOKS_WHERE =  "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK WHERE ";
+//    private static final String SQL_SELECT_ALL_BOOKS_WHERE_LIKE_OR = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK " +
+//            "WHERE Title LIKE ? OR Author LIKE ? OR Publisher LIKE ? ;";
+//    private static final String SQL_UPDATE_BOOK_WHERE =  "UPDATE TEST_LIBRARY.BOOK SET %s WHERE Id = ?";
+//    private static final String SQL_INSERT_BOOK = "INSERT INTO TEST_LIBRARY.BOOK (ISBN, Title, Author, Price, Publisher, Genre_Id, Preview) VALUES (?, ?, ?, ?, ?, ?, ?);";
+//    private static final String SQL_DELETE_BOOK_BY_ID = "DELETE FROM TEST_LIBRARY.BOOK WHERE Id = ?;";
+//    private static final String SQL_UPDATE_BOOK_BY_ID = "UPDATE TEST_LIBRARY.BOOK SET ISBN = ?, Title = ?, Author = ?, Price = ?, Publisher = ?, Genre_Id = ?, Preview = ? WHERE Id = ?;";
+//    private static final String SQL_SELECT_ALL_BOOKS = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK ";
+//    private static final String SQL_SELECT_ALL_BOOKS_BY_LIMIT = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK LIMIT ?, ?";
+//    private static final String SQL_SELECT_BOOk_BY_ID = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM TEST_LIBRARY.BOOK WHERE Id = ?";
+//    private static final String SQL_SELECT_RAND = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM BOOK ORDER BY RAND() LIMIT 1;";
+//    private static final String SQL_SELECT_COUNT_ALL = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.BOOK;";
+//    private static final String SQL_SELECT_COUNT_ALL_WHERE = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.BOOK WHERE ";
+//    private static final String SQL_SELECT_COUNT_ALL_WHERE_LIKE_OR = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.BOOK WHERE Title LIKE ? OR Author LIKE ? OR Publisher LIKE ? ;";
+//    private static final String SQL_SELECT_IMG_BY_ISBN = "SELECT Image from TEST_LIBRARY.BOOK_IMAGE WHERE ISBN = ?;";
+//    private static final String SQL_INSERT_IMG = "INSERT INTO TEST_LIBRARY.BOOK_IMAGE (ISBN, Image) VALUES (?, ?)";
+//    private static final String SQL_UPDATE_IMG = "UPDATE TEST_LIBRARY.BOOK_IMAGE SET Image = ? WHERE ISBN = ?";
+//    private static final String SQL_SELECT_BOOK_FILE_BY_ISBN = "SELECT File from TEST_LIBRARY.BOOK_FILE WHERE ISBN = ?;";
+//    private static final String SQL_INSERT_BOOK_FILE = "INSERT INTO TEST_LIBRARY.BOOK_FILE (ISBN, File) VALUES (?, ?)";
 
     private static final String SQL_SELECT_ALL_BOOKS_WHERE =  "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM BOOKSHOP.BOOK WHERE ";
     private static final String SQL_SELECT_ALL_BOOKS_WHERE_LIKE_OR = "SELECT Id, ISBN, Title, Author, Price, Publisher, Genre_Id, Preview FROM BOOKSHOP.BOOK " +
@@ -73,7 +94,7 @@ public class BookDao extends AbstractDao<Long, Book> {
 
 
     @Override
-    public Book create(Book book) {
+    public Book create(Book book) throws DqlException {
         try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_BOOK);
             Connection connection =  ConnectionPool.getInstance().getAvailableConnection()) {
             ps.setString(1, book.getISBN());
@@ -94,7 +115,7 @@ public class BookDao extends AbstractDao<Long, Book> {
 
             ps.executeUpdate();
         } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
+            throw new DqlException(throwables.getMessage(), throwables);
         }
 
         return book;

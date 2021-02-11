@@ -48,8 +48,10 @@ public class AddIbanCommand implements Command {
             return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ADD_IBAN.getRoute());
         } catch (DqlException e) {
             logger.error(e.getMessage(), e);
+            DqlExceptionMessageProcessor dqlExceptionMessageProcessor = new DqlExceptionMessageProcessor();
+            dqlExceptionMessageProcessor.setLocale(locale);
             session.setAttribute(ErrorMessageConstants.ERROR_ADD_IBAN_MESSAGE,
-                    DqlExceptionMessageProcessor.getInstance().process(e));
+                    dqlExceptionMessageProcessor.process(e));
             return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ADD_IBAN.getRoute());
         }
 

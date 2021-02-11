@@ -38,7 +38,6 @@
     <div class="row">
         <div class="mcontainer">
             <form id="Contact" method="post" action="/home?command=send_contact_form">
-
                 <label for="name"><fmt:message key="label.name" bundle="${lang}"/></label>
                 <c:set var="your_name">
                     <fmt:message key="label.your_name" bundle="${lang}"/>
@@ -62,8 +61,7 @@
                     <pre style="color: #ff523b; height: 20px">${error_contact_us_message}</pre>
                     <c:remove var="error_reg_message" scope="session" />
                 </c:if>
-                <button type="submit" onclick="return validateContactForm(event)" class="btn"><fmt:message key="label.submit" bundle="${lang}"/></button>
-
+                <button id="btnSubmit" type="submit" onclick="return validateContactForm(event)" class="btn"><fmt:message key="label.submit" bundle="${lang}"/></button>
             </form>
         </div>
     </div>
@@ -119,6 +117,13 @@
 
         return true;
     }
+
+    $(function () {
+        $('#Contact').submit(function (e) {
+            $(this).click();
+            $("#btnSubmit").attr("disabled", true);
+        })
+    })
 </script>
 
 </body>

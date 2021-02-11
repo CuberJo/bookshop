@@ -182,6 +182,8 @@ public class BookDataProcessor {
             default:
                 criteria = BookCriteria.builder()
                         .title(searchStr)
+                        .author(searchStr)
+                        .publisher(searchStr)
                         .build();
         }
 

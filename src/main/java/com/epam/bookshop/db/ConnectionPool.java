@@ -23,7 +23,7 @@ public class ConnectionPool {
     private final ReentrantLock lock2 = new ReentrantLock();
 
     private ConnectionPool() {
-
+        init();
     }
 
     public static ConnectionPool getInstance() {
@@ -45,7 +45,7 @@ public class ConnectionPool {
     /**
      * Makes {@code ConnectionPool} initialization with created {@link Connection} instances
      */
-    public void init() {
+    private void init() {
         int poolSize = DatabaseConfigurator.getInstance().getPoolSize();
 
         availableConnections = new LinkedBlockingQueue<>(poolSize);

@@ -67,4 +67,9 @@ public class ErrorMessageConstants {
     public static final String BOOK_ALREADY_BOUGHT = "book_already_bought";
 
     public static final String CONNECTION_HAS_NOT_BEEN_INITIALIZED = "connection_initialization_error";
+
+    public static final String SQL_DUPLICATE = "sql_duplicate";
+    public static final String SQL_TRUNCATION = "sql_truncation";
+
+    public static final String UNACCEPTABLE_SYMBOLS = "unacceptable_symbols";
 }

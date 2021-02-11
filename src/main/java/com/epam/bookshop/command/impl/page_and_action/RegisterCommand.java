@@ -72,8 +72,10 @@ public class RegisterCommand implements Command {
             logger.error(e.getMessage(), e);
             return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ACCOUNT.getRoute());
         } catch (DqlException e) {
+            DqlExceptionMessageProcessor dqlExceptionMessageProcessor = new DqlExceptionMessageProcessor();
+            dqlExceptionMessageProcessor.setLocale(locale);
             session.setAttribute(ErrorMessageConstants.ERROR_REG_MESSAGE,
-                    DqlExceptionMessageProcessor.getInstance().process(e));
+                    dqlExceptionMessageProcessor.process(e));
             logger.error(e.getMessage(), e);
             return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.ACCOUNT.getRoute());
         }

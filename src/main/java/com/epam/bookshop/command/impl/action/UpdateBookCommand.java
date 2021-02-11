@@ -89,9 +89,9 @@ public class UpdateBookCommand implements Command {
             } else {
                 AddNewBookCommand.writeEmptyFileDataError(locale, req);
             }
-        } else {
+        } /*else {
             AddNewBookCommand.writeEmptyFileDataError(locale, req);
-        }
+        }*/
 
         return true;
     }

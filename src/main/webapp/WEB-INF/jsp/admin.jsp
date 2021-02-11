@@ -333,7 +333,7 @@
             <form id="addBookForm" action="home" method="post">
             <label class="inp">
                 <input name="isbn" pattern="^[\d]+-[\d]+-[\d]+-[\d]+-[\d]+$" type="text" size="17" placeholder="<fmt:message key="label.isbn" bundle="${lang}"/>"/>
-                <input name="title" pattern="^[-(),!\d\s.\p{L}]{1,70}$" type="text" placeholder="<fmt:message key="label.title" bundle="${lang}"/>"/>
+                <input name="title" pattern="^[-(),!\d\s.\p{L}]{1,100}$" type="text" placeholder="<fmt:message key="label.title" bundle="${lang}"/>"/>
                 <input name="author" type="text" pattern="^[-\s.\p{L}]{1,50}$" placeholder="<fmt:message key="label.author" bundle="${lang}"/>"/>
                 <input name="price" type="text" pattern="^[0-9]+(\.[0-9]+)?$" placeholder="<fmt:message key="label.price" bundle="${lang}"/>"/>
                 <input name="publisher" type="text" pattern="^[-&\p{L}\s]{1,50}$" placeholder="<fmt:message key="label.publisher" bundle="${lang}"/>"/>

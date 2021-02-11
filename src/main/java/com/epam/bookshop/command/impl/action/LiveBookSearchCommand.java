@@ -115,6 +115,8 @@ public class LiveBookSearchCommand implements Command {
             default:
                 criteria = BookCriteria.builder()
                         .title(searchStr)
+                        .author(searchStr)
+                        .publisher(searchStr)
                         .build();
         }
 

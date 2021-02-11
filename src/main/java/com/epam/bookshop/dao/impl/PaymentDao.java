@@ -1,5 +1,6 @@
 package com.epam.bookshop.dao.impl;
 
+import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.db.ConnectionPool;
@@ -23,6 +24,16 @@ import java.util.Optional;
  */
 public class PaymentDao extends AbstractDao<Long, Payment> {
     private static final Logger logger = LoggerFactory.getLogger(PaymentDao.class);
+
+//    private static final String SQL_SELECT_ALL_PAYMENTS_WHERE =  "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price FROM TEST_LIBRARY.PAYMENT WHERE ";
+//    private static final String SQL_SELECT_PAYMENT_BY_ID = "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price FROM TEST_LIBRARY.PAYMENT WHERE Id = ?";
+//    private static final String SQL_SELECT_COUNT_ALL = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.PAYMENT;";
+//    private static final String SQL_SELECT_ALL_PAYMENTS_BY_LIMIT = "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price FROM TEST_LIBRARY.PAYMENT LIMIT ?, ?";
+//    private static final String SQL_INSERT_PAYMENT = "INSERT INTO TEST_LIBRARY.PAYMENT (Library_User_Id, Book_Id, Payment_Time, Price) VALUES (?, ?, ?, ?);";
+//    private static final String SQL_DELETE_PAYMENT_BY_ID = "DELETE FROM TEST_LIBRARY.PAYMENT WHERE Id = ?;";
+//    private static final String SQL_UPDATE_PAYMENT_BY_ID = "UPDATE TEST_LIBRARY.PAYMENT SET Library_User_Id = ?, Book_Id = ?, Payment_Time = ?, Price = ? WHERE Id = ?;";
+//    private static final String SQL_SELECT_ALL_PAYMENTS = "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price FROM TEST_LIBRARY.PAYMENT ";
+//    private static final String SQL_SELECT_ALL_BOOKS_IN_PAYMENT = "SELECT Book_Id FROM TEST_LIBRARY.PAYMENT WHERE Library_User_Id = ?";
 
     private static final String SQL_SELECT_ALL_PAYMENTS_WHERE =  "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price FROM BOOKSHOP.PAYMENT WHERE ";
     private static final String SQL_SELECT_PAYMENT_BY_ID = "SELECT Id, Library_User_Id, Book_Id, Payment_Time, Price FROM BOOKSHOP.PAYMENT WHERE Id = ?";
@@ -53,7 +64,7 @@ public class PaymentDao extends AbstractDao<Long, Payment> {
      * @return inserted {@link Payment} object
      */
     @Override
-    public Payment create(Payment payment) {
+    public Payment create(Payment payment) throws DqlException {
         try(PreparedStatement ps = getPrepareStatement(SQL_INSERT_PAYMENT)) {
             ps.setLong(1, payment.getUser().getEntityId());
             ps.setLong(2, payment.getBook().getEntityId());
@@ -62,7 +73,7 @@ public class PaymentDao extends AbstractDao<Long, Payment> {
 
             ps.executeUpdate();
         } catch (SQLException throwables) {
-            logger.error(throwables.getMessage(), throwables);
+            throw new DqlException(throwables.getMessage(), throwables);
         }
 
         return payment;

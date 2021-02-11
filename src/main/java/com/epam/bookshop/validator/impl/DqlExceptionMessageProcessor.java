@@ -1,6 +1,8 @@
 package com.epam.bookshop.validator.impl;
 
+import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.exception.DqlException;
+import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -10,30 +12,25 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class DqlExceptionMessageProcessor {
 
+    private String locale = "US";
+
     private static final String DUPLICATE = "duplicate";
+    private static final String TRUNCATION = "truncation";
 
-    private static final ReentrantLock LOCK = new ReentrantLock();
-    private static DqlExceptionMessageProcessor instance;
-
-    public static DqlExceptionMessageProcessor getInstance() {
-        LOCK.lock();
-        try {
-            if (instance == null) {
-                instance = new DqlExceptionMessageProcessor();
-            }
-        } finally {
-            LOCK.unlock();
-        }
-
-        return instance;
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
-
     public String process(DqlException e) {
-        StringBuffer errorMes = new StringBuffer();
+        StringBuilder errorMes = new StringBuilder();
 
         if (e.getMessage().toLowerCase().contains(DUPLICATE)) {
-            errorMes.append("Cannot accept provided data, because similar one already exists");
+            errorMes.append(ErrorMessageManager.valueOf(locale)
+                    .getMessage(ErrorMessageConstants.SQL_DUPLICATE));
+        }
+        if (e.getMessage().toLowerCase().contains(TRUNCATION)) {
+            errorMes.append(ErrorMessageManager.valueOf(locale)
+                    .getMessage(ErrorMessageConstants.SQL_TRUNCATION));
         }
 
         return errorMes.toString();

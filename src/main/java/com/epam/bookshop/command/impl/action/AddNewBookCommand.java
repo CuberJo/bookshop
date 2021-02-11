@@ -50,7 +50,9 @@ public class AddNewBookCommand implements Command {
             logger.error(e.getMessage(), e);
             return new CommandResult(CommandResult.ResponseType.NO_ACTION, e.getMessage());
         } catch (DqlException e) {
-            session.setAttribute(ERROR_MESSAGE, DqlExceptionMessageProcessor.getInstance().process(e));
+            DqlExceptionMessageProcessor dqlExceptionMessageProcessor = new DqlExceptionMessageProcessor();
+            dqlExceptionMessageProcessor.setLocale((String) session.getAttribute(RequestConstants.LOCALE));
+            session.setAttribute(ERROR_MESSAGE, dqlExceptionMessageProcessor.process(e));
             logger.error(e.getMessage(), e);
             return new CommandResult(CommandResult.ResponseType.NO_ACTION, e.getMessage());
         }

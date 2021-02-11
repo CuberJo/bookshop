@@ -1,5 +1,7 @@
 package com.epam.bookshop.constant;
 
+import com.epam.bookshop.validator.impl.RegexValidator;
+
 /**
  * Regular expression strings
  */
@@ -8,9 +10,9 @@ public class RegexConstants {
     private RegexConstants() {}
 
     public static final String ISBN_REGEX = "^[\\d]+-[\\d]+-[\\d]+-[\\d]+-[\\d]+$";
-    public static final String TITLE_REGEX = "^[-(),!\\d\\s.\\p{L}]{1,70}$";
-    public static final String AUTHOR_REGEX = "^[-\\s.\\p{L}]{1,50}$";
-    public static final String PUBLISHER_REGEX = "^[-&\\p{L}\\s]{1,50}$";
+    public static final String TITLE_REGEX = "^[-(),!\\d\\s.\\p{L}]{1,100}$";
+    public static final String AUTHOR_REGEX = "^[-\\s.\\p{L}\\d]{1,50}$";
+    public static final String PUBLISHER_REGEX = "^[-&\\p{L}\\s\\d]{1,50}$";
 //    public static final String GENRE_REGEX = "^[-a-zA-Z&_\\s]{1,50}$";
     public static final String GENRE_REGEX = "^[-\\p{L}&_\\s]{1,50}$";
     public static final String NAME_REGEX = "^[-.\\p{L}]{1,20}$";

@@ -82,12 +82,13 @@ public class NamingValidator implements AnnotationValidator<Naming> {
             m = p.matcher(((User) entity).getLogin());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT) + UtilStringConstants.WHITESPACE + ((User) entity).getLogin();
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT) + UtilStringConstants.WHITESPACE + ((User) entity).getLogin()
+                + ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.UNACCEPTABLE_SYMBOLS);
                 throw new ValidatorException(errorMessage);
             }
         }
         if (annotation.email() && ((User) entity).getEmail() != null) {
-            p = Pattern.compile(RegexConstants.EMAIL_REGEX);
+            p = Pattern.compile(RegexConstants.STRONG_EMAIL_REGEX);
             m = p.matcher(((User) entity).getEmail());
 
             if (!m.matches()) {
@@ -165,12 +166,13 @@ public class NamingValidator implements AnnotationValidator<Naming> {
             m = p.matcher(((UserCriteria) criteria).getLogin());
 
             if (!m.matches()) {
-                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT) + UtilStringConstants.WHITESPACE + ((UserCriteria) criteria).getLogin();
+                errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.LOGIN_INCORRECT) + UtilStringConstants.WHITESPACE + ((UserCriteria) criteria).getLogin()
+                        + ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.UNACCEPTABLE_SYMBOLS);
                 throw new ValidatorException(errorMessage);
             }
         }
         if (annotation.email() && ((UserCriteria) criteria).getEmail() != null) {
-            p = Pattern.compile(RegexConstants.EMAIL_REGEX);
+            p = Pattern.compile(RegexConstants.STRONG_EMAIL_REGEX);
             m = p.matcher(((UserCriteria) criteria).getEmail());
 
             if (!m.matches()) {
