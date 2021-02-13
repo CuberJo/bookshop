@@ -67,14 +67,4 @@ public abstract class AbstractDao<K, T extends Entity> {
             }
         }
     }
-//
-//    protected void closePrepareStatement(PreparedStatement ps) {
-//        if (ps != null) {
-//            try {
-//                ps.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }

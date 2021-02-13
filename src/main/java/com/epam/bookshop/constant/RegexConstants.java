@@ -1,7 +1,5 @@
 package com.epam.bookshop.constant;
 
-import com.epam.bookshop.validator.impl.RegexValidator;
-
 /**
  * Regular expression strings
  */

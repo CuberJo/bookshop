@@ -84,7 +84,7 @@ public class BookFormDataValidator {
                     + UtilStringConstants.WHITESPACE + genre + UtilStringConstants.SEMICOLON + UtilStringConstants.WHITESPACE;
         }
         if (Objects.nonNull(preview)) {
-            preview = new StringSanitizer().sanitize(preview);
+            preview = StringSanitizer.getInstance().sanitize(preview);
         }
 
         if (!error.isEmpty()) {

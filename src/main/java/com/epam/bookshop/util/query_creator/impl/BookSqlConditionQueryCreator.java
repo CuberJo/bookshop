@@ -52,7 +52,8 @@ public class BookSqlConditionQueryCreator implements SqlConditionQueryCreator<Bo
 
         if (!(criteria instanceof BookCriteria)) {
             String locale = "US";
-            String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA) + UtilStringConstants.NEW_LINE + criteria;
+            String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA)
+                    + UtilStringConstants.NEW_LINE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }
 

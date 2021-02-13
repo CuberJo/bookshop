@@ -37,6 +37,11 @@ public class MailPropertiesLoader {
         return instance;
     }
 
+    /**
+     * Loads session properties in
+     *
+     * @return
+     */
     public Properties initSessionProperties() {
         Properties sessionProperties = null;
 

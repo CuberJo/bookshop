@@ -1,5 +1,6 @@
 package com.epam.bookshop.util.query_creator.impl;
 
+import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.UnknownEntityException;
@@ -18,8 +19,6 @@ public class GenreSqlConditionQueryCreator implements SqlConditionQueryCreator<G
 
     private static final String GENRE_ID_COLUMN = "Id";
     private static final String GENRE_COLUMN = "Genre";
-
-    private static final String INCOMPATIBLE_TYPE_OF_CRITERIA = "incompatible_type_of_criteria";
 
     private static final ReentrantLock lock = new ReentrantLock();
     private static GenreSqlConditionQueryCreator instance;
@@ -47,7 +46,7 @@ public class GenreSqlConditionQueryCreator implements SqlConditionQueryCreator<G
 
         if (!(criteria instanceof GenreCriteria)) {
             String locale = "US";
-            String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(INCOMPATIBLE_TYPE_OF_CRITERIA)
+            String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA)
                     + UtilStringConstants.WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);
         }

@@ -28,7 +28,7 @@ public class MailSender {
     /**
      * Sends email
      *
-     * @param recipient addrress of recipient
+     * @param recipient address of recipient
      * @param subject subject of email
      * @param response actual message to send
      * @throws MessagingException

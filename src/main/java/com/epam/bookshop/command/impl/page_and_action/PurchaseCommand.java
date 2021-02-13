@@ -116,16 +116,24 @@ public class PurchaseCommand implements Command {
         PaymentService service = (PaymentService) ServiceFactory.getInstance().create(EntityType.PAYMENT);
         service.setLocale(locale);
 
-        for (int i = 0; i < cart.size(); i++) {
+        cart.removeIf(book -> {
             try {
-                if (service.find(PaymentCriteria.builder().bookId(cart.get(i).getEntityId()).build()).isPresent()) {
-                    cart.remove(cart.get(i));
-                }
+                return service.find(PaymentCriteria.builder().bookId(book.getEntityId()).build()).isPresent();
             } catch (ValidatorException e) {
                 logger.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage(), e);
             }
-        }
+        });
+//        for (int i = 0; i < cart.size(); i++) {
+//            try {
+//                if (service.find(PaymentCriteria.builder().bookId(cart.get(i).getEntityId()).build()).isPresent()) {
+//                    cart.remove(cart.get(i));
+//                }
+//            } catch (ValidatorException e) {
+//                logger.error(e.getMessage(), e);
+//                throw new RuntimeException(e.getMessage(), e);
+//            }
+//        }
     }
 
 

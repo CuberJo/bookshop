@@ -1,10 +1,10 @@
 package com.epam.bookshop.dao.impl;
 
+import com.epam.bookshop.constant.ErrorMessageConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.dao.AbstractDao;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
-import com.epam.bookshop.constant.ErrorMessageConstants;
-import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
@@ -25,19 +25,6 @@ import java.util.*;
  */
 public class UserDao extends AbstractDao<Long, User> {
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
-
-//    private static final String SQL_SELECT_ALL_USERS_WHERE =  "SELECT Id, Name, Login, Password, Email, Admin FROM TEST_LIBRARY.LIBRARY_USER WHERE ";
-//    private static final String SQL_INSERT_USER = "INSERT INTO TEST_LIBRARY.LIBRARY_USER (Name, Login, Password, Email, Admin) VALUES(?, ?, ?, ?, ?);";
-//    private static final String SQL_DELETE_USER_BY_ID = "DELETE FROM TEST_LIBRARY.LIBRARY_USER WHERE Id = ?;";
-//    private static final String SQL_UPDATE_USER_BY_ID = "UPDATE TEST_LIBRARY.LIBRARY_USER SET Name = ?, Login = ?, Password = ?, Email = ?, Admin = ? WHERE Id = ?;";
-//    private static final String SQL_SELECT_ALL_USERS = "SELECT Id, Name, Login, Password, Email, Admin FROM TEST_LIBRARY.LIBRARY_USER ";
-//    private static final String SQL_SELECT_USER_BY_ID = "SELECT Id, Name, Login, Password, Email, Admin FROM TEST_LIBRARY.LIBRARY_USER WHERE Id = ?";
-//    private static final String SQL_SELECT_COUNT_ALL = "SELECT COUNT(*) as Num FROM TEST_LIBRARY.LIBRARY_USER;";
-//    private static final String SQL_INSERT_USER_BANK_ACCOUNT = "INSERT INTO TEST_LIBRARY.USER_BANK_ACCOUNT (Library_User_Id, IBAN) VALUES (?, ?);";
-//    private static final String SQL_SELECT_ALL_USERs_IBANS = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT;";
-//    private static final String SQL_SELECT_ALL_USER_IBANS_BY_LIBRARY_USER_ID = "SELECT Library_User_Id, IBAN FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE Library_User_Id = ?;";
-//    private static final String SQL_DELETE_USER_IBAN_BY_IBAN = "DELETE FROM TEST_LIBRARY.USER_BANK_ACCOUNT WHERE IBAN = ?;";
-//    private static final String SQL_SELECT_ALL_USERS_BY_LIMIT = "SELECT Id, Name, Login, Password, Email, Admin FROM TEST_LIBRARY.LIBRARY_USER LIMIT ?, ?";
 
     private static final String SQL_SELECT_ALL_USERS_WHERE =  "SELECT Id, Name, Login, Password, Email, Admin FROM BOOKSHOP.LIBRARY_USER WHERE ";
     private static final String SQL_INSERT_USER = "INSERT INTO BOOKSHOP.LIBRARY_USER (Name, Login, Password, Email, Admin) VALUES(?, ?, ?, ?, ?);";

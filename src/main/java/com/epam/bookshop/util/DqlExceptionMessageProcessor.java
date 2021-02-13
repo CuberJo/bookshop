@@ -1,4 +1,4 @@
-package com.epam.bookshop.validator.impl;
+package com.epam.bookshop.util;
 
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.exception.DqlException;

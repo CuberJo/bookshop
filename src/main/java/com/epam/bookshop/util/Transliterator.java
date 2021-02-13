@@ -24,7 +24,7 @@ public class Transliterator {
     }
 
     /**
-     * Tranliteretes Cyrillic symbols into Latin
+     * Tranliterates Cyrillic symbols into Latin
      *
      * @param message string to transliterate
      * @return

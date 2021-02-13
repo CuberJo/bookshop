@@ -43,7 +43,7 @@ public class SendContactFormCommand implements Command {
                         ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.FIELDS_CANNOT_BE_EMPTY));
                 return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CONTACT_US.getRoute());
             }
-            if(!RegexValidator.getInstance().validate(email, RegexConstants.STRONG_EMAIL_REGEX)) {
+            if(!RegexValidator.getInstance().validate(email, RegexConstants.EMAIL_REGEX)) {
                 errorMessage = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.EMAIL_INCORRECT)
                         + UtilStringConstants.WHITESPACE + email;
                 session.setAttribute(ErrorMessageConstants.ERROR_CONTACT_US_MESSAGE, errorMessage);
@@ -51,7 +51,7 @@ public class SendContactFormCommand implements Command {
                 return new CommandResult(CommandResult.ResponseType.REDIRECT, RouteConstants.CONTACT_US.getRoute());
             }
 
-            StringSanitizer sanitizer = new StringSanitizer();
+            StringSanitizer sanitizer = StringSanitizer.getInstance();
             String sanitizedName = sanitizer.sanitize(name);
             String sanitizedEmail = sanitizer.sanitize(email);
             String sanitizedSubject = sanitizer.sanitize(subject);

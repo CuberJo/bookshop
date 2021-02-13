@@ -44,19 +44,20 @@ public class RemoveFromCartCommand implements Command {
 
         Book bookToRemove = findBookInCart(cart, isbn, locale);
 
-        boolean bookPresent = false;
-        for (Book book : cart) {
-            if (bookToRemove.equals(book)) {
-                bookPresent = true;
-                cart.remove(bookToRemove);
-                break;
-            }
-        }
-        if (!bookPresent) {
-            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND_IN_CART);
-            logger.error(error);
-            throw new RuntimeException(error);
-        }
+//        boolean bookPresent = false;
+        cart.removeIf(book -> book.equals(bookToRemove));
+//        for (Book book : cart) {
+//            if (bookToRemove.equals(book)) {
+//                bookPresent = true;
+//                cart.remove(bookToRemove);
+//                break;
+//            }
+//        }
+//        if (!bookPresent) {
+//            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND_IN_CART);
+//            logger.error(error);
+//            throw new RuntimeException(error);
+//        }
 
         session.removeAttribute(RequestConstants.BOOK_TO_REMOVE);
     }
@@ -88,8 +89,8 @@ public class RemoveFromCartCommand implements Command {
      * @return {@link Book} if it was found
      */
     private Book findBookInCart(ArrayList<Book> cart, String isbn, String locale) {
-        Optional<Book> optionalBook = cart.stream().
-                filter(book -> book.getISBN().equals(isbn))
+        Optional<Book> optionalBook = cart.stream()
+                .filter(book -> book.getISBN().equals(isbn))
                 .findFirst();
         if (optionalBook.isEmpty()) {
             String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND)

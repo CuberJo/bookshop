@@ -88,7 +88,7 @@ public class NamingValidator implements AnnotationValidator<Naming> {
             }
         }
         if (annotation.email() && ((User) entity).getEmail() != null) {
-            p = Pattern.compile(RegexConstants.STRONG_EMAIL_REGEX);
+            p = Pattern.compile(RegexConstants.EMAIL_REGEX);
             m = p.matcher(((User) entity).getEmail());
 
             if (!m.matches()) {
@@ -172,7 +172,7 @@ public class NamingValidator implements AnnotationValidator<Naming> {
             }
         }
         if (annotation.email() && ((UserCriteria) criteria).getEmail() != null) {
-            p = Pattern.compile(RegexConstants.STRONG_EMAIL_REGEX);
+            p = Pattern.compile(RegexConstants.EMAIL_REGEX);
             m = p.matcher(((UserCriteria) criteria).getEmail());
 
             if (!m.matches()) {

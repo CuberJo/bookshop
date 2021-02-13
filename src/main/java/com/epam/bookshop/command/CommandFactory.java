@@ -153,8 +153,6 @@ public class CommandFactory {
                 return new AddToCartCommand();
             case ACCOUNT_SETTINGS:
                 return new AccountSettingsCommand();
-
-
             case GOOGLE_LOGIN:
                 return new GoogleLoginCommand();
             default:

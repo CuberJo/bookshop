@@ -13,12 +13,6 @@ import javax.servlet.http.HttpSessionListener;
 @WebListener
 public class SessionLocaleListener implements HttpSessionListener {
 
-//    private static final String RU = "RU";
-
-//    @Override
-//    public void sessionCreated(HttpSessionEvent se) {
-//        se.getSession().setAttribute(LOCALE_ATTRIBUTE, new Locale("en", "US"));
-//    }
     public void sessionCreated(HttpSessionEvent se) {
         se.getSession().setAttribute(RequestConstants.LOCALE, UtilStringConstants.US);
     }

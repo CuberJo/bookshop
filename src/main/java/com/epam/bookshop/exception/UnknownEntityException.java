@@ -1,34 +1,23 @@
 package com.epam.bookshop.exception;
 
 /**
- * The exception will be thrown when passed antity is not correcpond to existing ones
+ * The exception will be thrown when passed entity is not matches to existing ones
  */
 public class UnknownEntityException extends RuntimeException {
-    private final String entityName;
-    private final Object[] args;
 
-    public UnknownEntityException(String entityName) {
+    public UnknownEntityException() {
         super();
-        this.entityName = entityName;
-        this.args = null;
     }
 
-    public UnknownEntityException(String entityName, Object[] args) {
-        super();
-        this.entityName = entityName;
-        this.args = args;
+    public UnknownEntityException(String message) {
+        super(message);
     }
 
-    @Override
-    public String getMessage() {
-        StringBuilder errorMessage = new StringBuilder("");
-        if (entityName != "" && entityName.isEmpty()) {
-            errorMessage.append(entityName + " ");
-        }
-        if (args != null) {
-            errorMessage.append(args.toString());
-        }
-        // you should use entityName, args (if necessary)
-        return entityName;
+    public UnknownEntityException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public UnknownEntityException(Throwable cause) {
+        super(cause);
     }
 }

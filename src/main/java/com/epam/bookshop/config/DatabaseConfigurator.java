@@ -46,6 +46,9 @@ public class DatabaseConfigurator {
         return instance;
     }
 
+    /**
+     * Loads database properties from file
+     */
     private void configure() {
         ResourceBundle resourceBundle = ResourceBundle.getBundle(DATABASE_PROPERTIES_FILEPATH);
         url = resourceBundle.getString(DB_URL);

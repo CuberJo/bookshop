@@ -2,9 +2,9 @@ package com.epam.bookshop.service;
 
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.exception.DqlException;
-import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
+import com.epam.bookshop.util.criteria.Criteria;
 
 import java.util.Collection;
 import java.util.Optional;

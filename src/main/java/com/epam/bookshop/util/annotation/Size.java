@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for string fields that is used in validation and
- * clarificates for validator how to validate concrete string
+ * clarifies for validator how to validate concrete string
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

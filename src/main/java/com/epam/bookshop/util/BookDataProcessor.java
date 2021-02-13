@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Process incoming data
+ * Process incoming data for {@link Book}
  */
 public class BookDataProcessor {
     private static final Logger logger = LoggerFactory.getLogger(BookDataProcessor.class);
