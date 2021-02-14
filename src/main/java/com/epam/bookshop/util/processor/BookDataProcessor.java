@@ -1,4 +1,4 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.util.processor;
 
 import com.epam.bookshop.command.RequestContext;
 import com.epam.bookshop.constant.ErrorMessageConstants;
@@ -11,6 +11,7 @@ import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.GenreService;
 import com.epam.bookshop.service.impl.ServiceFactory;
+import com.epam.bookshop.util.EntityFinderFacade;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;

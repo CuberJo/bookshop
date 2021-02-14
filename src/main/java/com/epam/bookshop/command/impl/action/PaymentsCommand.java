@@ -8,8 +8,8 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Payment;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.BookDataProcessor;
-import com.epam.bookshop.util.ToJsonConverter;
+import com.epam.bookshop.util.processor.BookDataProcessor;
+import com.epam.bookshop.util.convertor.ToJsonConverter;
 
 import java.util.Collection;
 

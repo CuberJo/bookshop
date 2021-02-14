@@ -1,4 +1,4 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.util.security;
 
 import com.epam.bookshop.config.AppConfigurator;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;

@@ -8,7 +8,7 @@ import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.DqlException;
-import com.epam.bookshop.util.ImgToBase64Converter;
+import com.epam.bookshop.util.convertor.ImgToBase64Converter;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;

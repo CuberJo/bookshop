@@ -14,7 +14,7 @@ import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.service.impl.UserService;
 import com.epam.bookshop.util.EntityFinderFacade;
 import com.epam.bookshop.util.criteria.Criteria;
-import com.epam.bookshop.util.DqlExceptionMessageProcessor;
+import com.epam.bookshop.util.processor.DqlExceptionMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,9 +1,8 @@
 package com.epam.bookshop.util;
 
 import com.epam.bookshop.constant.RegexConstants;
+import com.epam.bookshop.util.convertor.Transliterator;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.*;
 
 public class TransliteratorTest {
 

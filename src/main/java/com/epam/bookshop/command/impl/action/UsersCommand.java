@@ -10,8 +10,8 @@ import com.epam.bookshop.dto.converter.impl.ToUserDtoConverter;
 import com.epam.bookshop.dto.impl.UserDto;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.BookDataProcessor;
-import com.epam.bookshop.util.ToJsonConverter;
+import com.epam.bookshop.util.processor.BookDataProcessor;
+import com.epam.bookshop.util.convertor.ToJsonConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;

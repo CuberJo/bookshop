@@ -11,7 +11,7 @@ import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.Genre;
 import com.epam.bookshop.exception.EntityNotFoundException;
 import com.epam.bookshop.util.EntityFinderFacade;
-import com.epam.bookshop.util.ToJsonConverter;
+import com.epam.bookshop.util.convertor.ToJsonConverter;
 import com.epam.bookshop.util.criteria.Criteria;
 import com.epam.bookshop.util.criteria.impl.BookCriteria;
 import com.epam.bookshop.util.criteria.impl.GenreCriteria;

@@ -1,4 +1,4 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.util.processor;
 
 import com.epam.bookshop.constant.ErrorMessageConstants;
 import com.epam.bookshop.exception.DqlException;

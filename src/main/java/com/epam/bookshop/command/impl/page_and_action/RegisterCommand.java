@@ -16,7 +16,7 @@ import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.mail.MailSender;
-import com.epam.bookshop.util.DqlExceptionMessageProcessor;
+import com.epam.bookshop.util.processor.DqlExceptionMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

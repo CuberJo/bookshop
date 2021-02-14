@@ -1,4 +1,4 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.util.convertor;
 
 import com.epam.bookshop.domain.Entity;
 import com.fasterxml.jackson.databind.ObjectMapper;

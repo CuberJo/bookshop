@@ -14,7 +14,7 @@ import com.epam.bookshop.mail.MailSender;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
 import com.epam.bookshop.util.EntityFinderFacade;
-import com.epam.bookshop.util.PasswordCreator;
+import com.epam.bookshop.util.security.PasswordCreator;
 import com.epam.bookshop.util.criteria.impl.UserCriteria;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import com.epam.bookshop.util.manager.language.MessageManager;

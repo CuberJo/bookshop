@@ -12,9 +12,9 @@ import com.epam.bookshop.exception.DqlException;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.BookDataProcessor;
+import com.epam.bookshop.util.processor.BookDataProcessor;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
-import com.epam.bookshop.util.DqlExceptionMessageProcessor;
+import com.epam.bookshop.util.processor.DqlExceptionMessageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

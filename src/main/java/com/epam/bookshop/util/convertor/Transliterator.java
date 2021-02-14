@@ -1,4 +1,4 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.util.convertor;
 
 import java.util.concurrent.locks.ReentrantLock;
 

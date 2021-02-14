@@ -9,7 +9,7 @@ import com.epam.bookshop.domain.impl.Book;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.ToJsonConverter;
+import com.epam.bookshop.util.convertor.ToJsonConverter;
 import com.epam.bookshop.util.manager.language.ErrorMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

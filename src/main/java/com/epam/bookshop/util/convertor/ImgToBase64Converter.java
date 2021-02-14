@@ -1,4 +1,4 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.util.convertor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -7,8 +7,8 @@ import com.epam.bookshop.constant.RequestConstants;
 import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.service.impl.BookService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.BookDataProcessor;
-import com.epam.bookshop.util.ToJsonConverter;
+import com.epam.bookshop.util.processor.BookDataProcessor;
+import com.epam.bookshop.util.convertor.ToJsonConverter;
 
 import javax.servlet.http.HttpSession;
 

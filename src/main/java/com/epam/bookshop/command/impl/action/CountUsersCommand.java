@@ -8,7 +8,7 @@ import com.epam.bookshop.domain.impl.EntityType;
 import com.epam.bookshop.domain.impl.User;
 import com.epam.bookshop.service.EntityService;
 import com.epam.bookshop.service.impl.ServiceFactory;
-import com.epam.bookshop.util.ToJsonConverter;
+import com.epam.bookshop.util.convertor.ToJsonConverter;
 
 /**
  * Returns total amout of {@link User} instances in database

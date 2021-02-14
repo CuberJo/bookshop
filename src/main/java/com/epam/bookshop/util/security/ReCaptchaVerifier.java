@@ -1,4 +1,4 @@
-package com.epam.bookshop.util;
+package com.epam.bookshop.util.security;
 
 import com.epam.bookshop.config.AppConfigurator;
 import org.slf4j.Logger;
