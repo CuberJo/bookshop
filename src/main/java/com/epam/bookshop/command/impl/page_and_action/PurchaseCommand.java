@@ -59,7 +59,6 @@ public class PurchaseCommand implements Command {
         final String locale = (String) session.getAttribute(RequestConstants.LOCALE);
         List<Book> cart = (List<Book>) session.getAttribute(RequestConstants.CART);
 
-//        rmAlreadyBought(locale, cart);
         if (alreadyBought(session, cart)) {
             session.setAttribute(ERROR,
                     ErrorMessageManager.valueOf((String) session.getAttribute(RequestConstants.LOCALE))
@@ -124,16 +123,6 @@ public class PurchaseCommand implements Command {
                 throw new RuntimeException(e.getMessage(), e);
             }
         });
-//        for (int i = 0; i < cart.size(); i++) {
-//            try {
-//                if (service.find(PaymentCriteria.builder().bookId(cart.get(i).getEntityId()).build()).isPresent()) {
-//                    cart.remove(cart.get(i));
-//                }
-//            } catch (ValidatorException e) {
-//                logger.error(e.getMessage(), e);
-//                throw new RuntimeException(e.getMessage(), e);
-//            }
-//        }
     }
 
 

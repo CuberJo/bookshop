@@ -43,21 +43,7 @@ public class RemoveFromCartCommand implements Command {
         ArrayList<Book> cart = getCart(session, locale);
 
         Book bookToRemove = findBookInCart(cart, isbn, locale);
-
-//        boolean bookPresent = false;
         cart.removeIf(book -> book.equals(bookToRemove));
-//        for (Book book : cart) {
-//            if (bookToRemove.equals(book)) {
-//                bookPresent = true;
-//                cart.remove(bookToRemove);
-//                break;
-//            }
-//        }
-//        if (!bookPresent) {
-//            String error = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.BOOK_NOT_FOUND_IN_CART);
-//            logger.error(error);
-//            throw new RuntimeException(error);
-//        }
 
         session.removeAttribute(RequestConstants.BOOK_TO_REMOVE);
     }
