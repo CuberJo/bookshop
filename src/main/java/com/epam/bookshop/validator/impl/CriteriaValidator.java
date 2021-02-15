@@ -1,5 +1,7 @@
 package com.epam.bookshop.validator.impl;
 
+import com.epam.bookshop.constant.RegexConstants;
+import com.epam.bookshop.constant.UtilStringConstants;
 import com.epam.bookshop.domain.Entity;
 import com.epam.bookshop.exception.ValidatorException;
 import com.epam.bookshop.util.annotation.Naming;
@@ -18,7 +20,7 @@ public class CriteriaValidator {
     private final NamingValidator namingValidator = new NamingValidator();
     private final SizeValidator sizeValidator = new SizeValidator();
 
-    private String locale = "US";
+    private String locale = UtilStringConstants.US;
 
     /**
      * Setter for {@code locale} field

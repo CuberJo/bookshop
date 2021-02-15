@@ -45,7 +45,7 @@ public class GenreSqlConditionQueryCreator implements SqlConditionQueryCreator<G
         StringBuffer condition = new StringBuffer();
 
         if (!(criteria instanceof GenreCriteria)) {
-            String locale = "US";
+            String locale = UtilStringConstants.US;
             String incompatibleTypeOfCriteria = ErrorMessageManager.valueOf(locale).getMessage(ErrorMessageConstants.INCOMPATIBLE_TYPE_OF_CRITERIA)
                     + UtilStringConstants.WHITESPACE + criteria;
             throw new UnknownEntityException(incompatibleTypeOfCriteria);

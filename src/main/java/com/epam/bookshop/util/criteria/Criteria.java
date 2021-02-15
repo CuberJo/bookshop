@@ -14,16 +14,16 @@ public abstract class Criteria<T extends Entity> {
         return entityId;
     }
 
-    public Criteria (Builder<? extends Builder> builder) {
+    public Criteria (Builder<? extends Entity> builder) {
         this.entityId = builder.entityId;
     }
 
-    protected static abstract class Builder<T extends Builder<T>> {
+    protected static abstract class Builder<T extends Entity> {
         private Long entityId;
 
-        public T id(Long entityId) {
+        public Builder<T> id(Long entityId) {
             this.entityId = entityId;
-            return (T) this;
+            return this;
         }
 
         public abstract Criteria build();

@@ -92,12 +92,10 @@ public class ConnectionPool {
         ConnectionProxy connectionToReturn = null;
 
         try {
-            try {
-                connectionToReturn = availableConnections.take();
-            } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
-            }
+            connectionToReturn = availableConnections.take();
             notAvailableConnections.add(connectionToReturn);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
         } finally {
             lock2.unlock();
         }
